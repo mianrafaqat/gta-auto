@@ -30,6 +30,7 @@ import HeaderShadow from '../common/header-shadow';
 import SettingsButton from '../common/settings-button';
 import { useAuthContext } from 'src/auth/hooks';
 
+
 // ----------------------------------------------------------------------
 
 export default function Header() {
@@ -42,11 +43,11 @@ export default function Header() {
   const {user = {}} = useAuthContext()?.user || {};
 
   return (
-    <AppBar>
+    <AppBar sx={{ backgroundImage: `url('/assets/headerbg.webp')`, backgroundSize: 'cover', backgroundPosition: 'center', }}>
       <Toolbar
         disableGutters
         sx={{
-          boxShadow: "rgba(0, 0, 0, 0.09) 0px 25px 20px -20px",
+          // boxShadow: "rgba(0, 0, 0, 0.09) 0px 25px 20px -20px",
           height: {
             xs: HEADER.H_MOBILE,
             md: HEADER.H_DESKTOP,
@@ -57,39 +58,27 @@ export default function Header() {
             duration: theme.transitions.duration.shorter,
           }),
           ...(offsetTop && {
-            ...bgBlur({
-              color: theme.palette.background.default,
-            }),
+            // ...bgBlur({
+            //   color: theme.palette.background.default,
+            // }),
             height: {
               md: HEADER.H_DESKTOP_OFFSET,
             },
           }),
         }}
+        
       >
-        <Container maxWidth="xl" sx={{ height: 1, display: 'flex', alignItems: 'center' }}>
+                <Container maxWidth="xl" sx={{ height: 1, display: 'flex', alignItems: 'center' }}>
          
-          <Logo />
+          <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
+            <Logo /> 
+            {mdUp && <NavDesktop data={navConfig} />}
+          </Stack>
 
-          <Box sx={{ flexGrow: 1 }} />
-
-          {mdUp && <NavDesktop data={navConfig} />}
-
-          <Stack alignItems="center" direction={{ xs: 'row', md: 'row-reverse' }}>
-            {/* <Button variant="contained" target="_blank" rel="noopener" href={paths.minimalUI}>
-              Purchase Now
-            </Button> */}
-
+          <Stack alignItems="center" direction="row" spacing={2}>
             {mdUp && !Object.keys(user).length > 0 && <LoginButton />}
-            {mdUp && Object.keys(user).length > 0 && <MoveTo title="Move to Dashboard" path={paths.dashboard.root} />}
+            {mdUp && Object.keys(user).length > 0 && <MoveTo sx={{color: 'white', borderColor: 'black'}} title="Move to Dashboard" path={paths.dashboard.root} />}
             {mdUp && Object.keys(user).length > 0 && <MoveTo title="Favourite" path={paths.user.favourites} />}
-
-
-            {/* <SettingsButton
-              sx={{
-                ml: { xs: 1, md: 0 },
-                mr: { md: 2 },
-              }}
-            /> */}
 
             {!mdUp && <NavMobile data={navConfig} />}
           </Stack>

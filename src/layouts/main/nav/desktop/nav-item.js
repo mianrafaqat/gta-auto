@@ -77,9 +77,9 @@ const StyledNavItem = styled(ListItemButton, {
     content: '""',
     borderRadius: '50%',
     position: 'absolute',
-    backgroundColor: 'currentColor',
+    backgroundColor: 'white',
     ...(active && {
-      color: theme.palette.primary.main,
+      color: 'white',
     }),
   };
 
@@ -90,28 +90,25 @@ const StyledNavItem = styled(ListItemButton, {
       padding: 0,
       height: '100%',
       fontWeight: theme.typography.fontWeightMedium,
+      color: 'white',
       transition: theme.transitions.create(['all'], {
         duration: theme.transitions.duration.shorter,
       }),
       '&:hover': {
         opacity: 0.64,
         backgroundColor: 'transparent',
-        '&:before': {
-          ...dotStyles,
-        },
+        color: 'white',
+       
       },
       ...(active && {
-        color: theme.palette.primary.main,
+        color: 'white',
         fontWeight: theme.typography.fontWeightSemiBold,
-        '&:before': {
-          ...dotStyles,
-        },
+       
       }),
       ...(opened && {
         opacity: 0.64,
-        '&:before': {
-          ...dotStyles,
-        },
+        color: 'white',
+        
       }),
     }),
 
@@ -128,16 +125,12 @@ const StyledNavItem = styled(ListItemButton, {
       '&:hover': {
         backgroundColor: 'transparent',
         color: theme.palette.text.primary,
-        '&:before': {
-          ...dotStyles,
-        },
+        
       },
       ...(active && {
         color: theme.palette.text.primary,
         fontWeight: theme.typography.fontWeightSemiBold,
-        '&:before': {
-          ...dotStyles,
-        },
+       
       }),
     }),
   };
