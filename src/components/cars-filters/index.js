@@ -10,6 +10,7 @@ import {
   TextField,
   Stack,
   Button,
+  Typography,
 } from "@mui/material";
 import Iconify from "../iconify";
 import { CarsService } from "src/services";
@@ -17,41 +18,7 @@ import { useRouter } from "next/navigation";
 import { paths } from "src/routes/paths";
 
 export default function CarsFiltersPage() {
-  const [currentTab, setCurrentTab] = useState("one");
-
   const [carBodyList, setCarBodyList] = useState([]);
-
-  const handleChangeTab = useCallback((event, newValue) => {
-    setCurrentTab(newValue);
-    //  fetchAllCars();
-  }, []);
-
-  const TABS = [
-    {
-      value: "one",
-      icon: <Iconify icon="solar:phone-bold" width={24} />,
-      label: "By Car",
-      component: (
-        <SearchByModels
-        //   fetchAllCars={fetchAllCars}
-        //   reset={reset}
-        //   onHandleSearch={onHandleSearch}
-        />
-      ),
-    },
-    {
-      value: "two",
-      icon: <Iconify icon="solar:phone-bold" width={24} />,
-      label: "By Car Body",
-      component: (
-        <SearchByCarBody
-          //   onChange={handleFilterCarBody}
-          carBodyList={carBodyList}
-          //   reset={reset}
-        />
-      ),
-    },
-  ];
 
   const fetchCarBodyList = async () => {
     try {
@@ -83,34 +50,24 @@ export default function CarsFiltersPage() {
           backgroundPosition:'center center'
         }}
         maxWidth="xl"
-
       >
         <Box
-          p={2}
+          p={3}
           sx={{
-            borderRadius: "5px",
+            borderRadius: "12px",
             maxWidth: {
-              sm: "100%",
-              md: "40%",
+              sm: "95%",
+              md: "80%",
+              lg: "70%",
             },
-            width:'60%',
+            width: "90%",
             background:'#fff',
             boxShadow:
               "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
           }}
         >
-          <Tabs value={currentTab} onChange={handleChangeTab}>
-            {TABS.map((tab) => (
-              <Tab key={tab.value} value={tab.value} label={tab.label} />
-            ))}
-          </Tabs>
           <Box mt={2}>
-            {TABS.map(
-              (tab) =>
-                tab.value === currentTab && (
-                  <Box key={tab.value}>{tab.component}</Box>
-                )
-            )}
+            <SearchByModels />
           </Box>
         </Box>
       </Container>
@@ -120,15 +77,15 @@ export default function CarsFiltersPage() {
 
 function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
   const [selectedCar, setSelectedCar] = useState({});
-  console.log("swl", selectedCar)
-
   const [carsMakesList, setCarsMakesList] = useState([]);
-  console.log("carsMakesList: ", carsMakesList)
   const [carModelsList, setCarsModelsList] = useState([]);
   const [selectedModel, setSelectModel] = useState({});
+  const [selectedTransmission, setSelectedTransmission] = useState("");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  const transmissionOptions = ["Automatic", "Manual", "CVT", "Semi-Automatic"];
 
   const fetchCarModels = async () => {
     try {
@@ -139,7 +96,7 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
         let data = [...res?.data?.models];
         data.splice(0, 0, { model: "All" });
         setCarsModelsList(data);
-        setSelectModel(data[0]); // Set the default model after fetching
+        setSelectModel(data[0]);
       }
     } catch (err) {
       console.log("err: ", err);
@@ -149,7 +106,6 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
   const fetchCarMakes = async () => {
     try {
       setLoading(false);
-
       const res = await CarsService.getCarMakes();
       if (res?.data) {
         let data = [...res?.data] || [];
@@ -165,14 +121,13 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
 
   const handleCarSelectChange = (event, newValue) => {
     setSelectedCar(newValue);
-    // Clear the selected model when a new car is selected
     setSelectModel({});
   };
 
   const onHandleSearch = () => {
     try {
       router.push(
-        `${paths.cars.root}?selectedCar=${selectedCar?.value}&model=${selectedModel?.model}&tab=one`
+        `${paths.cars.root}?selectedCar=${selectedCar?.value}&model=${selectedModel?.model}&transmission=${selectedTransmission}&tab=one`
       );
     } catch (err) {
       console.log("err: ", err);
@@ -198,6 +153,7 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
     setSelectedCar({});
     setCarsModelsList([]);
     setSelectModel({});
+    setSelectedTransmission("");
   };
 
   useEffect(() => {
@@ -205,54 +161,135 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
   }, [reset]);
 
   return (
-    <Stack sx={{
-      flexDirection:  {
-        xs: 'column',
-        md: 'row'
-      },
-    }}  gap={1}>
-      <Autocomplete
-        fullWidth
-        options={carsMakesList}
-        onChange={handleCarSelectChange}
-        value={selectedCar}
-        // inputValue={inputValue}
-        getOptionLabel={(option) => option?.label || ""}
-        renderInput={(params) => <TextField {...params} label="Select Make" />}
-        renderOption={(props, option) => (
-          <li {...props} value={option.value} key={option.label}>
-            {option.label}
-          </li>
-        )}
-      />
+    <Box>
+      {/* Labels */}
+      <Stack direction="row" spacing={0} mb={2}>
+        <Box sx={{ flex: 1,  color: "black" }}>
+          <Typography variant="body2" sx={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+            Explore
+          </Typography>
+        </Box>
+        <Box sx={{ flex: 1,  color: "black" }}>
+          <Typography variant="body2" sx={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+            Make
+          </Typography>
+        </Box>
+        <Box sx={{ flex: 1,  color: "black" }}>
+          <Typography variant="body2" sx={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+            Transmission
+          </Typography>
+        </Box>
+      </Stack>
 
-      <Autocomplete
-        fullWidth
-        options={carModelsList}
-        value={selectedModel}
-        onChange={(event, newValue) => {
-          setSelectModel(newValue);
+      {/* Search Bar */}
+      <Box
+        sx={{
+          display: 'flex',
+          borderRadius: '12px',
+          backgroundColor: 'white',
+          border: '2px solid #e0e0e0',
+          overflow: 'hidden',
+          minHeight: '70px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
         }}
-        disabled={!Boolean(selectedCar)}
-        // inputValue={inputValue}
-        getOptionLabel={(option) => option?.model || ""}
-        renderInput={(params) => <TextField {...params} label="Select Model" />}
-        renderOption={(props, option) => (
-          <li {...props} value={option.model} key={option.model}>
-            {option.model}
-          </li>
-        )}
-      />
-
-      <Button
-        disabled={!Boolean(selectedCar && selectedModel)}
-        fullWidth
-        variant="contained"
-        onClick={onHandleSearch}
       >
-        Search
-      </Button>
-    </Stack>
+        {/* Search Input */}
+        <Box sx={{ flex: 1, borderRight: '2px solid #e0e0e0', display: 'flex', alignItems: 'center', width: '100%' }}>
+          <TextField
+            fullWidth
+            placeholder="What are you looking for..."
+            variant="standard"
+            sx={{ width: '100%' }}
+            InputProps={{
+              startAdornment: <Iconify icon="eva:search-fill" sx={{ mr: 1, color: '#666', fontSize: '22px' }} />,
+              disableUnderline: true,
+              sx: { px: 3, py: 2.5, fontSize: '16px', width: '100%', display: 'flex', alignItems: 'center' }
+            }}
+          />
+        </Box>
+
+        {/* Make Dropdown */}
+        <Box sx={{ flex: 1, borderRight: '2px solid #e0e0e0', display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Autocomplete
+            options={carsMakesList}
+            onChange={handleCarSelectChange}
+            value={selectedCar}
+            getOptionLabel={(option) => option?.label || ""}
+            sx={{ width: '100%' }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Select an option"
+                variant="standard"
+                sx={{ width: '100%', paddingTop: "0" }}
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: <Iconify icon="eva:plus-fill" sx={{ mr: 1, color: '#666', fontSize: '22px' }} />,
+                  disableUnderline: true,
+                  sx: { px: 3, py: 0, fontSize: '16px', width: '100%', display: 'flex', alignItems: 'center', paddingTop: "0" }
+                }}
+              />
+            )}
+            renderOption={(props, option) => (
+              <li {...props} value={option.value} key={option.label}>
+                {option.label}
+              </li>
+            )}
+          />
+        </Box>
+
+        {/* Transmission Dropdown */}
+        <Box sx={{ flex: 1, borderRight: '2px solid #e0e0e0', display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Autocomplete
+            options={transmissionOptions}
+            value={selectedTransmission}
+            onChange={(event, newValue) => setSelectedTransmission(newValue)}
+            getOptionLabel={(option) => option || ""}
+            sx={{ width: '100%' }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Select an option"
+                variant="standard"
+                sx={{ width: '100%' }}
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: <Iconify icon="eva:settings-2-fill" sx={{ mr: 1, color: '#666', fontSize: '22px' }} />,
+                  disableUnderline: true,
+                  sx: { px: 3, py: 0, fontSize: '16px', width: '100%', display: 'flex', alignItems: 'center', paddingTop: "0" }
+                }}
+              />
+            )}
+            renderOption={(props, option) => (
+              <li {...props} key={option}>
+                {option}
+              </li>
+            )}
+          />
+        </Box>
+
+        {/* Search Button */}
+        <Button
+          variant="contained"
+          onClick={onHandleSearch}
+          sx={{
+            backgroundColor: '#00ff00',
+            color: 'white',
+            borderRadius: 0,
+            px: 8,
+            py: 2.5,
+            fontSize: '16px',
+            fontWeight: 'bold',
+            minHeight: '70px',
+            '&:hover': {
+              backgroundColor: '#00cc00',
+            }
+          }}
+        >
+          Search
+        </Button>
+      </Box>
+    </Box>
   );
 }
 
