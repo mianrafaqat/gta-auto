@@ -16,6 +16,12 @@ import Iconify from "../iconify";
 import { CarsService } from "src/services";
 import { useRouter } from "next/navigation";
 import { paths } from "src/routes/paths";
+import CarBodyTypesSection from "./car-body-types";
+import ServicesSection from "./services-section";
+import FeaturedCarsSection from "./featured-cars";
+import BrowseBrandsSection from "./browse-brands";
+import LatestProductsSection from "./latest-products";
+import UpcomingCarsSection from "./upcoming-cars";
 
 export default function CarsFiltersPage() {
   const [carBodyList, setCarBodyList] = useState([]);
@@ -71,6 +77,25 @@ export default function CarsFiltersPage() {
           </Box>
         </Box>
       </Container>
+      
+      {/* Car Body Types Section */}
+      <CarBodyTypesSection />
+      
+      {/* Services Section */}
+      <ServicesSection />
+      
+      {/* Featured Cars Section */}
+      <FeaturedCarsSection />
+      
+      {/* Browse Brands Section */}
+      <BrowseBrandsSection />
+      
+      {/* Latest Products Section */}
+      <LatestProductsSection />
+      
+      {/* Upcoming Cars And Events Section */}
+      <UpcomingCarsSection />
+      
     </>
   );
 }
