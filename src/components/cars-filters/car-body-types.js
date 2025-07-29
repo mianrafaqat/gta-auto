@@ -33,6 +33,7 @@ export default function CarBodyTypesSection() {
     <Container
       maxWidth="xl"
       sx={{
+        zIndex: -999,
         py: 8,
         px: { xs: 2, sm: 3, md: 4 },
         backgroundColor: '#fff',
