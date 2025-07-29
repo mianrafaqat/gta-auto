@@ -6,7 +6,7 @@ import MainLayout from "src/layouts/main";
 import { Box } from "@mui/material";
 
 export const metadata = {
-  title: "CityAutos: Home",
+  title: "gtaAutos: Home",
 };
 
 export default function OverviewAppPage() {

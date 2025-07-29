@@ -52,8 +52,8 @@ export default function ComingSoonView() {
                 better experience. In the meantime, you can still access all our services through
                 our mobile app available on Google Play and the App Store. Stay tuned for updates,
                 and thank you for your patience! For any urgent matters, reach out to us at{' '}
-                <Link sx={{ color: '#4caf50' }} href="mailto:info@cityautos.co.uk">
-                  info@cityautos.co.uk
+                <Link sx={{ color: '#4caf50' }} href="mailto:info@gtaAutos.co.uk">
+                  info@gtaAutos.co.uk
                 </Link>
               </Typography>
 
@@ -75,7 +75,7 @@ export default function ComingSoonView() {
             <Box mt={2} sx={{ display: 'flex', gap: 1, mt: 5 }}>
               <Link
                 target="_blank"
-                href="https://play.google.com/store/apps/details?id=com.render.cityautos"
+                href="https://play.google.com/store/apps/details?id=com.render.gtaAutos"
               >
                 <img
                   width={128}
@@ -115,7 +115,7 @@ export default function ComingSoonView() {
         }}
       >
         <Typography variant="caption">
-          © Copyrights City Autos | All Rights Reserved | 2024
+          © Copyrights GTA Auto | All Rights Reserved | 2024
         </Typography>
       </Box>
     </>

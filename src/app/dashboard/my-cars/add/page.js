@@ -4,7 +4,7 @@ import Loading from 'src/app/loading';
 
 export const metadata = () => {
   return {
-    title: "CityAutos: Add Car"
+    title: "gtaAutos: Add Car"
   }
 }
 

@@ -62,7 +62,7 @@ export default function Security() {
               }}
             >
              Purchasing a car should be simple, quick, and hassle-free. Follow the community rules when purchasing
-or selling any car from City Autos to guarantee that your experience is positive. City Autos disclaims any
+or selling any car from GTA Auto to guarantee that your experience is positive. GTA Auto disclaims any
 liability for any financial damages. For your protection, it is solely that all financial transactions should be
 verified on your own. We don’t accept any losses from any car sales on our platform. We don't take
 responsibility for sales or transaction loss.

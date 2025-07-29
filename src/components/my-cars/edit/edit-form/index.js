@@ -90,7 +90,7 @@ export default function EditCarForm() {
   const handleDropRestrictedFormats = () => {
     if (files.length) {
       const filteredFiles = files.filter(
-        (file) => FORMAT_INCLUDES.includes(file.type) || file?.includes('https://cityautos.co.uk/')
+        (file) => FORMAT_INCLUDES.includes(file.type) || file?.includes('https://gtaAutos.co.uk/')
       );
       setFiles(filteredFiles);
       setValue('image', filteredFiles);

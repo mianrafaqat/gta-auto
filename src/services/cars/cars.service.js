@@ -1,10 +1,10 @@
 import { API_URLS } from "src/utils/apiUrls";
-import cityAutosInstance from "src/utils/requestInterceptor";
+import gtaAutosInstance from "src/utils/requestInterceptor";
 
 class CarsService {
   getAll = async () => {
     try {
-      const res = await cityAutosInstance.get(API_URLS.cars.getAll);
+      const res = await gtaAutosInstance.get(API_URLS.cars.getAll);
       return res;
     } catch (ex) {
       throw ex;
@@ -35,7 +35,7 @@ class CarsService {
       const data = {
         registrationNumber: regNo,
       };
-      const res = await cityAutosInstance.post(
+      const res = await gtaAutosInstance.post(
         API_URLS.cars.getDetailsByRegNo,
         data
       );
@@ -52,7 +52,7 @@ class CarsService {
           formData.append("files", f);
         }
       });
-      const res = await cityAutosInstance.post(
+      const res = await gtaAutosInstance.post(
         API_URLS.cars.imagesUpload,
         formData,
         {
@@ -68,7 +68,7 @@ class CarsService {
   };
   addNewCar = async (data) => {
     try {
-      const res = await cityAutosInstance.post(API_URLS.cars.addCar, data);
+      const res = await gtaAutosInstance.post(API_URLS.cars.addCar, data);
       return res;
     } catch (ex) {
       throw ex;
@@ -77,7 +77,7 @@ class CarsService {
 
   deleteCarById = async (data) => {
     try {
-      const res = await cityAutosInstance.delete(API_URLS.cars.deleteCar, {
+      const res = await gtaAutosInstance.delete(API_URLS.cars.deleteCar, {
         data,
       });
       return res;
@@ -89,7 +89,7 @@ class CarsService {
     try {
       async function handleUpdateCar(updateData) {
         try {
-          const res = await cityAutosInstance.put(
+          const res = await gtaAutosInstance.put(
             API_URLS.cars.updateCar,
             updateData
           );
@@ -125,7 +125,7 @@ class CarsService {
   };
   getCarById = async (carID) => {
     try {
-      const res = await cityAutosInstance.post(API_URLS.cars.getById, {
+      const res = await gtaAutosInstance.post(API_URLS.cars.getById, {
         carID,
       });
       return res;
@@ -136,7 +136,7 @@ class CarsService {
 
   getCarMakes = async () => {
     try {
-      const res = await cityAutosInstance.get(API_URLS.cars.getCarsMakesList);
+      const res = await gtaAutosInstance.get(API_URLS.cars.getCarsMakesList);
       return res;
     } catch (ex) {
       throw ex;
@@ -145,7 +145,7 @@ class CarsService {
 
   getCarModels = async ({ selectedCar }) => {
     try {
-      const res = await cityAutosInstance.post(API_URLS.cars.getCarModels, {
+      const res = await gtaAutosInstance.post(API_URLS.cars.getCarModels, {
         selectedCar,
       });
       return res;
@@ -157,7 +157,7 @@ class CarsService {
   getCarModelsByYear = async ({ selectedCar, year }) => {
     try {
       year = year.toString();
-      const res = await cityAutosInstance.post(
+      const res = await gtaAutosInstance.post(
         API_URLS.cars.getCarModelsByYear,
         { selectedCar, year }
       );
@@ -169,7 +169,7 @@ class CarsService {
 
   filterByMakeAndModel = async ({ make, model }) => {
     try {
-      const res = await cityAutosInstance.post(
+      const res = await gtaAutosInstance.post(
         API_URLS.cars.filterByModalAndMake,
         { make, model }
       );
@@ -181,7 +181,7 @@ class CarsService {
 
   getCarBodyList = async () => {
     try {
-      const res = await cityAutosInstance.get(API_URLS.cars.getCarBodyList);
+      const res = await gtaAutosInstance.get(API_URLS.cars.getCarBodyList);
       return res;
     } catch (ex) {
       throw ex;
@@ -189,7 +189,7 @@ class CarsService {
   };
   addOrRemoveFavouriteCar = async (data) => {
     try {
-      const res = await cityAutosInstance.post(
+      const res = await gtaAutosInstance.post(
         API_URLS.cars.addOrRemoveFav,
         data
       );
@@ -201,7 +201,7 @@ class CarsService {
 
   getUserFavouriteCar = async (data) => {
     try {
-      const res = await cityAutosInstance.post(
+      const res = await gtaAutosInstance.post(
         API_URLS.cars.getUserFavouriteById,
         data
       );
@@ -214,7 +214,7 @@ class CarsService {
 
   sendEmail = async (data) => {
     try {
-      const res = await cityAutosInstance.post(
+      const res = await gtaAutosInstance.post(
         API_URLS.cars.sendEmailToCarOwner,
         data
       );
@@ -227,7 +227,7 @@ class CarsService {
 
   getCarDealOptions = async () => {
     try {
-      const res = await cityAutosInstance.get(API_URLS.cars.getCarDealsList);
+      const res = await gtaAutosInstance.get(API_URLS.cars.getCarDealsList);
       return res;
     } catch (ex) {
       throw ex;

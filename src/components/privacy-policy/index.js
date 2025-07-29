@@ -20,17 +20,17 @@ export default function PrivacyPolicyPage() {
         Privacy Policy
       </Typography>
       <Typography mb={2}>
-        At City Autos, our top priority is keeping your information private. We
+        At GTA Auto, our top priority is keeping your information private. We
         gather, use, and safeguard your personal information when you use our
         mobile applications and website in accordance with this Privacy Policy.
-        By accessing or using City Autos, you consent to the practices described
+        By accessing or using GTA Auto, you consent to the practices described
         in this Privacy Policy.
       </Typography>
       <Typography mb={2} variant="h3">
         Information We Collect:
       </Typography>
       <Typography mb={1}>
-        When you use City Autos, we may gather a variety of information,
+        When you use GTA Auto, we may gather a variety of information,
         including:
       </Typography>
       <List sx={{ pl: 5, listStyleType: "disc" }}>
@@ -64,7 +64,7 @@ export default function PrivacyPolicyPage() {
           support.
         </ListItem>
         <ListItem sx={{ display: "list-item" }}>
-          Analyze usage trends and patterns to improve City Autos' operations
+          Analyze usage trends and patterns to improve GTA Auto' operations
           and efficiency.
         </ListItem>
         <ListItem sx={{ display: "list-item" }}>
@@ -76,13 +76,13 @@ export default function PrivacyPolicyPage() {
         alteration, disclosure, and destruction of your personal information.
         However, no method of transmission over the internet or electronic
         storage is entirely secure, so we cannot guarantee absolute security.
-        Cookies and related tracking technologies are used by City Autos to
+        Cookies and related tracking technologies are used by GTA Auto to
         enhance your online experience, examine usage trends, and show you
         relevant ads. Through the settings of your browser, you may control your
         cookie preferences. Links to external websites or services that are not
-        run or governed by City Autos may be found on our platform. The content
+        run or governed by GTA Auto may be found on our platform. The content
         or privacy policies of these third parties are not our responsibility.
-        We encourage you to review their privacy policies. City Autos does not
+        We encourage you to review their privacy policies. GTA Auto does not
         knowingly collect personal information from children under the age of
         thirteen. Please get in touch with us right away if you are a parent or
         guardian and think your kid may have given us personal information. We
@@ -91,15 +91,15 @@ export default function PrivacyPolicyPage() {
         is required or authorized by law. We reserve the right to make changes
         to this policy at any time. Any modifications will take effect as soon
         as they are posted. You consent to the updated Privacy Policy if you use
-        City Autos going forward.
+        GTA Auto going forward.
       </Typography>
       <Typography mb={1}>
         If you have any questions or concerns about this Privacy Policy or our
         data practices, please contact us at{" "}
-        <Link href="mailto:info@cityautos.co.uk">info@cityautos.co.uk</Link>
+        <Link href="mailto:info@gtaAutos.co.uk">info@gtaAutos.co.uk</Link>
       </Typography>
       <Typography mb={2}>
-        Thank you for trusting City Autos with your personal information. We're
+        Thank you for trusting GTA Auto with your personal information. We're
         committed to protecting your privacy and providing you with a safe and
         secure experience on our platform.
       </Typography>

@@ -4,7 +4,7 @@ import { ProductShopView } from "src/sections/product/view";
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: "City Autos - Home",
+  title: "GTA Auto - Home",
 };
 
 export default function ShopPage() {

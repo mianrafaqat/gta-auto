@@ -3,7 +3,7 @@ import { JwtRegisterView } from "src/sections/auth/jwt";
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: "CityAutos: Register",
+  title: "gtaAutos: Register",
 };
 
 export default function RegisterPage() {

@@ -3,7 +3,7 @@ import Loading from 'src/app/loading';
 
 export const metadata = () => {
   return {
-    title: 'CityAutos: Privacy Policy'
+    title: 'gtaAutos: Privacy Policy'
   }
 }
 

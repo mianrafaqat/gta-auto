@@ -6,7 +6,7 @@ const FavouritesCarPage = dynamic(() => import('src/components/favourites'), {
 });
 
 export const metadata = {
-  title: 'City Autos - My Favourites'
+  title: 'GTA Auto - My Favourites'
 }
 
 export default function Favourites() {

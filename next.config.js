@@ -1,7 +1,6 @@
 module.exports = {
   trailingSlash: true,
   reactStrictMode: false,
-  output: 'export',
   modularizeImports: {
     '@mui/icons-material': {
       transform: '@mui/icons-material/{{member}}',

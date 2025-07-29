@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import Loading from 'src/app/loading';
 
 export const metadata = {
-  title: 'City Autos',
+  title: 'GTA Auto',
 };
 
 const MyCarsListPage = dynamic(() => import('src/components/my-cars/list'), {

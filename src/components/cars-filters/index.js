@@ -89,7 +89,7 @@ export default function CarsFiltersPage() {
             transform: 'translate(-50%, -50%)',
             zIndex: 1,
             textAlign: 'center',
-            width: '100%'
+            // width: '100%'
           }}
         >
           <Box

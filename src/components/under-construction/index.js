@@ -25,7 +25,7 @@ export default function UnderConstructionPage() {
         experience. In the meantime, you can still access all our services through our mobile app
         available on Google Play and the App Store. Stay tuned for updates, and thank you for your
         patience! For any urgent matters, reach out to us at &nbsp;
-        <Link href="mailto:info@cityautos.co.uk">info@cityautos.co.uk</Link>
+        <Link href="mailto:info@gtaAutos.co.uk">info@gtaAutos.co.uk</Link>
       </Typography>
       <Stack
         direction="row"
@@ -68,7 +68,7 @@ export default function UnderConstructionPage() {
                   <m.div variants={varBounce().in}>
                     <Link
                       target="_blank"
-                      href="https://play.google.com/store/apps/details?id=com.render.cityautos"
+                      href="https://play.google.com/store/apps/details?id=com.render.gtaAutos"
                       sx={{ display: 'flex', justifyContent: 'center' }}
                     >
                       <img

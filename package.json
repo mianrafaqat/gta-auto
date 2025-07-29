@@ -1,8 +1,8 @@
 {
   "name": "@city-autos/next-js",
-  "author": "City Autos",
+  "author": "GTA Auto",
   "version": "5.7.0",
-  "description": "City Autos",
+  "description": "GTA Auto",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3032",
