@@ -13,7 +13,7 @@ export default function LastestEightCars() {
   if (isLoading) {
     return (
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mt: 4, mb: 0 }}>
+        <Typography variant="h4" color="white" sx={{ mt: 4, mb: 0 }}>
           Recommended for you
         </Typography>
         <Box sx={{ 
@@ -31,7 +31,7 @@ export default function LastestEightCars() {
   if (error) {
     return (
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mt: 4, mb: 0 }}>
+        <Typography variant="h4" color="white" sx={{ mt: 4, mb: 0 }}>
           Recommended for you
         </Typography>
         <Box sx={{ 
@@ -50,7 +50,7 @@ export default function LastestEightCars() {
 
   return (
     <Container maxWidth="xl">
-      <Typography variant="h4" sx={{ mt: 4, mb: 0 }}>
+      <Typography variant="h4" color="white" sx={{ mt: 4, mb: "12px" }}>
         Recommended for you
       </Typography>
       {allCars.length > 0 ? (

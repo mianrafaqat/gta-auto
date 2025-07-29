@@ -171,24 +171,27 @@ export default function LatestProductsSection() {
                     >
                       Add To Cart
                     </Button>
-                    <IconButton
+                    <Button
+                      variant="contained"
                       size="small"
                       sx={{
-                        border: '1px solid #ffffff',
-                        backgroundColor: 'transparent',
+                        backgroundColor: '#ffffff',
                         color: '#666666',
-                        width: 32,
-                        height: 32,
+                        textTransform: 'none',
+                        fontSize: '12px',
+                        px: 2,
+                        py: 1,
                         borderRadius: '4px',
+                        boxShadow: 'none',
                         '&:hover': {
-                          border: '1px solid #ffffff',
+                          backgroundColor: '#f5f5f5',
                           color: '#666666',
-                          backgroundColor: 'transparent',
+                          boxShadow: 'none',
                         },
                       }}
                     >
-                      <Iconify icon="eva:external-link-fill" sx={{ fontSize: '14px' }} />
-                    </IconButton>
+                      Buy Now
+                    </Button>
                   </Box>
                 </CardContent>
               </Card>

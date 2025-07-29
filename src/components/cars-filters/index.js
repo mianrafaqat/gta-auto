@@ -125,11 +125,11 @@ export default function CarsFiltersPage() {
           sx={{
             zIndex: 999,
             borderRadius: "12px",
-            marginBottom: -10,
+            marginBottom: 0,
             maxWidth: {
               sm: "95%",
               md: "80%",
-              lg: "70%",
+              lg: "100%",
             },
             width: "90%",
             background: '#fff',
@@ -155,13 +155,15 @@ export default function CarsFiltersPage() {
       <FeaturedCarsSection />
       
       {/* Browse Brands Section */}
-      <BrowseBrandsSection />
+      
       
       {/* Latest Products Section */}
       <LatestProductsSection />
+
+      <BrowseBrandsSection />
       
       {/* Recommended Cars Section */}
-      <LastestEightCars />
+      {/* <LastestEightCars /> */}
       
       {/* Upcoming Cars And Events Section */}
       <UpcomingCarsSection />

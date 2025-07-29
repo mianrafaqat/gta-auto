@@ -246,6 +246,7 @@ export default function ProductItem({
                 textOverflow: "ellipsis",
                 overflow: "hidden",
                 margin: 0,
+                color: "white",
                 ...(onHome ? { fontSize: "14px", maxWidth: "200px" } : {}),
               }}
             >
@@ -260,11 +261,12 @@ export default function ProductItem({
         gap="12px"
         alignItems="center"
         justifyContent="space-between"
+        color= "white"
       >
           £{Number(price)?.toLocaleString()} 
-          <Typography variant="caption"> |</Typography>
+          <Typography variant="caption" color= "white"> |</Typography>
 
-          <Typography variant="caption"> {carDetails?.mileage} mi</Typography>
+          <Typography variant="caption" color= "white"> {carDetails?.mileage} mi</Typography>
           </Stack>
         </Box>
       </Stack> :  <Stack
@@ -289,15 +291,16 @@ export default function ProductItem({
                 textOverflow: "ellipsis",
                 overflow: "hidden",
                 margin: 0,
+                color: "white",
                 ...(onHome ? { fontSize: "14px", maxWidth: {md:"230px",xs:"330px",sm:"330px"}} : {}),
               }}
             >
               {title}
             </Box>
           </Link>
-          <Typography variant="caption">{carDetails?.mileage} mi</Typography>
+          <Typography variant="caption" color= "white">{carDetails?.mileage} mi</Typography>
         </Stack>
-        <Box fontWeight="bold" component="span">
+        <Box fontWeight="bold" component="span" color= "white">
           £{Number(price)?.toLocaleString()} 
           
         </Box>
@@ -313,7 +316,7 @@ export default function ProductItem({
         <Chip
           sx={{
             textTransform: "capitalize",
-            background: "#ad0003",
+            background: "#4caf50",
             color: "#fff",
             width: "30%",
             ...(onHome ? { width: "100%" ,fontSize:'13px'} : {}),
@@ -347,7 +350,7 @@ export default function ProductItem({
       {onHome ? (
        <Link
        component={postalCode ? "a" : "button"}
-       sx={{ display: "flex",fontSize:'13px' }}
+       sx={{ display: "flex",fontSize:'13px',color: "white" }}
        gap={1}
        fontWeight="bold"
        alignItems="center"
@@ -412,8 +415,8 @@ export default function ProductItem({
       sx={{
         width:"100%",
         borderRadius:'4px',
-        background:'#f7f7f7 ',
-        border:'1px solid #c3cdd5',
+        background:'transparent ',
+        border:'1px solid #4caf50',
       }}
     >
       <RenderImg />
