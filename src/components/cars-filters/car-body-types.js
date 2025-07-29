@@ -56,9 +56,9 @@ export default function CarBodyTypesSection() {
           </Typography>
           
           <Button
-            variant="outlined"
+           
             sx={{
-              border: '2px solid #4caf50',
+              // border: '2px solid #4caf50',
               color: '#4caf50',
               borderRadius: '8px',
               px: 4,
@@ -67,9 +67,10 @@ export default function CarBodyTypesSection() {
               fontWeight: 'bold',
               textTransform: 'none',
               '&:hover': {
-                border: '2px solid #45a049',
-                color: '#45a049',
-                backgroundColor: 'transparent',
+                // border: '2px solid #45a049',
+                // color: '#45a049',
+                // backgroundColor: 'transparent',
+                bgcolor: "transparent"
               },
             }}
           >
@@ -104,8 +105,8 @@ export default function CarBodyTypesSection() {
               <Box
 
 sx={{
-                  width: '120px',
-                  height: '80px',
+                  width: '200px',
+                  height: '150px',
                   mb: 2,
                   display: 'flex',
                   alignItems: 'center',

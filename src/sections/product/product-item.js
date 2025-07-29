@@ -10,8 +10,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
-import { m } from "framer-motion";
-
 import { fCurrency } from "src/utils/format-number";
 
 import Label from "src/components/label";
@@ -22,7 +20,6 @@ import { ColorPreview } from "src/components/color-utils";
 import { useCheckoutContext } from "../checkout/context";
 import { Button, Chip, Divider, IconButton, Typography } from "@mui/material";
 import SimpleDialog from "../_examples/mui/dialog-view/simple-dialog";
-import { varHover } from "src/components/animate";
 import { useAuthContext } from "src/auth/hooks";
 import { useEffect, useMemo } from "react";
 import { CarsService } from "src/services";
@@ -194,10 +191,6 @@ export default function ProductItem({
         </Link>
         {Object.keys(user).length > 0 && (
           <IconButton
-            component={m.button}
-            whileTap="tap"
-            whileHover="hover"
-            variants={varHover(1.08, 0.99)}
             size="small"
             color="error"
             sx={{
@@ -312,7 +305,6 @@ export default function ProductItem({
         gap={1}
       >
         <Chip
-          // p={2}
           sx={{
             textTransform: "capitalize",
             background: "#ad0003",
@@ -321,11 +313,6 @@ export default function ProductItem({
             ...(onHome ? { width: "100%" ,fontSize:'13px'} : {}),
           }}
           label={`For ${category}`}
-          //   // component={RouterLink}
-          //   // href={linkTo}
-          //   color="inherit"
-          //   variant="subtitle2"
-          //   noWrap
         ></Chip>
         {status}
       </Stack>
@@ -404,37 +391,26 @@ export default function ProductItem({
                     : "#"
                 }
               >
-                <Iconify icon="tabler:location" />{" "}
-                {/* {postalCode ? location + ", " + postalCode : "Location Not Available"} */}
+                <Iconify icon="tabler:location" />
               </Link>
             </Tooltip>
           </Box>
           <SimpleDialog />
         </Stack>
       )}
-      {/* <Divider />
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        
-      </Stack> */}
     </Stack>
   );
 
   return (
     <Card
-    
       sx={{
         width:"100%",
-      borderRadius:'4px',
-      background:'#f7f7f7 ',
-      border:'1px solid #c3cdd5',
-        "&:hover ": {
-          opacity: 1,
-          boxShadow: "rgba(17, 12, 46, 0.15) 0px 48px 100px 0px"
-       },
+        borderRadius:'4px',
+        background:'#f7f7f7 ',
+        border:'1px solid #c3cdd5',
       }}
     >
       <RenderImg />
-
       {renderContent}
     </Card>
   );

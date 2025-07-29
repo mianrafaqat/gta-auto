@@ -22,6 +22,7 @@ import FeaturedCarsSection from "./featured-cars";
 import BrowseBrandsSection from "./browse-brands";
 import LatestProductsSection from "./latest-products";
 import UpcomingCarsSection from "./upcoming-cars";
+import LastestEightCars from "../first-eight-cars";
 
 export default function CarsFiltersPage() {
   const [carBodyList, setCarBodyList] = useState([]);
@@ -39,6 +40,24 @@ export default function CarsFiltersPage() {
 
   useEffect(() => {
     fetchCarBodyList();
+  }, []);
+
+  const [allCars, setAllCars] = useState([]);
+
+  const fetchAllCars = async () => {
+    try {
+      const res = await CarsService.getAll();
+      if (res?.status === 200) {
+        const filteredCar = res?.data?.filter(c => c?.status !== 'Paused') || [];
+        setAllCars(filteredCar);
+      }
+    } catch (e) {
+      console.log("error: ", err);
+    }
+  };
+  useEffect(() => {
+    console.log("fetching all cars");
+    fetchAllCars();
   }, []);
 
   return (
@@ -83,6 +102,8 @@ export default function CarsFiltersPage() {
       
       {/* Services Section */}
       <ServicesSection />
+
+      <LastestEightCars allCars={allCars} />
       
       {/* Featured Cars Section */}
       <FeaturedCarsSection />
@@ -95,6 +116,8 @@ export default function CarsFiltersPage() {
       
       {/* Upcoming Cars And Events Section */}
       <UpcomingCarsSection />
+
+      
       
     </>
   );

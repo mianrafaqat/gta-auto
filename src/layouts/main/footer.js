@@ -345,7 +345,7 @@ export default function Footer() {
       </Container>
 
       {/* Floating Shopping Cart Icon */}
-      <Box
+      {/* <Box
         sx={{
           position: "fixed",
           bottom: "20px",
@@ -394,7 +394,7 @@ export default function Footer() {
             </Typography>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
 
       {/* Floating Chat Icon */}
       <Box
