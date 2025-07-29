@@ -16,12 +16,19 @@ export default function MainLayout({ children, hideFooter = false }) {
   const homePage = pathname === '/';
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: 1 }}>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      height: 1,
+      backgroundColor: '#000000',
+      minHeight: '100vh',
+    }}>
       <Header />
 
       <Box
         sx={{
           flexGrow: 1,
+          backgroundColor: '#000000',
           ...(!homePage && {
             pt: { xs: 8, md: 10 },
           }),

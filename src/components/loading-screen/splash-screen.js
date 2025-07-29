@@ -32,7 +32,7 @@ export default function SplashScreen({ sx, ...other }) {
         position: 'absolute',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: 'background.default',
+        bgcolor: '#000',
         ...sx,
       }}
       {...other}
@@ -50,7 +50,7 @@ export default function SplashScreen({ sx, ...other }) {
             repeat: Infinity,
           }}
         >
-          <Logo disabledLink sx={{ width: 100, height: 60 ,objectFit:'contain'}} />
+          <Logo disabledLink sx={{ width: 150, height: 80 ,objectFit:'contain'}} />
         </m.div>
 
         <Box
