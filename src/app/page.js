@@ -15,7 +15,7 @@ export default function OverviewAppPage() {
       <MainLayout>
         <Box sx={{ pt: 12 }}>
           <CarsFiltersPage />
-          <LastestEightCars />
+          {/* <LastestEightCars /> */}
         </Box>
       </MainLayout>
     </CustomLayout>
