@@ -79,7 +79,7 @@ export default function FavouritesCarPage() {
         <Stack direction="row" alignItems='center' justifyContent='center' sx={{width: "200px", height: "200px", background: '#f7f7f7', margin: "0 auto", borderRadius: "50%"}}>
           <Iconify
           width="100px"
-          style={{ color: "#ad0003", display: "block" }}
+          style={{ color: "#4caf50", display: "block" }}
           icon="mdi:car-off"
         />
         </Stack>

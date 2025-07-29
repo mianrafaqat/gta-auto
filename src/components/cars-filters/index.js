@@ -23,6 +23,7 @@ import BrowseBrandsSection from "./browse-brands";
 import LatestProductsSection from "./latest-products";
 import UpcomingCarsSection from "./upcoming-cars";
 import LastestEightCars from "../first-eight-cars";
+import BrowseVideosSection from "./browse-videos";
 import { useGetCarBodyList, useGetCarMakes, useGetCarModels } from "src/hooks/use-cars";
 
 export default function CarsFiltersPage() {
@@ -38,7 +39,7 @@ export default function CarsFiltersPage() {
           alignItems: 'flex-end',
           minHeight: 630,
           position: 'relative',
-          overflow: 'hidden',
+          // overflow: 'hidden',
         }}
         maxWidth="xl"
       >
@@ -137,6 +138,7 @@ export default function CarsFiltersPage() {
               "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
             position: 'relative',
             zIndex: 1,
+            mb: "-50px"
           }}
         >
           <Box mt={2}>
@@ -164,6 +166,9 @@ export default function CarsFiltersPage() {
       
       {/* Recommended Cars Section */}
       {/* <LastestEightCars /> */}
+      
+      {/* Browse Videos Section */}
+      <BrowseVideosSection />
       
       {/* Upcoming Cars And Events Section */}
       <UpcomingCarsSection />

@@ -208,7 +208,7 @@ export default function ProductItem({
             onClick={handleAddOrRemoveFav}
           >
             <Iconify
-              style={{ color: "#ad0003", width: "30px", height: "30px" }}
+              style={{ color: "#4caf50", width: "30px", height: "30px" }}
               fontSize="inherit"
               icon={
                 user?.favourite?.includes(product?._id)

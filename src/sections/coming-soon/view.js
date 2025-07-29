@@ -52,7 +52,7 @@ export default function ComingSoonView() {
                 better experience. In the meantime, you can still access all our services through
                 our mobile app available on Google Play and the App Store. Stay tuned for updates,
                 and thank you for your patience! For any urgent matters, reach out to us at{' '}
-                <Link sx={{ color: '#ad0003' }} href="mailto:info@cityautos.co.uk">
+                <Link sx={{ color: '#4caf50' }} href="mailto:info@cityautos.co.uk">
                   info@cityautos.co.uk
                 </Link>
               </Typography>
@@ -68,8 +68,8 @@ export default function ComingSoonView() {
                 }}
               >
                 <TimeBox number={days} text="days" />
-                <TimeBox bg="#ad0003" number={hours} text="hrs" />
-                <TimeBox bg="#ad0003" number={minutes} text="mins" />
+                <TimeBox bg="#4caf50" number={hours} text="hrs" />
+                <TimeBox bg="#4caf50" number={minutes} text="mins" />
               </Box>
             </Box>
             <Box mt={2} sx={{ display: 'flex', gap: 1, mt: 5 }}>
@@ -128,7 +128,7 @@ function TimeBlock({ label, value }) {
   return (
     <div>
       <Box sx={{ color: 'white' }}> {value} </Box>
-      <Box sx={{ color: '#ad0003', fontWeight: 600, fontSize: '1rem' }}>{label}</Box>
+      <Box sx={{ color: '#4caf50', fontWeight: 600, fontSize: '1rem' }}>{label}</Box>
     </div>
   );
 }

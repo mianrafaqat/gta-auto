@@ -74,7 +74,7 @@ export default function ChooseUs() {
                 <Grid container columnSpacing={{ md: 3 }} alignItems="flex-start">
                 <Grid xs={6} md={6} lg={6}  sx={{display: 'inline-flex',alignItems:'center',gap:3}}>
               
-                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#AD0003",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
+                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#4caf50",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
                     <div className="banner-text mt-10 ml-20  ">
                        
                       <h6 className="">We Are Completely 100% Free (No hidden charges) </h6>
@@ -83,7 +83,7 @@ export default function ChooseUs() {
                 
                 </Grid>
             <Grid xs={6} md={6} lg={6} sx={{display: 'inline-flex',alignItems:'center',gap:3}}> 
-                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#AD0003",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
+                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#4caf50",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
                     <div className="banner-text mt-10 ml-20 ">
                         <h6>
                         
@@ -95,7 +95,7 @@ export default function ChooseUs() {
            
              <Grid xs={6} md={6} lg={6} sx={{display: 'inline-flex',alignItems:'center',gap:3}}> 
                 
-                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#AD0003",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
+                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#4caf50",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
                     <div className="banner-text mt-10 ml-20 ">
                         <h6>
                         Vehicle Advertisement Made Easy for Everyone.
@@ -107,7 +107,7 @@ export default function ChooseUs() {
                 
                 </Grid>
                 <Grid xs={6} md={6} lg={6} sx={{display: 'inline-flex',alignItems:'center',gap:3}}>               
-                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#AD0003",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
+                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#4caf50",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
                    
                     <div className="banner-text mt-10 ml-20  ">
                         <h6>
@@ -118,7 +118,7 @@ export default function ChooseUs() {
               
 </Grid>                 <Grid xs={6} md={6} lg={6} sx={{display: 'inline-flex',alignItems:'center',gap:3}}> 
               
-                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#AD0003",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
+                    <GppGoodRoundedIcon   style={{boxShadow:'3px 5px 10px 0px #0000002b', color:"#4caf50",background:"#EFF5FC",fontSize:'40px',borderRadius:'25%',padding:'10px'}} fontSize="80px" />
                    
                     <div className="banner-text mt-10 ml-20  ">
                         <h6>
