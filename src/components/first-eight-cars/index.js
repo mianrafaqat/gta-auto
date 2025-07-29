@@ -29,7 +29,7 @@ export default function LastestEightCars() {
       </Typography>
       <Grid container spacing={2} sx={{ mb: 4}}>
         {allCars?.splice(0, 12).map((product) => (
-          <Grid xs={12} md={6} lg={2} item key={product._id} >
+          <Grid xs={12} md={6} lg={3} item key={product._id} >
             <ProductItem onHome product={product} />
           </Grid>
         ))}
