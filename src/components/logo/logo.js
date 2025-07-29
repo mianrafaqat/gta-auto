@@ -41,7 +41,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
       }}
       {...other}
     >
-      <img style={{objectFit:'contain'}} src="/assets/logo-2.png" />
+      <img style={{objectFit:'contain'}} src="/assets/logo.webp" />
     </Box>
   );
 

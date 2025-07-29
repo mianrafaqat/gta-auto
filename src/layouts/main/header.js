@@ -20,7 +20,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { bgBlur } from 'src/theme/css';
 
-import Logo from 'src/components/logo';
+// import Logo from 'src/components/logo';
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
@@ -76,8 +76,9 @@ export default function Header() {
       >
                 <Container maxWidth="xl" sx={{ height: 1, display: 'flex', alignItems: 'center' }}>
         
-          <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
-            <Logo /> 
+          <Stack direction="row" alignItems="center" sx={{ flexGrow: 1,  }}>
+            {/* <Logo />  */}
+            <img src="/assets/logo.webp" alt="logo" width="190px" height="29px" style={{marginRight: "24px"}}  />
             {mdUp && <NavDesktop data={navConfig} />}
           </Stack>
 

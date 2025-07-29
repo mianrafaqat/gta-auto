@@ -66,7 +66,7 @@ export default function SplashScreen({ sx, ...other }) {
             width: 150,
             height: 150,
             position: 'absolute',
-            border: (theme) => `solid 3px ${alpha(theme.palette.primary.dark, 0.24)}`,
+            border: (theme) => `solid 3px ${alpha('#4caf50', 0.24)}`,
           }}
         />
 
@@ -87,7 +87,7 @@ export default function SplashScreen({ sx, ...other }) {
             width: 170,
             height: 170,
             position: 'absolute',
-            border: (theme) => `solid 8px ${alpha(theme.palette.primary.dark, 0.24)}`,
+            border: (theme) => `solid 8px ${alpha('#4caf50', 0.24)}`,
           }}
         />
       </>
