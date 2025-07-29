@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import Iconify from "../iconify";
-import { CarsService } from "src/services";
 import { useRouter } from "next/navigation";
 import { paths } from "src/routes/paths";
 import CarBodyTypesSection from "./car-body-types";
@@ -23,42 +22,10 @@ import BrowseBrandsSection from "./browse-brands";
 import LatestProductsSection from "./latest-products";
 import UpcomingCarsSection from "./upcoming-cars";
 import LastestEightCars from "../first-eight-cars";
+import { useGetCarBodyList, useGetCarMakes, useGetCarModels } from "src/hooks/use-cars";
 
 export default function CarsFiltersPage() {
-  const [carBodyList, setCarBodyList] = useState([]);
-
-  const fetchCarBodyList = async () => {
-    try {
-      const res = await CarsService.getCarBodyList();
-      if (res?.data) {
-        setCarBodyList(res?.data);
-      }
-    } catch (err) {
-      console.log("err: ", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchCarBodyList();
-  }, []);
-
-  const [allCars, setAllCars] = useState([]);
-
-  const fetchAllCars = async () => {
-    try {
-      const res = await CarsService.getAll();
-      if (res?.status === 200) {
-        const filteredCar = res?.data?.filter(c => c?.status !== 'Paused') || [];
-        setAllCars(filteredCar);
-      }
-    } catch (e) {
-      console.log("error: ", err);
-    }
-  };
-  useEffect(() => {
-    console.log("fetching all cars");
-    fetchAllCars();
-  }, []);
+  const { data: carBodyList = [], isLoading: carBodyLoading } = useGetCarBodyList();
 
   return (
     <>
@@ -102,8 +69,6 @@ export default function CarsFiltersPage() {
       
       {/* Services Section */}
       <ServicesSection />
-
-      <LastestEightCars allCars={allCars} />
       
       {/* Featured Cars Section */}
       <FeaturedCarsSection />
@@ -114,10 +79,11 @@ export default function CarsFiltersPage() {
       {/* Latest Products Section */}
       <LatestProductsSection />
       
+      {/* Recommended Cars Section */}
+      <LastestEightCars />
+      
       {/* Upcoming Cars And Events Section */}
       <UpcomingCarsSection />
-
-      
       
     </>
   );
@@ -125,7 +91,6 @@ export default function CarsFiltersPage() {
 
 function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
   const [selectedCar, setSelectedCar] = useState({});
-  const [carsMakesList, setCarsMakesList] = useState([]);
   const [carModelsList, setCarsModelsList] = useState([]);
   const [selectedModel, setSelectModel] = useState({});
   const [selectedTransmission, setSelectedTransmission] = useState("");
@@ -135,35 +100,20 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
 
   const transmissionOptions = ["Automatic", "Manual", "CVT", "Semi-Automatic"];
 
+  // React Query hooks
+  const { data: carsMakesList = [], isLoading: makesLoading } = useGetCarMakes();
+  const { data: carModelsData, isLoading: modelsLoading } = useGetCarModels(selectedCar?.value);
+
   const fetchCarModels = async () => {
     try {
-      const res = await CarsService.getCarModels({
-        selectedCar: selectedCar?.value,
-      });
-      if (res?.data?.models) {
-        let data = [...res?.data?.models];
+      if (carModelsData?.data?.models) {
+        let data = [...carModelsData.data.models];
         data.splice(0, 0, { model: "All" });
         setCarsModelsList(data);
         setSelectModel(data[0]);
       }
     } catch (err) {
       console.log("err: ", err);
-    }
-  };
-
-  const fetchCarMakes = async () => {
-    try {
-      setLoading(false);
-      const res = await CarsService.getCarMakes();
-      if (res?.data) {
-        let data = [...res?.data] || [];
-        data.splice(0, 0, { label: "All", value: "all" });
-        setCarsMakesList(res?.data);
-      }
-    } catch (err) {
-      console.log("err: ", err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -183,10 +133,6 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
   };
 
   useEffect(() => {
-    fetchCarMakes();
-  }, []);
-
-  useEffect(() => {
     if (selectedCar) {
       if (Object.keys(selectedCar).length) {
         fetchCarModels();
@@ -195,7 +141,7 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
       resetFilters();
       fetchAllCars();
     }
-  }, [selectedCar]);
+  }, [selectedCar, carModelsData]);
 
   const resetFilters = () => {
     setSelectedCar({});
@@ -263,6 +209,7 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
             onChange={handleCarSelectChange}
             value={selectedCar}
             getOptionLabel={(option) => option?.label || ""}
+            loading={makesLoading}
             sx={{ width: '100%' }}
             renderInput={(params) => (
               <TextField

@@ -22,7 +22,7 @@ import { Button, Chip, Divider, IconButton, Typography } from "@mui/material";
 import SimpleDialog from "../_examples/mui/dialog-view/simple-dialog";
 import { useAuthContext } from "src/auth/hooks";
 import { useEffect, useMemo } from "react";
-import { CarsService } from "src/services";
+import { useAddOrRemoveFavoriteCar } from "src/hooks/use-cars";
 
 // ----------------------------------------------------------------------
 
@@ -55,15 +55,20 @@ export default function ProductItem({
 
   const { updateUserData = () => {} } = useAuthContext() || {};
 
+  // React Query mutation for favorite functionality
+  const addOrRemoveFavoriteMutation = useAddOrRemoveFavoriteCar();
+
   const handleAddOrRemoveFav = async () => {
     try {
       const data = {
         userID: user?._id,
         carID: product?._id,
       };
-      const res = await CarsService.addOrRemoveFavouriteCar(data);
-      if (res?.status === 200) {
-        updateUserData(res?.data);
+      
+      const result = await addOrRemoveFavoriteMutation.mutateAsync(data);
+      
+      if (result?.status === 200) {
+        updateUserData(result?.data);
         onAddOrRemoveFav();
       }
     } catch (err) {
@@ -193,6 +198,7 @@ export default function ProductItem({
           <IconButton
             size="small"
             color="error"
+            disabled={addOrRemoveFavoriteMutation.isPending}
             sx={{
               background: "#fff",
               position: "absolute",
