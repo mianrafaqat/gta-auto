@@ -76,7 +76,7 @@ export default function Footer() {
       sx={{
         position: "relative",
         background: "linear-gradient(135deg, #8B4513 0%, #4B0082 100%)",
-        minHeight: { xs: "1000px", md: "700px" },
+        minHeight: { xs: "1000px", md: "550px" },
         overflow: "hidden",
         pb: { xs: 16, md: 12 }, // Increased bottom padding for mobile
       }}
