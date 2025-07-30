@@ -22,6 +22,7 @@ export default function MainLayout({ children, hideFooter = false }) {
       height: 1,
       backgroundColor: '#000000',
       minHeight: '100vh',
+      overflowX: 'hidden',
     }}>
       <Header />
 

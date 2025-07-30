@@ -40,7 +40,7 @@ export default function ServicesSection() {
       maxWidth="xl"
       sx={{
         position: 'relative',
-        height: '100vh',
+        height: {md: '100vh', xs: "100%"},
         background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/assets/serviceBg.webp')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -68,7 +68,7 @@ export default function ServicesSection() {
         </Typography>
 
         {/* Services Grid */}
-        <Grid container spacing={4}>
+        <Grid container spacing={2}>
           {services.map((service) => (
             <Grid item key={service.id} {...service.gridSize}>
               <Card

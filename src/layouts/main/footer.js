@@ -37,10 +37,10 @@ const CUSTOMER_SERVICES = [
 ];
 
 const SOCIAL_LINKS = [
-  { name: "Facebook", icon: "eva:facebook-fill", href: "#", color: "#1877F2" },
-  { name: "Instagram", icon: "eva:instagram-fill", href: "#", color: "#E4405F" },
-  { name: "LinkedIn", icon: "eva:linkedin-fill", href: "#", color: "#0077B5" },
-  { name: "YouTube", icon: "eva:youtube-fill", href: "#", color: "#FF0000" },
+  { name: "Facebook", icon: "mdi:facebook", href: "#", color: "#1877F2" },
+  { name: "Instagram", icon: "mdi:instagram", href: "#", color: "#E4405F" },
+  { name: "LinkedIn", icon: "mdi:linkedin", href: "#", color: "#0077B5" },
+  { name: "YouTube", icon: "mdi:youtube", href: "#", color: "#FF0000" },
 ];
 
 // ----------------------------------------------------------------------
@@ -78,7 +78,7 @@ export default function Footer() {
         background: "linear-gradient(135deg, #8B4513 0%, #4B0082 100%)",
         minHeight: "500px",
         overflow: "hidden",
-        pb: 8, // Add bottom padding
+        pb: { xs: 12, md: 8 }, // Increased bottom padding for mobile
       }}
     >
       {/* Background Image */}
@@ -113,20 +113,20 @@ export default function Footer() {
 
       <Container
         sx={{
-          pt: 8,
-          pb: 8, // Increased bottom padding
+          pt: { xs: 6, md: 8 },
+          pb: { xs: 10, md: 8 }, // Increased bottom padding for mobile
           position: "relative",
           zIndex: 3,
         }}
       >
         {/* Logo Section */}
-        <Box sx={{ mb: 6, textAlign: "center" }}>
+        <Box sx={{ mb: { xs: 4, md: 6 }, textAlign: "center" }}>
           <Typography
             variant="h3"
             sx={{
               color: "#ffffff",
               fontWeight: "bold",
-              fontSize: { xs: "24px", md: "32px" },
+              fontSize: { xs: "20px", md: "32px" },
               textTransform: "uppercase",
               fontFamily: "monospace",
               textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
@@ -138,16 +138,16 @@ export default function Footer() {
         </Box>
 
         {/* Main Content Grid */}
-        <Grid container spacing={4}>
+        <Grid container spacing={{ xs: 3, md: 4 }}>
           {/* Contact Us Column */}
-          <Grid xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <Typography
               variant="h6"
               sx={{
                 color: "#4caf50",
                 fontWeight: "bold",
                 mb: 2,
-                fontSize: "18px",
+                fontSize: { xs: "16px", md: "18px" },
                 textTransform: "uppercase",
               }}
             >
@@ -170,12 +170,13 @@ export default function Footer() {
                   color: "#ffffff",
                   fontWeight: "bold",
                   minWidth: "80px",
+                  fontSize: { xs: "12px", md: "14px" },
                 }}
               >
                 WhatsApp
               </Typography>
-              <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: "20px" }} />
-              <Typography variant="body2" sx={{ color: "#ffffff" }}>
+              <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
+              <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
                 +1 202-918-2132
               </Typography>
             </Stack>
@@ -188,26 +189,27 @@ export default function Footer() {
                   color: "#ffffff",
                   fontWeight: "bold",
                   minWidth: "80px",
+                  fontSize: { xs: "12px", md: "14px" },
                 }}
               >
                 Call Us
               </Typography>
-              <Iconify icon="eva:phone-fill" sx={{ color: "#ffffff", fontSize: "20px" }} />
-              <Typography variant="body2" sx={{ color: "#ffffff" }}>
+              <Iconify icon="eva:phone-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
+              <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
                 +1 202-918-2132
               </Typography>
             </Stack>
           </Grid>
 
           {/* Quick Links Column */}
-          <Grid xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <Typography
               variant="h6"
               sx={{
                 color: "#4caf50",
                 fontWeight: "bold",
                 mb: 2,
-                fontSize: "18px",
+                fontSize: { xs: "16px", md: "18px" },
                 textTransform: "uppercase",
               }}
             >
@@ -231,7 +233,7 @@ export default function Footer() {
                   sx={{
                     color: "#ffffff",
                     textDecoration: "none",
-                    fontSize: "14px",
+                    fontSize: { xs: "12px", md: "14px" },
                     "&:hover": {
                       color: "#4caf50",
                     },
@@ -239,104 +241,18 @@ export default function Footer() {
                 >
                   {link.name}
                 </Link>
-              ))}
-            </Stack>
-          </Grid>
-
-          {/* Customer Services Column */}
-          <Grid xs={12} md={4}>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#4caf50",
-                fontWeight: "bold",
-                mb: 2,
-                fontSize: "18px",
-                textTransform: "uppercase",
-              }}
-            >
-              CUSTOMER SERVICES
-            </Typography>
-            <Box
-              sx={{
-                width: "50px",
-                height: "2px",
-                backgroundColor: "#4caf50",
-                mb: 3,
-              }}
-            />
-
-            <Stack spacing={1} sx={{ mb: 4 }}>
-              {CUSTOMER_SERVICES.map((link) => (
-                <Link
-                  key={link.name}
-                  component={RouterLink}
-                  href={link.href}
-                  sx={{
-                    color: "#ffffff",
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    "&:hover": {
-                      color: "#4caf50",
-                    },
-                  }}
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </Stack>
-
-            {/* Social Links */}
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#4caf50",
-                fontWeight: "bold",
-                mb: 2,
-                fontSize: "18px",
-                textTransform: "uppercase",
-              }}
-            >
-              SOCIAL LINKS
-            </Typography>
-            <Box
-              sx={{
-                width: "50px",
-                height: "2px",
-                backgroundColor: "#4caf50",
-                mb: 3,
-              }}
-            />
-
-            <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
-              {SOCIAL_LINKS.map((social) => (
-                <IconButton
-                  key={social.name}
-                  component="a"
-                  href={social.href}
-                  target="_blank"
-                  sx={{
-                    color: "#ffffff",
-                    "&:hover": {
-                      color: "#4caf50",
-                      transform: "scale(1.1)",
-                    },
-                  }}
-                >
-                  <Iconify icon={social.icon} sx={{ fontSize: "24px" }} />
-                </IconButton>
               ))}
             </Stack>
           </Grid>
         </Grid>
 
         {/* Copyright Section */}
-        <Box sx={{ mt: 6, textAlign: "center" }}>
+        <Box sx={{ mt: { xs: 4, md: 6 }, textAlign: "center" }}>
           <Typography
             variant="body2"
             sx={{
               color: "#ffffff",
-              fontSize: "14px",
+              fontSize: { xs: "12px", md: "14px" },
             }}
           >
             © 2025 Garage Tuned Autos. All rights reserved. Powered by Digital Stay Active
@@ -344,72 +260,22 @@ export default function Footer() {
         </Box>
       </Container>
 
-      {/* Floating Shopping Cart Icon */}
-      {/* <Box
-        sx={{
-          position: "fixed",
-          bottom: "20px",
-          left: "20px",
-          zIndex: 1000,
-        }}
-      >
-        <Box
-          sx={{
-            width: "50px",
-            height: "50px",
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-            position: "relative",
-            cursor: "pointer",
-          }}
-        >
-          <Iconify icon="eva:shopping-cart-fill" sx={{ color: "#000000", fontSize: "24px" }} />
-          <Box
-            sx={{
-              position: "absolute",
-              top: "-5px",
-              right: "-5px",
-              width: "20px",
-              height: "20px",
-              backgroundColor: "#4caf50",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{
-                color: "#ffffff",
-                fontSize: "10px",
-                fontWeight: "bold",
-              }}
-            >
-              0
-            </Typography>
-          </Box>
-        </Box>
-      </Box> */}
+     
 
       {/* Floating Chat Icon */}
       <Box
         sx={{
           position: "fixed",
-          bottom: "20px",
-          right: "20px",
+          bottom: { xs: "10px", md: "20px" },
+          right: { xs: "10px", md: "20px" },
           zIndex: 1000,
         }}
       >
         <Stack spacing={1}>
           <Box
             sx={{
-              width: "50px",
-              height: "50px",
+              width: { xs: "40px", md: "50px" },
+              height: { xs: "40px", md: "50px" },
               backgroundColor: "#2196f3",
               borderRadius: "50%",
               display: "flex",
@@ -419,12 +285,12 @@ export default function Footer() {
               cursor: "pointer",
             }}
           >
-            <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: "24px" }} />
+            <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }} />
           </Box>
           <Box
             sx={{
-              width: "50px",
-              height: "50px",
+              width: { xs: "40px", md: "50px" },
+              height: { xs: "40px", md: "50px" },
               backgroundColor: "#4caf50",
               borderRadius: "8px",
               display: "flex",
@@ -434,7 +300,7 @@ export default function Footer() {
               cursor: "pointer",
             }}
           >
-            <Iconify icon="eva:arrow-up-fill" sx={{ color: "#ffffff", fontSize: "24px" }} />
+            <Iconify icon="eva:arrow-up-fill" sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }} />
           </Box>
         </Stack>
       </Box>

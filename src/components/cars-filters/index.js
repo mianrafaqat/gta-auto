@@ -122,17 +122,18 @@ export default function CarsFiltersPage() {
           </Typography>
         </Box>
         <Box
-          p={3}
+         
           sx={{
+            p:{md: 3, xs: 1.5},
             zIndex: 999,
             borderRadius: "12px",
             marginBottom: 0,
             maxWidth: {
-              sm: "95%",
+              sm: "100%",
               md: "80%",
               lg: "100%",
             },
-            width: "90%",
+            width:{md: "90%",xs: "100%"},
             background: '#fff',
             boxShadow:
               "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
@@ -141,7 +142,7 @@ export default function CarsFiltersPage() {
             mb: "-50px"
           }}
         >
-          <Box mt={2}>
+          <Box>
             <SearchByModels />
           </Box>
         </Box>
@@ -271,27 +272,51 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
           backgroundColor: 'white',
           border: '2px solid #e0e0e0',
           overflow: 'hidden',
-          minHeight: '70px',
+          minHeight: { xs: '60px', md: '70px' },
           boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+          flexDirection: { xs: 'column', md: 'row' },
         }}
       >
         {/* Search Input */}
-        <Box sx={{ flex: 1, borderRight: '2px solid #e0e0e0', display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Box sx={{ 
+          flex: 1, 
+          borderRight: { xs: 'none', md: '2px solid #e0e0e0' },
+          borderBottom: { xs: '2px solid #e0e0e0', md: 'none' },
+          display: 'flex', 
+          alignItems: 'center', 
+          width: '100%',
+          minHeight: { xs: '50px', md: '70px' },
+        }}>
           <TextField
             fullWidth
             placeholder="What are you looking for..."
             variant="standard"
             sx={{ width: '100%' }}
             InputProps={{
-              startAdornment: <Iconify icon="eva:search-fill" sx={{ mr: 1, color: '#666', fontSize: '22px' }} />,
+              startAdornment: <Iconify icon="eva:search-fill" sx={{ mr: 1, color: '#666', fontSize: { xs: '18px', md: '22px' } }} />,
               disableUnderline: true,
-              sx: { px: 3, py: 2.5, fontSize: '16px', width: '100%', display: 'flex', alignItems: 'center' }
+              sx: { 
+                px: { xs: 2, md: 3 }, 
+                py: { xs: 1.5, md: 2.5 }, 
+                fontSize: { xs: '14px', md: '16px' }, 
+                width: '100%', 
+                display: 'flex', 
+                alignItems: 'center' 
+              }
             }}
           />
         </Box>
 
         {/* Make Dropdown */}
-        <Box sx={{ flex: 1, borderRight: '2px solid #e0e0e0', display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Box sx={{ 
+          flex: 1, 
+          borderRight: { xs: 'none', md: '2px solid #e0e0e0' },
+          borderBottom: { xs: '2px solid #e0e0e0', md: 'none' },
+          display: 'flex', 
+          alignItems: 'center', 
+          width: '100%',
+          minHeight: { xs: '50px', md: '70px' },
+        }}>
           <Autocomplete
             options={carsMakesList}
             onChange={handleCarSelectChange}
@@ -304,12 +329,19 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
                 {...params}
                 placeholder="Select an option"
                 variant="standard"
-                sx={{ width: '100%', paddingTop: "0" }}
+                sx={{ width: '100%' }}
                 InputProps={{
                   ...params.InputProps,
-                  startAdornment: <Iconify icon="eva:plus-fill" sx={{ mr: 1, color: '#666', fontSize: '22px' }} />,
+                  startAdornment: <Iconify icon="eva:plus-fill" sx={{ mr: 1, color: '#666', fontSize: { xs: '18px', md: '22px' } }} />,
                   disableUnderline: true,
-                  sx: { px: 3, py: 0, fontSize: '16px', width: '100%', display: 'flex', alignItems: 'center', paddingTop: "0" }
+                  sx: { 
+                    px: { xs: 2, md: 3 }, 
+                    py: { xs: 1.5, md: 2.5 }, 
+                    fontSize: { xs: '14px', md: '16px' }, 
+                    width: '100%', 
+                    display: 'flex', 
+                    alignItems: 'center' 
+                  }
                 }}
               />
             )}
@@ -322,7 +354,15 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
         </Box>
 
         {/* Transmission Dropdown */}
-        <Box sx={{ flex: 1, borderRight: '2px solid #e0e0e0', display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Box sx={{ 
+          flex: 1, 
+          borderRight: { xs: 'none', md: '2px solid #e0e0e0' },
+          borderBottom: { xs: '2px solid #e0e0e0', md: 'none' },
+          display: 'flex', 
+          alignItems: 'center', 
+          width: '100%',
+          minHeight: { xs: '50px', md: '70px' },
+        }}>
           <Autocomplete
             options={transmissionOptions}
             value={selectedTransmission}
@@ -337,9 +377,16 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
                 sx={{ width: '100%' }}
                 InputProps={{
                   ...params.InputProps,
-                  startAdornment: <Iconify icon="eva:settings-2-fill" sx={{ mr: 1, color: '#666', fontSize: '22px' }} />,
+                  startAdornment: <Iconify icon="eva:settings-2-fill" sx={{ mr: 1, color: '#666', fontSize: { xs: '18px', md: '22px' } }} />,
                   disableUnderline: true,
-                  sx: { px: 3, py: 0, fontSize: '16px', width: '100%', display: 'flex', alignItems: 'center', paddingTop: "0" }
+                  sx: { 
+                    px: { xs: 2, md: 3 }, 
+                    py: { xs: 1.5, md: 2.5 }, 
+                    fontSize: { xs: '14px', md: '16px' }, 
+                    width: '100%', 
+                    display: 'flex', 
+                    alignItems: 'center' 
+                  }
                 }}
               />
             )}
@@ -359,11 +406,11 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
             backgroundColor: '#00ff00',
             color: 'white',
             borderRadius: 0,
-            px: 8,
-            py: 2.5,
-            fontSize: '16px',
+            px: { xs: 4, md: 8 },
+            py: { xs: 1.5, md: 2.5 },
+            fontSize: { xs: '14px', md: '16px' },
             fontWeight: 'bold',
-            minHeight: '70px',
+            minHeight: { xs: '50px', md: '70px' },
             '&:hover': {
               backgroundColor: '#00cc00',
             }

@@ -414,7 +414,7 @@ export default function ProductItem({
     <Card
       sx={{
         width:"100%",
-        borderRadius:'4px',
+        borderRadius:'24px',
         background:'transparent ',
         border:'1px solid #4caf50',
       }}
