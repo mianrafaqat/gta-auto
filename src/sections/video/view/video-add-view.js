@@ -68,10 +68,12 @@ export default function VideoAddView() {
       // Prepare video data
       const videoData = {
         title: data.title,
-        url: data.url,
-        type: data.type,
         description: data.description || '',
-        userId: user?.user?._id,
+        videoUrl: data.url,
+        category: data.type,
+        owner: {
+          _id: user?.user?._id,
+        }
       };
 
       // Call API to add video
@@ -109,7 +111,7 @@ export default function VideoAddView() {
         </Typography>
 
         <FormProvider methods={methods}>
-          <Box component="form" onSubmit={onSubmit}>
+          <Box>
             <Stack spacing={3}>
               <RHFTextField
                 name="title"
@@ -150,7 +152,7 @@ export default function VideoAddView() {
                 </Button>
 
                 <LoadingButton
-                  type="submit"
+                  onClick={onSubmit}
                   variant="contained"
                   loading={isSubmitting}
                 >

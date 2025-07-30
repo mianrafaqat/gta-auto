@@ -169,7 +169,7 @@ export default function VideoListView() {
     const fetchVideos = async () => {
       try {
         setLoading(true);
-        const response = await VideoService.getMyVideos();
+        const response = await VideoService.getAllVideos();
         if (response?.status === 200) {
           setTableData(response.data || []);
         } else {
