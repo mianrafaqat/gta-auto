@@ -72,7 +72,7 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (data.email === "admin@gtaAutos.co.uk") {
+      if (data.email === "rafaqatmehar007@gmail.com") {
         role = "admin";
       }
       await login?.({ ...data, role });

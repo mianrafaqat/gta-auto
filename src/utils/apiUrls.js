@@ -34,4 +34,12 @@ export const API_URLS = {
     banUser: "/api/user/update",
     editProfile: "/api/admin/update",
   },
+  video: {
+    add: "/api/video/add",
+    getAll: "/api/video/getAll",
+    getById: "/api/video/getById",
+    update: "/api/video/update",
+    delete: "/api/video/delete",
+    getMyVideos: "/api/video/getMyVideos",
+  },
 };

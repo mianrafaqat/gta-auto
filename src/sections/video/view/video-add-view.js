@@ -20,6 +20,8 @@ import { paths } from 'src/routes/paths';
 import { useSnackbar } from 'src/components/snackbar';
 import { RHFTextField, RHFSelect } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form';
+import { VideoService } from 'src/services';
+import { useAuthContext } from 'src/auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +50,7 @@ const VIDEO_TYPES = [
 export default function VideoAddView() {
   const router = useRouter();
   const snackbar = useSnackbar();
+  const { user } = useAuthContext();
 
   const methods = useForm({
     resolver: yupResolver(VideoSchema),
@@ -62,19 +65,35 @@ export default function VideoAddView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // TODO: Implement API call to save video
-      console.log('Video data:', data);
+      // Prepare video data
+      const videoData = {
+        title: data.title,
+        url: data.url,
+        type: data.type,
+        description: data.description || '',
+        userId: user?.user?._id,
+      };
+
+      // Call API to add video
+      const response = await VideoService.addVideo(videoData);
       
-      snackbar.enqueueSnackbar('Video added successfully!');
-      
-      // Reset form
-      reset();
-      
-      // Redirect to video list
-      router.push(paths.dashboard.video.my.list);
+      if (response?.status === 200) {
+        snackbar.enqueueSnackbar('Video added successfully!');
+        
+        // Reset form
+        reset();
+        
+        // Redirect to video list
+        router.push(paths.dashboard.video.my.list);
+      } else {
+        throw new Error('Failed to add video');
+      }
     } catch (error) {
       console.error(error);
-      snackbar.enqueueSnackbar(error.message || 'Failed to add video', { variant: 'error' });
+      snackbar.enqueueSnackbar(
+        error?.response?.data?.message || error.message || 'Failed to add video', 
+        { variant: 'error' }
+      );
     }
   });
 

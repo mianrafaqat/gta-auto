@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -36,6 +36,8 @@ import {
 import { useSnackbar } from 'src/components/snackbar';
 import Scrollbar from 'src/components/scrollbar';
 import VideoTableRow from '../video-table-row';
+import { VideoService } from 'src/services';
+import { useAuthContext } from 'src/auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -55,8 +57,10 @@ export default function VideoListView() {
   const confirm = useBoolean();
   const table = useTable();
   const snackbar = useSnackbar();
+  const { user } = useAuthContext();
 
   const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     name: '',
     type: 'all',
@@ -114,29 +118,76 @@ export default function VideoListView() {
   );
 
   const handleDeleteRow = useCallback(
-    (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-      setTableData(deleteRow);
-
-      table.onUpdatePageDeleteRow(dataInPage.length);
-
-      snackbar.enqueueSnackbar('Delete success!');
+    async (id) => {
+      try {
+        const response = await VideoService.deleteVideo(id);
+        if (response?.status === 200) {
+          const deleteRow = tableData.filter((row) => row.id !== id);
+          setTableData(deleteRow);
+          table.onUpdatePageDeleteRow(dataInPage.length);
+          snackbar.enqueueSnackbar('Video deleted successfully!');
+        } else {
+          throw new Error('Failed to delete video');
+        }
+      } catch (error) {
+        console.error(error);
+        snackbar.enqueueSnackbar(
+          error?.response?.data?.message || error.message || 'Failed to delete video',
+          { variant: 'error' }
+        );
+      }
     },
     [dataInPage.length, router, table, tableData, snackbar]
   );
 
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-    setTableData(deleteRows);
+  const handleDeleteRows = useCallback(async () => {
+    try {
+      const deletePromises = table.selected.map(id => VideoService.deleteVideo(id));
+      await Promise.all(deletePromises);
+      
+      const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+      setTableData(deleteRows);
 
-    table.onUpdatePageDeleteRows({
-      totalRows: tableData.length,
-      totalRowsInPage: dataInPage.length,
-      totalSelected: table.selected.length,
-    });
+      table.onUpdatePageDeleteRows({
+        totalRows: tableData.length,
+        totalRowsInPage: dataInPage.length,
+        totalSelected: table.selected.length,
+      });
 
-    snackbar.enqueueSnackbar('Delete success!');
+      snackbar.enqueueSnackbar('Videos deleted successfully!');
+    } catch (error) {
+      console.error(error);
+      snackbar.enqueueSnackbar(
+        error?.response?.data?.message || error.message || 'Failed to delete videos',
+        { variant: 'error' }
+      );
+    }
   }, [dataInPage.length, router, table, tableData, snackbar]);
+
+  // Fetch videos on component mount
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        setLoading(true);
+        const response = await VideoService.getMyVideos();
+        if (response?.status === 200) {
+          setTableData(response.data || []);
+        } else {
+          throw new Error('Failed to fetch videos');
+        }
+      } catch (error) {
+        console.error(error);
+        snackbar.enqueueSnackbar(
+          error?.response?.data?.message || error.message || 'Failed to fetch videos',
+          { variant: 'error' }
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, [snackbar]);
 
   return (
     <>
