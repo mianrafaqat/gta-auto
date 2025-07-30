@@ -3,7 +3,7 @@ import ComingSoonView from 'src/sections/coming-soon/view';
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'City Autos',
+  title: 'GTA Auto',
 };
 
 export default function ComingSoonPage() {

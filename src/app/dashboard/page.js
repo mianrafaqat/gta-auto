@@ -2,7 +2,7 @@
 import { OverviewAppView } from 'src/sections/overview/app/view';
 
 export const metadata = {
-  title: 'City Autos - Dashboard'
+  title: 'GTA Auto - Dashboard'
 }
 
 export default function OverviewAppPage() {

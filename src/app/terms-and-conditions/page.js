@@ -3,7 +3,7 @@ import Loading from 'src/app/loading';
 
 export const metadata = () => {
   return {
-    title: 'CityAutos: Terms-and-Conditions'
+    title: 'gtaAutos: Terms-and-Conditions'
   }
 }
 

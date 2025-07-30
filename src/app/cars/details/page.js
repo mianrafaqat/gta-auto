@@ -6,7 +6,7 @@ const CarsDetailPage = dynamic(() => import("src/components/cars/details"), {
 });
 
 export const metadata = {
-  title: "City Autos - Car Details",
+  title: "GTA Auto - Car Details",
 };
 
 export default function CarDetails() {

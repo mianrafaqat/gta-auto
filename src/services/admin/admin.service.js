@@ -1,10 +1,10 @@
 import { API_URLS } from 'src/utils/apiUrls';
-import cityAutosInstance from 'src/utils/requestInterceptor';
+import gtaAutosInstance from 'src/utils/requestInterceptor';
 
 class AdminService {
   banOrPermitUser = async (data) => {
     try {
-      const res = await cityAutosInstance.put(API_URLS.admin.banUser, data);
+      const res = await gtaAutosInstance.put(API_URLS.admin.banUser, data);
       return res;
     } catch (ex) {
       throw ex;
@@ -12,7 +12,7 @@ class AdminService {
   };
   updateProfile = async (data) => {
     try {
-      const res = await cityAutosInstance.put(API_URLS.admin.editProfile, data);
+      const res = await gtaAutosInstance.put(API_URLS.admin.editProfile, data);
       return res;
     } catch (ex) {
       throw ex;

@@ -5,7 +5,7 @@ import { useMemo, useEffect, useReducer, useCallback } from "react";
 
 import axios, { endpoints } from "src/utils/axios";
 import { ACCESS_TOKEN_KEY, STORAGE_USER_KEY } from "src/utils/constants";
-import cityAutosInstance from "src/utils/requestInterceptor";
+import gtaAutosInstance from "src/utils/requestInterceptor";
 
 import {
   setSession,
@@ -102,7 +102,7 @@ export function AuthProvider({ children }) {
   // LOGIN
   const login = useCallback(async (DATA) => {
     const { role = "" } = DATA || {};
-    const response = await cityAutosInstance.post(
+    const response = await gtaAutosInstance.post(
       role === "user" ? endpoints.auth.login.user : endpoints.auth.login.admin,
       DATA
     );
@@ -146,7 +146,7 @@ export function AuthProvider({ children }) {
 
   // REGISTER
   const register = useCallback(async (data) => {
-    const response = await cityAutosInstance.post(
+    const response = await gtaAutosInstance.post(
       endpoints.auth.register,
       data
     );
