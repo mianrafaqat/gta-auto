@@ -76,9 +76,9 @@ export default function Footer() {
       sx={{
         position: "relative",
         background: "linear-gradient(135deg, #8B4513 0%, #4B0082 100%)",
-        minHeight: "500px",
+        minHeight: { xs: "1000px", md: "700px" },
         overflow: "hidden",
-        pb: { xs: 12, md: 8 }, // Increased bottom padding for mobile
+        pb: { xs: 16, md: 12 }, // Increased bottom padding for mobile
       }}
     >
       {/* Background Image */}
@@ -113,34 +113,32 @@ export default function Footer() {
 
       <Container
         sx={{
-          pt: { xs: 6, md: 8 },
-          pb: { xs: 10, md: 8 }, // Increased bottom padding for mobile
+          pt: { xs: 8, md: 10 },
+          pb: { xs: 14, md: 12 }, // Increased bottom padding for mobile
           position: "relative",
           zIndex: 3,
         }}
       >
-        {/* Logo Section */}
-        <Box sx={{ mb: { xs: 4, md: 6 }, textAlign: "center" }}>
-          <Typography
-            variant="h3"
-            sx={{
-              color: "#ffffff",
-              fontWeight: "bold",
-              fontSize: { xs: "20px", md: "32px" },
-              textTransform: "uppercase",
-              fontFamily: "monospace",
-              textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
-              letterSpacing: "2px",
-            }}
-          >
-            GARAGE TUNED AUTOS
-          </Typography>
-        </Box>
+
 
         {/* Main Content Grid */}
         <Grid container spacing={{ xs: 3, md: 4 }}>
           {/* Contact Us Column */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
+            {/* Logo positioned above Contact Us */}
+            <Box sx={{ mb: 4, textAlign: "left" }}>
+              <Box
+                component="img"
+                src="/assets/logo.webp"
+                alt="Garage Tuned Autos"
+                sx={{
+                  height: { xs: "50px", md: "60px" },
+                  width: "auto",
+                  mb: 2,
+                }}
+              />
+            </Box>
+
             <Typography
               variant="h6"
               sx={{
@@ -167,7 +165,7 @@ export default function Footer() {
               <Typography
                 variant="body2"
                 sx={{
-                  color: "#ffffff",
+                  color: "#4caf50",
                   fontWeight: "bold",
                   minWidth: "80px",
                   fontSize: { xs: "12px", md: "14px" },
@@ -186,7 +184,7 @@ export default function Footer() {
               <Typography
                 variant="body2"
                 sx={{
-                  color: "#ffffff",
+                  color: "#4caf50",
                   fontWeight: "bold",
                   minWidth: "80px",
                   fontSize: { xs: "12px", md: "14px" },
@@ -202,7 +200,7 @@ export default function Footer() {
           </Grid>
 
           {/* Quick Links Column */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Typography
               variant="h6"
               sx={{
@@ -241,6 +239,97 @@ export default function Footer() {
                 >
                   {link.name}
                 </Link>
+              ))}
+            </Stack>
+          </Grid>
+
+          {/* Customer Services Column */}
+          <Grid item xs={12} md={4}>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#4caf50",
+                fontWeight: "bold",
+                mb: 2,
+                fontSize: { xs: "16px", md: "18px" },
+                textTransform: "uppercase",
+              }}
+            >
+              CUSTOMER SERVICES
+            </Typography>
+            <Box
+              sx={{
+                width: "50px",
+                height: "2px",
+                backgroundColor: "#4caf50",
+                mb: 3,
+              }}
+            />
+
+            <Stack spacing={1} sx={{ mb: 4 }}>
+              {CUSTOMER_SERVICES.map((link) => (
+                <Link
+                  key={link.name}
+                  component={RouterLink}
+                  href={link.href}
+                  sx={{
+                    color: "#ffffff",
+                    textDecoration: "none",
+                    fontSize: { xs: "12px", md: "14px" },
+                    "&:hover": {
+                      color: "#4caf50",
+                    },
+                  }}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </Stack>
+
+            {/* Social Links */}
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#4caf50",
+                fontWeight: "bold",
+                mb: 2,
+                fontSize: { xs: "16px", md: "18px" },
+                textTransform: "uppercase",
+              }}
+            >
+              SOCIAL LINKS
+            </Typography>
+            <Box
+              sx={{
+                width: "50px",
+                height: "2px",
+                backgroundColor: "#4caf50",
+                mb: 3,
+              }}
+            />
+
+            <Stack direction="row" spacing={2}>
+              {SOCIAL_LINKS.map((social) => (
+                <IconButton
+                  key={social.name}
+                  component="a"
+                  href={social.href}
+                  target="_blank"
+                  sx={{
+                    color: "#ffffff",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    borderRadius: "8px",
+                    width: { xs: "36px", md: "40px" },
+                    height: { xs: "36px", md: "40px" },
+                    "&:hover": {
+                      color: "#4caf50",
+                      backgroundColor: "rgba(255, 255, 255, 0.2)",
+                      transform: "scale(1.1)",
+                    },
+                  }}
+                >
+                  <Iconify icon={social.icon} sx={{ fontSize: { xs: "18px", md: "20px" } }} />
+                </IconButton>
               ))}
             </Stack>
           </Grid>
