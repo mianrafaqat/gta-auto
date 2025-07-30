@@ -128,6 +128,26 @@ export function useNavData() {
                   ],
                 },
                 {
+                  roles: [ROLES.USER, ROLES.ADMIN],
+                  title: 'Video',
+                  path: paths.dashboard.video.root,
+                  icon: ICONS.user,
+                  children: [
+                    { title: 'My', path: paths.dashboard.video.my.list, roles: [ROLES.USER, ROLES.ADMIN] },
+                    {
+                      title: 'Add',
+                      path: paths.dashboard.video.my.add,
+                      roles: [ROLES.USER, ROLES.ADMIN],
+                    },
+                    {
+                      title: 'List',
+                      path: paths.dashboard.admin.video.list,
+                      roles: [ROLES.ADMIN],
+                    },
+                  ],
+                },
+                
+                {
                   roles: [ROLES.ADMIN],
                   title: 'Users',
                   path: paths.dashboard.users.root,

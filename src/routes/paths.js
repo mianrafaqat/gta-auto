@@ -211,6 +211,21 @@ export const paths = {
       users: {
         list: `${ROOTS.DASHBOARD}/admin/users/list`,
       },
+      video: {
+        list: `${ROOTS.DASHBOARD}/admin/video/list`,
+        view: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/view`,
+        edit: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/edit`,
+      },
+    },
+    video: {
+      root: `${ROOTS.DASHBOARD}/video`,
+      my: {
+        root: `${ROOTS.DASHBOARD}/video/my`,
+        list: `${ROOTS.DASHBOARD}/video/my/list`,
+        add: `${ROOTS.DASHBOARD}/video/my/add`,
+        view: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/view`,
+        edit: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/edit`,
+      },
     },
   },
   user: {
