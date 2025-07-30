@@ -4,13 +4,12 @@ import { _id, _postTitles } from 'src/_mock/assets';
 
 // ----------------------------------------------------------------------
 
-const MOCK_ID = _id[1];
-
-const MOCK_TITLE = _postTitles[2];
+function path(root, sublink) {
+  return `${root}${sublink}`;
+}
 
 const ROOTS = {
   AUTH: '/auth',
-  AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
 };
 
@@ -40,14 +39,14 @@ export const paths = {
     checkout: `/product/checkout`,
     details: (id) => `/product/${id}`,
     demo: {
-      details: `/product/${MOCK_ID}`,
+      details: `/product/${_id[1]}`,
     },
   },
   post: {
     root: `/post`,
     details: (title) => `/post/${paramCase(title)}`,
     demo: {
-      details: `/post/${paramCase(MOCK_TITLE)}`,
+      details: `/post/${paramCase(_postTitles[2])}`,
     },
   },
   // AUTH
@@ -60,8 +59,8 @@ export const paths = {
       forgotPassword: `${ROOTS.AUTH}/amplify/forgot-password`,
     },
     jwt: {
-      login: `${ROOTS.AUTH}/jwt/login`,
-      register: `${ROOTS.AUTH}/jwt/register`,
+      login: path(ROOTS.AUTH, '/jwt/login'),
+      register: path(ROOTS.AUTH, '/jwt/register'),
     },
     firebase: {
       login: `${ROOTS.AUTH}/firebase/login`,
@@ -124,7 +123,7 @@ export const paths = {
       edit: (id) => `${ROOTS.DASHBOARD}/user/${id}/edit`,
       forgotPassword: `/forgot-password`,
       demo: {
-        edit: `${ROOTS.DASHBOARD}/user/${MOCK_ID}/edit`,
+        edit: `${ROOTS.DASHBOARD}/user/${_id[1]}/edit`,
       },
     },
     product: {
@@ -133,8 +132,8 @@ export const paths = {
       details: (id) => `${ROOTS.DASHBOARD}/product/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/product/${id}/edit`,
       demo: {
-        details: `${ROOTS.DASHBOARD}/product/${MOCK_ID}`,
-        edit: `${ROOTS.DASHBOARD}/product/${MOCK_ID}/edit`,
+        details: `${ROOTS.DASHBOARD}/product/${_id[1]}`,
+        edit: `${ROOTS.DASHBOARD}/product/${_id[1]}/edit`,
       },
     },
     invoice: {
@@ -143,8 +142,8 @@ export const paths = {
       details: (id) => `${ROOTS.DASHBOARD}/invoice/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/invoice/${id}/edit`,
       demo: {
-        details: `${ROOTS.DASHBOARD}/invoice/${MOCK_ID}`,
-        edit: `${ROOTS.DASHBOARD}/invoice/${MOCK_ID}/edit`,
+        details: `${ROOTS.DASHBOARD}/invoice/${_id[1]}`,
+        edit: `${ROOTS.DASHBOARD}/invoice/${_id[1]}/edit`,
       },
     },
     post: {
@@ -153,15 +152,15 @@ export const paths = {
       details: (title) => `${ROOTS.DASHBOARD}/post/${paramCase(title)}`,
       edit: (title) => `${ROOTS.DASHBOARD}/post/${paramCase(title)}/edit`,
       demo: {
-        details: `${ROOTS.DASHBOARD}/post/${paramCase(MOCK_TITLE)}`,
-        edit: `${ROOTS.DASHBOARD}/post/${paramCase(MOCK_TITLE)}/edit`,
+        details: `${ROOTS.DASHBOARD}/post/${paramCase(_postTitles[2])}`,
+        edit: `${ROOTS.DASHBOARD}/post/${paramCase(_postTitles[2])}/edit`,
       },
     },
     order: {
       root: `${ROOTS.DASHBOARD}/order`,
       details: (id) => `${ROOTS.DASHBOARD}/order/${id}`,
       demo: {
-        details: `${ROOTS.DASHBOARD}/order/${MOCK_ID}`,
+        details: `${ROOTS.DASHBOARD}/order/${_id[1]}`,
       },
     },
     job: {
@@ -170,8 +169,8 @@ export const paths = {
       details: (id) => `${ROOTS.DASHBOARD}/job/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/job/${id}/edit`,
       demo: {
-        details: `${ROOTS.DASHBOARD}/job/${MOCK_ID}`,
-        edit: `${ROOTS.DASHBOARD}/job/${MOCK_ID}/edit`,
+        details: `${ROOTS.DASHBOARD}/job/${_id[1]}`,
+        edit: `${ROOTS.DASHBOARD}/job/${_id[1]}/edit`,
       },
     },
     tour: {
@@ -180,8 +179,8 @@ export const paths = {
       details: (id) => `${ROOTS.DASHBOARD}/tour/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/tour/${id}/edit`,
       demo: {
-        details: `${ROOTS.DASHBOARD}/tour/${MOCK_ID}`,
-        edit: `${ROOTS.DASHBOARD}/tour/${MOCK_ID}/edit`,
+        details: `${ROOTS.DASHBOARD}/tour/${_id[1]}`,
+        edit: `${ROOTS.DASHBOARD}/tour/${_id[1]}/edit`,
       },
     },
     items: {
@@ -212,17 +211,17 @@ export const paths = {
         list: `${ROOTS.DASHBOARD}/admin/users/list`,
       },
       video: {
-        list: `${ROOTS.DASHBOARD}/admin/video/list`,
+        list: path(ROOTS.DASHBOARD, '/admin/video/list'),
         view: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/view`,
         edit: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/edit`,
       },
     },
     video: {
-      root: `${ROOTS.DASHBOARD}/video`,
+      root: path(ROOTS.DASHBOARD, '/video'),
       my: {
-        root: `${ROOTS.DASHBOARD}/video/my`,
-        list: `${ROOTS.DASHBOARD}/video/my/list`,
-        add: `${ROOTS.DASHBOARD}/video/my/add`,
+        root: path(ROOTS.DASHBOARD, '/video/my'),
+        list: path(ROOTS.DASHBOARD, '/video/my/list'),
+        add: path(ROOTS.DASHBOARD, '/video/my/add'),
         view: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/view`,
         edit: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/edit`,
       },

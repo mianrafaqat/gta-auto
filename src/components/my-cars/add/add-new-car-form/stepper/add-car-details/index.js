@@ -20,14 +20,7 @@ import Iconify from "src/components/iconify/iconify";
 import { CarsService } from "src/services";
 
 const CAR_DETAILS_FIELDS = [
-  {
-    id: "registrationNumber",
-    name: "carDetails.registrationNumber",
-    label: "Registration Number",
-  },
-  { id: "taxStatus", name: "carDetails.taxStatus", label: "Tax Status" },
-  { id: "taxDueDate", name: "carDetails.taxDueDate", label: "Tax Due Date" },
-  { id: "motStatus", name: "carDetails.motStatus", label: "MOT Status" },
+  
   { id: "make", name: "carDetails.make", label: "Make" },
   {
     id: "yearOfManufacture",
@@ -39,44 +32,17 @@ const CAR_DETAILS_FIELDS = [
     name: "carDetails.engineCapacity",
     label: "Engine Capacity",
   },
-  {
-    id: "co2Emissions",
-    name: "carDetails.co2Emissions",
-    label: "CO2 Emissions",
-  },
+  
   { id: "fuelType", name: "carDetails.fuelType", label: "Fuel Type" },
-  {
-    id: "markedForExport",
-    name: "carDetails.markedForExport",
-    label: "Marked for Export",
-  },
+ 
   { id: "colour", name: "carDetails.colour", label: "Colour" },
-  {
-    id: "typeApproval",
-    name: "carDetails.typeApproval",
-    label: "Type Approval",
-  },
-  {
-    id: "revenueWeight",
-    name: "carDetails.revenueWeight",
-    label: "Revenue Weight",
-  },
-  {
-    id: "dateOfLastV5CIssued",
-    name: "carDetails.dateOfLastV5CIssued",
-    label: "Date of Last V5C Issued",
-  },
-  {
-    id: "motExpiryDate",
-    name: "carDetails.motExpiryDate",
-    label: "MOT Expiry Date",
-  },
+  
+ 
   { id: "wheelplan", name: "carDetails.wheelplan", label: "Wheelplan" },
-  {
-    id: "monthOfFirstRegistration",
-    name: "carDetails.monthOfFirstRegistration",
-    label: "Month of First Registration",
-  },
+  { id: "registeredCity", name: "carDetails.registeredCity", label: "Registered City" },
+  { id: "condition", name: "carDetails.condition", label: "Condition" },
+  { id: "Transmission", name: "carDetails.ransmission", label: "Transmission" },
+ 
 ];
 
 export default function AddCarDetails({
@@ -258,32 +224,8 @@ export default function AddCarDetails({
           ]}
         />
       </Grid>
-      <Grid item xs={10} sx={{ mb: 1 }}>
-        <TextField
-          label="Search by RegNo."
-          sx={{ width: "100%" }}
-          placeholder="sa08thy"
-          onChange={handleChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Iconify icon="heroicons-outline:search" width={24} />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Grid>
-      <Grid item xs={2} justifyContent="end">
-        <LoadingButton
-          onClick={fetchDetailsByRegNo}
-          type="button"
-          variant="contained"
-          disabled={searchByRegNo.length < 7}
-          loading={carDetailsLoading}
-        >
-          Search
-        </LoadingButton>
-      </Grid>
+      
+      
 
       {CAR_DETAILS_FIELDS.map((c) => (
         <Grid key={c.name} item xs={12} md={3}>
