@@ -39,12 +39,6 @@ const schema = yup.object().shape({
     .max(9, "Maximum of 9 images allowed")
     .required("At least one image is required."),
   carDetails: yup.object().shape({
-    registrationNumber: yup
-      .string()
-      .required("Registration number is required."),
-    taxStatus: yup.string().required("Tax status is required."),
-    taxDueDate: yup.string().required("Tax due date is required."),
-    motStatus: yup.string().required("MOT status is required."),
     make: yup.string().required("Make is required."),
     yearOfManufacture: yup
       .string()
@@ -54,22 +48,8 @@ const schema = yup.object().shape({
       .string()
       .transform(numberToStringTransform)
       .required("Engine capacity is required."),
-    co2Emissions: yup
-      .string()
-      .transform(numberToStringTransform)
-      .required("CO2 emissions is required."),
     fuelType: yup.string().required("Fuel type is required."),
-    markedForExport: yup.boolean().required("Marked for export is required."),
     colour: yup.string().required("Colour is required."),
-    typeApproval: yup.string(),
-    revenueWeight: yup
-      .string()
-      .transform(numberToStringTransform),
-    dateOfLastV5CIssued: yup
-      .string()
-      .required("Date of last V5C issued is required."),
-    motExpiryDate: yup.string().required("MOT expiry date is required."),
-    wheelplan: yup.string().required("Wheelplan is required."),
     monthOfFirstRegistration: yup
       .string()
       .required("Month of first registration is required."),
@@ -93,7 +73,24 @@ const schema = yup.object().shape({
 export default function AddNewCarForm({ isEditMode = false }) {
   const methods = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {},
+    defaultValues: {
+      carDetails: {
+        make: '',
+        yearOfManufacture: '',
+        engineCapacity: '',
+        fuelType: '',
+        colour: '',
+        monthOfFirstRegistration: '',
+        model: '',
+        features: [],
+        makeType: '',
+        driveTrain: '',
+        doorPlan: '',
+        variant: '',
+      },
+      category: 'sale',
+    },
+    mode: 'onChange',
   });
 
   const [loading, setLoading] = useState(false);
@@ -116,11 +113,7 @@ export default function AddNewCarForm({ isEditMode = false }) {
   const params = useSearchParams();
   const carID = params.get("carId");
 
-  useEffect(() => {
-    if (currentValues?.category === "hire") {
-      clearErrors("saleAs");
-    }
-  }, [currentValues.category, clearErrors, JSON.stringify(currentValues)]);
+
 
   const onSubmit = handleSubmit(async (values) => {
     try {

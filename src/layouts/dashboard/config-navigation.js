@@ -128,7 +128,7 @@ export function useNavData() {
                   ],
                 },
                 {
-                  roles: [ROLES.USER, ROLES.ADMIN],
+                  roles: [ ROLES.ADMIN],
                   title: 'Video',
                   path: paths.dashboard.video.root,
                   icon: ICONS.user,

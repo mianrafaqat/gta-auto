@@ -1,12 +1,8 @@
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
   Grid,
-  InputAdornment,
   MenuItem,
-  Skeleton,
-  TextField,
 } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
@@ -16,22 +12,14 @@ import {
   RHFSelect,
   RHFTextField,
 } from "src/components/hook-form";
-import Iconify from "src/components/iconify/iconify";
+
 import { CarsService } from "src/services";
 
 const CAR_DETAILS_FIELDS = [
-  {
-    id: "registrationNumber",
-    name: "carDetails.registrationNumber",
-    label: "Registration Number",
-  },
-  { id: "taxStatus", name: "carDetails.taxStatus", label: "Tax Status" },
-  { id: "taxDueDate", name: "carDetails.taxDueDate", label: "Tax Due Date" },
-  { id: "motStatus", name: "carDetails.motStatus", label: "MOT Status" },
   { id: "make", name: "carDetails.make", label: "Make" },
   {
     id: "yearOfManufacture",
-    name: "carDetails.yearOfManufacture",
+    name: "carDetails.yearOfManufacture", 
     label: "Year of Manufacture",
   },
   {
@@ -39,138 +27,120 @@ const CAR_DETAILS_FIELDS = [
     name: "carDetails.engineCapacity",
     label: "Engine Capacity",
   },
-  {
-    id: "co2Emissions",
-    name: "carDetails.co2Emissions",
-    label: "CO2 Emissions",
-  },
   { id: "fuelType", name: "carDetails.fuelType", label: "Fuel Type" },
-  {
-    id: "markedForExport",
-    name: "carDetails.markedForExport",
-    label: "Marked for Export",
-  },
   { id: "colour", name: "carDetails.colour", label: "Colour" },
   {
-    id: "typeApproval",
-    name: "carDetails.typeApproval",
-    label: "Type Approval",
+    id: "registeredCity",
+    name: "carDetails.registeredCity",
+    label: "Registered City",
   },
   {
-    id: "revenueWeight",
-    name: "carDetails.revenueWeight",
-    label: "Revenue Weight",
+    id: "transmission",
+    name: "carDetails.transmission",
+    label: "Transmission",
+    type: "select",
+    options: ["Automatic", "Manual"],
   },
   {
-    id: "dateOfLastV5CIssued",
-    name: "carDetails.dateOfLastV5CIssued",
-    label: "Date of Last V5C Issued",
+    id: "condition",
+    name: "carDetails.condition",
+    label: "Condition",
+    type: "select",
+    options: ["Excellent", "Good", "Fair", "Poor"],
   },
-  {
-    id: "motExpiryDate",
-    name: "carDetails.motExpiryDate",
-    label: "MOT Expiry Date",
-  },
-  { id: "wheelplan", name: "carDetails.wheelplan", label: "Wheelplan" },
-  {
-    id: "monthOfFirstRegistration",
-    name: "carDetails.monthOfFirstRegistration",
-    label: "Month of First Registration",
-  },
+];
+
+const REQUIRED_FIELDS = [
+  'make',
+  'yearOfManufacture', 
+  'engineCapacity',
+  'fuelType',
+  'colour',
+  'model',
+  'registeredCity',
+  'condition',
+  'transmission',
+  'carType'
 ];
 
 export default function AddCarDetails({
   setActiveStep = () => {},
   isEditMode = false,
 }) {
-  const [searchByRegNo, setSearchByNo] = useState("");
-  const [carDetailsLoading, setCarDetailsLoading] = useState(false);
-
   const [carModels, setCarModels] = useState([]);
   const [carMakesList, setCarMakesList] = useState([]);
 
-  const { setValue, watch, setError, clearErrors } = useFormContext();
-  const currentValues = watch();
-
-  console.log("currentValues: ", currentValues)
-
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setSearchByNo(value);
-  };
+  const { setValue, watch, getValues, trigger, formState: { errors } } = useFormContext();
+  
+  // Watch all the fields we need
+  const carDetails = watch('carDetails');
+  const category = watch('category');
+  
+  // Log the form values when they change
+  useEffect(() => {
+    const values = getValues();
+    console.log('Form State:', {
+      values: {
+        carDetails: values.carDetails,
+        category: values.category,
+      },
+      errors: errors?.carDetails,
+      isValid: !Object.keys(errors?.carDetails || {}).length,
+    });
+  }, [carDetails, category, getValues, errors]);
 
   const checkCarDetailsFilled = (data) => {
-    const carDetails = { ...data };
-    for (const value of Object.values(carDetails)) {
-      if (value === undefined) {
-        return false;
-      }
-    }
-    return true;
+    if (!data) return false;
+    
+    return REQUIRED_FIELDS.every(field => {
+      const value = data[field];
+      return value && String(value).trim() !== '';
+    });
   };
 
   const isAllFilled = useMemo(() => {
-    if (currentValues?.carDetails) {
-      return checkCarDetailsFilled(currentValues?.carDetails);
-    }
-    return false;
-  }, [currentValues?.carDetails]);
+    if (!carDetails) return false;
+    
+    const result = REQUIRED_FIELDS.every(field => {
+      const value = carDetails[field];
+      console.log(`Field ${field}:`, value); // Debug log
+      return value && String(value).trim() !== '';
+    });
+    
+    console.log('All required fields:', REQUIRED_FIELDS);
+    console.log('Current carDetails:', carDetails);
+    console.log('Validation Result:', result);
+    
+    return result;
+  }, [carDetails]);
 
-  const fetchDetailsByRegNo = async () => {
-    try {
-      setCarDetailsLoading(true);
-      const res = await CarsService.getDetailsByRegNo(searchByRegNo);
-      if (res?.data) {
-        setValue("carDetails", { ...res.data });
-      }
-    } catch (err) {
-      console.log("err: ", err);
-    } finally {
-      setCarDetailsLoading(false);
-    }
+  const extractString = (str) => {
+    const match = str?.match(/^([^\s\-]+)/);
+    return match ? match[1] : str;
   };
-
-  function extractString(str) {
-    // Regular expression to match strings before "-" or space
-    const regex = /^([^\s\-]+)/;
-
-    // Extracting the desired substring
-    const match = str.match(regex);
-
-    // If match found, return the matched substring
-    if (match) {
-      return match[1];
-    } else {
-      // If no match found, return the original string
-      return str;
-    }
-  }
 
   const fetchCarModels = async () => {
     try {
       const filterCarMake = carMakesList.find((make) => {
-        const string = extractString(make?.value.toLowerCase());
-        const subString = extractString(
-          currentValues.carDetails.make?.toLowerCase()
-        );
-
-        if (string.includes(subString)) {
-          return make;
-        }
+        const string = extractString(make?.value?.toLowerCase());
+        const subString = extractString(carDetails?.make?.toLowerCase());
+        return string?.includes(subString);
       });
+
       const data = {
-        selectedCar: filterCarMake?.value?.toLowerCase() || currentValues.carDetails.make?.toLowerCase(),
-        year: currentValues.carDetails.yearOfManufacture,
+        selectedCar: filterCarMake?.value?.toLowerCase() || carDetails?.make?.toLowerCase(),
+        year: carDetails?.yearOfManufacture,
       };
+
       const res = await CarsService.getCarModelsByYear(data);
       if (res?.status === 200) {
-        setCarModels(res?.data);
+        setCarModels(res.data);
         if (!isEditMode) {
-          setValue("carDetails.model", currentValues?.carDetails?.model || res?.data?.[0]?.model || "");
+          setValue("carDetails.model", carDetails?.model || res.data?.[0]?.model || "");
         }
       }
     } catch (err) {
-      console.log("err: ", err);
+      console.error("Failed to fetch car models:", err);
     }
   };
 
@@ -178,70 +148,63 @@ export default function AddCarDetails({
     try {
       const res = await CarsService.getCarMakes();
       if (res?.data) {
-        setCarMakesList(res?.data);
+        setCarMakesList(res.data);
       }
     } catch (err) {
-      console.log("err: ", err);
+      console.error("Failed to fetch car makes:", err);
     }
   };
 
   useEffect(() => {
-    if (
-      currentValues?.carDetails?.make &&
-      currentValues?.carDetails?.yearOfManufacture
-    ) {
+    if (carDetails?.make && carDetails?.yearOfManufacture) {
       fetchCarModels();
     }
-  }, [
-    currentValues?.carDetails?.make,
-    currentValues?.carDetails?.yearOfManufacture,
-  ]);
+  }, [carDetails?.make, carDetails?.yearOfManufacture]);
 
   useEffect(() => {
     fetchCarMakes();
   }, []);
 
   const features = useMemo(() => {
-    if (carModels?.length && currentValues?.carDetails?.model) {
-      const filterSelectedModel = carModels.find(
-        (car) => car?.model === currentValues?.carDetails?.model
-      );
-      setValue("carDetails.features", [...filterSelectedModel?.features]);
-      setValue("carDetails.makeType", filterSelectedModel?.makeType);
-      setValue("carDetails.driveTrain", filterSelectedModel?.wheel_plan);
-      setValue("carDetails.wheelType", filterSelectedModel?.wheel_type);
-      setValue("carDetails.doorPlan", filterSelectedModel?.door_plan);
-
-      return filterSelectedModel?.features || [];
-    } else {
+    if (!carModels?.length || !carDetails?.model) {
       setValue("carDetails.features", []);
       return [];
     }
-  }, [currentValues?.carDetails?.model, carModels]);
+
+    const selectedModel = carModels.find(car => car?.model === carDetails?.model);
+    if (!selectedModel) return [];
+
+    setValue("carDetails.features", [...selectedModel.features]);
+    setValue("carDetails.makeType", selectedModel.makeType);
+    setValue("carDetails.driveTrain", selectedModel.wheel_plan);
+    setValue("carDetails.wheelType", selectedModel.wheel_type);
+    setValue("carDetails.doorPlan", selectedModel.door_plan);
+
+    return selectedModel.features || [];
+  }, [carDetails?.model, carModels]);
 
   const variants = useMemo(() => {
-    if (carModels?.length && currentValues?.carDetails?.model) {
-      const filterSelectedModel = carModels.find(
-        (car) => car?.model === currentValues?.carDetails?.model
-      );
-      if (filterSelectedModel?.variants?.length) {
-        setValue("carDetails.variant", filterSelectedModel?.variants[0]);
-      }
-      return filterSelectedModel?.variants || [];
-    } else {
+    if (!carModels?.length || !carDetails?.model) {
       setValue("carDetails.variant", "");
       return [];
     }
-  }, [currentValues?.carDetails?.model, carModels]);
+
+    const selectedModel = carModels.find(car => car?.model === carDetails?.model);
+    if (!selectedModel?.variants?.length) return [];
+
+    setValue("carDetails.variant", selectedModel.variants[0]);
+    return selectedModel.variants;
+  }, [carDetails?.model, carModels]);
 
   const categoryDefaultValue = useMemo(() => {
-    if (!currentValues.category) {
-      setValue("category", !isEditMode ? "sale" : "");
-      return !isEditMode ? "sale" : "";
-    } else {
-      return currentValues.category;
+    const category = watch('category');
+    if (!category) {
+      const defaultValue = !isEditMode ? "sale" : "";
+      setValue("category", defaultValue);
+      return defaultValue;
     }
-  }, [currentValues.category, isEditMode]);
+    return category;
+  }, [watch, isEditMode, setValue]);
 
   return (
     <Grid p={2} container spacing={2} alignItems="center">
@@ -252,49 +215,65 @@ export default function AddCarDetails({
           value={categoryDefaultValue}
           label="Category *"
           spacing={4}
+          options={[{ value: "sale", label: "Sale" }]}
+        />
+      </Grid>
+
+      <Grid item xs={12}>
+        <RHFRadioGroup
+          row
+          name="carDetails.carType"
+          label="Car Type *"
+          spacing={4}
           options={[
-            { value: "sale", label: "Sale" },
-            { value: "hire", label: "Hire" },
+            { value: "new", label: "New" },
+            { value: "used", label: "Used" }
           ]}
+          error={!!errors?.carDetails?.carType}
+          helperText={errors?.carDetails?.carType?.message}
         />
-      </Grid>
-      <Grid item xs={10} sx={{ mb: 1 }}>
-        <TextField
-          label="Search by RegNo."
-          sx={{ width: "100%" }}
-          placeholder="sa08thy"
-          onChange={handleChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Iconify icon="heroicons-outline:search" width={24} />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Grid>
-      <Grid item xs={2} justifyContent="end">
-        <LoadingButton
-          onClick={fetchDetailsByRegNo}
-          type="button"
-          variant="contained"
-          disabled={searchByRegNo.length < 7}
-          loading={carDetailsLoading}
-        >
-          Search
-        </LoadingButton>
       </Grid>
 
       {CAR_DETAILS_FIELDS.map((c) => (
         <Grid key={c.name} item xs={12} md={3}>
-          {carDetailsLoading ? (
-            <Skeleton variant="rounded" height={53} />
+          {c.type === 'select' ? (
+            <RHFSelect
+            
+              name={c.name}
+              label={`${c.label} *`}
+              fullWidth
+              error={!!errors?.carDetails?.[c.id]}
+              helperText={errors?.carDetails?.[c.id]?.message || ' '}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&.Mui-error': {
+                    borderColor: 'error.main',
+                  }
+                }
+              }}
+            >
+              {c.options.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </RHFSelect>
           ) : (
             <RHFTextField
               name={c.name}
-              label={c.label}
-              InputLabelProps={{
-                shrink: true,
+              label={`${c.label} *`}
+              InputLabelProps={{ shrink: true }}
+              onChange={(e) => {
+                setValue(c.name, e.target.value);
+              }}
+              error={!!errors?.carDetails?.[c.id]}
+              helperText={errors?.carDetails?.[c.id]?.message || ' '}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&.Mui-error': {
+                    borderColor: 'error.main',
+                  }
+                }
               }}
             />
           )}
@@ -303,7 +282,20 @@ export default function AddCarDetails({
 
       <Grid item xs={12} md={3}>
         {carModels.length > 0 && (
-          <RHFSelect fullWidth name="carDetails.model" label="Model">
+          <RHFSelect 
+            fullWidth 
+            name="carDetails.model" 
+            label="Model *"
+            error={!!errors?.carDetails?.model}
+            helperText={errors?.carDetails?.model?.message || ' '}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '&.Mui-error': {
+                  borderColor: 'error.main',
+                }
+              }
+            }}
+          >
             {carModels.map((data) => (
               <MenuItem key={data?.model} value={data?.model}>
                 {data?.model}
@@ -313,39 +305,32 @@ export default function AddCarDetails({
         )}
       </Grid>
 
-      {currentValues?.carDetails?.model && (
-        <Grid item xs={12} md={3}>
-          <RHFTextField
-            InputLabelProps={{
-              shrink: true,
-            }}
-            label="Make Type"
-            name="carDetails.makeType"
-          />
-        </Grid>
-      )}
+      {carDetails?.model && (
+        <>
+          <Grid item xs={12} md={3}>
+            <RHFTextField
+              InputLabelProps={{ shrink: true }}
+              label="Make Type"
+              name="carDetails.makeType"
+            />
+          </Grid>
 
-      {currentValues?.carDetails?.model && (
-        <Grid item xs={12} md={3}>
-          <RHFTextField
-            InputLabelProps={{
-              shrink: true,
-            }}
-            label="Drivetrain"
-            name="carDetails.driveTrain"
-          />
-        </Grid>
-      )}
-      {currentValues?.carDetails?.model && (
-        <Grid item xs={12} md={3}>
-          <RHFTextField
-            InputLabelProps={{
-              shrink: true,
-            }}
-            label="Door Plan"
-            name="carDetails.doorPlan"
-          />
-        </Grid>
+          <Grid item xs={12} md={3}>
+            <RHFTextField
+              InputLabelProps={{ shrink: true }}
+              label="Drivetrain"
+              name="carDetails.driveTrain"
+            />
+          </Grid>
+
+          <Grid item xs={12} md={3}>
+            <RHFTextField
+              InputLabelProps={{ shrink: true }}
+              label="Door Plan"
+              name="carDetails.doorPlan"
+            />
+          </Grid>
+        </>
       )}
 
       {variants?.length > 0 && (
@@ -367,11 +352,7 @@ export default function AddCarDetails({
             name="carDetails.features"
             label="Features"
             spacing={4}
-            options={features.map((f) => {
-              if (f) {
-                return { value: f, label: f };
-              }
-            })}
+            options={features.map(f => f && { value: f, label: f })}
           />
         )}
       </Grid>
@@ -380,8 +361,17 @@ export default function AddCarDetails({
         <Box sx={{ textAlign: "end" }}>
           <Button
             variant="contained"
-            disabled={!isAllFilled}
-            onClick={() => setActiveStep((prev) => prev + 1)}
+            onClick={async () => {
+              // Validate all car detail fields
+              const fieldsToValidate = REQUIRED_FIELDS.map(field => `carDetails.${field}`);
+              const isValid = await trigger(fieldsToValidate);
+              
+              if (isValid) {
+                setActiveStep((prev) => prev + 1);
+              } else {
+                console.log('Validation failed:', errors);
+              }
+            }}
           >
             Next
           </Button>
