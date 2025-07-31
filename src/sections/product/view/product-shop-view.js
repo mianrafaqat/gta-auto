@@ -182,7 +182,8 @@ export default function ProductShopView() {
     } catch (err) {
       console.log("error: ", err);
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      console.log("allCars: ");
     }
   };
 
