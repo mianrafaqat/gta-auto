@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Grid, Container, Card, CardContent, Modal } from '@mui/material';
 import Iconify from '../iconify';
 import { VideoService } from 'src/services';
 import { useSnackbar } from 'src/components/snackbar';
+import { useQuery } from '@tanstack/react-query';
 
 const getYoutubeId = (url) => {
   if (!url) return null;
@@ -34,36 +35,32 @@ const getThumbnailUrl = (videoUrl) => {
 };
 
 export default function BrowseVideosSection() {
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        setLoading(true);
-        const response = await VideoService.getAllVideos();
-        console.log('Video response:', response); // Debug log
-        if (response?.status === 200) {
-          const videoData = response.data || [];
-          console.log('Setting videos:', videoData); // Debug log
-          setVideos(videoData);
-        }
-      } catch (error) {
-        console.error('Error fetching videos:', error);
-        enqueueSnackbar(error?.response?.data?.message || 'Failed to fetch videos', { variant: 'error' });
-      } finally {
-        setLoading(false);
+  // React Query hook for fetching videos
+  const { data: videos = [], isLoading, error } = useQuery({
+    queryKey: ['videos', 'all'],
+    queryFn: async () => {
+      const response = await VideoService.getAllVideos();
+      if (response?.status === 200) {
+        return response.data || [];
       }
-    };
+      throw new Error('Failed to fetch videos');
+    },
+    staleTime: Infinity, // Data will never become stale automatically
+    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    refetchOnWindowFocus: false, // Disable refetch on window focus
+    refetchOnMount: false, // Disable refetch on mount
+    retry: 1, // Only retry once
+    onError: (error) => {
+      enqueueSnackbar(error?.response?.data?.message || 'Failed to fetch videos', { variant: 'error' });
+    },
+  });
 
-    fetchVideos();
-  }, [enqueueSnackbar]);
-
-  // Add loading and empty states
-  if (loading) {
+  // Only show loading state on initial load
+  if (isLoading && !videos.length) {
     return (
       <Container maxWidth="xl" sx={{ py: 8, px: { xs: 2, sm: 3, md: 4 }, minHeight: '600px' }}>
         <Typography variant="h6" sx={{ color: '#fff', textAlign: 'center' }}>
@@ -73,6 +70,18 @@ export default function BrowseVideosSection() {
     );
   }
 
+  // Error state
+  if (error) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 8, px: { xs: 2, sm: 3, md: 4 }, minHeight: '600px' }}>
+        <Typography variant="h6" sx={{ color: '#fff', textAlign: 'center' }}>
+          Error loading videos. Please try again later.
+        </Typography>
+      </Container>
+    );
+  }
+
+  // Empty state
   if (!videos || videos.length === 0) {
     return (
       <Container maxWidth="xl" sx={{ py: 8, px: { xs: 2, sm: 3, md: 4 }, minHeight: '600px' }}>
