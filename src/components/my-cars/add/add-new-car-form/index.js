@@ -50,9 +50,7 @@ const schema = yup.object().shape({
       .required("Engine capacity is required."),
     fuelType: yup.string().required("Fuel type is required."),
     colour: yup.string().required("Colour is required."),
-    monthOfFirstRegistration: yup
-      .string()
-      .required("Month of first registration is required."),
+
     mileage: yup.string().required("Mileage is required."),
     model: yup.string().required("Model is required."),
     features: yup.array(),
@@ -80,7 +78,6 @@ export default function AddNewCarForm({ isEditMode = false }) {
         engineCapacity: '',
         fuelType: '',
         colour: '',
-        monthOfFirstRegistration: '',
         model: '',
         features: [],
         makeType: '',

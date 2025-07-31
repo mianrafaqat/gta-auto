@@ -19,7 +19,7 @@ export default function AdditionalInformation({
   loading = false,
   isEditMode = false,
 }) {
-  const { watch, setValue, setError, clearErrors } = useFormContext();
+  const { watch, setValue, setError, clearErrors, formState: { errors, isValid }, trigger } = useFormContext();
 
   const currentValues = watch();
 
@@ -65,6 +65,27 @@ export default function AdditionalInformation({
               label={c.label}
               InputLabelProps={{
                 shrink: true,
+                sx: {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                  background: '#fff',
+                  px: 1,
+                }
+              }}
+              error={!!errors[c.name.split('.')[0]]?.[c.name.split('.')[1]] || !!errors[c.name]}
+              helperText={(errors[c.name.split('.')[0]]?.[c.name.split('.')[1]]?.message || errors[c.name]?.message || ' ')}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: 'white',
+                  '&.Mui-error': {
+                    borderColor: 'error.main',
+                  },
+                  '& fieldset': {
+                    borderWidth: '1px !important',
+                  },
+                },
+                '& .MuiFormLabel-root': {
+                  marginTop: 0,
+                }
               }}
             />
           </Grid>
@@ -105,12 +126,32 @@ export default function AdditionalInformation({
       <Box sx={{ mt: 1, textAlign: "end" }}>
         <Button onClick={() => setActiveStep((prev) => prev - 1)}>Back</Button>
         <LoadingButton
-          // disabled={!isValid}
+          disabled={!isValid}
           loading={loading}
           variant="contained"
           color="primary"
           type="submit"
           sx={{ ml: 1 }}
+          onClick={async () => {
+            // Validate all required fields
+            const fieldsToValidate = [
+              'title',
+              'price',
+              'carDetails.mileage',
+              'location',
+              'postalCode',
+              'carDetails.tel',
+              'description',
+              ...(currentValues.category === 'sale' ? ['saleAs', 'companyOrSellerName'] : [])
+            ];
+            
+            const isValid = await trigger(fieldsToValidate);
+            
+            if (!isValid) {
+              console.log('Validation errors:', errors);
+              return;
+            }
+          }}
         >
           Submit
         </LoadingButton>
