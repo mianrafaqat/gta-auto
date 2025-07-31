@@ -129,15 +129,17 @@ export default function CarsDetailPage() {
         {currentTab === "description" && (
           <Box
             sx={{
-              background: "#fff",
-              // borderTop: "1px solid lightgray",
+              background: "transparent",
+              border: "1px solid #4caf50",
+              borderRadius: "10px",
+              padding: "18px",
               my: 5,
             }}
           >
-            <Typography variant="h6" color="#000">Description</Typography>
+            <Typography variant="h6" color="#fff">Description</Typography>
             <Typography variant="body2" mt={1}>
               <span
-                style={{color: "#000"}}
+                style={{color: "#fff"}}
                 dangerouslySetInnerHTML={{ __html: carDetails?.description }}
               />
             </Typography>
@@ -167,7 +169,7 @@ const AdditionalFeatures = ({ features = [] }) => {
       <Grid container spacing={2} my={1}>
         {features.map((f) => (
           <Grid key={f} item>
-            <Chip xs={3} variant="filled" label={f} sx={{color: "#fff"}} />
+            <Chip xs={3} variant="filled" label={f} sx={{color: "#fff", backgroundColor: "#4caf50"}} />
           </Grid>
         ))}
       </Grid>

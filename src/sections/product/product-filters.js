@@ -250,7 +250,14 @@ export default function ProductFilters({
         getOptionLabel={(option) => option}
         onChange={(event, value) => handleFuelType(value)}
         value={filters.fuelType}
-        sx={{color: "#fff"}}
+        sx={{
+          '& .MuiInputBase-input': {
+            color: '#fff',
+          },
+          '& .MuiInputLabel-root': {
+            color: '#fff',
+          },
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -430,9 +437,34 @@ export default function ProductFilters({
 
   const renderTabs = (
     <>
-      <Tabs value={currentTab} onChange={handleChangeTab} sx={{color: "#fff"}}>
+      <Tabs 
+        value={currentTab} 
+        onChange={handleChangeTab} 
+        sx={{
+          '& .MuiTab-root': {
+            color: 'rgba(255, 255, 255, 0.7)',
+            '&:hover': {
+              color: '#fff',
+            }
+          },
+          '& .MuiTab-root.Mui-selected': {
+            color: '#00FF00',
+          },
+          '& .MuiTabs-indicator': {
+            backgroundColor: '#00FF00',
+          },
+          '& .MuiButtonBase-root': {
+            color: '#fff',
+            opacity: 1
+          }
+        }}
+      >
         {TABS.map((tab) => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} sx={{color: "#fff"}} />
+          <Tab 
+            key={tab.value} 
+            value={tab.value} 
+            label={tab.label}
+          />
         ))}
       </Tabs>
 
@@ -528,6 +560,14 @@ function SearchByCarBody({ onChange, carBodyList = [], reset = false }) {
         onChange={(event, newValue) => {
           onChange(newValue);
           setSelectedBody(newValue);
+        }}
+        sx={{
+          '& .MuiInputBase-input': {
+            color: '#fff',
+          },
+          '& .MuiInputLabel-root': {
+            color: '#fff',
+          },
         }}
         getOptionLabel={(option) => option}
         renderInput={(params) => (
@@ -792,7 +832,7 @@ function SearchByModels({
         fullWidth
         variant="contained"
         onClick={handleFilterCarsByMakeAndModel}
-        sx={{color: "#000"}}
+        sx={{color: "#000", backgroundColor: "#4caf50"}}
       >
         Search
       </Button>
