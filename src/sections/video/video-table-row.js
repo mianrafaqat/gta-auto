@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React, { useState, useRef } from 'react';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -11,11 +12,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 
+import { useBoolean } from 'src/hooks/use-boolean';
 import { usePopover } from 'src/components/custom-popover';
+import CustomPopover from 'src/components/custom-popover';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -31,24 +33,36 @@ export default function VideoTableRow({
   onViewRow,
   onDeleteRow,
 }) {
-  const { title, url, type, status, createdAt } = row;
+  const { title, videoUrl, category, status, createdAt } = row;
 
-  const confirm = usePopover();
+  const openConfirm = useBoolean();
+  const openPopover = useBoolean();
+  const popoverRef = useRef(null);
 
-  const popover = usePopover();
+  const handleOpenPopover = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openPopover.onTrue();
+  };
+
+  const handleDelete = () => {
+    openPopover.onFalse();
+    openConfirm.onTrue();
+  };
+
+  const handleConfirmDelete = () => {
+    onDeleteRow();
+    openConfirm.onFalse();
+  };
 
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
-
         <TableCell>
           <Stack direction="row" alignItems="center" spacing={2}>
             <ListItemText
               primary={title}
-              secondary={url}
+              // secondary={videoUrl}
               primaryTypographyProps={{ typography: 'body2' }}
               secondaryTypographyProps={{ component: 'span', color: 'text.disabled' }}
             />
@@ -56,21 +70,14 @@ export default function VideoTableRow({
         </TableCell>
 
         <TableCell>
-          <Link href={url} target="_blank" rel="noopener" sx={{ color: 'text.secondary' }}>
-            {url}
+          <Link href={videoUrl} target="_blank" rel="noopener" sx={{ color: 'text.secondary' }}>
+            {videoUrl}
           </Link>
         </TableCell>
 
         <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (type === 'youtube' && 'error') ||
-              (type === 'vimeo' && 'info') ||
-              'default'
-            }
-          >
-            {type}
+          <Label variant="soft">
+            {category}
           </Label>
         </TableCell>
 
@@ -94,19 +101,39 @@ export default function VideoTableRow({
         </TableCell>
 
         <TableCell align="right">
-          <IconButton color={popover.open ? 'primary' : 'default'} onClick={popover.onOpen}>
+          <IconButton 
+            ref={popoverRef}
+            color={openPopover.value ? 'primary' : 'default'} 
+            onClick={handleOpenPopover}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
       </TableRow>
 
+      <CustomPopover
+        open={openPopover.value}
+        onClose={openPopover.onFalse}
+        arrow="right-top"
+        anchorEl={popoverRef.current}
+        sx={{ width: 140 }}
+      >
+        <MenuItem
+          onClick={handleDelete}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
+        </MenuItem>
+      </CustomPopover>
+
       <ConfirmDialog
-        open={confirm.open}
-        onClose={confirm.onClose}
+        open={openConfirm.value}
+        onClose={openConfirm.onFalse}
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button variant="contained" color="error" onClick={handleConfirmDelete}>
             Delete
           </Button>
         }

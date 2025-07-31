@@ -2,26 +2,28 @@
 
 import { useState, useCallback, useEffect } from 'react';
 
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import Table from '@mui/material/Table';
+import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 
-import { useTable } from 'src/components/table';
-import { TableNoData, TableEmptyRows, TableHeadCustom, TablePaginationCustom } from 'src/components/table';
-import { useSnackbar } from 'src/components/snackbar';
 import Scrollbar from 'src/components/scrollbar';
+import { useSnackbar } from 'src/components/snackbar';
+import { useTable } from 'src/components/table';
+import TableHeadCustom from 'src/components/table/table-head-custom';
+import { TablePaginationCustom } from 'src/components/table';
+import { TableNoData } from 'src/components/table';
+import { TableEmptyRows } from 'src/components/table';
 import Iconify from 'src/components/iconify';
 
-import VideoTableRow from '../video-table-row';
+import VideoTableRow from 'src/sections/video/video-table-row';
 import { VideoService } from 'src/services';
 
 // ----------------------------------------------------------------------
@@ -42,19 +44,18 @@ function emptyRows(page, rowsPerPage, arrayLength) {
 }
 
 export default function VideoListView() {
-  const router = useRouter();
   const table = useTable();
-  const { enqueueSnackbar } = useSnackbar();
-
+  const router = useRouter();
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const getMyVideos = useCallback(async () => {
+  const getAllVideos = useCallback(async () => {
     try {
       setLoading(true);
       const response = await VideoService.getAllVideos();
       if (response?.status === 200) {
-        setTableData(response.data || []);
+        setTableData(response.data);
       }
     } catch (error) {
       console.error(error);
@@ -66,12 +67,10 @@ export default function VideoListView() {
 
   const handleDeleteRow = async (id) => {
     try {
-      const response = await VideoService.deleteVideo({
-        videoID: id
-      });
+      const response = await VideoService.deleteVideo(id);
       if (response?.status === 200) {
         enqueueSnackbar('Video deleted successfully');
-        getMyVideos(); // Refresh the list
+        getAllVideos(); // Refresh the list
       }
     } catch (error) {
       console.error(error);
@@ -80,8 +79,8 @@ export default function VideoListView() {
   };
 
   useEffect(() => {
-    getMyVideos();
-  }, [getMyVideos]);
+    getAllVideos();
+  }, [getAllVideos]);
 
   const notFound = !tableData.length;
 
@@ -100,13 +99,13 @@ export default function VideoListView() {
         justifyContent="space-between"
         sx={{ mb: 3 }}
       >
-        <Typography variant="h4">My Videos</Typography>
+        <Typography variant="h4">All Videos</Typography>
 
         <Button
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={() => router.push(paths.dashboard.video.my.add)}
+          onClick={() => router.push(paths.dashboard.admin.video.add)}
         >
           Add Video
         </Button>

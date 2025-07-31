@@ -77,6 +77,7 @@ export default function ProductDetailsSummary({
           gap: "5px",
           color: color,
           justifyContent: "end",
+          color: "#000"
         }}
       >
         <Iconify icon={icon} />
@@ -159,7 +160,7 @@ export default function ProductDetailsSummary({
           padding: ".75rem 1rem",
         }}
       >
-        <Typography fontWeight={700} variant="h5">
+        <Typography fontWeight={700} variant="h5" color="#000">
           {product.title}
         </Typography>
         <Box gap="5px" sx={{ display: "flex" }} alignItems="start">
@@ -167,7 +168,7 @@ export default function ProductDetailsSummary({
             icon="subway:location-1"
             sx={{ transform: "translateY(3px)" }}
           />
-          <Typography variant="body1">{product.location || "N/A"}</Typography>
+          <Typography variant="body1" color="#000">{product.location || "N/A"}</Typography>
         </Box>
 
         <Box sx={{ display: "flex" }} justifyContent="space-between">
@@ -176,6 +177,7 @@ export default function ProductDetailsSummary({
             sx={{ display: "flex" }}
             alignItems="center"
             variant="h4"
+            color="#000"
           >
             £{price ? Number(price)?.toLocaleString() : 0}
           </Typography>
@@ -209,7 +211,7 @@ export default function ProductDetailsSummary({
         }}
       >
         {product?.saleAs && product?.companyOrSellerName && (
-          <Typography fontWeight={700} variant="h5">
+          <Typography fontWeight={700} variant="h5" color="#000">
             {product.saleAs} : {product.companyOrSellerName || "N/A"}
           </Typography>
         )}
@@ -217,7 +219,7 @@ export default function ProductDetailsSummary({
         <Box mb={2} sx={{ display: "flex" }} justifyContent="space-between">
           <Link
             component="a"
-            sx={{ display: "flex" }}
+            sx={{ display: "flex", color: "#000" }}
             gap={1}
             fontWeight="bold"
             alignItems="center"
@@ -235,6 +237,7 @@ export default function ProductDetailsSummary({
           fontWeight={600}
           target="_blank"
           href={product?.link}
+          color="#000"
         >
           Watch Video
         </Link>
@@ -247,9 +250,10 @@ export default function ProductDetailsSummary({
       <Link
         variant="subtitle2"
         sx={{
-          color: "text.secondary",
+          
           display: "inline-flex",
           alignItems: "center",
+          color: "#000"
         }}
       >
         <Iconify icon="mingcute:add-line" width={16} sx={{ mr: 1 }} />
@@ -259,7 +263,7 @@ export default function ProductDetailsSummary({
       <Link
         variant="subtitle2"
         sx={{
-          color: "text.secondary",
+         color: "#000",
           display: "inline-flex",
           alignItems: "center",
         }}
@@ -284,7 +288,7 @@ export default function ProductDetailsSummary({
 
   const renderColorOptions = (
     <Stack direction="row">
-      <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
+      <Typography variant="subtitle2" sx={{ flexGrow: 1 }} color="#000">
         Color
       </Typography>
 
@@ -305,7 +309,7 @@ export default function ProductDetailsSummary({
 
   const renderSizeOptions = (
     <Stack direction="row">
-      <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
+      <Typography variant="subtitle2" sx={{ flexGrow: 1 }} color="#000">
         Size
       </Typography>
 
@@ -313,7 +317,7 @@ export default function ProductDetailsSummary({
         name="size"
         size="small"
         helperText={
-          <Link underline="always" color="textPrimary">
+          <Link underline="always"  sx={{color: "#000"}}>
             Size Chart
           </Link>
         }
@@ -327,7 +331,7 @@ export default function ProductDetailsSummary({
         }}
       >
         {sizes.map((size) => (
-          <MenuItem key={size} value={size}>
+          <MenuItem key={size} value={size} sx={{color: "#000"}}>
             {size}
           </MenuItem>
         ))}
@@ -380,7 +384,7 @@ export default function ProductDetailsSummary({
   // );
 
   const renderSubDescription = (
-    <Typography variant="body2" sx={{ color: "text.secondary" }}>
+    <Typography variant="body2" sx={{ color: "#000" }}>
       {subDescription}
     </Typography>
   );
@@ -390,7 +394,7 @@ export default function ProductDetailsSummary({
       direction="row"
       alignItems="center"
       sx={{
-        color: "text.disabled",
+        color: "#000",
         typography: "body2",
       }}
     >

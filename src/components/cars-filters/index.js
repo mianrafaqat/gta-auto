@@ -148,6 +148,9 @@ export default function CarsFiltersPage() {
           </Box>
         </Box>
       </Container>
+
+       {/* Sell Your Car Section */}
+       <SellYourCarSection />
       
       {/* Car Body Types Section */}
       <CarBodyTypesSection  />
@@ -174,8 +177,7 @@ export default function CarsFiltersPage() {
       {/* Upcoming Cars And Events Section */}
       <UpcomingCarsSection />
       
-      {/* Sell Your Car Section */}
-      <SellYourCarSection />
+     
       
     </>
   );

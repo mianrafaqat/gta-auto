@@ -199,7 +199,7 @@ export default function ProductFilters({
 
   const renderHead = (
     <Stack direction="row" alignItems="center" justifyContent="space-between">
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
+      <Typography variant="h6" color="#fff" sx={{ flexGrow: 1 }}>
         Filters
       </Typography>
 
@@ -240,7 +240,7 @@ export default function ProductFilters({
 
   const renderFuelType = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <Typography variant="subtitle2" color="#fff" sx={{ mb: 1 }}>
         Fuel Type
       </Typography>
       <Autocomplete
@@ -250,17 +250,19 @@ export default function ProductFilters({
         getOptionLabel={(option) => option}
         onChange={(event, value) => handleFuelType(value)}
         value={filters.fuelType}
+        sx={{color: "#fff"}}
         renderInput={(params) => (
           <TextField
             {...params}
             margin="none"
             placeholder="Select Fuel Type"
+           sx={{color: "#fff"}}
             // Set TextField's value based on selected option
             onChange={() => {}} // Make TextField uncontrolled to prevent override
           />
         )}
         renderOption={(props, option) => (
-          <li {...props} key={option}>
+          <li {...props} key={option} color="#fff">
             {option}
           </li>
         )}
@@ -275,13 +277,33 @@ export default function ProductFilters({
         fullWidth
         onChange={(e) => handleSearch(e.target.value)}
         label="Search"
+        sx={{
+          '& .MuiInputBase-input': {
+            color: '#fff',
+          },
+          '& .MuiInputLabel-root': {
+            color: '#fff',
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+          '& .MuiSvgIcon-root': {
+            color: '#fff',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+        }}
       />
     </Box>
   );
 
   const renderMileage = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
+      <Typography variant="subtitle2" color="#fff"  sx={{ flexGrow: 1 }}>
         Mileage
       </Typography>
 
@@ -306,7 +328,7 @@ export default function ProductFilters({
 
   const renderPrice = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
+      <Typography variant="subtitle2" color="#fff" sx={{ flexGrow: 1 }}>
         Price (£)
       </Typography>
 
@@ -342,7 +364,7 @@ export default function ProductFilters({
 
   const renderYear = (
     <Stack>
-      <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
+      <Typography variant="subtitle2" color="#fff" sx={{ flexGrow: 1 }}>
         Manufacturer Year
       </Typography>
 
@@ -408,9 +430,9 @@ export default function ProductFilters({
 
   const renderTabs = (
     <>
-      <Tabs value={currentTab} onChange={handleChangeTab}>
+      <Tabs value={currentTab} onChange={handleChangeTab} sx={{color: "#fff"}}>
         {TABS.map((tab) => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
+          <Tab key={tab.value} value={tab.value} label={tab.label} sx={{color: "#fff"}} />
         ))}
       </Tabs>
 
@@ -509,10 +531,10 @@ function SearchByCarBody({ onChange, carBodyList = [], reset = false }) {
         }}
         getOptionLabel={(option) => option}
         renderInput={(params) => (
-          <TextField {...params} label="Car Body" margin="none" />
+          <TextField {...params} label="Car Body" margin="none" sx={{color: "#fff"}} />
         )}
         renderOption={(props, option) => (
-          <li {...props} key={option}>
+          <li {...props} key={option} color="#000">
             {option}
           </li>
         )}
@@ -676,20 +698,55 @@ function SearchByModels({
   }, [paramsSelectedModel, JSON.stringify(carModelsList)]);
 
   return (
-    <Stack direction="column" gap={1}>
+    <Stack direction="column" gap={1} color="#fff">
       <Autocomplete
         fullWidth
         options={carsMakesList}
         onChange={handleCarSelectChange}
         value={selectedCar}
         // inputValue={inputValue}
+        sx={{
+          '& .MuiInputBase-input': {
+            color: '#fff',
+          },
+          '& .MuiInputLabel-root': {
+            color: '#fff',
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+          '& .MuiSvgIcon-root': {
+            color: '#fff',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+        }}
         getOptionLabel={(option) => option?.label || ""}
-        renderInput={(params) => <TextField {...params} label="Select Make" />}
+        renderInput={(params) => (
+          <TextField 
+            {...params} 
+            label="Select Make"
+          />
+        )}
         renderOption={(props, option) => (
-          <li {...props} value={option.value} key={option.label}>
+          <li 
+            {...props} 
+            value={option.value} 
+            key={option.label}
+            style={{ color: '#000' }}
+          >
             {option.label}
           </li>
         )}
+        ListboxProps={{
+          style: {
+            backgroundColor: '#fff',
+          },
+        }}
       />
 
       <Autocomplete
@@ -701,10 +758,30 @@ function SearchByModels({
         }}
         disabled={!Boolean(selectedCar)}
         // inputValue={inputValue}
+        sx={{
+          '& .MuiInputBase-input': {
+            color: '#fff',
+          },
+          '& .MuiInputLabel-root': {
+            color: '#fff',
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+          '& .MuiSvgIcon-root': {
+            color: '#fff',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#fff',
+          },
+        }}
         getOptionLabel={(option) => option?.model || ""}
-        renderInput={(params) => <TextField {...params} label="Select Model" />}
+        renderInput={(params) => <TextField {...params} label="Select Model" sx={{color: "#fff"}} />}
         renderOption={(props, option) => (
-          <li {...props} value={option.model} key={option.model}>
+          <li {...props} value={option.model} key={option.model} color="#000">
             {option.model}
           </li>
         )}
@@ -715,6 +792,7 @@ function SearchByModels({
         fullWidth
         variant="contained"
         onClick={handleFilterCarsByMakeAndModel}
+        sx={{color: "#000"}}
       >
         Search
       </Button>
@@ -755,7 +833,7 @@ function InputRange({ name = "priceRange", type, value, onFilters }) {
         variant="caption"
         sx={{
           flexShrink: 0,
-          color: "text.disabled",
+          color: "#fff",
           textTransform: "capitalize",
           fontWeight: "fontWeightSemiBold",
         }}
@@ -780,6 +858,7 @@ function InputRange({ name = "priceRange", type, value, onFilters }) {
           "aria-labelledby": "input-slider",
         }}
         sx={{
+          color: "#fff",
           borderRadius: 0.75,
           bgcolor: (theme) => alpha(theme.palette.grey[500], 0.08),
           [`& .${inputBaseClasses.input}`]: {

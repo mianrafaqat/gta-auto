@@ -26,6 +26,7 @@ export default function SellYourCarSection() {
         px: { xs: 2, sm: 3, md: 4 },
         backgroundColor: 'black',
         minHeight: '400px',
+        mt: "32px",
       }}
     >
       <Box

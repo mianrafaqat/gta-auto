@@ -308,9 +308,10 @@ export default function ProductShopView() {
                   variant="h4"
                   sx={{
                     my: { xs: 3, md: 5 },
+                    color: "#fff"
                   }}
                 >
-                  Vehicles
+                   Vehicles 
                 </Typography>
                 {!lgUp && !loading && (
                   <IconButton onClick={() => setToggle(!toggle)}>
@@ -323,7 +324,7 @@ export default function ProductShopView() {
             {/* Render NotFound component if no results */}
             <Grid item xs={12}>
               {!dataFiltered?.length && !loading && (
-                <EmptyContent filled title="No Data" sx={{ py: 10 }} />
+                <EmptyContent filled title="No Data" sx={{ py: 10, color: "#fff" }} />
               )}
             </Grid>
 

@@ -76,7 +76,7 @@ export default function CheckAvailabiltyForm({
   return (
     <Box>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Typography sx={{ mb: 1 }} variant="h4">
+        <Typography sx={{ mb: 1 }} variant="h4" color="#000">
           Request Information
         </Typography>
         <Divider sx={{ borderStyle: "dashed" }} />
@@ -98,6 +98,7 @@ export default function CheckAvailabiltyForm({
               display: "flex",
               alignItems: "center",
               gap: "10px",
+              color: "#000"
             }}
           >
             Hi! my name is{" "}
