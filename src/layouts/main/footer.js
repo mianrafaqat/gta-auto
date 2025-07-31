@@ -173,10 +173,12 @@ export default function Footer() {
               >
                 WhatsApp
               </Typography>
-              <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
-              <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
-                +1 202-918-2132
-              </Typography>
+              <Link href="https://wa.me/+923008411160" target="_blank" rel="noopener" sx={{ display: 'flex', alignItems: 'center', gap: 1, textDecoration: 'none' }}>
+                <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
+                <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
+                  +92 300-8411160
+                </Typography>
+              </Link>
             </Stack>
 
             {/* Call Us */}
@@ -192,10 +194,12 @@ export default function Footer() {
               >
                 Call Us
               </Typography>
-              <Iconify icon="eva:phone-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
-              <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
-                +1 202-918-2132
-              </Typography>
+              <Link href="tel:+92 300 8411160" sx={{ display: 'flex', alignItems: 'center', gap: 1, textDecoration: 'none' }}>
+                <Iconify icon="eva:phone-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
+                <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
+                  +92 300-8411160
+                </Typography>
+              </Link>
             </Stack>
           </Grid>
 

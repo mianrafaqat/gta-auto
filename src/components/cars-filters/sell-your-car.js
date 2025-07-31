@@ -54,9 +54,9 @@ export default function SellYourCarSection() {
         </Typography>
 
         {/* Benefits Section */}
-        <Grid container spacing={4} sx={{ mb: 6 }}>
+        <Grid container gap="32px" flexWrap={{md: "nowrap", xs: "wrap"}} justifyContent="center" sx={{ mb: 6 }}>
           {/* Left Column */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Stack spacing={2}>
               {benefits[0].left.map((benefit, index) => (
                 <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -83,7 +83,7 @@ export default function SellYourCarSection() {
           </Grid>
 
           {/* Right Column */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Stack spacing={2}>
               {benefits[0].right.map((benefit, index) => (
                 <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
