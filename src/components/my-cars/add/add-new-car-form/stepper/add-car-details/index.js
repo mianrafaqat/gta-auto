@@ -39,7 +39,7 @@ const CAR_DETAILS_FIELDS = [
     name: "carDetails.transmission",
     label: "Transmission",
     type: "select",
-    options: ["Automatic", "Manual"],
+    options: ["Automatic", "Manual", "CVT", "Semi-Automatic"],
   },
   {
     id: "condition",
@@ -238,20 +238,38 @@ export default function AddCarDetails({
         <Grid key={c.name} item xs={12} md={3}>
           {c.type === 'select' ? (
             <RHFSelect
-            
               name={c.name}
               label={`${c.label} *`}
               fullWidth
               error={!!errors?.carDetails?.[c.id]}
               helperText={errors?.carDetails?.[c.id]?.message || ' '}
+              InputLabelProps={{ 
+                shrink: true,
+                sx: {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                  background: '#fff',
+                  px: 1,
+                }
+              }}
               sx={{
                 '& .MuiOutlinedInput-root': {
+                  backgroundColor: 'white',
                   '&.Mui-error': {
                     borderColor: 'error.main',
-                  }
+                  },
+                  '& fieldset': {
+                    borderWidth: '1px !important',
+                  },
+                },
+                '& .MuiSelect-select': {
+                  padding: '12.5px 14px',
+                },
+                '& .MuiFormLabel-root': {
+                  marginTop: 0,
                 }
               }}
             >
+              <MenuItem value="">Select {c.label}</MenuItem>
               {c.options.map((option) => (
                 <MenuItem key={option} value={option}>
                   {option}
