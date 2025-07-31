@@ -6,20 +6,31 @@ import { useSnackbar } from 'src/components/snackbar';
 
 const getYoutubeId = (url) => {
   if (!url) return null;
-  // Handle different YouTube URL formats
-  const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/,
-    /^[a-zA-Z0-9_-]{11}$/
-  ];
+  try {
+    // Handle different YouTube URL formats
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/,
+      /^[a-zA-Z0-9_-]{11}$/
+    ];
 
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match && match[1]) {
-      return match[1];
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
     }
+    console.warn('Could not extract YouTube ID from URL:', url);
+    return null;
+  } catch (error) {
+    console.error('Error extracting YouTube ID:', error);
+    return null;
   }
+};
 
-  return null;
+const getThumbnailUrl = (videoUrl) => {
+  const videoId = getYoutubeId(videoUrl);
+  if (!videoId) return 'https://via.placeholder.com/480x360.png?text=Video+Unavailable';
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 };
 
 export default function BrowseVideosSection() {
@@ -34,11 +45,14 @@ export default function BrowseVideosSection() {
       try {
         setLoading(true);
         const response = await VideoService.getAllVideos();
+        console.log('Video response:', response); // Debug log
         if (response?.status === 200) {
-          setVideos(response.data || []);
+          const videoData = response.data || [];
+          console.log('Setting videos:', videoData); // Debug log
+          setVideos(videoData);
         }
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching videos:', error);
         enqueueSnackbar(error?.response?.data?.message || 'Failed to fetch videos', { variant: 'error' });
       } finally {
         setLoading(false);
@@ -47,6 +61,27 @@ export default function BrowseVideosSection() {
 
     fetchVideos();
   }, [enqueueSnackbar]);
+
+  // Add loading and empty states
+  if (loading) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 8, px: { xs: 2, sm: 3, md: 4 }, minHeight: '600px' }}>
+        <Typography variant="h6" sx={{ color: '#fff', textAlign: 'center' }}>
+          Loading videos...
+        </Typography>
+      </Container>
+    );
+  }
+
+  if (!videos || videos.length === 0) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 8, px: { xs: 2, sm: 3, md: 4 }, minHeight: '600px' }}>
+        <Typography variant="h6" sx={{ color: '#fff', textAlign: 'center' }}>
+          No videos available
+        </Typography>
+      </Container>
+    );
+  }
 
   const handleVideoClick = (videoUrl) => {
     console.log('Video URL:', videoUrl); // Debug log
@@ -133,9 +168,10 @@ export default function BrowseVideosSection() {
                   sx={{
                     position: 'relative',
                     height: '100%',
-                    background: `url(https://img.youtube.com/vi/${getYoutubeId(videos[0].videoUrl)}/maxresdefault.jpg)`,
+                    background: `url(${getThumbnailUrl(videos[0].videoUrl)})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -245,9 +281,10 @@ export default function BrowseVideosSection() {
                       sx={{
                         position: 'relative',
                         height: '140px',
-                        background: `url(https://img.youtube.com/vi/${getYoutubeId(video.videoUrl)}/hqdefault.jpg)`,
+                        background: `url(${getThumbnailUrl(video.videoUrl)})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
