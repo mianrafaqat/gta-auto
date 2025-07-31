@@ -2,6 +2,7 @@
 
 import isEqual from "lodash/isEqual";
 import { useState, useEffect, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
@@ -81,27 +82,61 @@ export default function MyCarsListPage() {
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState(HIDE_COLUMNS);
 
-  const { user = {} } = useAuthContext()?.user || {};
+  const queryClient = useQueryClient();
 
-  const [myCars, setMyCars] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchMyCars = async () => {
-    try {
-      setLoading(true);
-      const res = await CarsService.getMyCars(user?._id);
-      if (res?.data?.length) {
-        setMyCars(res?.data);
-      } else {
-        setMyCars([]);
+  // Query for fetching all cars
+  const { data: allCars = [], isLoading: loading } = useQuery({
+    queryKey: ['cars', 'all'],
+    queryFn: async () => {
+      const res = await CarsService.getAll();
+      if (res?.data) {
+        const filteredCars = res.data.filter(car => car.status !== "Paused");
+        return filteredCars;
       }
-    } catch (err) {
-      console.log("🚀 ~ fetchMyCars ~ err:", err);
-      setMyCars([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return [];
+    },
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Cache persists for 30 minutes
+  });
+
+  // Mutation for deleting a car
+  const deleteMutation = useMutation({
+    mutationFn: (data) => CarsService.deleteCarById(data),
+    onSuccess: (res) => {
+      enqueueSnackbar(res.data, { variant: 'success' });
+      queryClient.invalidateQueries(['cars', 'all']);
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message || 'Failed to delete car', { variant: 'error' });
+    },
+  });
+
+  // Mutation for updating car
+  const updateMutation = useMutation({
+    mutationFn: (data) => CarsService.updateCar(data),
+    onSuccess: (res) => {
+      enqueueSnackbar(res.data, { variant: 'success' });
+      queryClient.invalidateQueries(['cars', 'all']);
+      router.push(paths.dashboard.cars.my.list);
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message || 'Failed to update car', { variant: 'error' });
+    },
+  });
+
+  // Mutation for updating car status
+  const updateStatusMutation = useMutation({
+    mutationFn: (data) => CarsService.updateCar(data),
+    onSuccess: (res) => {
+      enqueueSnackbar(res.data, { variant: 'success' });
+      queryClient.invalidateQueries(['cars', 'all']);
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message || 'Failed to update status', { variant: 'error' });
+    },
+  });
+
+  const { user = {} } = useAuthContext()?.user || {};
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -121,70 +156,43 @@ export default function MyCarsListPage() {
     setFilters(defaultFilters);
   }, []);
 
+  // Update tableData only when allCars changes and is different
+  useEffect(() => {
+    if (!isEqual(tableData, allCars)) {
+      setTableData(allCars);
+    }
+  }, [allCars]);
+
   const handleDeleteRow = useCallback(
     (id) => {
-      const data = {
-        carID: id,
-        ownerID: user?._id,
-      };
-      handleDeleteCar(data, true);
+      deleteMutation.mutate({ carID: id });
     },
-    [enqueueSnackbar, tableData]
+    [deleteMutation]
   );
 
- 
-
-  const handleDeleteCar = async (data, singleRow = false) => {
-    try {
-      const res = await CarsService.deleteCarById(data);
-      if (res?.data && singleRow) {
-        enqueueSnackbar(res.data);
-        fetchMyCars();
+  const handleUpdateStatus = useCallback((details) => {
+    const { _id: carID = '', status } = details;
+    const newStatus = status === 'Active' ? 'Paused' : 'Active';
+    updateStatusMutation.mutate({ 
+      carID, 
+      status: newStatus 
+    }, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['cars', 'all']);
       }
-    } catch (e) {
-      console.log("error: ", e);
-      enqueueSnackbar(e, { variant: "error" });
-    }
-  };
-
-  
-  const handleUpdateStatus = async (details) => {
-    try {
-      let  {_id: carID = '', status } = details
-      status = status === 'Active' ? 'Paused' : 'Active'
-      const data = {
-        carID,
-        ownerID: user?._id,
-        status
-      }
-      const res = await CarsService.updateCar(data);
-      if (res?.status === 200) {
-        enqueueSnackbar(res.data);
-        fetchMyCars();
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      enqueueSnackbar(e, { variant: "error" });
-    }
-  };
+    });
+  }, [updateStatusMutation, queryClient]);
 
   const handleDeleteRows = useCallback(async () => {
     try {
-      if (selectedRowIds.length) {
-        selectedRowIds.forEach((id) => {
-          const data = {
-            ownerID: user?._id,
-            carID: id,
-          };
-          handleDeleteCar(data);
-        });
-        fetchMyCars();
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      enqueueSnackbar(e, { variant: "error" });
+      await Promise.all(
+        selectedRowIds.map((id) => deleteMutation.mutateAsync({ carID: id }))
+      );
+      setSelectedRowIds([]);
+    } catch (error) {
+      console.error('Error deleting multiple cars:', error);
     }
-  }, [selectedRowIds]);
+  }, [selectedRowIds, deleteMutation]);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -291,18 +299,8 @@ export default function MyCarsListPage() {
       .map((column) => column.field);
 
   useEffect(() => {
-    if (myCars.length) {
-      setTableData(myCars);
-    } else {
-      setTableData([]);
-    }
-  }, [myCars]);
-
-  useEffect(() => {
-    if (user?._id) {
-      fetchMyCars();
-    }
-  }, [user?._id]);
+    // fetchAllCars(); // This line is no longer needed as data is fetched via React Query
+  }, []);
 
   return (
     <>
@@ -355,12 +353,15 @@ export default function MyCarsListPage() {
             disableRowSelectionOnClick
             rows={dataFiltered}
             columns={columns}
-            loading={loading}
+            loading={loading || deleteMutation.isLoading || updateStatusMutation.isLoading}
             getRowHeight={() => "auto"}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
                 paginationModel: { pageSize: 10 },
+              },
+              sorting: {
+                sortModel: [{ field: 'createdAt', sort: 'desc' }],
               },
             }}
             onRowSelectionModelChange={(newSelectionModel) => {

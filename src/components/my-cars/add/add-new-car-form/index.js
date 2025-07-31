@@ -9,6 +9,7 @@ import {
   StepLabel,
   Stepper,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import FormProvider from "src/components/hook-form/form-provider";
 import { useState } from "react";
@@ -21,6 +22,7 @@ import { useSnackbar } from "src/components/snackbar";
 import { useRouter, useSearchParams } from "next/navigation";
 import { paths } from "src/routes/paths";
 import { useAuthContext } from "src/auth/hooks";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const numberToStringTransform = (value, originalValue) => {
   // Convert number to string
@@ -69,30 +71,57 @@ const schema = yup.object().shape({
 });
 
 export default function AddNewCarForm({ isEditMode = false }) {
-  const methods = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      carDetails: {
-        make: '',
-        yearOfManufacture: '',
-        engineCapacity: '',
-        fuelType: '',
-        colour: '',
-        model: '',
-        features: [],
-        makeType: '',
-        driveTrain: '',
-        doorPlan: '',
-        variant: '',
-      },
-      category: 'sale',
+  const params = useSearchParams();
+  const carID = params.get("carId");
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+  const { user = {} } = useAuthContext()?.user || {};
+  const queryClient = useQueryClient();
+
+  // Query for fetching car details in edit mode
+  const { data: carData, isLoading: isLoadingCarData } = useQuery({
+    queryKey: ['car', carID],
+    queryFn: async () => {
+      const res = await CarsService.getCarById(carID);
+      if (res?.status === 200 && res?.data) {
+        return res.data;
+      }
+      throw new Error('Failed to fetch car data');
     },
-    mode: 'onChange',
+    enabled: Boolean(isEditMode && carID),
   });
 
-  const [loading, setLoading] = useState(false);
+  const defaultValues = {
+    carDetails: {
+      make: '',
+      yearOfManufacture: '',
+      engineCapacity: '',
+      fuelType: '',
+      colour: '',
+      model: '',
+      features: [],
+      makeType: '',
+      driveTrain: '',
+      doorPlan: '',
+      variant: '',
+      tel: '',
+    },
+    category: 'sale',
+    title: '',
+    description: '',
+    image: [],
+    location: '',
+    postalCode: '',
+    price: '',
+    saleAs: '',
+    companyOrSellerName: '',
+  };
 
-  const [activeStep, setActiveStep] = useState(0);
+  const methods = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: isEditMode ? {} : defaultValues,
+    mode: 'onChange',
+  });
 
   const {
     handleSubmit,
@@ -101,56 +130,67 @@ export default function AddNewCarForm({ isEditMode = false }) {
     formState: { errors },
     watch,
   } = methods;
-  const currentValues = watch();
 
-  const { enqueueSnackbar } = useSnackbar();
-  const router = useRouter();
-  const { user = {} } = useAuthContext()?.user || {};
+  const [activeStep, setActiveStep] = useState(0);
 
-  const params = useSearchParams();
-  const carID = params.get("carId");
-
-
-
-  const onSubmit = handleSubmit(async (values) => {
-    try {
-      setLoading(true);
-      if (isEditMode) {
-        const res = await CarsService.updateCar({
-          ...values,
-          carID,
-          ownerID: user?._id,
-        });
-        if (res?.status === 200) {
-          enqueueSnackbar(res?.data, {
-            variant: "success",
-          });
-          router.push(paths.dashboard.cars.my.list);
-        }
-      } else {
-        const res = await CarsService.uploadCarImages(values.image);
-        if (res?.data?.imagesUrl) {
-          delete user?.password;
-          const data = {
-            ...values,
-            image: res.data.imagesUrl,
-            owner: { ...user },
-          };
-          const addCarRes = await CarsService.addNewCar(data);
-          if (addCarRes.status === 200) {
-            enqueueSnackbar(addCarRes?.data, {
-              variant: "success",
-            });
-            router.push(paths.dashboard.cars.my.list);
-          }
-        }
+  // Mutation for updating car
+  const updateCarMutation = useMutation({
+    mutationFn: (data) => CarsService.updateCar(data),
+    onSuccess: (res) => {
+      if (res?.status === 200) {
+        enqueueSnackbar(res?.data, { variant: "success" });
+        queryClient.invalidateQueries(['cars', 'all']);
+        router.push(paths.dashboard.cars.my.list);
       }
-    } catch (error) {
-      enqueueSnackbar(error, {
-        variant: "error",
+    },
+    onError: (error) => {
+      enqueueSnackbar(error?.message || 'Failed to update car', { variant: "error" });
+    },
+  });
+
+  // Mutation for adding new car
+  const addCarMutation = useMutation({
+    mutationFn: async (values) => {
+      const imageRes = await CarsService.uploadCarImages(values.image);
+      if (imageRes?.data?.imagesUrl) {
+        const data = {
+          ...values,
+          image: imageRes.data.imagesUrl,
+          owner: { ...user },
+        };
+        return CarsService.addNewCar(data);
+      }
+      throw new Error('Failed to upload images');
+    },
+    onSuccess: (res) => {
+      if (res?.status === 200) {
+        enqueueSnackbar(res?.data, { variant: "success" });
+        queryClient.invalidateQueries(['cars', 'all']);
+        router.push(paths.dashboard.cars.my.list);
+      }
+    },
+    onError: (error) => {
+      enqueueSnackbar(error?.message || 'Failed to add car', { variant: "error" });
+    },
+  });
+
+  // Set form data when car data is fetched
+  useEffect(() => {
+    if (isEditMode && carData) {
+      console.log('Setting form data:', carData);
+      reset(carData);
+    }
+  }, [isEditMode, carData, reset]);
+
+  const onSubmit = handleSubmit((values) => {
+    if (isEditMode) {
+      updateCarMutation.mutate({
+        ...values,
+        carID,
+        ownerID: user?._id,
       });
-    } finally {
-      setLoading(false);
+    } else {
+      addCarMutation.mutate(values);
     }
   });
 
@@ -188,36 +228,32 @@ export default function AddNewCarForm({ isEditMode = false }) {
       step: (
         <AdditionalInformation
           isEditMode={isEditMode}
-          loading={loading}
+          loading={updateCarMutation.isLoading || addCarMutation.isLoading}
           setActiveStep={setActiveStep}
         />
       ),
     },
   ];
 
-  const fetchCarById = async () => {
-    try {
-      const res = await CarsService.getCarById(carID);
-      if (res?.status === 200) {
-        reset(res?.data);
-      }
-    } catch (err) {
-      console.log("error: ", err);
-    }
-  };
-
-  useEffect(() => {
-    if (isEditMode && carID) {
-      fetchCarById();
-    }
-  }, [isEditMode, carID]);
+  if (isEditMode && isLoadingCarData) {
+    return (
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '400px' 
+      }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box>
       <FormProvider methods={methods} onSubmit={onSubmit}>
         <Stepper activeStep={activeStep} orientation="vertical">
-          {STEPPER.map((s) => (
-            <Step>
+          {STEPPER.map((s, index) => (
+            <Step key={index}>
               <StepLabel>{s.label}</StepLabel>
               <StepContent>{s.step}</StepContent>
             </Step>

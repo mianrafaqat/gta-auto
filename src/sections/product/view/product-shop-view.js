@@ -183,7 +183,7 @@ export default function ProductShopView() {
       console.log("error: ", err);
     } finally {
       // setLoading(false);
-      console.log("allCars: ");
+      console.log("allCars: ", allCars);
     }
   };
 
