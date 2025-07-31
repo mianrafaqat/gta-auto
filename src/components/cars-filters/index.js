@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import Container from "@mui/material/Container";
 import MuxPlayer from "@mux/mux-player-react";
 import {
@@ -195,8 +195,16 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
   const transmissionOptions = ["Automatic", "Manual", "CVT", "Semi-Automatic"];
 
   // React Query hooks
-  const { data: carsMakesList = [], isLoading: makesLoading } = useGetCarMakes();
+  const { data: carsMakesResponse, isLoading: makesLoading } = useGetCarMakes();
   const { data: carModelsData, isLoading: modelsLoading } = useGetCarModels(selectedCar?.value);
+
+  // Ensure carsMakesList is always an array
+  const carsMakesList = useMemo(() => {
+    if (carsMakesResponse?.data && Array.isArray(carsMakesResponse.data)) {
+      return carsMakesResponse.data;
+    }
+    return [];
+  }, [carsMakesResponse]);
 
   const fetchCarModels = async () => {
     try {
@@ -299,7 +307,7 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
         {/* Make Dropdown */}
         <Box sx={{ flex: 1, borderRight: '2px solid #e0e0e0', display: 'flex', alignItems: 'center', width: '100%' }}>
           <Autocomplete
-            options={carsMakesList}
+            options={carsMakesList || []}
             onChange={handleCarSelectChange}
             value={selectedCar}
             getOptionLabel={(option) => option?.label || ""}
