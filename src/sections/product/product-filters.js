@@ -250,20 +250,53 @@ export default function ProductFilters({
         getOptionLabel={(option) => option}
         onChange={(event, value) => handleFuelType(value)}
         value={filters.fuelType}
-        sx={{
-          '& .MuiInputBase-input': {
-            color: '#fff',
-          },
-          '& .MuiInputLabel-root': {
-            color: '#fff',
-          },
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            margin="none"
-            placeholder="Select Fuel Type"
-           sx={{color: "#fff"}}
+                  sx={{
+            '& .MuiInputBase-input': {
+              color: '#fff',
+              '&::placeholder': {
+                color: '#fff',
+                opacity: 1
+              }
+            },
+            '& .MuiInputLabel-root': {
+              color: '#fff',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#fff',
+            },
+            '& .MuiSvgIcon-root': {
+              color: '#fff',
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#fff',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#fff',
+            }
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              margin="none"
+              placeholder="Select Fuel Type"
+              sx={{
+                '& .MuiInputBase-input': { 
+                  color: '#fff',
+                  '&::placeholder': {
+                    color: '#fff',
+                    opacity: 1
+                  }
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#fff'
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#fff'
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#fff'
+                }
+              }}
             // Set TextField's value based on selected option
             onChange={() => {}} // Make TextField uncontrolled to prevent override
           />
@@ -561,14 +594,30 @@ function SearchByCarBody({ onChange, carBodyList = [], reset = false }) {
           onChange(newValue);
           setSelectedBody(newValue);
         }}
-        sx={{
-          '& .MuiInputBase-input': {
-            color: '#fff',
-          },
-          '& .MuiInputLabel-root': {
-            color: '#fff',
-          },
-        }}
+                  sx={{
+            '& .MuiInputBase-input': {
+              color: '#fff',
+              '&::placeholder': {
+                color: '#fff',
+                opacity: 1
+              }
+            },
+            '& .MuiInputLabel-root': {
+              color: '#fff',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#fff',
+            },
+            '& .MuiSvgIcon-root': {
+              color: '#fff',
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#fff',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#fff',
+            }
+          }}
         getOptionLabel={(option) => option}
         renderInput={(params) => (
           <TextField {...params} label="Car Body" margin="none" sx={{color: "#fff"}} />
