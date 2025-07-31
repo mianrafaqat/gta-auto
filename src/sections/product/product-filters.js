@@ -230,9 +230,7 @@ export default function ProductFilters({
          <ToggleButton value='sale' key='sale' >
           Sale
         </ToggleButton>
-        <ToggleButton value='hire' key='hire' >
-          Hire
-        </ToggleButton>
+       
        
       </ToggleButtonGroup>
     )
@@ -475,9 +473,10 @@ export default function ProductFilters({
         onChange={handleChangeTab} 
         sx={{
           '& .MuiTab-root': {
-            color: 'rgba(255, 255, 255, 0.7)',
+            color: '#fff',
             '&:hover': {
               color: '#fff',
+              opacity: 0.8
             }
           },
           '& .MuiTab-root.Mui-selected': {
@@ -485,10 +484,6 @@ export default function ProductFilters({
           },
           '& .MuiTabs-indicator': {
             backgroundColor: '#00FF00',
-          },
-          '& .MuiButtonBase-root': {
-            color: '#fff',
-            opacity: 1
           }
         }}
       >
@@ -881,7 +876,7 @@ function SearchByModels({
         fullWidth
         variant="contained"
         onClick={handleFilterCarsByMakeAndModel}
-        sx={{color: "#000", backgroundColor: "#4caf50"}}
+        sx={{color: "#fff", backgroundColor: "#4caf50"}}
       >
         Search
       </Button>
