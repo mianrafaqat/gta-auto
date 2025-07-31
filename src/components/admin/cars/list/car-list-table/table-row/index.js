@@ -149,7 +149,7 @@ export default function CarTableRow({
           />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: "nowrap" }}>£{row.price}</TableCell>
+        <TableCell sx={{ whiteSpace: "nowrap" }}>PKR{row.price}</TableCell>
 
         <TableCell sx={{ whiteSpace: "nowrap" }}>
           <ListItemText

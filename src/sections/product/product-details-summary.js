@@ -179,7 +179,7 @@ export default function ProductDetailsSummary({
             variant="h4"
             color="#000"
           >
-            £{price ? Number(price)?.toLocaleString() : 0}
+            PKR{price ? Number(price)?.toLocaleString() : 0}
           </Typography>
           <Typography
             color="error"

@@ -263,7 +263,7 @@ export default function ProductItem({
         justifyContent="space-between"
         color= "white"
       >
-          £{Number(price)?.toLocaleString()} 
+          PKR{Number(price)?.toLocaleString()} 
           <Typography variant="caption" color= "white"> |</Typography>
 
           <Typography variant="caption" color= "white"> {carDetails?.mileage} mi</Typography>
@@ -301,7 +301,7 @@ export default function ProductItem({
           <Typography variant="caption" color= "white">{carDetails?.mileage} mi</Typography>
         </Stack>
         <Box fontWeight="bold" component="span" color= "white">
-          £{Number(price)?.toLocaleString()} 
+          PKR{Number(price)?.toLocaleString()} 
           
         </Box>
       </Stack>}

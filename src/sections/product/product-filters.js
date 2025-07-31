@@ -369,7 +369,7 @@ export default function ProductFilters({
   const renderPrice = (
     <Stack>
       <Typography variant="subtitle2" color="#fff" sx={{ flexGrow: 1 }}>
-        Price (£)
+        Price (PKR)
       </Typography>
 
       <Stack direction="row" spacing={5} sx={{ my: 2 }}>
