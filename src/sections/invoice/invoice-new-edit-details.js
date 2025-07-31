@@ -291,7 +291,7 @@ export default function InvoiceNewEditDetails() {
         >
           <RHFTextField
             size="small"
-            label="Shipping(£)"
+            label="Shipping(PKR)"
             name="shipping"
             type="number"
             sx={{ maxWidth: { md: 120 } }}
@@ -299,7 +299,7 @@ export default function InvoiceNewEditDetails() {
 
           <RHFTextField
             size="small"
-            label="Discount(£)"
+            label="Discount(PKR)"
             name="discount"
             type="number"
             sx={{ maxWidth: { md: 120 } }}

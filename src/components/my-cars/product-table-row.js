@@ -17,7 +17,7 @@ import { paths } from 'src/routes/paths';
 // ----------------------------------------------------------------------
 
 export function RenderCellPrice({ params }) {
-  return <>£{params.row.price}</>;
+  return <>PKR{params.row.price}</>;
 }
 
 RenderCellPrice.propTypes = {
