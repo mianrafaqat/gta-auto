@@ -53,6 +53,7 @@ import SvgColor from "src/components/svg-color";
 import Loading from "src/app/loading";
 import { SplashScreen } from "src/components/loading-screen";
 import { Icon } from "@iconify/react";
+import { useQuery } from '@tanstack/react-query';
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -84,12 +85,23 @@ export default function ProductShopView() {
   const [sortBy, setSortBy] = useState("featured");
 
   const [filters, setFilters] = useState(defaultFilters);
-  const [loading, setLoading] = useState(true); // by default true so when car API is fetched then loading will set to false.
-
-  // const { productsLoading } = useGetProducts();
-
-  const [allCars, setAllCars] = useState([]);
   const [reset, setReset] = useState(false);
+
+  // Replace useState and manual fetching with React Query
+  const { data: allCars = [], isLoading: loading } = useQuery({
+    queryKey: ['cars', 'all'],
+    queryFn: async () => {
+      const res = await CarsService.getAll();
+      if (res?.data) {
+        return res?.data?.filter((c) => c?.status !== "Paused") || [];
+      }
+      return [];
+    },
+    staleTime: Infinity, // Data will never become stale automatically
+    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
@@ -100,7 +112,6 @@ export default function ProductShopView() {
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
-    fetchAllCars();
     setReset((prev) => !prev);
   }, []);
 
@@ -202,21 +213,15 @@ export default function ProductShopView() {
             open={openFilters.value}
             onOpen={openFilters.onTrue}
             onClose={openFilters.onFalse}
-            //
             filters={filters}
             onFilters={handleFilters}
-            //
             canReset={canReset}
             onResetFilters={handleResetFilters}
-            //
             colorOptions={PRODUCT_COLOR_OPTIONS}
             ratingOptions={PRODUCT_RATING_OPTIONS}
             genderOptions={PRODUCT_GENDER_OPTIONS}
-            // categoryOptions={[...CATOGRIES_LIST]}
             fuelOptions={[...FUEL_TYPES_LIST]}
-            onHandleSearch={setAllCars}
             reset={reset}
-            fetchAllCars={fetchAllCars}
           />
         </Box>
       ) : (
@@ -234,19 +239,14 @@ export default function ProductShopView() {
               open={openFilters.value}
               onOpen={openFilters.onTrue}
               onClose={openFilters.onFalse}
-              //
               filters={filters}
               onFilters={handleFilters}
-              //
               canReset={canReset}
               onResetFilters={handleResetFilters}
-              //
               colorOptions={PRODUCT_COLOR_OPTIONS}
               ratingOptions={PRODUCT_RATING_OPTIONS}
               genderOptions={PRODUCT_GENDER_OPTIONS}
-              // categoryOptions={[...CATOGRIES_LIST]}
               fuelOptions={[...FUEL_TYPES_LIST]}
-              onHandleSearch={setAllCars}
               reset={reset}
             />
           </Box>
