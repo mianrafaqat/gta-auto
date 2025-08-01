@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Grid, Button, Container, Stack } from '@mui/material';
 import Iconify from '../iconify';
+import { useRouter } from 'next/navigation';
 
 const benefits = [
   {
@@ -18,6 +19,7 @@ const benefits = [
 ];
 
 export default function SellYourCarSection() {
+  const router = useRouter();
   return (
     <Container
       maxWidth="xl"
@@ -127,6 +129,7 @@ export default function SellYourCarSection() {
                 backgroundColor: '#45a049',
               },
             }}
+            onClick={() => router.push('/auth/jwt/login')}
           >
             Post Your Ad
           </Button>
