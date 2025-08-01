@@ -2,6 +2,7 @@ import { API_URLS } from "src/utils/apiUrls";
 import gtaAutosInstance from "src/utils/requestInterceptor";
 
 class CarsService {
+  // Public Routes
   getAll = async () => {
     try {
       const res = await gtaAutosInstance.get(API_URLS.cars.getAll);
@@ -10,40 +11,89 @@ class CarsService {
       throw ex;
     }
   };
-  getMyCars = async (userId) => {
+
+  getById = async (data) => {
     try {
-      const res = await this.getAll();
-      if (res?.data?.length) {
-        const { data: totalCars } = res;
-        const filterCars = totalCars.filter(
-          (car) => car?.owner?._id === userId
-        );
-        return {
-          data: filterCars,
-        };
-      } else {
-        return {
-          data: [],
-        };
-      }
-    } catch (ex) {
-      throw ex;
-    }
-  };
-  getDetailsByRegNo = async (regNo) => {
-    try {
-      const data = {
-        registrationNumber: regNo,
-      };
-      const res = await gtaAutosInstance.post(
-        API_URLS.cars.getDetailsByRegNo,
-        data
-      );
+      const res = await gtaAutosInstance.post(API_URLS.cars.getById, data);
       return res;
     } catch (ex) {
       throw ex;
     }
   };
+
+  getByRegNo = async (data) => {
+    try {
+      const res = await gtaAutosInstance.post(API_URLS.cars.getByRegNo, data);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  getCarsList = async () => {
+    try {
+      const res = await gtaAutosInstance.get(API_URLS.cars.carsList);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  getCarsBodyList = async () => {
+    try {
+      const res = await gtaAutosInstance.get(API_URLS.cars.carsBodyList);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  getCarModelsByCar = async (data) => {
+    try {
+      const res = await gtaAutosInstance.post(API_URLS.cars.getCarModelsByCar, data);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  getCarModelsByYear = async (data) => {
+    try {
+      const res = await gtaAutosInstance.post(API_URLS.cars.getCarModelsByYear, data);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  filterByMakeAndModel = async (data) => {
+    try {
+      const res = await gtaAutosInstance.post(API_URLS.cars.filterByMakeAndModel, data);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  sendEmailToCarOwner = async (data) => {
+    try {
+      const res = await gtaAutosInstance.post(API_URLS.cars.sendEmailToCarOwner, data);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  // Protected Routes
+  getMyCars = async () => {
+    try {
+      const res = await gtaAutosInstance.get(API_URLS.cars.getMyCars);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
   uploadCarImages = async (files) => {
     try {
       const formData = new FormData();
@@ -53,7 +103,7 @@ class CarsService {
         }
       });
       const res = await gtaAutosInstance.post(
-        API_URLS.cars.imagesUpload,
+        API_URLS.cars.uploadCarImages,
         formData,
         {
           headers: {
@@ -66,168 +116,29 @@ class CarsService {
       throw ex;
     }
   };
-  addNewCar = async (data) => {
+
+  // Admin Routes
+  add = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.addCar, data);
+      const res = await gtaAutosInstance.post(API_URLS.cars.add, data);
       return res;
     } catch (ex) {
       throw ex;
     }
   };
 
-  deleteCarById = async (data) => {
+  update = async (data) => {
     try {
-      const res = await gtaAutosInstance.delete(API_URLS.cars.deleteCar, {
-        data,
-      });
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-  updateCar = async (data) => {
-    try {
-      async function handleUpdateCar(updateData) {
-        try {
-          const res = await gtaAutosInstance.put(
-            API_URLS.cars.updateCar,
-            updateData
-          );
-          return res;
-        } catch (ex) {
-          throw ex;
-        }
-      }
-
-      let newImageAdded = data?.image?.some((img) => typeof img === "object");
-      if (newImageAdded) {
-        const uploadImageResponse = await this.uploadCarImages(data?.image);
-        if (uploadImageResponse?.data?.imagesUrl) {
-          let image = data?.image.filter((img) => typeof img === "string");
-          image = [...image, ...uploadImageResponse?.data?.imagesUrl];
-          data = {
-            ...data,
-            image,
-          };
-          return handleUpdateCar(data);
-        } else {
-          return {
-            status: 400,
-            data: "Something went wrong",
-          };
-        }
-      } else {
-        return handleUpdateCar(data);
-      }
-    } catch (ex) {
-      throw ex;
-    }
-  };
-  getCarById = async (carID) => {
-    try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getById, {
-        carID,
-      });
+      const res = await gtaAutosInstance.put(API_URLS.cars.update, data);
       return res;
     } catch (ex) {
       throw ex;
     }
   };
 
-  getCarMakes = async () => {
+  delete = async (data) => {
     try {
-      const res = await gtaAutosInstance.get(API_URLS.cars.getCarsMakesList);
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-
-  getCarModels = async ({ selectedCar }) => {
-    try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getCarModels, {
-        selectedCar,
-      });
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-
-  getCarModelsByYear = async ({ selectedCar, year }) => {
-    try {
-      year = year.toString();
-      const res = await gtaAutosInstance.post(
-        API_URLS.cars.getCarModelsByYear,
-        { selectedCar, year }
-      );
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-
-  filterByMakeAndModel = async ({ make, model }) => {
-    try {
-      const res = await gtaAutosInstance.post(
-        API_URLS.cars.filterByModalAndMake,
-        { make, model }
-      );
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-
-  getCarBodyList = async () => {
-    try {
-      const res = await gtaAutosInstance.get(API_URLS.cars.getCarBodyList);
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-  addOrRemoveFavouriteCar = async (data) => {
-    try {
-      const res = await gtaAutosInstance.post(
-        API_URLS.cars.addOrRemoveFav,
-        data
-      );
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-
-  getUserFavouriteCar = async (data) => {
-    try {
-      const res = await gtaAutosInstance.post(
-        API_URLS.cars.getUserFavouriteById,
-        data
-      );
-
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-
-  sendEmail = async (data) => {
-    try {
-      const res = await gtaAutosInstance.post(
-        API_URLS.cars.sendEmailToCarOwner,
-        data
-      );
-
-      return res;
-    } catch (ex) {
-      throw ex;
-    }
-  };
-
-  getCarDealOptions = async () => {
-    try {
-      const res = await gtaAutosInstance.get(API_URLS.cars.getCarDealsList);
+      const res = await gtaAutosInstance.delete(API_URLS.cars.delete, { data });
       return res;
     } catch (ex) {
       throw ex;

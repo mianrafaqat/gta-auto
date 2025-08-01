@@ -158,7 +158,7 @@ export default function AddNewCarForm({ isEditMode = false }) {
           image: imageRes.data.imagesUrl,
           owner: { ...user },
         };
-        return CarsService.addNewCar(data);
+        return CarsService.add(data);
       }
       throw new Error('Failed to upload images');
     },

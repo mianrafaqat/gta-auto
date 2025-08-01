@@ -60,7 +60,10 @@ const REQUIRED_FIELDS = [
   'registeredCity',
   'condition',
   'transmission',
-  'carType'
+  'carType',
+  'makeType',
+  'driveTrain',
+  'doorPlan'
 ];
 
 export default function AddCarDetails({
@@ -69,6 +72,8 @@ export default function AddCarDetails({
 }) {
   const [carModels, setCarModels] = useState([]);
   const [carMakesList, setCarMakesList] = useState([]);
+  const [isCustomModel, setIsCustomModel] = useState(false);
+  const [isCustomVariant, setIsCustomVariant] = useState(false);
 
   const { setValue, watch, getValues, trigger, formState: { errors } } = useFormContext();
   
@@ -165,22 +170,45 @@ export default function AddCarDetails({
     fetchCarMakes();
   }, []);
 
+  const DEFAULT_FEATURES = [
+    "Air Conditioning",
+    "Power Steering",
+    "Power Windows",
+    "ABS",
+    "Airbags",
+    "Navigation System",
+    "Bluetooth",
+    "Keyless Entry",
+    "Sunroof",
+    "Leather Seats",
+    "Alloy Wheels",
+    "Parking Sensors",
+    "Backup Camera",
+    "Cruise Control",
+    "USB Port",
+    "FM Radio"
+  ];
+
   const features = useMemo(() => {
     if (!carModels?.length || !carDetails?.model) {
+      // If no model is selected, provide default features
       setValue("carDetails.features", []);
-      return [];
+      return DEFAULT_FEATURES;
     }
 
     const selectedModel = carModels.find(car => car?.model === carDetails?.model);
-    if (!selectedModel) return [];
+    if (!selectedModel) {
+      // If model not found, provide default features
+      return DEFAULT_FEATURES;
+    }
 
-    setValue("carDetails.features", [...selectedModel.features]);
-    setValue("carDetails.makeType", selectedModel.makeType);
-    setValue("carDetails.driveTrain", selectedModel.wheel_plan);
-    setValue("carDetails.wheelType", selectedModel.wheel_type);
-    setValue("carDetails.doorPlan", selectedModel.door_plan);
+    setValue("carDetails.features", [...(selectedModel.features || [])]);
+    setValue("carDetails.makeType", selectedModel.makeType || "");
+    setValue("carDetails.driveTrain", selectedModel.wheel_plan || "");
+    setValue("carDetails.wheelType", selectedModel.wheel_type || "");
+    setValue("carDetails.doorPlan", selectedModel.door_plan || "");
 
-    return selectedModel.features || [];
+    return selectedModel.features?.length ? selectedModel.features : DEFAULT_FEATURES;
   }, [carDetails?.model, carModels]);
 
   const variants = useMemo(() => {
@@ -299,7 +327,24 @@ export default function AddCarDetails({
       ))}
 
       <Grid item xs={12} md={3}>
-        {carModels.length > 0 && (
+        {isCustomModel ? (
+          <RHFTextField
+            fullWidth
+            name="carDetails.model"
+            label="Custom Model *"
+            InputLabelProps={{ shrink: true }}
+            error={!!errors?.carDetails?.model}
+            helperText={errors?.carDetails?.model?.message || ' '}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: 'white',
+                '&.Mui-error': {
+                  borderColor: 'error.main',
+                }
+              }
+            }}
+          />
+        ) : (
           <RHFSelect 
             fullWidth 
             name="carDetails.model" 
@@ -308,12 +353,24 @@ export default function AddCarDetails({
             helperText={errors?.carDetails?.model?.message || ' '}
             sx={{
               '& .MuiOutlinedInput-root': {
+                backgroundColor: 'white',
                 '&.Mui-error': {
                   borderColor: 'error.main',
                 }
               }
             }}
+            onChange={(e) => {
+              if (e.target.value === 'custom') {
+                setIsCustomModel(true);
+                setValue('carDetails.model', '');
+              } else {
+                setValue('carDetails.model', e.target.value);
+              }
+            }}
           >
+            <MenuItem value="custom">
+              <em>Enter Custom Model</em>
+            </MenuItem>
             {carModels.map((data) => (
               <MenuItem key={data?.model} value={data?.model}>
                 {data?.model}
@@ -323,45 +380,89 @@ export default function AddCarDetails({
         )}
       </Grid>
 
-      {carDetails?.model && (
-        <>
-          <Grid item xs={12} md={3}>
-            <RHFTextField
-              InputLabelProps={{ shrink: true }}
-              label="Make Type"
-              name="carDetails.makeType"
-            />
-          </Grid>
+      <Grid item xs={12} md={3}>
+        <RHFTextField
+          InputLabelProps={{ shrink: true }}
+          label="Make Type *"
+          name="carDetails.makeType"
+          error={!!errors?.carDetails?.makeType}
+          helperText={errors?.carDetails?.makeType?.message || ' '}
+        />
+      </Grid>
 
-          <Grid item xs={12} md={3}>
-            <RHFTextField
-              InputLabelProps={{ shrink: true }}
-              label="Drivetrain"
-              name="carDetails.driveTrain"
-            />
-          </Grid>
+      <Grid item xs={12} md={3}>
+        <RHFTextField
+          InputLabelProps={{ shrink: true }}
+          label="Drivetrain *"
+          name="carDetails.driveTrain"
+          error={!!errors?.carDetails?.driveTrain}
+          helperText={errors?.carDetails?.driveTrain?.message || ' '}
+        />
+      </Grid>
 
-          <Grid item xs={12} md={3}>
-            <RHFTextField
-              InputLabelProps={{ shrink: true }}
-              label="Door Plan"
-              name="carDetails.doorPlan"
-            />
-          </Grid>
-        </>
-      )}
+      <Grid item xs={12} md={3}>
+        <RHFTextField
+          InputLabelProps={{ shrink: true }}
+          label="Door Plan *"
+          name="carDetails.doorPlan"
+          error={!!errors?.carDetails?.doorPlan}
+          helperText={errors?.carDetails?.doorPlan?.message || ' '}
+        />
+      </Grid>
 
-      {variants?.length > 0 && (
-        <Grid item xs={12} md={3}>
-          <RHFSelect fullWidth name="carDetails.variant" label="Variant">
+      <Grid item xs={12} md={3}>
+        {isCustomVariant ? (
+          <RHFTextField
+            fullWidth
+            name="carDetails.variant"
+            label="Custom Variant"
+            InputLabelProps={{ shrink: true }}
+            error={!!errors?.carDetails?.variant}
+            helperText={errors?.carDetails?.variant?.message || ' '}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: 'white',
+                '&.Mui-error': {
+                  borderColor: 'error.main',
+                }
+              }
+            }}
+          />
+        ) : (
+          <RHFSelect 
+            fullWidth 
+            name="carDetails.variant" 
+            label="Variant"
+            error={!!errors?.carDetails?.variant}
+            helperText={errors?.carDetails?.variant?.message || ' '}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: 'white',
+                '&.Mui-error': {
+                  borderColor: 'error.main',
+                }
+              }
+            }}
+            onChange={(e) => {
+              if (e.target.value === 'custom') {
+                setIsCustomVariant(true);
+                setValue('carDetails.variant', '');
+              } else {
+                setValue('carDetails.variant', e.target.value);
+              }
+            }}
+          >
+            <MenuItem value="custom">
+              <em>Enter Custom Variant</em>
+            </MenuItem>
             {variants.map((data) => (
               <MenuItem key={data} value={data}>
                 {data}
               </MenuItem>
             ))}
           </RHFSelect>
-        </Grid>
-      )}
+        )}
+      </Grid>
 
       <Grid item xs={12} md={12}>
         {features.length > 0 && (
