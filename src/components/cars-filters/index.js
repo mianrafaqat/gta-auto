@@ -140,7 +140,8 @@ export default function CarsFiltersPage() {
               "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
             position: 'relative',
             zIndex: 1,
-            mb: "-50px"
+            mb: "-50px",
+            display: {xs: 'none', md: 'block'}
           }}
         >
           <Box mt={2}>
@@ -153,7 +154,7 @@ export default function CarsFiltersPage() {
        <SellYourCarSection />
       
       {/* Car Body Types Section */}
-      <CarBodyTypesSection  />
+      {/* <CarBodyTypesSection  /> */}
       
       {/* Services Section */}
       <ServicesSection />
@@ -165,9 +166,9 @@ export default function CarsFiltersPage() {
       
       
       {/* Latest Products Section */}
-      <LatestProductsSection />
+      {/* <LatestProductsSection /> */}
 
-      <BrowseBrandsSection />
+      {/* <BrowseBrandsSection /> */}
       
       
       
@@ -175,7 +176,7 @@ export default function CarsFiltersPage() {
       <BrowseVideosSection />
       
       {/* Upcoming Cars And Events Section */}
-      <UpcomingCarsSection />
+      {/* <UpcomingCarsSection /> */}
       
      
       

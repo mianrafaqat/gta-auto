@@ -58,13 +58,43 @@ export default function LastestEightCars() {
       </Typography>
       {allCars.length > 0 ? (
         <>
-          <Grid container spacing={2} sx={{ mb: 4 }}>
-            {allCars.slice(0, 4).map((product) => (
-              <Grid xs={12} md={6} lg={3} item key={product._id}>
-                <ProductItem onHome product={product} />
-              </Grid>
-            ))}
-          </Grid>
+          <Box 
+            sx={{ 
+              mb: 4,
+              overflow: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              '&::-webkit-scrollbar': {
+                display: 'none'
+              }
+            }}
+          >
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 2,
+              minWidth: 'fit-content',
+              px: { xs: 2, md: 0 }
+            }}>
+              {allCars.slice(0, 4).map((product) => (
+                <Box 
+                  key={product._id}
+                  sx={{ 
+                    minWidth: { 
+                      xs: '280px', 
+                      md: 'auto' 
+                    },
+                    flexShrink: 0,
+                    width: {
+                      md: 'calc(25% - 16px)'
+                    }
+                  }}
+                >
+                  <ProductItem onHome product={product} />
+                </Box>
+              ))}
+            </Box>
+          </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 4 }}>
             <Button 
               variant="contained" 
