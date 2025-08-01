@@ -56,10 +56,10 @@ const ICONS = {
 export function useNavData() {
   const { t } = useTranslate();
   const auth = useAuthContext();
-
+  console.log('auth', auth);
   const isAuthenticated = useMemo(() => {
-    const userAccount = auth?.user?.user;
-    if (userAccount?._id) {
+    const userAccount = auth?.authenticated;
+    if (userAccount) {
       return true;
     }
     return false;

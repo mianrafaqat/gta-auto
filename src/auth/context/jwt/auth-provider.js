@@ -9,7 +9,7 @@ import gtaAutosInstance from "src/utils/requestInterceptor";
 
 import {
   setSession,
-  storeAccessTokenSessionStorage,
+  storeTokens,
   storeUserDetailsSessionStorage,
 } from "./utils";
 
@@ -110,16 +110,21 @@ export function AuthProvider({ children }) {
     let { data = {}, status = 0 } = response || {};
 
     if (status === 200) {
-      data = { ...data, role };
-      storeAccessTokenSessionStorage(data?._id);
-      storeUserDetailsSessionStorage(data);
+      const userData = data.user;
+      const accessToken = data.accessToken;
+      const refreshToken = data.refreshToken;
+      
+      userData.role = role; // Add role to user data
+      
+      storeTokens(accessToken, refreshToken);
+      storeUserDetailsSessionStorage(userData);
 
       dispatch({
         type: "LOGIN",
         payload: {
           user: {
-            user: data || {},
-            accessToken: data?._id,
+            user: userData || {},
+            accessToken,
           },
         },
       });
@@ -130,15 +135,21 @@ export function AuthProvider({ children }) {
 
   // UPDATE USER
   const updateUserData = useCallback(async (data) => {
-    storeAccessTokenSessionStorage(data?._id);
-    storeUserDetailsSessionStorage(data);
+    const userData = data.user || data;
+    const accessToken = data.accessToken || localStorage.getItem(ACCESS_TOKEN_KEY);
+    const refreshToken = data.refreshToken || localStorage.getItem(REFRESH_TOKEN_KEY);
+    
+    storeUserDetailsSessionStorage(userData);
+    if (data.accessToken && data.refreshToken) {
+      storeTokens(accessToken, refreshToken);
+    }
 
     dispatch({
       type: "UPDATE_USER",
       payload: {
         user: {
-          user: data || {},
-          accessToken: data?._id,
+          user: userData,
+          accessToken,
         },
       },
     });

@@ -88,7 +88,7 @@ export default function MyCarsListPage() {
   const { data: allCars = [], isLoading: loading } = useQuery({
     queryKey: ['cars', 'all'],
     queryFn: async () => {
-      const res = await CarsService.getAll();
+      const res = await CarsService.getMyCars();
       if (res?.data) {
         const filteredCars = res.data.filter(car => car.status !== "Paused");
         return filteredCars;

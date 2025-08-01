@@ -140,7 +140,7 @@ export const useAddNewCar = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (data) => CarsService.addNewCar(data),
+    mutationFn: (data) => CarsService.add(data),
     onSuccess: () => {
       // Invalidate and refetch cars list
       queryClient.invalidateQueries({ queryKey: carKeys.lists() });
