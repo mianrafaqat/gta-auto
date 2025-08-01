@@ -43,7 +43,7 @@ export default function BrowseVideosSection() {
   const { data: videos = [], isLoading, error } = useQuery({
     queryKey: ['videos', 'all'],
     queryFn: async () => {
-      const response = await VideoService.getAllVideos();
+      const response = await VideoService.getAll();
       if (response?.status === 200) {
         return response.data || [];
       }
@@ -108,7 +108,7 @@ export default function BrowseVideosSection() {
   };
 
   return (
-    <Container
+    <Box
       maxWidth="xl"
       sx={{
         py: 8,
@@ -116,7 +116,7 @@ export default function BrowseVideosSection() {
         minHeight: '600px',
       }}
     >
-      <Box sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
         {/* Section Header */}
         <Box sx={{ 
           display: 'flex', 
@@ -385,7 +385,7 @@ export default function BrowseVideosSection() {
             </Grid>
           </Grid>
         </Grid>
-      </Box>
+        </Container>
 
       <Modal
         open={isOpen}
@@ -448,6 +448,6 @@ export default function BrowseVideosSection() {
           </Box>
         </Box>
       </Modal>
-    </Container>
+    </Box>
   );
 } 

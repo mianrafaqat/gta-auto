@@ -20,6 +20,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { UserService } from 'src/services';
 import { useSnackbar } from 'src/components/snackbar';
 import CompactLayout from 'src/layouts/compact';
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
 
 const schema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -32,6 +34,7 @@ const defaultValues = {
 };
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const settings = useSettingsContext();
@@ -52,11 +55,12 @@ export default function ForgotPasswordPage() {
     try {
       setLoading(true);
       const res = await UserService.forgotPassword(data);
-      console.log('🚀 ~ onSubmit ~ res:', res);
+
       if (res?.data) {
         enqueueSnackbar(res?.data, {
           variant: 'success',
         });
+        router.push(paths.auth.jwt.verifyReset + `?email=${data.email}`);
       }
     } catch (e) {
       console.log('error: ', e);

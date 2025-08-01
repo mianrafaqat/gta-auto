@@ -36,7 +36,8 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <Container
+
+    <Box
       maxWidth="xl"
       sx={{
         position: 'relative',
@@ -52,7 +53,7 @@ export default function ServicesSection() {
         px: { xs: 2, sm: 3, md: 4 },
       }}
     >
-      <Box sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
         {/* Main Heading */}
         <Typography
           variant="h3"
@@ -137,7 +138,7 @@ export default function ServicesSection() {
             </Grid>
           ))}
         </Grid>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 } 

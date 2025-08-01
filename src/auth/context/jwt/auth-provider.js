@@ -4,13 +4,14 @@ import PropTypes from "prop-types";
 import { useMemo, useEffect, useReducer, useCallback } from "react";
 
 import axios, { endpoints } from "src/utils/axios";
-import { ACCESS_TOKEN_KEY, STORAGE_USER_KEY } from "src/utils/constants";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, STORAGE_USER_KEY } from "src/utils/constants";
 import gtaAutosInstance from "src/utils/requestInterceptor";
 
 import {
   setSession,
   storeTokens,
   storeUserDetailsSessionStorage,
+  emptySessionStorage,
 } from "./utils";
 
 import { AuthContext } from "./auth-context";
@@ -64,28 +65,33 @@ export function AuthProvider({ children }) {
   const initialize = useCallback(async () => {
     try {
       const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
-      const user = localStorage.getItem(STORAGE_USER_KEY);
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+      const userStr = localStorage.getItem(STORAGE_USER_KEY);
 
-      if (accessToken && user) {
-        dispatch({
-          type: "INITIAL",
-          payload: {
-            user: {
-              user: JSON.parse(user),
-              accessToken,
-            },
-          },
-        });
-      } else {
-        dispatch({
-          type: "INITIAL",
-          payload: {
-            user: null,
-          },
-        });
+      if (!accessToken || !refreshToken || !userStr) {
+        throw new Error('Missing authentication data');
       }
+
+      const userData = JSON.parse(userStr);
+      
+      // Validate user data and role
+      if (!userData || !userData.role || !['user', 'admin', 'superadmin'].includes(userData.role)) {
+        throw new Error('Invalid user data');
+      }
+
+      dispatch({
+        type: "INITIAL",
+        payload: {
+          user: {
+            user: userData,
+            accessToken,
+          },
+        },
+      });
     } catch (error) {
-      console.error(error);
+      console.error('Initialization error:', error);
+      // Clear invalid data
+      emptySessionStorage();
       dispatch({
         type: "INITIAL",
         payload: {
@@ -103,18 +109,33 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (DATA) => {
     const { role = "" } = DATA || {};
     const response = await gtaAutosInstance.post(
-      role === "user" ? endpoints.auth.login.user : endpoints.auth.login.admin,
+       endpoints.auth.login.user,
       DATA
     );
 
     let { data = {}, status = 0 } = response || {};
 
     if (status === 200) {
+      if (!data) {
+        throw new Error('Response data not found');
+      }
+
+      if (!data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      if (!data.user || !data.accessToken || !data.refreshToken) {
+        throw new Error('Invalid response format');
+      }
+
+      // User data already contains role from server
       const userData = data.user;
-      const accessToken = data.accessToken;
-      const refreshToken = data.refreshToken;
+      const { accessToken, refreshToken } = data;
       
-      userData.role = role; // Add role to user data
+      // Validate user role
+      if (!['user', 'admin', 'superadmin'].includes(userData.role)) {
+        throw new Error('Invalid user role');
+      }
       
       storeTokens(accessToken, refreshToken);
       storeUserDetailsSessionStorage(userData);
@@ -123,7 +144,7 @@ export function AuthProvider({ children }) {
         type: "LOGIN",
         payload: {
           user: {
-            user: userData || {},
+            user: userData,
             accessToken,
           },
         },
@@ -161,17 +182,27 @@ export function AuthProvider({ children }) {
       endpoints.auth.register,
       data
     );
-    return response;
+    console.log(response);
+    // API returns { message: "User registered. Need Verification" }
+    if (response?.status === 200) {
+      // Clear any existing auth data
+      emptySessionStorage();
+      
+      dispatch({
+        type: "REGISTER",
+        payload: null
+      });
 
-    // dispatch({
-    //   type: 'REGISTER',
-    //   payload: {
-    //     user: {
-    //       ...user,
-    //       accessToken,
-    //     },
-    //   },
-    // });
+      return {
+        status: 200,
+        data: {
+          message: response?.data?.message || "User registered. Need Verification",
+          userId: response?.data?.userId // Pass the userId from the response
+        }
+      };
+    } else {
+      throw new Error(response?.data?.message || 'Registration failed');
+    }
   }, []);
 
   // LOGOUT

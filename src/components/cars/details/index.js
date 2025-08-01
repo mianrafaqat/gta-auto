@@ -54,7 +54,7 @@ export default function CarsDetailPage() {
 
   const fetchCarById = async () => {
     try {
-      const res = await CarsService.getCarById(carId);
+      const res = await CarsService.getById(carId);
       if (res?.status === 200) {
         setCarDetails(res?.data);
       } else {

@@ -48,7 +48,13 @@ export default function JwtRegisterView() {
     name: Yup.string().required('Name is required'),
     phone: Yup.string().required('Phone is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    password: Yup.string().required('Password is required'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+      ),
     confirmPassword: Yup.string()
       .required('Confirm Password is required')
       .oneOf([Yup.ref('password'), null], 'Passwords must match'),
@@ -76,12 +82,31 @@ export default function JwtRegisterView() {
     try {
       const res = await register?.({ ...data });
       if (res?.status === 200) {
-        enqueueSnackbar(res?.data);
+        // Show success message
+        enqueueSnackbar(res?.data?.message || 'Registration successful. Please verify your email.', {
+          variant: 'success',
+        });
+        
+        // Reset form
+        reset();
+        
+        // Get userId from response data
+        const userId = res?.data?.userId;
+        
+        // Redirect to verify page with userId
+        if (userId) {
+          // Use replace instead of push to prevent going back to register page
+          router.replace(`${paths.auth.jwt.verify}?userId=${userId}`);
+        } else {
+          console.error('No userId received from registration');
+          enqueueSnackbar('Verification link will be sent to your email', { variant: 'info' });
+          router.replace(paths.auth.jwt.login);
+        }
       }
     } catch (error) {
       console.error(error);
-      // reset();
-      enqueueSnackbar(error, { variant: 'error' });
+      setErrorMsg(error?.message || 'Something went wrong');
+      enqueueSnackbar(error?.message || 'Registration failed', { variant: 'error' });
     }
   });
 
@@ -134,6 +159,7 @@ export default function JwtRegisterView() {
         name="password"
         label="Password"
         type={password.value ? 'text' : 'password'}
+        helperText="Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -179,7 +205,14 @@ export default function JwtRegisterView() {
       {renderHead}
 
       {!!errorMsg && (
-        <Alert severity="error" sx={{ m: 3 }}>
+        <Alert 
+          severity="error" 
+          sx={{ 
+            mb: 3,
+            '& .MuiAlert-message': { width: '100%' }
+          }}
+          onClose={() => setErrorMsg('')}
+        >
           {errorMsg}
         </Alert>
       )}

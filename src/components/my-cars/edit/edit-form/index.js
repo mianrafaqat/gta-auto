@@ -147,7 +147,7 @@ export default function EditCarForm() {
         carID: carId,
         ownerID: user?._id,
       };
-      const res = await CarsService.updateCar(values);
+      const res = await CarsService.update(values);
       if (res.status === 200) {
         enqueueSnackbar(res?.data);
         router.push(paths.dashboard.cars.my.list);

@@ -34,7 +34,6 @@ export const endpoints = {
     me: '/api/auth/me',
     login: {
       user: '/api/user/login',
-      admin: '/api/admin/login',
     },
     register: '/api/user/register',
     fetchToken: '/login/fetchToken',

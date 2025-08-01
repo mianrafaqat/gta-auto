@@ -135,7 +135,7 @@ export default function AddNewCarForm({ isEditMode = false }) {
 
   // Mutation for updating car
   const updateCarMutation = useMutation({
-    mutationFn: (data) => CarsService.updateCar(data),
+    mutationFn: (data) => CarsService.update(data),
     onSuccess: (res) => {
       if (res?.status === 200) {
         enqueueSnackbar(res?.data, { variant: "success" });
@@ -151,16 +151,36 @@ export default function AddNewCarForm({ isEditMode = false }) {
   // Mutation for adding new car
   const addCarMutation = useMutation({
     mutationFn: async (values) => {
+      console.log('Starting image upload with values:', values.image);
       const imageRes = await CarsService.uploadCarImages(values.image);
-      if (imageRes?.data?.imagesUrl) {
+      console.log('Image upload response:', imageRes);
+      
+      // Check if we have a response and data
+      if (!imageRes || !imageRes.data) {
+        console.error('No response or data from upload');
+        throw new Error('No response from upload service');
+      }
+
+      // Log the actual response data
+      console.log('Upload response data:', {
+        success: imageRes.data.success,
+        urls: imageRes.data.urls,
+        message: imageRes.data.message
+      });
+
+      if (imageRes.data.success === true && Array.isArray(imageRes.data.urls)) {
+        console.log('Upload successful, creating car data');
         const data = {
           ...values,
-          image: imageRes.data.imagesUrl,
+          image: imageRes.data.urls,
           owner: { ...user },
         };
+        console.log('Final car data:', data);
         return CarsService.add(data);
       }
-      throw new Error('Failed to upload images');
+
+      console.error('Upload failed:', imageRes.data);
+      throw new Error(imageRes?.data?.message || 'Failed to upload images');
     },
     onSuccess: (res) => {
       if (res?.status === 200) {

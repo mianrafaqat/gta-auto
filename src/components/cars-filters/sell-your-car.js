@@ -22,7 +22,7 @@ export default function SellYourCarSection() {
   const router = useRouter();
   return (
     <Container
-      maxWidth="xl"
+      maxWidth="lg"
       sx={{
         py: 8,
         px: { xs: 2, sm: 3, md: 4 },

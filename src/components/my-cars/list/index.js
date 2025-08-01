@@ -90,8 +90,7 @@ export default function MyCarsListPage() {
     queryFn: async () => {
       const res = await CarsService.getMyCars();
       if (res?.data) {
-        const filteredCars = res.data.filter(car => car.status !== "Paused");
-        return filteredCars;
+        return res.data;
       }
       return [];
     },
@@ -101,7 +100,7 @@ export default function MyCarsListPage() {
 
   // Mutation for deleting a car
   const deleteMutation = useMutation({
-    mutationFn: (data) => CarsService.deleteCarById(data),
+    mutationFn: (data) => CarsService.delete(data),
     onSuccess: (res) => {
       enqueueSnackbar(res.data, { variant: 'success' });
       queryClient.invalidateQueries(['cars', 'all']);
@@ -113,7 +112,7 @@ export default function MyCarsListPage() {
 
   // Mutation for updating car
   const updateMutation = useMutation({
-    mutationFn: (data) => CarsService.updateCar(data),
+    mutationFn: (data) => CarsService.update(data),
     onSuccess: (res) => {
       enqueueSnackbar(res.data, { variant: 'success' });
       queryClient.invalidateQueries(['cars', 'all']);
@@ -126,7 +125,7 @@ export default function MyCarsListPage() {
 
   // Mutation for updating car status
   const updateStatusMutation = useMutation({
-    mutationFn: (data) => CarsService.updateCar(data),
+    mutationFn: (data) => CarsService.update(data),
     onSuccess: (res) => {
       enqueueSnackbar(res.data, { variant: 'success' });
       queryClient.invalidateQueries(['cars', 'all']);
@@ -175,13 +174,14 @@ export default function MyCarsListPage() {
     const newStatus = status === 'Active' ? 'Paused' : 'Active';
     updateStatusMutation.mutate({ 
       carID, 
+      ownerID: user?._id,
       status: newStatus 
     }, {
       onSuccess: () => {
         queryClient.invalidateQueries(['cars', 'all']);
       }
     });
-  }, [updateStatusMutation, queryClient]);
+  }, [updateStatusMutation, queryClient, user?._id]);
 
   const handleDeleteRows = useCallback(async () => {
     try {

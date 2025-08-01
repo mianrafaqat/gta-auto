@@ -77,7 +77,7 @@ export default function VideoAddView() {
       };
 
       // Call API to add video
-      const response = await VideoService.addVideo(videoData);
+      const response = await VideoService.add(videoData);
       
       if (response?.status === 200) {
         snackbar.enqueueSnackbar('Video added successfully!');
