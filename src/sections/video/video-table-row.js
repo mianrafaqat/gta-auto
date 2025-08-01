@@ -50,6 +50,11 @@ export default function VideoTableRow({
     openConfirm.onTrue();
   };
 
+  const handleEdit = () => {
+    onEditRow();
+    openPopover.onFalse();
+  };
+
   const handleConfirmDelete = () => {
     onDeleteRow();
     openConfirm.onFalse();
@@ -62,7 +67,6 @@ export default function VideoTableRow({
           <Stack direction="row" alignItems="center" spacing={2}>
             <ListItemText
               primary={title}
-              // secondary={videoUrl}
               primaryTypographyProps={{ typography: 'body2' }}
               secondaryTypographyProps={{ component: 'span', color: 'text.disabled' }}
             />
@@ -118,6 +122,13 @@ export default function VideoTableRow({
         anchorEl={popoverRef.current}
         sx={{ width: 140 }}
       >
+        <MenuItem
+          onClick={handleEdit}
+        >
+          <Iconify icon="solar:pen-bold" />
+          Edit
+        </MenuItem>
+
         <MenuItem
           onClick={handleDelete}
           sx={{ color: 'error.main' }}
