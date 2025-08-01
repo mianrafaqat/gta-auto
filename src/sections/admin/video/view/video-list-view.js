@@ -55,7 +55,7 @@ export default function VideoListView() {
   const { data: allVideos = [], isLoading: loading } = useQuery({
     queryKey: ['videos', 'all'],
     queryFn: async () => {
-      const response = await VideoService.getAllVideos();
+      const response = await VideoService.getAll();
       if (response?.status === 200) {
         return response.data;
       }
@@ -67,25 +67,13 @@ export default function VideoListView() {
 
   // Mutation for deleting a video
   const deleteMutation = useMutation({
-    mutationFn: (id) => VideoService.deleteVideo(id),
+    mutationFn: (id) => VideoService.delete({ videoID: id }),
     onSuccess: () => {
       enqueueSnackbar('Video deleted successfully', { variant: 'success' });
       queryClient.invalidateQueries(['videos', 'all']);
     },
     onError: (error) => {
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to delete video', { variant: 'error' });
-    },
-  });
-
-  // Mutation for updating video
-  const updateMutation = useMutation({
-    mutationFn: (data) => VideoService.updateVideo(data),
-    onSuccess: () => {
-      enqueueSnackbar('Video updated successfully', { variant: 'success' });
-      queryClient.invalidateQueries(['videos', 'all']);
-    },
-    onError: (error) => {
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to update video', { variant: 'error' });
+      enqueueSnackbar(error?.message || 'Failed to delete video', { variant: 'error' });
     },
   });
 

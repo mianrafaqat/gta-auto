@@ -67,7 +67,7 @@ export default function VideoAddView({ isEdit = false, videoId }) {
   useEffect(() => {
     if (isEdit && videoId) {
       setLoading(true);
-      VideoService.getVideoById(videoId)
+      VideoService.getById({ videoID: videoId })
         .then((response) => {
           if (response?.data) {
             reset({
@@ -114,13 +114,13 @@ export default function VideoAddView({ isEdit = false, videoId }) {
           status: 'Active' // Add status if needed
         };
         console.log('Update data being sent:', updateData); // Debug log
-        const response = await VideoService.updateVideo(updateData);
+        const response = await VideoService.update(updateData);
         if (response?.status === 200) {
           snackbar.enqueueSnackbar('Video updated successfully!');
           router.push(paths.dashboard.admin.video.list);
         }
       } else {
-        const response = await VideoService.addVideo(videoData);
+        const response = await VideoService.add(videoData);
         if (response?.status === 200) {
           snackbar.enqueueSnackbar('Video added successfully!');
           router.push(paths.dashboard.admin.video.list);
