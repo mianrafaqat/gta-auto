@@ -15,9 +15,9 @@ export default function LastestEightCars() {
 
   if (isLoading) {
     return (
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Typography variant="h4" color="white" sx={{ mt: 4, mb: 0 }}>
-          Recommended for you
+          Featured Used Cars for Sale​
         </Typography>
         <Box sx={{ 
           display: 'flex', 
@@ -33,9 +33,9 @@ export default function LastestEightCars() {
 
   if (error) {
     return (
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Typography variant="h4" color="white" sx={{ mt: 4, mb: 0 }}>
-          Recommended for you
+          Featured Used Cars for Sale​
         </Typography>
         <Box sx={{ 
           display: 'flex', 
@@ -52,10 +52,30 @@ export default function LastestEightCars() {
   }
 
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" color="white" sx={{ mt: 4, mb: "12px" }}>
-        Recommended for you
+      <Container maxWidth="lg">
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4, mb: 4, alignItems: 'center' }}>
+        <Typography variant="h4" color="#4caf50" sx={{ mt: 4, mb: "12px" }}>
+        Featured Used Cars for Sale​
       </Typography>
+      <Button 
+              variant="text" 
+              onClick={() => router.push("/cars")}
+              sx={{
+                color: '#4caf50',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+                px: 4,
+                py: 1,
+              }}
+            >
+              View All Cars
+            </Button>
+
+        </Box>
+   
       {allCars.length > 0 ? (
         <>
           <Box 
@@ -95,23 +115,7 @@ export default function LastestEightCars() {
               ))}
             </Box>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 4 }}>
-            <Button 
-              variant="contained" 
-              onClick={() => router.push("/cars")}
-              sx={{
-                backgroundColor: '#4caf50',
-                color: '#fff',
-                '&:hover': {
-                  backgroundColor: '#45a049',
-                },
-                px: 4,
-                py: 1,
-              }}
-            >
-              View All Cars
-            </Button>
-          </Box>
+        
         </>
       ) : (
         <Box sx={{ 

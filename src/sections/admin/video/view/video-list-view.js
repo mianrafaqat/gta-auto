@@ -65,31 +65,18 @@ export default function VideoListView() {
     cacheTime: 30 * 60 * 1000, // Cache persists for 30 minutes
   });
 
-  // Mutation for deleting a video
-  const deleteMutation = useMutation({
-    mutationFn: (id) => VideoService.delete({ videoID: id }),
-    onSuccess: () => {
-      enqueueSnackbar('Video deleted successfully', { variant: 'success' });
-      queryClient.invalidateQueries(['videos', 'all']);
-    },
-    onError: (error) => {
-      enqueueSnackbar(error?.message || 'Failed to delete video', { variant: 'error' });
-    },
-  });
-
-  const handleEditRow = useCallback(
-    (id) => {
-      router.push(paths.dashboard.admin.video.edit(id));
-    },
-    [router]
-  );
-
-  const handleDeleteRow = useCallback(
-    (id) => {
-      deleteMutation.mutate(id);
-    },
-    [deleteMutation]
-  );
+  const handleDeleteRow = async (id) => {
+    try {
+      const response = await VideoService.delete(id);
+      if (response?.status === 200) {
+        enqueueSnackbar('Video deleted successfully');
+        getAllVideos(); // Refresh the list
+      }
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar(error?.response?.data?.message || 'Failed to delete video', { variant: 'error' });
+    }
+  };
 
   useEffect(() => {
     if (allVideos?.length) {

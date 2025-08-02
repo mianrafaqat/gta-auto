@@ -14,7 +14,7 @@ class CarsService {
 
   getById = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getById, data);
+      const res = await gtaAutosInstance.post(API_URLS.cars.getById, {carID: data});
       return res;
     } catch (ex) {
       throw ex;
@@ -96,12 +96,15 @@ class CarsService {
 
   uploadCarImages = async (files) => {
     try {
+      console.log('Service: Starting upload with files:', files);
       const formData = new FormData();
       files.forEach((f) => {
-        if (typeof f == "object") {
+        if (typeof f === "object") {
           formData.append("files", f);
         }
       });
+      
+      console.log('Service: Sending request to:', API_URLS.cars.uploadCarImages);
       const res = await gtaAutosInstance.post(
         API_URLS.cars.uploadCarImages,
         formData,
@@ -111,8 +114,18 @@ class CarsService {
           },
         }
       );
+      
+      console.log('Service: Upload response:', res);
+      
+      // Ensure we have the expected response structure
+      if (!res.data) {
+        console.error('Service: No data in response');
+        throw new Error('Invalid response from upload service');
+      }
+      
       return res;
     } catch (ex) {
+      console.error('Service: Upload error:', ex);
       throw ex;
     }
   };

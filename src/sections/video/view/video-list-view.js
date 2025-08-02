@@ -52,7 +52,7 @@ export default function VideoListView() {
   const getMyVideos = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await VideoService.getAllVideos();
+      const response = await VideoService.getAll();
       if (response?.status === 200) {
         setTableData(response.data || []);
       }
@@ -66,7 +66,7 @@ export default function VideoListView() {
 
   const handleDeleteRow = async (id) => {
     try {
-      const response = await VideoService.deleteVideo({
+      const response = await VideoService.delete({
         videoID: id
       });
       if (response?.status === 200) {

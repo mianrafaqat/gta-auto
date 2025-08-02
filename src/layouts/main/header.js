@@ -49,7 +49,7 @@ export default function Header() {
   const [cartItems, setCartItems] = useState(0);
 
   return (
-    <AppBar sx={{ backgroundImage: `url('/assets/headerbg.webp')`, backgroundSize: 'cover', backgroundPosition: 'center', }}>
+    <AppBar sx={{ backgroundImage: `url('/assets/webnavigation.png')`, backgroundSize: 'cover', backgroundPosition: 'center', }}>
       <Toolbar
         disableGutters
         sx={{

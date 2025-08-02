@@ -125,7 +125,7 @@ export default function UserListView() {
 
   const handleDeleteCar = async (data, singleRow = false) => {
     try {
-      const res = await CarsService.deleteCarById(data);
+      const res = await CarsService.delete(data);
       if (res?.data && singleRow) {
         enqueueSnackbar(res.data);
         fetchAllCars();

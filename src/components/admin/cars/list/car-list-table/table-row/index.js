@@ -78,7 +78,7 @@ export default function CarTableRow({
 
       console.log("values: ", values);
       
-      const res = await CarsService.updateCar(values);
+      const res = await CarsService.update(values);
       if (res.status === 200) {
         enqueueSnackbar(res?.data);
         onSuccess();
