@@ -36,6 +36,7 @@ export default function RHFEditor({ name, helperText, ...other }) {
           value={field.value}
           onChange={field.onChange}
           error={!!error}
+          sx={{ overflow: 'scroll' }}
           helperText={
             (!!error || helperText) && (
               <FormHelperText error={!!error} sx={{ px: 2 }}>

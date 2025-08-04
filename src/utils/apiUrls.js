@@ -36,6 +36,7 @@ export const API_URLS = {
     getCarModelsByYear: "/api/car/getCarModelsByYear",
     filterByMakeAndModel: "/api/car/filterByMakeAndModel",
     sendEmailToCarOwner: "/api/car/sendEmailToCarOwner",
+    getCarDealOptions: "/api/car/getCarDealOptions",
     
     // Protected Routes
     getMyCars: "/api/car/my-cars",

@@ -13,6 +13,8 @@ import {
   Stack,
   Button,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Iconify from "../iconify";
 import { useRouter } from "next/navigation";
@@ -26,10 +28,41 @@ import UpcomingCarsSection from "./upcoming-cars";
 import SellYourCarSection from './sell-your-car';
 import LastestEightCars from "../first-eight-cars";
 import BrowseVideosSection from "./browse-videos";
-import { useGetCarBodyList, useGetCarMakes, useGetCarModels } from "src/hooks/use-cars";
+import { useGetCarBodyList, useGetCarModels } from "src/hooks/use-cars";
+import { CarsService } from "src/services";
 
 export default function CarsFiltersPage() {
   const { data: carBodyList = [], isLoading: carBodyLoading } = useGetCarBodyList();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Desktop playback IDs for 2 slides
+  const desktopPlaybackIds = [
+    "Y00Jk2SaHUzHuJQMyoQNUfDwCQGCVKfPDX3xE5ytGne8",
+    "8YObs002Jd4TxxHXlXiw7DXgXkR5OwD7gXixt4AukMUA"
+  ];
+
+  // Mobile playback ID
+  const mobilePlaybackId = "gzB22KDrzm1XR4sfmnGnmQ1vF0000yNzo00f02rcNO2VlXg";
+
+  // Auto-advance slides for desktop
+  useEffect(() => {
+    if (!isMobile) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % desktopPlaybackIds.length);
+      }, 5000); // Change slide every 5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [isMobile]);
+
+  const getCurrentPlaybackId = () => {
+    if (isMobile) {
+      return mobilePlaybackId;
+    }
+    return desktopPlaybackIds[currentSlide];
+  };
 
   return (
     <>
@@ -61,7 +94,7 @@ export default function CarsFiltersPage() {
           }}
         >
           <MuxPlayer
-            playbackId="9WU2Y5OXCT56CzULR8mFAhmKPwJshaP66G902lnvKyek"
+            playbackId={getCurrentPlaybackId()}
             autoPlay
             muted
             controls={false}
@@ -83,6 +116,37 @@ export default function CarsFiltersPage() {
             }}
           />
         </Box>
+
+        {/* Slide indicators for desktop */}
+        {!isMobile && (
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 2,
+              display: 'flex',
+              gap: 1,
+            }}
+          >
+            {desktopPlaybackIds.map((_, index) => (
+              <Box
+                key={index}
+                sx={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: '50%',
+                  backgroundColor: currentSlide === index ? '#fff' : 'rgba(255,255,255,0.5)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+                onClick={() => setCurrentSlide(index)}
+              />
+            ))}
+          </Box>
+        )}
+
         <Box
           sx={{
             position: 'absolute',
@@ -190,22 +254,31 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
   const [selectedModel, setSelectModel] = useState({});
   const [selectedTransmission, setSelectedTransmission] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [carsMakesList, setCarsMakesList] = useState([]);
   const router = useRouter();
 
   const transmissionOptions = ["Automatic", "Manual", "CVT", "Semi-Automatic"];
 
   // React Query hooks
-  const { data: carsMakesResponse, isLoading: makesLoading } = useGetCarMakes();
   const { data: carModelsData, isLoading: modelsLoading } = useGetCarModels(selectedCar?.value);
 
-  // Ensure carsMakesList is always an array
-  const carsMakesList = useMemo(() => {
-    if (carsMakesResponse?.data && Array.isArray(carsMakesResponse.data)) {
-      return carsMakesResponse.data;
+  const fetchCarMakes = async () => {
+    try {
+      setLoading(false);
+
+      const res = await CarsService.getCarMakes();
+      if (res?.status === 200) {
+        setCarsMakesList(res?.data);
+      }
+    } catch (err) {
+      console.log("err: ", err);
+    } finally {
+      setLoading(false);
     }
-    return [];
-  }, [carsMakesResponse]);
+  };
+  useEffect(() => {
+    fetchCarMakes();
+  }, []);
 
   const fetchCarModels = async () => {
     try {
@@ -312,7 +385,7 @@ function SearchByModels({ reset = false, fetchAllCars=()=>{} }) {
             onChange={handleCarSelectChange}
             value={selectedCar}
             getOptionLabel={(option) => option?.label || ""}
-            loading={makesLoading}
+            loading={false} // Since makesLoading is removed, set to false
             sx={{ width: '100%' }}
             renderInput={(params) => (
               <TextField

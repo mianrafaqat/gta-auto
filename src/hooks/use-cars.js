@@ -55,15 +55,6 @@ export const useGetMyCars = (userId) => {
   });
 };
 
-// Get car makes
-export const useGetCarMakes = () => {
-  return useQuery({
-    queryKey: carKeys.makes(),
-    queryFn: () => CarsService.getCarMakes(),
-    staleTime: 30 * 60 * 1000, // 30 minutes (rarely changes)
-  });
-};
-
 // Get car models
 export const useGetCarModels = (selectedCar) => {
   return useQuery({
@@ -80,7 +71,7 @@ export const useGetCarModelsByYear = (selectedCar, year) => {
     queryKey: [...carKeys.models(), selectedCar, year],
     queryFn: () => CarsService.getCarModelsByYear({ selectedCar, year }),
     enabled: !!(selectedCar && year),
-    staleTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
@@ -98,7 +89,7 @@ export const useFilterByMakeAndModel = (make, model) => {
 export const useGetCarBodyList = () => {
   return useQuery({
     queryKey: carKeys.bodyTypes(),
-    queryFn: () => CarsService.getCarBodyList(),
+    queryFn: () => CarsService.getCarsBodyList(),
     staleTime: 30 * 60 * 1000, // 30 minutes
   });
 };
@@ -122,12 +113,16 @@ export const useGetUserFavoriteCars = (userId) => {
   });
 };
 
-// Mutations
+// Mock implementation for add/remove favorite car (no backend route available)
 export const useAddOrRemoveFavoriteCar = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (data) => CarsService.addOrRemoveFavouriteCar(data),
+    mutationFn: async (data) => {
+      // Mock implementation - just return success
+      console.log('Mock: Adding/removing favorite car', data);
+      return { status: 200, data: { message: 'Favorite updated successfully' } };
+    },
     onSuccess: (data, variables) => {
       // Invalidate and refetch relevant queries
       queryClient.invalidateQueries({ queryKey: carKeys.favorites() });
@@ -135,7 +130,14 @@ export const useAddOrRemoveFavoriteCar = () => {
     },
   });
 };
-
+export const useGetCarMakes = () => {
+  return useQuery({
+    queryKey: carKeys.makes(),
+    queryFn: () => CarsService.getCarMakes(),
+    staleTime: 30 * 60 * 1000, // 30 minutes
+  });
+};
+// Mutations
 export const useAddNewCar = () => {
   const queryClient = useQueryClient();
   
