@@ -63,7 +63,7 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
 export default function ProductShopView() {
   const defaultFilters = {
-    priceRange: [0, 2000000],
+    priceRange: [0, 20000000],
     category: "all",
     searchByTitle: "",
     year: [1940, new Date().getFullYear()],

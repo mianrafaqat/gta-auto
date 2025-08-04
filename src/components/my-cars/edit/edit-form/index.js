@@ -26,7 +26,7 @@ const schema = yup.object().shape({
   }),
   title: yup.string().required('Title is required.'),
   category: yup.string().required('Category is required.'),
-  link: yup.string().required('Link is required.'),
+  link: yup.string().optional(), // Make link optional
   location: yup.string().required('Location is required.'),
 });
 
@@ -38,19 +38,33 @@ export default function EditCarForm() {
   const router = useRouter();
 
   const { user = {} } = useAuthContext()?.user || {};
+  
+  console.log('EditCarForm - carId:', carId);
+  console.log('EditCarForm - user:', user);
+
   const { enqueueSnackbar } = useSnackbar();
   const [files, setFiles] = useState([]);
 
   const [carDetails, setCarDetails] = useState({});
 
   const defaultValues = useMemo(() => {
+    console.log('defaultValues carDetails:', carDetails);
     if (carDetails) {
       setFiles(carDetails.image || []);
+      
+      console.log('Car details structure check:', {
+        hasCarDetails: !!carDetails.carDetails,
+        carDetailsKeys: carDetails.carDetails ? Object.keys(carDetails.carDetails) : [],
+        mileage: carDetails.carDetails?.mileage,
+        directMileage: carDetails.mileage
+      });
 
       return {
         ...carDetails,
         carDetails: {
           ...carDetails.carDetails,
+          // Fallback for mileage if it's not in carDetails
+          mileage: carDetails.carDetails?.mileage || carDetails.mileage || '',
         },
       };
     }
@@ -103,14 +117,25 @@ export default function EditCarForm() {
 
   const fetchCarById = async () => {
     try {
-      const res = await CarsService.getCarById({
-        carId,
-        userId: user?._id,
-      });
+      console.log('Fetching car with ID:', carId);
+      const res = await CarsService.getCarById(carId);
+      console.log('Car fetch response:', res);
 
       if (res.status === 200) {
         setCarDetails(res?.data);
+        console.log('Car details set:', res?.data);
+        console.log('Car details structure:', {
+          title: res?.data?.title,
+          price: res?.data?.price,
+          description: res?.data?.description,
+          category: res?.data?.category,
+          link: res?.data?.link,
+          location: res?.data?.location,
+          carDetails: res?.data?.carDetails,
+          image: res?.data?.image
+        });
       } else {
+        console.log('Error response:', res);
         enqueueSnackbar(res?.data, { variant: 'error' });
         router.push(paths.dashboard.cars.my.list);
       }
@@ -121,6 +146,7 @@ export default function EditCarForm() {
   };
 
   useEffect(() => {
+    console.log('useEffect triggered - carId:', carId, 'user._id:', user?._id);
     if (carId && user?._id) {
       fetchCarById();
     }
@@ -137,16 +163,29 @@ export default function EditCarForm() {
   } = methods;
 
   useEffect(() => {
+    console.log('Resetting form with defaultValues:', defaultValues);
+    console.log('Form values being set:', {
+      title: defaultValues?.title,
+      price: defaultValues?.price,
+      description: defaultValues?.description,
+      category: defaultValues?.category,
+      link: defaultValues?.link,
+      location: defaultValues?.location,
+      carDetails: defaultValues?.carDetails,
+      image: defaultValues?.image
+    });
     reset(defaultValues);
   }, [defaultValues]);
 
   const onSubmit = handleSubmit(async (values) => {
     try {
+      console.log('Form values being submitted:', values);
       values = {
         ...values,
         carID: carId,
         ownerID: user?._id,
       };
+      console.log('Final values being sent to API:', values);
       const res = await CarsService.update(values);
       if (res.status === 200) {
         enqueueSnackbar(res?.data);
@@ -155,6 +194,7 @@ export default function EditCarForm() {
         enqueueSnackbar(res?.data, { variant: 'error' });
       }
     } catch (err) {
+      console.log('Submit error:', err);
       enqueueSnackbar(err, { variant: 'error' });
     } finally {
     }

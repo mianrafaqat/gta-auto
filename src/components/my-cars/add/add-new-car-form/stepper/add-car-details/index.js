@@ -152,7 +152,7 @@ export default function AddCarDetails({
   const fetchCarMakes = async () => {
     try {
       const res = await CarsService.getCarMakes();
-      if (res?.data) {
+      if (res?.status === 200) {
         setCarMakesList(res.data);
       }
     } catch (err) {

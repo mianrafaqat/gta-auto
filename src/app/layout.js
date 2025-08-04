@@ -10,6 +10,7 @@ import 'src/locales/i18n';
 
 import PropTypes from 'prop-types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SessionProvider } from 'next-auth/react';
 
 import { LocalizationProvider } from 'src/locales';
 
@@ -56,34 +57,36 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <LocalizationProvider>
-              <SettingsProvider
-                defaultSettings={{
-                  themeMode: 'light', // 'light' | 'dark'
-                  themeDirection: 'ltr', //  'rtl' | 'ltr'
-                  themeContrast: 'default', // 'default' | 'bold'
-                  themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-                  themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-                  themeStretch: false,
-                }}
-              >
-                <ThemeProvider>
-                  <MotionLazy>
-                    <SnackbarProvider>
-                      <CheckoutProvider>
-                        <SettingsDrawer />
-                        <ProgressBar />
-                        {children}
-                      </CheckoutProvider>
-                    </SnackbarProvider>
-                  </MotionLazy>
-                </ThemeProvider>
-              </SettingsProvider>
-            </LocalizationProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+        <SessionProvider>
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+              <LocalizationProvider>
+                <SettingsProvider
+                  defaultSettings={{
+                    themeMode: 'light', // 'light' | 'dark'
+                    themeDirection: 'ltr', //  'rtl' | 'ltr'
+                    themeContrast: 'default', // 'default' | 'bold'
+                    themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+                    themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                    themeStretch: false,
+                  }}
+                >
+                  <ThemeProvider>
+                    <MotionLazy>
+                      <SnackbarProvider>
+                        <CheckoutProvider>
+                          <SettingsDrawer />
+                          <ProgressBar />
+                          {children}
+                        </CheckoutProvider>
+                      </SnackbarProvider>
+                    </MotionLazy>
+                  </ThemeProvider>
+                </SettingsProvider>
+              </LocalizationProvider>
+            </AuthProvider>
+          </QueryClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );
