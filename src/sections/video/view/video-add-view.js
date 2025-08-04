@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -47,10 +47,11 @@ const VIDEO_TYPES = [
 
 // ----------------------------------------------------------------------
 
-export default function VideoAddView() {
+export default function VideoAddView({ isEdit = false, videoId }) {
   const router = useRouter();
   const snackbar = useSnackbar();
   const { user } = useAuthContext();
+  const [loading, setLoading] = useState(false);
 
   const methods = useForm({
     resolver: yupResolver(VideoSchema),
@@ -63,9 +64,32 @@ export default function VideoAddView() {
     formState: { isSubmitting },
   } = methods;
 
+  useEffect(() => {
+    if (isEdit && videoId) {
+      setLoading(true);
+      VideoService.getById({ videoID: videoId })
+        .then((response) => {
+          if (response?.data) {
+            reset({
+              title: response.data.title,
+              url: response.data.videoUrl,
+              description: response.data.description || '',
+              type: response.data.category,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          snackbar.enqueueSnackbar(error?.message || 'Failed to fetch video', { variant: 'error' });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [isEdit, videoId, reset, snackbar]);
+
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // Prepare video data
       const videoData = {
         title: data.title,
         description: data.description || '',
@@ -76,38 +100,50 @@ export default function VideoAddView() {
         }
       };
 
-      // Call API to add video
-      const response = await VideoService.add(videoData);
-      
-      if (response?.status === 200) {
-        snackbar.enqueueSnackbar('Video added successfully!');
-        
-        // Reset form
-        reset();
-        
-        // Redirect to video list
-        router.push(paths.dashboard.video.my.list);
+      if (isEdit) {
+        const updateData = {
+          videoID: videoId,
+          ownerID: user?.user?._id,
+          title: data.title,
+          description: data.description || '',
+          videoUrl: data.url,
+          category: data.type,
+          owner: {
+            _id: user?.user?._id,
+          },
+          status: 'Active' // Add status if needed
+        };
+        console.log('Update data being sent:', updateData); // Debug log
+        const response = await VideoService.update(updateData);
+        if (response?.status === 200) {
+          snackbar.enqueueSnackbar('Video updated successfully!');
+          router.push(paths.dashboard.admin.video.list);
+        }
       } else {
-        throw new Error('Failed to add video');
+        const response = await VideoService.add(videoData);
+        if (response?.status === 200) {
+          snackbar.enqueueSnackbar('Video added successfully!');
+          router.push(paths.dashboard.admin.video.list);
+        }
       }
     } catch (error) {
       console.error(error);
       snackbar.enqueueSnackbar(
-        error?.response?.data?.message || error.message || 'Failed to add video', 
+        error?.message || `Failed to ${isEdit ? 'update' : 'add'} video`,
         { variant: 'error' }
       );
     }
   });
 
   const handleCancel = useCallback(() => {
-    router.push(paths.dashboard.video.my.list);
+    router.push(paths.dashboard.admin.video.list);
   }, [router]);
 
   return (
     <Container maxWidth={false}>
       <Card sx={{ p: 3 }}>
         <Typography variant="h6" sx={{ mb: 3 }}>
-          Add New Video
+          {isEdit ? 'Edit Video' : 'Add New Video'}
         </Typography>
 
         <FormProvider methods={methods}>
@@ -154,9 +190,9 @@ export default function VideoAddView() {
                 <LoadingButton
                   onClick={onSubmit}
                   variant="contained"
-                  loading={isSubmitting}
+                  loading={isSubmitting || loading}
                 >
-                  Add Video
+                  {isEdit ? 'Update Video' : 'Add Video'}
                 </LoadingButton>
               </Stack>
             </Stack>

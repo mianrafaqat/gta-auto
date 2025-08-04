@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -47,40 +48,54 @@ export default function VideoListView() {
   const table = useTable();
   const router = useRouter();
   const [tableData, setTableData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
-  const getAllVideos = useCallback(async () => {
-    try {
-      setLoading(true);
+  // Query for fetching all videos
+  const { data: allVideos = [], isLoading: loading } = useQuery({
+    queryKey: ['videos', 'all'],
+    queryFn: async () => {
       const response = await VideoService.getAll();
       if (response?.status === 200) {
-        setTableData(response.data);
+        return response.data;
       }
-    } catch (error) {
-      console.error(error);
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to fetch videos', { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  }, [enqueueSnackbar]);
+      return [];
+    },
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Cache persists for 30 minutes
+  });
 
-  const handleDeleteRow = async (id) => {
-    try {
-      const response = await VideoService.delete(id);
-      if (response?.status === 200) {
-        enqueueSnackbar('Video deleted successfully');
-        getAllVideos(); // Refresh the list
-      }
-    } catch (error) {
-      console.error(error);
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to delete video', { variant: 'error' });
-    }
-  };
+  // Mutation for deleting a video
+  const deleteMutation = useMutation({
+    mutationFn: (id) => VideoService.delete({ videoID: id }),
+    onSuccess: () => {
+      enqueueSnackbar('Video deleted successfully', { variant: 'success' });
+      queryClient.invalidateQueries(['videos', 'all']);
+    },
+    onError: (error) => {
+      enqueueSnackbar(error?.message || 'Failed to delete video', { variant: 'error' });
+    },
+  });
+
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.admin.video.edit(id));
+    },
+    [router]
+  );
+
+  const handleDeleteRow = useCallback(
+    (id) => {
+      deleteMutation.mutate(id);
+    },
+    [deleteMutation]
+  );
 
   useEffect(() => {
-    getAllVideos();
-  }, [getAllVideos]);
+    if (allVideos?.length) {
+      setTableData(allVideos);
+    }
+  }, [allVideos]);
 
   const notFound = !tableData.length;
 
@@ -99,7 +114,7 @@ export default function VideoListView() {
         justifyContent="space-between"
         sx={{ mb: 3 }}
       >
-        <Typography variant="h4">All Videos</Typography>
+        <Typography variant="h4">All Videos </Typography>
 
         <Button
           variant="contained"
@@ -129,6 +144,7 @@ export default function VideoListView() {
                     key={row._id}
                     row={row}
                     onDeleteRow={() => handleDeleteRow(row._id)}
+                    onEditRow={() => handleEditRow(row._id)}
                   />
                 ))}
 

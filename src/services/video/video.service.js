@@ -66,6 +66,26 @@ class VideoService {
       throw ex;
     }
   };
+
+  getVideoById = async (videoID) => {
+    try {
+      const res = await gtaAutosInstance.post(API_URLS.video.getById, { videoID });
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  updateVideo = async (data) => {
+    try {
+      console.log('Video service update data:', data); // Debug log
+      const res = await gtaAutosInstance.put(API_URLS.video.update, data);
+      return res;
+    } catch (ex) {
+      console.error('Video service update error:', ex); // Debug log
+      throw ex;
+    }
+  };
 }
 
 const instance = new VideoService();
