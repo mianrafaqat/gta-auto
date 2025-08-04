@@ -180,7 +180,7 @@ export default function ProductFilters({
 
   const fetchCarBodyList = async () => {
     try {
-      const res = await CarsService.getCarsBodyList();
+      const res = await CarsService.getCarBodyList();
       if (res?.data) {
         setCarBodyList(res?.data);
       }
@@ -388,7 +388,7 @@ export default function ProductFilters({
         onChange={handleFilterPriceRange}
         step={500}
         min={0}
-        max={10000000}
+        max={100000}
         // marks={marksLabel}
         getAriaValueText={(value) => `$${value}`}
         valueLabelFormat={(value) => `$${value}`}
@@ -668,7 +668,7 @@ function SearchByModels({
       setLoading(false);
 
       const res = await CarsService.getCarMakes();
-      if (res?.status === 200) {
+      if (res?.data) {
         setCarsMakesList(res?.data);
       }
     } catch (err) {

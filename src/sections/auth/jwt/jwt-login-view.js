@@ -4,18 +4,14 @@ import * as Yup from "yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signIn, useSession } from "next-auth/react";
-import { useNextAuth } from "src/hooks/use-nextauth";
 
 import Link from "@mui/material/Link";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import Divider from "@mui/material/Divider";
 
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
@@ -34,14 +30,12 @@ import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 
 export default function JwtLoginView() {
   const { login } = useAuthContext();
-  const { signInWithGoogle, isAuthenticated } = useNextAuth();
 
   let role = "user";
 
   const router = useRouter();
 
   const [errorMsg, setErrorMsg] = useState("");
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const searchParams = useSearchParams();
 
@@ -88,33 +82,15 @@ export default function JwtLoginView() {
     }
   });
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsGoogleLoading(true);
-      setErrorMsg("");
-      
-      const result = await signInWithGoogle();
-
-      if (result?.error) {
-        setErrorMsg("Google authentication failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-      setErrorMsg("Google authentication failed. Please try again.");
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
   useEffect(() => {
     const handleMoveToDashboard = () => {
       router.push(PATH_AFTER_LOGIN);
     };
 
-    if (auth?.authenticated || isAuthenticated) {
+    if (auth?.authenticated) {
       handleMoveToDashboard();
     }
-  }, [auth, isAuthenticated, router]);
+  }, [auth, router]);
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
@@ -143,7 +119,9 @@ export default function JwtLoginView() {
           ),
         }}
       />
-      
+      {/* <Link sx={{ textAlign: 'end' }} color="black" href={paths.dashboard.user.forgotPassword}>
+        <Typography variant="body2">Forgot Password?</Typography>
+      </Link> */}
       <LoadingButton
         fullWidth
         color="inherit"
@@ -154,30 +132,16 @@ export default function JwtLoginView() {
       >
         Login
       </LoadingButton>
-
-      <Divider sx={{ my: 2 }}>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          OR
-        </Typography>
-      </Divider>
-
-      <Button
-        fullWidth
-        size="large"
-        variant="outlined"
-        color="inherit"
-        onClick={handleGoogleSignIn}
-        disabled={isGoogleLoading}
-        startIcon={
-          <Iconify
-            icon="logos:google-icon"
-            sx={{ width: 20, height: 20 }}
-          />
-        }
+      {/* <RadioGroup
+        onChange={(e) => setRole(e.target.value)}
+        sx={{ alignItems: 'center', gap: 2 }}
+        row
+        defaultValue="user"
       >
-        {isGoogleLoading ? "Signing in..." : "Continue with Google"}
-      </Button>
-
+        <Typography variant="body1">Sign in as:</Typography>
+        <FormControlLabel value="user" control={<Radio size="medium" />} label="User" />
+        <FormControlLabel value="admin" control={<Radio size="medium" />} label="Admin" />
+      </RadioGroup> */}
       <Link
         sx={{ textAlign: "end" }}
         color="black"
