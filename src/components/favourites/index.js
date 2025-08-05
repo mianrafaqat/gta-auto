@@ -10,17 +10,27 @@ import Iconify from "../iconify";
 import { Stack } from "@mui/system";
 
 export default function FavouritesCarPage() {
-  const { user } = useAuthContext()?.user || {};
+  const { user = {} } = useAuthContext()?.user || {};
   const [userCarsFav, setUserFav] = useState([]);
 
   const [loading, setLoading] = useState(false);
+
+  // Debug: Log user data
+  console.log("Favourites - Auth context user:", useAuthContext()?.user);
+  console.log("Favourites - Extracted user:", user);
+
+  // Get the actual user data from the nested structure
+  const actualUser = user?.user || user;
+  console.log("Favourites - Actual user:", actualUser);
+  console.log("Favourites - User ID:", actualUser?._id);
 
   const fetchUserFavCars = async () => {
     try {
       setLoading(true);
       const data = {
-        userId: user?._id,
+        userId: actualUser?._id,
       };
+      console.log("Favourites - Sending data:", data);
       const res = await CarsService.getUserFavouriteCar(data);
       console.log("res: ", res);
       if (res?.status === 200) {

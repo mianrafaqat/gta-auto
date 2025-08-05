@@ -14,7 +14,9 @@ class CarsService {
 
   getById = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getById, {carID: data});
+      const res = await gtaAutosInstance.post(API_URLS.cars.getById, {
+        carID: data,
+      });
       return res;
     } catch (ex) {
       throw ex;
@@ -50,7 +52,9 @@ class CarsService {
 
   getCarById = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getById, {carID: data});
+      const res = await gtaAutosInstance.post(API_URLS.cars.getById, {
+        carID: data,
+      });
       return res;
     } catch (ex) {
       throw ex;
@@ -76,7 +80,10 @@ class CarsService {
 
   getCarModels = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getCarModelsByCar, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.getCarModelsByCar,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -94,7 +101,22 @@ class CarsService {
 
   getUserFavouriteCar = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.user.getUserFavorites, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.getUserFavouriteById,
+        data
+      );
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  addOrRemoveFavouriteCar = async (data) => {
+    try {
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.addOrRemoveFav,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -121,7 +143,10 @@ class CarsService {
 
   sendEmail = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.sendEmailToCarOwner, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.sendEmailToCarOwner,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -130,7 +155,10 @@ class CarsService {
 
   getCarModelsByCar = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getCarModelsByCar, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.getCarModelsByCar,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -139,7 +167,10 @@ class CarsService {
 
   getCarModelsByYear = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.getCarModelsByYear, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.getCarModelsByYear,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -148,7 +179,10 @@ class CarsService {
 
   filterByMakeAndModel = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.filterByMakeAndModel, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.filterByMakeAndModel,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -157,7 +191,10 @@ class CarsService {
 
   sendEmailToCarOwner = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.cars.sendEmailToCarOwner, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.cars.sendEmailToCarOwner,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -176,15 +213,18 @@ class CarsService {
 
   uploadCarImages = async (files) => {
     try {
-      console.log('Service: Starting upload with files:', files);
+      console.log("Service: Starting upload with files:", files);
       const formData = new FormData();
       files.forEach((f) => {
         if (typeof f === "object") {
           formData.append("files", f);
         }
       });
-      
-      console.log('Service: Sending request to:', API_URLS.cars.uploadCarImages);
+
+      console.log(
+        "Service: Sending request to:",
+        API_URLS.cars.uploadCarImages
+      );
       const res = await gtaAutosInstance.post(
         API_URLS.cars.uploadCarImages,
         formData,
@@ -194,18 +234,18 @@ class CarsService {
           },
         }
       );
-      
-      console.log('Service: Upload response:', res);
-      
+
+      console.log("Service: Upload response:", res);
+
       // Ensure we have the expected response structure
       if (!res.data) {
-        console.error('Service: No data in response');
-        throw new Error('Invalid response from upload service');
+        console.error("Service: No data in response");
+        throw new Error("Invalid response from upload service");
       }
-      
+
       return res;
     } catch (ex) {
-      console.error('Service: Upload error:', ex);
+      console.error("Service: Upload error:", ex);
       throw ex;
     }
   };

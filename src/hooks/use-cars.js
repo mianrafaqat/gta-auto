@@ -1,19 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CarsService } from 'src/services';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { CarsService } from "src/services";
 
 // Query Keys
 export const carKeys = {
-  all: ['cars'],
-  lists: () => [...carKeys.all, 'list'],
+  all: ["cars"],
+  lists: () => [...carKeys.all, "list"],
   list: (filters) => [...carKeys.lists(), filters],
-  details: () => [...carKeys.all, 'detail'],
+  details: () => [...carKeys.all, "detail"],
   detail: (id) => [...carKeys.details(), id],
-  makes: () => [...carKeys.all, 'makes'],
-  models: () => [...carKeys.all, 'models'],
-  bodyTypes: () => [...carKeys.all, 'bodyTypes'],
-  deals: () => [...carKeys.all, 'deals'],
-  favorites: () => [...carKeys.all, 'favorites'],
-  myCars: (userId) => [...carKeys.all, 'myCars', userId],
+  makes: () => [...carKeys.all, "makes"],
+  models: () => [...carKeys.all, "models"],
+  bodyTypes: () => [...carKeys.all, "bodyTypes"],
+  deals: () => [...carKeys.all, "deals"],
+  favorites: () => [...carKeys.all, "favorites"],
+  myCars: (userId) => [...carKeys.all, "myCars", userId],
 };
 
 // Get all cars
@@ -38,7 +38,7 @@ export const useGetCarById = (carId) => {
 // Get car details by registration number
 export const useGetCarByRegNo = (regNo) => {
   return useQuery({
-    queryKey: [...carKeys.details(), 'regNo', regNo],
+    queryKey: [...carKeys.details(), "regNo", regNo],
     queryFn: () => CarsService.getDetailsByRegNo(regNo),
     enabled: !!regNo,
     staleTime: 10 * 60 * 1000, // 10 minutes
@@ -87,7 +87,7 @@ export const useGetCarModelsByYear = (selectedCar, year) => {
 // Filter by make and model
 export const useFilterByMakeAndModel = (make, model) => {
   return useQuery({
-    queryKey: [...carKeys.lists(), 'filter', make, model],
+    queryKey: [...carKeys.lists(), "filter", make, model],
     queryFn: () => CarsService.filterByMakeAndModel({ make, model }),
     enabled: !!(make && model),
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -125,20 +125,27 @@ export const useGetUserFavoriteCars = (userId) => {
 // Mutations
 export const useAddOrRemoveFavoriteCar = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (data) => CarsService.addOrRemoveFavouriteCar(data),
-    onSuccess: (data, variables) => {
+    onSuccess: (response, variables) => {
       // Invalidate and refetch relevant queries
       queryClient.invalidateQueries({ queryKey: carKeys.favorites() });
       queryClient.invalidateQueries({ queryKey: carKeys.all });
+
+      // Return the response data for the component to use
+      return response;
+    },
+    onError: (error) => {
+      console.error("Error adding/removing favorite:", error);
+      throw error;
     },
   });
 };
 
 export const useAddNewCar = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (data) => CarsService.add(data),
     onSuccess: () => {
@@ -150,12 +157,14 @@ export const useAddNewCar = () => {
 
 export const useUpdateCar = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (data) => CarsService.updateCar(data),
     onSuccess: (data, variables) => {
       // Invalidate and refetch specific car and cars list
-      queryClient.invalidateQueries({ queryKey: carKeys.detail(variables._id) });
+      queryClient.invalidateQueries({
+        queryKey: carKeys.detail(variables._id),
+      });
       queryClient.invalidateQueries({ queryKey: carKeys.lists() });
     },
   });
@@ -163,7 +172,7 @@ export const useUpdateCar = () => {
 
 export const useDeleteCar = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (data) => CarsService.deleteCarById(data),
     onSuccess: () => {
@@ -183,4 +192,4 @@ export const useSendEmail = () => {
   return useMutation({
     mutationFn: (data) => CarsService.sendEmail(data),
   });
-}; 
+};

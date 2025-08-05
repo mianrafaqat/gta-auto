@@ -55,24 +55,38 @@ export default function ProductItem({
 
   const { updateUserData = () => {} } = useAuthContext() || {};
 
+  // Debug: Log the entire auth context
+  console.log("Auth context user:", useAuthContext()?.user);
+  console.log("Extracted user object:", user);
+
   // React Query mutation for favorite functionality
   const addOrRemoveFavoriteMutation = useAddOrRemoveFavoriteCar();
 
   const handleAddOrRemoveFav = async () => {
     try {
+      // Get the actual user data from the nested structure
+      const actualUser = user?.user || user;
+      console.log("Current user object:", actualUser); // Debug: Log the entire user object
+      console.log("User ID being sent:", actualUser?._id); // Debug: Log the specific user ID
+
       const data = {
-        userID: user?._id,
-        carID: product?._id,
+        userID: actualUser?._id, // Fixed: Access user ID from the correct user object
+        carID: product?._id, // Changed from carID to match backend expectation
       };
-      
+
+      console.log("Sending favorite data:", data); // Debug log
+
       const result = await addOrRemoveFavoriteMutation.mutateAsync(data);
-      
+
+      console.log("Favorite result:", result); // Debug log
+
       if (result?.status === 200) {
+        // Update user data with the new favorite list
         updateUserData(result?.data);
         onAddOrRemoveFav();
       }
     } catch (err) {
-      console.log("error: ", err);
+      console.error("Error adding/removing favorite: ", err);
     }
   };
 
@@ -103,13 +117,12 @@ export default function ProductItem({
       <Typography
         fontWeight={500}
         sx={{
-          fontSize:'16px',
+          fontSize: "16px",
           display: "flex",
           gap: "5px",
           color: color,
           justifyContent: "end",
-        }}
-      >
+        }}>
         <Iconify icon={icon} />
         {title}
       </Typography>
@@ -179,12 +192,14 @@ export default function ProductItem({
   }, [product?.status]);
 
   const RenderImg = () => {
+    // Get the actual user data from the nested structure
+    const actualUser = user?.user || user;
+
     return (
       <Box sx={{ position: "relative", p: 1 }}>
         <Link
           style={{ textDecoration: "none" }}
-          href={paths.dashboard.cars.details(product?._id)}
-        >
+          href={paths.dashboard.cars.details(product?._id)}>
           <Image
             alt={name}
             src={image[0]}
@@ -194,135 +209,141 @@ export default function ProductItem({
             }}
           />
         </Link>
-        {Object.keys(user).length > 0 && (
-          <IconButton
-            size="small"
-            color="error"
-            disabled={addOrRemoveFavoriteMutation.isPending}
-            sx={{
-              background: "#fff",
-              position: "absolute",
-              right: "10px",
-              top: "10px",
-            }}
-            onClick={handleAddOrRemoveFav}
-          >
-            <Iconify
-              style={{ color: "#4caf50", width: "30px", height: "30px" }}
-              fontSize="inherit"
-              icon={
-                user?.favourite?.includes(product?._id)
-                  ? "mdi:favourite"
-                  : "mdi:favourite-border"
-              }
-            />
-          </IconButton>
-        )}
+        {actualUser &&
+          Object.keys(actualUser).length > 0 &&
+          actualUser?._id && (
+            <IconButton
+              size="small"
+              color="error"
+              disabled={addOrRemoveFavoriteMutation.isPending}
+              sx={{
+                background: "#fff",
+                position: "absolute",
+                right: "10px",
+                top: "10px",
+              }}
+              onClick={handleAddOrRemoveFav}>
+              <Iconify
+                style={{ color: "#4caf50", width: "30px", height: "30px" }}
+                fontSize="inherit"
+                icon={
+                  actualUser?.favourite?.includes(product?._id)
+                    ? "mdi:favourite"
+                    : "mdi:favourite-border"
+                }
+              />
+            </IconButton>
+          )}
       </Box>
     );
   };
 
   const renderContent = (
     <Stack spacing={2.5} sx={{ p: 3, pt: 2 }}>
-     {onHome ? <Stack
-        direction={onHome ? "column" : "row"}
-        alignItems="start"
-        justifyContent="space-between"
-      >
+      {onHome ? (
         <Stack
-          direction="column"
-          spacing={0.5}
-          sx={{ typography: "subtitle1" }}
-        >
-          <Link
-            style={{ textDecoration: "none" }}
-            href={paths.dashboard.cars.details(product?._id)}
-          >
-            <Box
-              component="p"
-              sx={{
-                maxWidth: "230px",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-                margin: 0,
-                color: "white",
-                ...(onHome ? { fontSize: "14px", maxWidth: "200px" } : {}),
-              }}
-            >
-              {title}
-            </Box>
-          </Link>
-         
-        </Stack>
-        <Box fontWeight="bold" component="span">
-        <Stack
-        direction= "row"
-        gap="12px"
-        alignItems="center"
-        justifyContent="space-between"
-        color= "white"
-      >
-          PKR{Number(price)?.toLocaleString()} 
-          <Typography variant="caption" color= "white"> |</Typography>
-
-          <Typography variant="caption" color= "white"> {carDetails?.mileage} mi</Typography>
+          direction={onHome ? "column" : "row"}
+          alignItems="start"
+          justifyContent="space-between">
+          <Stack
+            direction="column"
+            spacing={0.5}
+            sx={{ typography: "subtitle1" }}>
+            <Link
+              style={{ textDecoration: "none" }}
+              href={paths.dashboard.cars.details(product?._id)}>
+              <Box
+                component="p"
+                sx={{
+                  maxWidth: "230px",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  margin: 0,
+                  color: "white",
+                  ...(onHome ? { fontSize: "14px", maxWidth: "200px" } : {}),
+                }}>
+                {title}
+              </Box>
+            </Link>
           </Stack>
-        </Box>
-      </Stack> :  <Stack
-        direction={onHome ? "column" : "row"}
-        alignItems="start"
-        justifyContent="space-between"
-      >
-        <Stack
-          direction="column"
-          spacing={0.5}
-          sx={{ typography: "subtitle1" }}
-        >
-          <Link
-            style={{ textDecoration: "none" }}
-            href={paths.dashboard.cars.details(product?._id)}
-          >
-            <Box
-              component="p"
-              sx={{
-                maxWidth: "230px",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-                margin: 0,
-                color: "white",
-                ...(onHome ? { fontSize: "14px", maxWidth: {md:"230px",xs:"330px",sm:"330px"}} : {}),
-              }}
-            >
-              {title}
-            </Box>
-          </Link>
-          <Typography variant="caption" color= "white">{carDetails?.mileage} mi</Typography>
+          <Box fontWeight="bold" component="span">
+            <Stack
+              direction="row"
+              gap="12px"
+              alignItems="center"
+              justifyContent="space-between"
+              color="white">
+              PKR{Number(price)?.toLocaleString()}
+              <Typography variant="caption" color="white">
+                {" "}
+                |
+              </Typography>
+              <Typography variant="caption" color="white">
+                {" "}
+                {carDetails?.mileage} mi
+              </Typography>
+            </Stack>
+          </Box>
         </Stack>
-        <Box fontWeight="bold" component="span" color= "white">
-          PKR{Number(price)?.toLocaleString()} 
-          
-        </Box>
-      </Stack>}
+      ) : (
+        <Stack
+          direction={onHome ? "column" : "row"}
+          alignItems="start"
+          justifyContent="space-between">
+          <Stack
+            direction="column"
+            spacing={0.5}
+            sx={{ typography: "subtitle1" }}>
+            <Link
+              style={{ textDecoration: "none" }}
+              href={paths.dashboard.cars.details(product?._id)}>
+              <Box
+                component="p"
+                sx={{
+                  maxWidth: "230px",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  margin: 0,
+                  color: "white",
+                  ...(onHome
+                    ? {
+                        fontSize: "14px",
+                        maxWidth: { md: "230px", xs: "330px", sm: "330px" },
+                      }
+                    : {}),
+                }}>
+                {title}
+              </Box>
+            </Link>
+            <Typography variant="caption" color="white">
+              {carDetails?.mileage} mi
+            </Typography>
+          </Stack>
+          <Box fontWeight="bold" component="span" color="white">
+            PKR{Number(price)?.toLocaleString()}
+          </Box>
+        </Stack>
+      )}
 
       <Stack
         direction={onHome ? "column" : "row"}
-        sx={{ justifyContent: "space-between", flex: 1 ,
-        ...(onHome ? {justifyContent: "center",alignItems:'center'  } : {}),
-      }}
-        gap={1}
-      >
+        sx={{
+          justifyContent: "space-between",
+          flex: 1,
+          ...(onHome ? { justifyContent: "center", alignItems: "center" } : {}),
+        }}
+        gap={1}>
         <Chip
           sx={{
             textTransform: "capitalize",
             background: "#4caf50",
             color: "#fff",
             width: "30%",
-            ...(onHome ? { width: "100%" ,fontSize:'13px'} : {}),
+            ...(onHome ? { width: "100%", fontSize: "13px" } : {}),
           }}
-          label={`For ${category}`}
-        ></Chip>
+          label={`For ${category}`}></Chip>
         {status}
       </Stack>
       {!onHome && (
@@ -332,8 +353,7 @@ export default function ProductItem({
             flexWrap: "wrap",
             minHeight: carDetails?.features ? "unset" : "56px",
           }}
-          gap={1}
-        >
+          gap={1}>
           {carDetails?.features?.slice(0, 3).map((f, index) => (
             <Label key={index} color="primary" variant="soft">
               {f}
@@ -348,23 +368,18 @@ export default function ProductItem({
       )}
 
       {onHome ? (
-       <Link
-       component={postalCode ? "a" : "button"}
-       sx={{ display: "flex",fontSize:'13px',color: "white" }}
-       gap={1}
-       fontWeight="bold"
-       alignItems="center"
-       target="_blank"
-       href={
-         postalCode
-           ? `https://www.google.com/maps/place/${postalCode}`
-           : "#"
-       }
-     > {postalCode ? (
-      location + ", " + postalCode
-    ) : (
-      "Location Not Available"
-    )}
+        <Link
+          component={postalCode ? "a" : "button"}
+          sx={{ display: "flex", fontSize: "13px", color: "white" }}
+          gap={1}
+          fontWeight="bold"
+          alignItems="center"
+          target="_blank"
+          href={
+            postalCode ? `https://www.google.com/maps/place/${postalCode}` : "#"
+          }>
+          {" "}
+          {postalCode ? location + ", " + postalCode : "Location Not Available"}
         </Link>
       ) : (
         <Stack
@@ -372,21 +387,18 @@ export default function ProductItem({
           alignItems="center"
           justifyContent="space-between"
           gap="15px"
-          alignContent="flex-end"
-        >
+          alignContent="flex-end">
           <Box
             sx={{
               width: "20px",
               cursor: postalCode ? "pointer !important" : "default",
-            }}
-          >
+            }}>
             <Tooltip
               title={
                 postalCode
                   ? location + ", " + postalCode
                   : "Location Not Available"
-              }
-            >
+              }>
               <Link
                 component={postalCode ? "a" : "button"}
                 sx={{ display: "flex" }}
@@ -398,8 +410,7 @@ export default function ProductItem({
                   postalCode
                     ? `https://www.google.com/maps/place/${postalCode}`
                     : "#"
-                }
-              >
+                }>
                 <Iconify icon="tabler:location" />
               </Link>
             </Tooltip>
@@ -413,12 +424,11 @@ export default function ProductItem({
   return (
     <Card
       sx={{
-        width:"100%",
-        borderRadius:'24px',
-        background:'transparent ',
-        border:'1px solid #4caf50',
-      }}
-    >
+        width: "100%",
+        borderRadius: "24px",
+        background: "transparent ",
+        border: "1px solid #4caf50",
+      }}>
       <RenderImg />
       {renderContent}
     </Card>

@@ -8,7 +8,8 @@ export const API_URLS = {
     login: "/api/user/login",
     refreshToken: "/api/user/refresh-token",
     forgotPassword: "/api/user/reset-password",
-    updatePassword: ({ userId, token }) => `/api/user/update-password/${userId}/${token}`,
+    updatePassword: ({ userId, token }) =>
+      `/api/user/update-password/${userId}/${token}`,
   },
   user: {
     // Protected Routes
@@ -16,11 +17,11 @@ export const API_URLS = {
     update: "/api/user/update",
     addOrRemoveFavorite: "/api/user/addOrRemoveFavourite",
     getUserFavorites: "/api/user/getUserFavouriteCars",
-    
+
     // Admin Routes
-    registerUser: "/api/user/register",  // Admin token required
+    registerUser: "/api/user/register", // Admin token required
     getAll: "/api/user/getAll",
-    
+
     // Superadmin Routes
     registerAdmin: "/api/user/register-admin",
     delete: "/api/user/delete",
@@ -36,11 +37,13 @@ export const API_URLS = {
     getCarModelsByYear: "/api/car/getCarModelsByYear",
     filterByMakeAndModel: "/api/car/filterByMakeAndModel",
     sendEmailToCarOwner: "/api/car/sendEmailToCarOwner",
-    
+
     // Protected Routes
     getMyCars: "/api/car/my-cars",
     uploadCarImages: "/api/car/uploadCarImages",
-    
+    addOrRemoveFav: "/api/user/addOrRemoveFavourite",
+    getUserFavouriteById: "/api/user/getUserFavouriteCars",
+
     // Admin Routes
     add: "/api/car/add",
     update: "/api/car/update",
@@ -49,7 +52,7 @@ export const API_URLS = {
   blog: {
     // Public Routes
     getAll: "/api/blog/getAll",
-    
+
     // Admin Routes
     add: "/api/blog/add",
     update: "/api/blog/update",
@@ -61,7 +64,7 @@ export const API_URLS = {
     getById: "/api/video/getById",
     getByCategory: "/api/video/getByCategory",
     getByOwner: "/api/video/getByOwner",
-    
+
     // Admin Routes
     add: "/api/video/add",
     update: "/api/video/update",
@@ -70,7 +73,7 @@ export const API_URLS = {
   ads: {
     // Public Routes
     getAll: "/api/ads/getAll",
-    
+
     // Admin Routes
     add: "/api/ads/add",
     update: "/api/ads/update",
