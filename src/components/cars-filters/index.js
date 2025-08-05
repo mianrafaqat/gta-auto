@@ -13,6 +13,8 @@ import {
   Stack,
   Button,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Iconify from "../iconify";
 import { useRouter } from "next/navigation";
@@ -30,6 +32,35 @@ import { useGetCarBodyList, useGetCarMakes, useGetCarModels } from "src/hooks/us
 
 export default function CarsFiltersPage() {
   const { data: carBodyList = [], isLoading: carBodyLoading } = useGetCarBodyList();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Desktop playback IDs for 2 slides
+  const desktopPlaybackIds = [
+    "8YObs002Jd4TxxHXlXiw7DXgXkR5OwD7gXixt4AukMUA"
+  ];
+
+  // Mobile playback ID
+  const mobilePlaybackId = "gzB22KDrzm1XR4sfmnGnmQ1vF0000yNzo00f02rcNO2VlXg";
+
+  // Auto-advance slides for desktop
+  useEffect(() => {
+    if (!isMobile) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % desktopPlaybackIds.length);
+      }, 5000); // Change slide every 5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [isMobile]);
+
+  const getCurrentPlaybackId = () => {
+    if (isMobile) {
+      return mobilePlaybackId;
+    }
+    return desktopPlaybackIds[currentSlide];
+  };
 
   return (
     <>
@@ -61,7 +92,7 @@ export default function CarsFiltersPage() {
           }}
         >
           <MuxPlayer
-            playbackId="9WU2Y5OXCT56CzULR8mFAhmKPwJshaP66G902lnvKyek"
+            playbackId={getCurrentPlaybackId()}
             autoPlay
             muted
             controls={false}
@@ -83,6 +114,37 @@ export default function CarsFiltersPage() {
             }}
           />
         </Box>
+
+        {/* Slide indicators for desktop */}
+        {!isMobile && (
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 2,
+              display: 'flex',
+              gap: 1,
+            }}
+          >
+            {desktopPlaybackIds.map((_, index) => (
+              <Box
+                key={index}
+                sx={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: '50%',
+                  backgroundColor: currentSlide === index ? '#fff' : 'rgba(255,255,255,0.5)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+                onClick={() => setCurrentSlide(index)}
+              />
+            ))}
+          </Box>
+        )}
+
         <Box
           sx={{
             position: 'absolute',
