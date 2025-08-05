@@ -137,7 +137,11 @@ export default function Header() {
               />
             )}
             {mdUp && Object.keys(user).length > 0 && (
-              <MoveTo title="Favourite" path={paths.user.favourites} />
+              <MoveTo
+                title="Favourite"
+                path={paths.user.favourites}
+                sx={{ color: "white", borderColor: "black" }}
+              />
             )}
 
             {!mdUp && <NavMobile data={navConfig} />}

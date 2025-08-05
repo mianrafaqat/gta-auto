@@ -15,8 +15,6 @@ export default function FavouritesCarPage() {
 
   const [loading, setLoading] = useState(false);
 
-  console.log("userfac: ", userCarsFav);
-
   const fetchUserFavCars = async () => {
     try {
       setLoading(true);
@@ -26,7 +24,7 @@ export default function FavouritesCarPage() {
       const res = await CarsService.getUserFavouriteCar(data);
       console.log("res: ", res);
       if (res?.status === 200) {
-        setUserFav(res?.data);
+        setUserFav(res?.data?.data);
       }
     } catch (err) {
       console.log("err: ", err);
@@ -39,9 +37,11 @@ export default function FavouritesCarPage() {
     fetchUserFavCars();
   }, []);
 
+  const hasNoFavCars = !loading && (!userCarsFav || userCarsFav.length === 0);
+
   return (
     <>
-      <Typography sx={{ textAlign: "center" }} variant="h3">
+      <Typography sx={{ textAlign: "center", color: "#fff" }} variant="h3">
         My Favorite Cars Gallery
       </Typography>
 
@@ -55,8 +55,7 @@ export default function FavouritesCarPage() {
           md: "repeat(3, 1fr)",
           lg: "repeat(3, 1fr)",
         }}
-        mb={5}
-      >
+        mb={5}>
         {loading ? (
           <>
             {[...Array(8)].map((_, index) => (
@@ -75,13 +74,29 @@ export default function FavouritesCarPage() {
           </>
         )}
       </Box>
-      {!userCarsFav?.length && (
-        <Stack direction="row" alignItems='center' justifyContent='center' sx={{width: "200px", height: "200px", background: '#f7f7f7', margin: "0 auto", borderRadius: "50%"}}>
+      {hasNoFavCars && (
+        <Stack
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          sx={{
+            width: "200px",
+            height: "200px",
+            background: "#f7f7f7",
+            mx: "auto",
+            borderRadius: "50%",
+            mb: "40px",
+          }}>
           <Iconify
-          width="100px"
-          style={{ color: "#4caf50", display: "block" }}
-          icon="mdi:car-off"
-        />
+            width="100px"
+            style={{ color: "#4caf50", display: "block" }}
+            icon="mdi:car-off"
+          />
+          <Typography
+            variant="subtitle1"
+            sx={{ color: "#888", mt: 2, textAlign: "center" }}>
+            No car added yet
+          </Typography>
         </Stack>
       )}
     </>
