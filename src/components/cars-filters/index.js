@@ -1,7 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Autocomplete, TextField } from "@mui/material";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import Container from "@mui/material/Container";
+import MuxPlayer from "@mux/mux-player-react";
+import {
+  Autocomplete,
+  Box,
+  Tab,
+  Tabs,
+  TextField,
+  Stack,
+  Button,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import Iconify from "../iconify";
 import { useRouter } from "next/navigation";
 import { paths } from "src/routes/paths";
 import ServicesSection from "./services-section";
@@ -9,6 +23,8 @@ import FeaturedCarsSection from "./featured-cars";
 import SellYourCarSection from "./sell-your-car";
 import BrowseVideosSection from "./browse-videos";
 import Hero from "./Hero";
+import { useGetCarBodyList } from "src/hooks/use-cars";
+import SearchByModels from "./search-by-models";
 
 export default function CarsFiltersPage() {
   const { data: carBodyList = [], isLoading: carBodyLoading } = useGetCarBodyList();
@@ -187,7 +203,7 @@ export default function CarsFiltersPage() {
           }}
         >
           <Box mt={2}>
-            <SearchByModels />
+            <SearchByModels carBodyList={carBodyList} />
           </Box>
         </Box>
       </Container>
