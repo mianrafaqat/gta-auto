@@ -20,7 +20,16 @@ import InputBase, { inputBaseClasses } from "@mui/material/InputBase";
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 import { ColorPicker } from "src/components/color-utils";
-import { Autocomplete, Box, ToggleButton, Select, Tab, Tabs, TextField, ToggleButtonGroup } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  ToggleButton,
+  Select,
+  Tab,
+  Tabs,
+  TextField,
+  ToggleButtonGroup,
+} from "@mui/material";
 import ComponentBlock from "../_examples/component-block";
 import { CarsService } from "src/services";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -81,7 +90,7 @@ export default function ProductFilters({
   const handleFilterCategory = useCallback(
     (e, newValue) => {
       onFilters("category", newValue);
-      setSelectedCategory(newValue)
+      setSelectedCategory(newValue);
     },
     [onFilters]
   );
@@ -99,8 +108,6 @@ export default function ProductFilters({
     },
     [onFilters]
   );
-
- 
 
   const handleFilterPriceRange = useCallback(
     (event, newValue) => {
@@ -194,8 +201,8 @@ export default function ProductFilters({
   }, []);
 
   useEffect(() => {
-    setSelectedCategory('all')
-  }, [reset])
+    setSelectedCategory("all");
+  }, [reset]);
 
   const renderHead = (
     <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -217,24 +224,21 @@ export default function ProductFilters({
     </Stack>
   );
 
-
   const control = {
     value: selectedCategory,
     onChange: handleFilterCategory,
     exclusive: true,
-  }
+  };
 
   const CategoriesButtons = () => {
     return (
       <ToggleButtonGroup color="primary" {...control} fullWidth>
-         <ToggleButton value='sale' key='sale' >
+        <ToggleButton value="sale" key="sale">
           Sale
         </ToggleButton>
-       
-       
       </ToggleButtonGroup>
-    )
-  }
+    );
+  };
 
   const renderFuelType = (
     <Stack>
@@ -248,53 +252,53 @@ export default function ProductFilters({
         getOptionLabel={(option) => option}
         onChange={(event, value) => handleFuelType(value)}
         value={filters.fuelType}
-                  sx={{
-            '& .MuiInputBase-input': {
-              color: '#fff',
-              '&::placeholder': {
-                color: '#fff',
-                opacity: 1
-              }
+        sx={{
+          "& .MuiInputBase-input": {
+            color: "#fff",
+            "&::placeholder": {
+              color: "#fff",
+              opacity: 1,
             },
-            '& .MuiInputLabel-root': {
-              color: '#fff',
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#fff',
-            },
-            '& .MuiSvgIcon-root': {
-              color: '#fff',
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#fff',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#fff',
-            }
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              margin="none"
-              placeholder="Select Fuel Type"
-              sx={{
-                '& .MuiInputBase-input': { 
-                  color: '#fff',
-                  '&::placeholder': {
-                    color: '#fff',
-                    opacity: 1
-                  }
+          },
+          "& .MuiInputLabel-root": {
+            color: "#fff",
+          },
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
+          },
+          "& .MuiSvgIcon-root": {
+            color: "#fff",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
+          },
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            margin="none"
+            placeholder="Select Fuel Type"
+            sx={{
+              "& .MuiInputBase-input": {
+                color: "#fff",
+                "&::placeholder": {
+                  color: "#fff",
+                  opacity: 1,
                 },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#fff'
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#fff'
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#fff'
-                }
-              }}
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#fff",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#fff",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#fff",
+              },
+            }}
             // Set TextField's value based on selected option
             onChange={() => {}} // Make TextField uncontrolled to prevent override
           />
@@ -316,23 +320,23 @@ export default function ProductFilters({
         onChange={(e) => handleSearch(e.target.value)}
         label="Search"
         sx={{
-          '& .MuiInputBase-input': {
-            color: '#fff',
+          "& .MuiInputBase-input": {
+            color: "#fff",
           },
-          '& .MuiInputLabel-root': {
-            color: '#fff',
+          "& .MuiInputLabel-root": {
+            color: "#fff",
           },
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
-          '& .MuiSvgIcon-root': {
-            color: '#fff',
+          "& .MuiSvgIcon-root": {
+            color: "#fff",
           },
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
         }}
       />
@@ -341,7 +345,7 @@ export default function ProductFilters({
 
   const renderMileage = (
     <Stack>
-      <Typography variant="subtitle2" color="#fff"  sx={{ flexGrow: 1 }}>
+      <Typography variant="subtitle2" color="#fff" sx={{ flexGrow: 1 }}>
         Mileage
       </Typography>
 
@@ -442,7 +446,7 @@ export default function ProductFilters({
     <Stack spacing={2} alignItems="flex-start">
       <Typography variant="subtitle2">Rating</Typography>
 
-      {ratingOptions.map((item, index) => (
+      {ratingOptions?.map((item, index) => (
         <Stack
           key={item}
           direction="row"
@@ -458,8 +462,7 @@ export default function ProductFilters({
               py: 0.25,
               bgcolor: "action.selected",
             }),
-          }}
-        >
+          }}>
           <Rating readOnly value={4 - index} sx={{ mr: 1 }} /> & Up
         </Stack>
       ))}
@@ -468,31 +471,26 @@ export default function ProductFilters({
 
   const renderTabs = (
     <>
-      <Tabs 
-        value={currentTab} 
-        onChange={handleChangeTab} 
+      <Tabs
+        value={currentTab}
+        onChange={handleChangeTab}
         sx={{
-          '& .MuiTab-root': {
-            color: '#fff',
-            '&:hover': {
-              color: '#fff',
-              opacity: 0.8
-            }
+          "& .MuiTab-root": {
+            color: "#fff",
+            "&:hover": {
+              color: "#fff",
+              opacity: 0.8,
+            },
           },
-          '& .MuiTab-root.Mui-selected': {
-            color: '#00FF00',
+          "& .MuiTab-root.Mui-selected": {
+            color: "#00FF00",
           },
-          '& .MuiTabs-indicator': {
-            backgroundColor: '#00FF00',
-          }
-        }}
-      >
+          "& .MuiTabs-indicator": {
+            backgroundColor: "#00FF00",
+          },
+        }}>
         {TABS.map((tab) => (
-          <Tab 
-            key={tab.value} 
-            value={tab.value} 
-            label={tab.label}
-          />
+          <Tab key={tab.value} value={tab.value} label={tab.label} />
         ))}
       </Tabs>
 
@@ -555,7 +553,7 @@ function SearchByCarBody({ onChange, carBodyList = [], reset = false }) {
   const paramCarBody = params.get("makeType");
   const tab = params.get("tab");
 
-  const router  = useRouter();
+  const router = useRouter();
 
   const resetFilters = () => setSelectedBody("");
 
@@ -589,33 +587,38 @@ function SearchByCarBody({ onChange, carBodyList = [], reset = false }) {
           onChange(newValue);
           setSelectedBody(newValue);
         }}
-                  sx={{
-            '& .MuiInputBase-input': {
-              color: '#fff',
-              '&::placeholder': {
-                color: '#fff',
-                opacity: 1
-              }
+        sx={{
+          "& .MuiInputBase-input": {
+            color: "#fff",
+            "&::placeholder": {
+              color: "#fff",
+              opacity: 1,
             },
-            '& .MuiInputLabel-root': {
-              color: '#fff',
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#fff',
-            },
-            '& .MuiSvgIcon-root': {
-              color: '#fff',
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#fff',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#fff',
-            }
-          }}
+          },
+          "& .MuiInputLabel-root": {
+            color: "#fff",
+          },
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
+          },
+          "& .MuiSvgIcon-root": {
+            color: "#fff",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
+          },
+        }}
         getOptionLabel={(option) => option}
         renderInput={(params) => (
-          <TextField {...params} label="Car Body" margin="none" sx={{color: "#fff"}} />
+          <TextField
+            {...params}
+            label="Car Body"
+            margin="none"
+            sx={{ color: "#fff" }}
+          />
         )}
         renderOption={(props, option) => (
           <li {...props} key={option} color="#000">
@@ -645,7 +648,6 @@ function SearchByModels({
   const paramsSelectedCar = params.get("selectedCar");
   const paramsSelectedModel = params.get("model");
   const paramTab = params.get("tab");
-
 
   const router = useRouter();
 
@@ -705,7 +707,9 @@ function SearchByModels({
       router.push(`${paths.cars.root}?tab=one`);
       return;
     }
-    router.push(`${paths.cars.root}?selectedCar=${newValue?.value}&model=All&tab=one`);
+    router.push(
+      `${paths.cars.root}?selectedCar=${newValue?.value}&model=All&tab=one`
+    );
   };
 
   useEffect(() => {
@@ -790,45 +794,39 @@ function SearchByModels({
         value={selectedCar}
         // inputValue={inputValue}
         sx={{
-          '& .MuiInputBase-input': {
-            color: '#fff',
+          "& .MuiInputBase-input": {
+            color: "#fff",
           },
-          '& .MuiInputLabel-root': {
-            color: '#fff',
+          "& .MuiInputLabel-root": {
+            color: "#fff",
           },
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
-          '& .MuiSvgIcon-root': {
-            color: '#fff',
+          "& .MuiSvgIcon-root": {
+            color: "#fff",
           },
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
         }}
         getOptionLabel={(option) => option?.label || ""}
-        renderInput={(params) => (
-          <TextField 
-            {...params} 
-            label="Select Make"
-          />
-        )}
+        renderInput={(params) => <TextField {...params} label="Select Make" />}
         renderOption={(props, option) => (
-          <li 
-            {...props} 
-            value={option.value} 
+          <li
+            {...props}
+            value={option.value}
             key={option.label}
-            style={{ color: '#000' }}
-          >
+            style={{ color: "#000" }}>
             {option.label}
           </li>
         )}
         ListboxProps={{
           style: {
-            backgroundColor: '#fff',
+            backgroundColor: "#fff",
           },
         }}
       />
@@ -843,27 +841,29 @@ function SearchByModels({
         disabled={!Boolean(selectedCar)}
         // inputValue={inputValue}
         sx={{
-          '& .MuiInputBase-input': {
-            color: '#fff',
+          "& .MuiInputBase-input": {
+            color: "#fff",
           },
-          '& .MuiInputLabel-root': {
-            color: '#fff',
+          "& .MuiInputLabel-root": {
+            color: "#fff",
           },
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
-          '& .MuiSvgIcon-root': {
-            color: '#fff',
+          "& .MuiSvgIcon-root": {
+            color: "#fff",
           },
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#fff',
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#fff",
           },
         }}
         getOptionLabel={(option) => option?.model || ""}
-        renderInput={(params) => <TextField {...params} label="Select Model" sx={{color: "#fff"}} />}
+        renderInput={(params) => (
+          <TextField {...params} label="Select Model" sx={{ color: "#fff" }} />
+        )}
         renderOption={(props, option) => (
           <li {...props} value={option.model} key={option.model} color="#000">
             {option.model}
@@ -876,8 +876,7 @@ function SearchByModels({
         fullWidth
         variant="contained"
         onClick={handleFilterCarsByMakeAndModel}
-        sx={{color: "#fff", backgroundColor: "#4caf50"}}
-      >
+        sx={{ color: "#fff", backgroundColor: "#4caf50" }}>
         Search
       </Button>
     </Stack>
@@ -911,8 +910,7 @@ function InputRange({ name = "priceRange", type, value, onFilters }) {
       direction="column"
       alignItems="center"
       justifyContent="space-between"
-      sx={{ width: 1 }}
-    >
+      sx={{ width: 1 }}>
       <Typography
         variant="caption"
         sx={{
@@ -920,8 +918,7 @@ function InputRange({ name = "priceRange", type, value, onFilters }) {
           color: "#fff",
           textTransform: "capitalize",
           fontWeight: "fontWeightSemiBold",
-        }}
-      >
+        }}>
         {`${type} `}
       </Typography>
 

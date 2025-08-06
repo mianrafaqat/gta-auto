@@ -137,17 +137,23 @@ export default function ProductShopView() {
     <Stack
       spacing={3}
       justifyContent="space-between"
+      width="100%"
       alignItems={{ xs: "flex-end", sm: "center" }}
       direction={{ xs: "column", sm: "row" }}>
-      {/* <ProductSearch
-        query={debouncedQuery}
-        results={searchResults}
+      <ProductSearch
+        // query={debouncedQuery}
+        // results={searchResults}
         onSearch={handleSearch}
-        loading={searchLoading}
+        // loading={searchLoading}
         hrefItem={(id) => paths.product.details(id)}
-      /> */}
+      />
 
       <Stack direction="row" spacing={1} flexShrink={0}>
+        <IconButton onClick={() => setToggle(!toggle)}>
+          <Typography sx={{ mr: "8px", color: "#4caf50" }}>Filters</Typography>
+
+          <Icon icon="mage:filter-fill" color="#4caf50" />
+        </IconButton>
         <ProductSort
           sort={sortBy}
           onSort={handleSortBy}
@@ -199,7 +205,7 @@ export default function ProductShopView() {
   return (
     <Box sx={{ display: "flex" }}>
       {/* Sidebar for ProductFilters */}
-      {lgUp ? (
+      {/* {lgUp ? (
         <Box
           sx={{
             width: "20%",
@@ -222,6 +228,7 @@ export default function ProductShopView() {
             fuelOptions={[...FUEL_TYPES_LIST]}
             reset={reset}
           />
+       
         </Box>
       ) : (
         <Drawer
@@ -249,7 +256,34 @@ export default function ProductShopView() {
             />
           </Box>
         </Drawer>
-      )}
+      )} */}
+
+      <Drawer
+        open={toggle}
+        onClose={onClose}
+        PaperProps={{
+          sx: {
+            width: { md: "30%", xs: "75%" },
+          },
+        }}>
+        <Box>
+          <ProductFilters
+            open={openFilters.value}
+            onOpen={openFilters.onTrue}
+            onClose={openFilters.onFalse}
+            filters={filters}
+            onFilters={handleFilters}
+            canReset={canReset}
+            onResetFilters={handleResetFilters}
+            colorOptions={PRODUCT_COLOR_OPTIONS}
+            ratingOptions={PRODUCT_RATING_OPTIONS}
+            genderOptions={PRODUCT_GENDER_OPTIONS}
+            fuelOptions={[...FUEL_TYPES_LIST]}
+            reset={reset}
+          />
+        </Box>
+      </Drawer>
+
       {/* {!isSmallScreen && (
       <Box sx={{ width: '20%' }}>
         <ProductFilters
@@ -276,7 +310,7 @@ export default function ProductShopView() {
 
       <Box
         sx={{
-          width: isSmallScreen ? "100%" : "80%",
+          width: isSmallScreen ? "100%" : "100%",
           ml: isSmallScreen ? 0 : "auto",
         }}>
         <Container
@@ -307,13 +341,23 @@ export default function ProductShopView() {
                   }}>
                   Shop
                 </Typography>
-                {!lgUp && !loading && (
+                {/* {!lgUp && !loading && (
                   <IconButton onClick={() => setToggle(!toggle)}>
                     <Icon icon="mage:filter-fill" />
                   </IconButton>
-                )}
+                )} */}
               </Stack>
             </Grid>
+            <Stack
+              spacing={2.5}
+              sx={{
+                mb: { xs: 3, md: 5 },
+                width: "100%",
+              }}>
+              {renderFilters}
+
+              {/* {canReset && renderResults} */}
+            </Stack>
 
             {/* Render NotFound component if no results */}
             <Grid item xs={12}>

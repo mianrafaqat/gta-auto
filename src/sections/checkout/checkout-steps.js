@@ -1,21 +1,23 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import Box from '@mui/material/Box';
-import Step from '@mui/material/Step';
-import Stack from '@mui/material/Stack';
-import Stepper from '@mui/material/Stepper';
-import { styled } from '@mui/material/styles';
-import StepLabel, { stepLabelClasses } from '@mui/material/StepLabel';
-import MuiStepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import Box from "@mui/material/Box";
+import Step from "@mui/material/Step";
+import Stack from "@mui/material/Stack";
+import Stepper from "@mui/material/Stepper";
+import { styled } from "@mui/material/styles";
+import StepLabel, { stepLabelClasses } from "@mui/material/StepLabel";
+import MuiStepConnector, {
+  stepConnectorClasses,
+} from "@mui/material/StepConnector";
 
-import Iconify from 'src/components/iconify';
+import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
 const StepConnector = styled(MuiStepConnector)(({ theme }) => ({
   top: 10,
-  left: 'calc(-50% + 20px)',
-  right: 'calc(50% + 20px)',
+  left: "calc(-50% + 20px)",
+  right: "calc(50% + 20px)",
   [`& .${stepConnectorClasses.line}`]: {
     borderTopWidth: 2,
     borderColor: theme.palette.divider,
@@ -39,18 +41,17 @@ export default function CheckoutSteps({ steps, activeStep, sx, ...other }) {
         mb: { xs: 3, md: 5 },
         ...sx,
       }}
-      {...other}
-    >
-      {steps.map((label) => (
+      {...other}>
+      {steps.map((label, index) => (
         <Step key={label}>
           <StepLabel
             StepIconComponent={StepIcon}
             sx={{
               [`& .${stepLabelClasses.label}`]: {
-                fontWeight: 'fontWeightSemiBold',
+                fontWeight: "fontWeightSemiBold",
+                color: activeStep === index ? "#4caf50 !important" : "#fff",
               },
-            }}
-          >
+            }}>
             {label}
           </StepLabel>
         </Step>
@@ -75,21 +76,20 @@ function StepIcon({ active, completed }) {
       sx={{
         width: 24,
         height: 24,
-        color: 'text.disabled',
+        color: "#fff",
         ...(active && {
-          color: 'primary.main',
+          color: "primary.main",
         }),
-      }}
-    >
+      }}>
       {completed ? (
-        <Iconify icon="eva:checkmark-fill" sx={{ color: 'primary.main' }} />
+        <Iconify icon="eva:checkmark-fill" sx={{ color: "primary.main" }} />
       ) : (
         <Box
           sx={{
             width: 8,
             height: 8,
-            borderRadius: '50%',
-            backgroundColor: 'currentColor',
+            borderRadius: "50%",
+            backgroundColor: "currentColor",
           }}
         />
       )}

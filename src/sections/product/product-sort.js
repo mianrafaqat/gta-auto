@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
 
-import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import Iconify from "src/components/iconify";
+import CustomPopover, { usePopover } from "src/components/custom-popover";
 
 // ----------------------------------------------------------------------
 
@@ -18,22 +18,29 @@ export default function ProductSort({ sort, onSort, sortOptions }) {
     <>
       <Button
         disableRipple
-        color="inherit"
         onClick={popover.onOpen}
         endIcon={
           <Iconify
-            icon={popover.open ? 'eva:arrow-ios-upward-fill' : 'eva:arrow-ios-downward-fill'}
+            icon={
+              popover.open
+                ? "eva:arrow-ios-upward-fill"
+                : "eva:arrow-ios-downward-fill"
+            }
           />
         }
-        sx={{ fontWeight: 'fontWeightSemiBold' }}
-      >
+        sx={{ fontWeight: "fontWeightSemiBold", color: "#4caf50" }}>
         Sort By:
-        <Box component="span" sx={{ ml: 0.5, fontWeight: 'fontWeightBold' }}>
+        <Box
+          component="span"
+          sx={{ ml: 0.5, fontWeight: "fontWeightBold", color: "#4caf50" }}>
           {sortLabel}
         </Box>
       </Button>
 
-      <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 140 }}>
+      <CustomPopover
+        open={popover.open}
+        onClose={popover.onClose}
+        sx={{ width: 140 }}>
         {sortOptions.map((option) => (
           <MenuItem
             key={option.value}
@@ -41,8 +48,7 @@ export default function ProductSort({ sort, onSort, sortOptions }) {
             onClick={() => {
               popover.onClose();
               onSort(option.value);
-            }}
-          >
+            }}>
             {option.label}
           </MenuItem>
         ))}
