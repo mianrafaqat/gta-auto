@@ -1,10 +1,41 @@
 "use client";
-import { Box, Container, Typography } from "@mui/material";
-import React from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import SearchByModels from "./search-by-models";
 
 const Hero = () => {
+  const desktopPlaybackIds = ["8YObs002Jd4TxxHXlXiw7DXgXkR5OwD7gXixt4AukMUA"];
+
+  // Mobile playback ID
+  const mobilePlaybackId = "gzB22KDrzm1XR4sfmnGnmQ1vF0000yNzo00f02rcNO2VlXg";
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    if (!isMobile) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % desktopPlaybackIds.length);
+      }, 5000); // Change slide every 5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [isMobile]);
+
+  const getCurrentPlaybackId = () => {
+    if (isMobile) {
+      return mobilePlaybackId;
+    }
+    return desktopPlaybackIds[currentSlide];
+  };
   return (
     <Container
       sx={{
@@ -32,7 +63,7 @@ const Hero = () => {
           },
         }}>
         <MuxPlayer
-          playbackId="9WU2Y5OXCT56CzULR8mFAhmKPwJshaP66G902lnvKyek"
+          playbackId={getCurrentPlaybackId()}
           autoPlay
           muted
           controls={false}
