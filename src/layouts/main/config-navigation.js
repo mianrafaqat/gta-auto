@@ -1,32 +1,32 @@
-import { paths } from 'src/routes/paths';
+import { paths } from "src/routes/paths";
 
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { PATH_AFTER_LOGIN } from "src/config-global";
 
-import Iconify from 'src/components/iconify';
+import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
 export const navConfig = [
   {
-    title: 'Home',
+    title: "Home",
     icon: <Iconify icon="solar:home-2-bold-duotone" />,
-    path: '/',
+    path: "/",
   },
   {
-    title: 'Garage',
+    title: "Garage",
     icon: <Iconify icon="solar:home-2-bold-duotone" />,
-    path: '/cars',
+    path: "/cars",
   },
   {
-    title: 'Chemicals',
+    title: "Chemicals",
     icon: <Iconify icon="solar:home-2-bold-duotone" />,
-    path: '/chemicals',
+    path: "/chemicals",
   },
-  // {
-  //   title: 'About Us',
-  //   icon: <Iconify icon="solar:home-2-bold-duotone" />,
-  //   path: '/about-us',
-  // },
+  {
+    title: "Shop",
+    icon: <Iconify icon="solar:home-2-bold-duotone" />,
+    path: "/product",
+  },
   // {
   //   title: 'Components',
   //   icon: <Iconify icon="solar:atom-bold-duotone" />,

@@ -31,13 +31,9 @@ import {
 import EmptyContent from "src/components/empty-content";
 import { useSettingsContext } from "src/components/settings";
 
-import ProductList from "../product-list";
-import ProductSort from "../product-sort";
-import CartIcon from "../common/cart-icon";
-import ProductSearch from "../product-search";
-import ProductFilters from "../product-filters";
-import { useCheckoutContext } from "../../checkout/context";
-import ProductFiltersResult from "../product-filters-result";
+// import ProductSearch from "../product-search";
+// import { useCheckoutContext } from "../../checkout/context";
+// import ProductFiltersResult from "../product-filters-result";
 import {
   Box,
   Drawer,
@@ -54,6 +50,9 @@ import Loading from "src/app/loading";
 import { SplashScreen } from "src/components/loading-screen";
 import { Icon } from "@iconify/react";
 import { useQuery } from "@tanstack/react-query";
+import GarageSort from "./garage-sort";
+import GarageList from "./garage-list";
+import GarageFilters from "./garage-filter";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -61,7 +60,7 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
 // ----------------------------------------------------------------------
 
-export default function ProductShopView() {
+export default function GarageView() {
   const defaultFilters = {
     priceRange: [0, 2000000],
     category: "all",
@@ -78,7 +77,7 @@ export default function ProductShopView() {
 
   const settings = useSettingsContext();
 
-  const checkout = useCheckoutContext();
+  // const checkout = useCheckoutContext();
 
   const openFilters = useBoolean(true);
 
@@ -148,7 +147,7 @@ export default function ProductShopView() {
       /> */}
 
       <Stack direction="row" spacing={1} flexShrink={0}>
-        <ProductSort
+        <GarageSort
           sort={sortBy}
           onSort={handleSortBy}
           sortOptions={PRODUCT_SORT_OPTIONS}
@@ -158,7 +157,7 @@ export default function ProductShopView() {
   );
 
   const renderResults = (
-    <ProductFiltersResult
+    <GarageFilters
       filters={filters}
       onFilters={handleFilters}
       //
@@ -208,7 +207,7 @@ export default function ProductShopView() {
             borderRadius: "6px",
             mt: "34px",
           }}>
-          <ProductFilters
+          <GarageFilters
             open={openFilters.value}
             onOpen={openFilters.onTrue}
             onClose={openFilters.onFalse}
@@ -233,7 +232,7 @@ export default function ProductShopView() {
             },
           }}>
           <Box>
-            <ProductFilters
+            <GarageFilters
               open={openFilters.value}
               onOpen={openFilters.onTrue}
               onClose={openFilters.onFalse}
@@ -305,7 +304,7 @@ export default function ProductShopView() {
                     my: { xs: 3, md: 5 },
                     color: "#fff",
                   }}>
-                  Shop
+                  Vehicles
                 </Typography>
                 {!lgUp && !loading && (
                   <IconButton onClick={() => setToggle(!toggle)}>
@@ -328,7 +327,7 @@ export default function ProductShopView() {
 
             {/* Render ProductList */}
             <Grid item xs={12}>
-              <ProductList products={dataFiltered} loading={loading} />
+              <GarageList products={dataFiltered} loading={loading} />
             </Grid>
           </Grid>
         </Container>
