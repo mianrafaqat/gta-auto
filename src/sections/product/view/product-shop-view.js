@@ -46,14 +46,12 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { CarsService } from "src/services";
 import { useResponsive } from "src/hooks/use-responsive";
 import IconButton from "@mui/material/IconButton";
 import SvgColor from "src/components/svg-color";
 import Loading from "src/app/loading";
 import { SplashScreen } from "src/components/loading-screen";
 import { Icon } from "@iconify/react";
-import { useQuery } from "@tanstack/react-query";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -87,21 +85,15 @@ export default function ProductShopView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [reset, setReset] = useState(false);
 
-  // Replace useState and manual fetching with React Query
-  const { data: allCars = [], isLoading: loading } = useQuery({
-    queryKey: ["cars", "all"],
-    queryFn: async () => {
-      const res = await CarsService.getAll();
-      if (res?.data) {
-        return res?.data?.filter((c) => c?.status !== "Paused") || [];
-      }
-      return [];
-    },
-    staleTime: Infinity, // Data will never become stale automatically
-    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-  });
+  // Use the same API endpoint as product list view
+  const { products: allCars, productsLoading: loading } = useGetProducts();
+
+  // Debug log to see the mapped data
+  useEffect(() => {
+    if (allCars.length > 0) {
+      console.log("Products from API in shop view:", allCars);
+    }
+  }, [allCars]);
 
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
@@ -175,26 +167,6 @@ export default function ProductShopView() {
     />
   );
 
-  const fetchAllCars = async () => {
-    try {
-      setLoading(true);
-      const res = await CarsService.getAll();
-      if (res?.data) {
-        const filteredCar =
-          res?.data?.filter((c) => c?.status !== "Paused") || [];
-        setAllCars(filteredCar);
-      }
-    } catch (err) {
-      console.log("error: ", err);
-    } finally {
-      // setLoading(false);
-      console.log("allCars: ", allCars);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllCars();
-  }, []);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const lgUp = useResponsive("up", "lg");
@@ -397,16 +369,9 @@ function applyFilter({ inputData, filters, sortBy }) {
     mileage,
     makeType,
   } = filters;
-  // return inputData;
+
   const min = priceRange[0];
-
   const max = priceRange[1];
-
-  const minYear = year[0];
-  const maxYear = year[1];
-
-  const minMileage = mileage[0];
-  const maxMileage = mileage[1];
 
   // FILTERS
 
@@ -420,59 +385,18 @@ function applyFilter({ inputData, filters, sortBy }) {
     (product) => Number(product.price) >= min && Number(product.price) <= max
   );
 
-  if (minYear >= 0 || maxYear <= new Date().getFullYear()) {
-    inputData = inputData.filter(
-      (product) =>
-        Number(product.carDetails?.yearOfManufacture) >= minYear &&
-        Number(product.carDetails?.yearOfManufacture) <= maxYear
-    );
-  }
-
   if (searchByTitle) {
-    inputData = inputData.filter((product) =>
-      product.title?.toLowerCase().includes(searchByTitle?.toLowerCase())
-    );
-  }
-
-  if (fuelType) {
-    inputData = inputData.filter((product) =>
-      product.carDetails.fuelType
-        ?.toLowerCase()
-        .includes(fuelType?.toLowerCase())
-    );
-  }
-
-  if (minMileage >= 0 || maxMileage <= 200000000) {
     inputData = inputData.filter(
       (product) =>
-        Number(product.carDetails?.mileage) >= Number(minMileage) &&
-        Number(product.carDetails?.mileage) <= Number(maxMileage)
+        product.title?.toLowerCase().includes(searchByTitle?.toLowerCase()) ||
+        product.name?.toLowerCase().includes(searchByTitle?.toLowerCase())
     );
   }
 
-  if (makeType) {
-    inputData = inputData.filter((product) =>
-      product.carDetails.makeType
-        ?.toLowerCase()
-        .includes(makeType?.toLowerCase())
-    );
-  }
+  // Filter by status (published products only)
+  inputData = inputData.filter((p) => p.status === "published");
 
-  inputData = inputData.filter((p) => p.status !== "Paused");
-
-  // if (rating) {
-  //   inputData = inputData.filter((product) => {
-  //     const convertRating = (value) => {
-  //       if (value === "up4Star") return 4;
-  //       if (value === "up3Star") return 3;
-  //       if (value === "up2Star") return 2;
-  //       return 1;
-  //     };
-  //     return product.totalRatings > convertRating(rating);
-  //   });
-  // }
-
-  console.log("inputData: ", inputData);
+  console.log("Filtered products: ", inputData);
 
   return inputData;
 }

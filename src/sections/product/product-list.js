@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
-import ProductItem from './product-item';
-import { ProductItemSkeleton } from './product-skeleton';
-import { paths } from 'src/routes/paths';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
+import Pagination from "@mui/material/Pagination";
+import ProductItem from "./product-item";
+import { ProductItemSkeleton } from "./product-skeleton";
+import { paths } from "src/routes/paths";
 
-export default function ProductList({ products, loading, itemsPerPage = 8, ...other }) {
+export default function ProductList({
+  products,
+  loading,
+  itemsPerPage = 8,
+  ...other
+}) {
   const [page, setPage] = useState(1);
 
   const handlePageChange = (event, value) => {
@@ -39,13 +44,12 @@ export default function ProductList({ products, loading, itemsPerPage = 8, ...ot
         gap={3}
         display="grid"
         gridTemplateColumns={{
-          xs: 'repeat(1, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(3, 1fr)',
-          lg: 'repeat(3, 1fr)',
+          xs: "repeat(1, 1fr)",
+          sm: "repeat(2, 1fr)",
+          md: "repeat(4, 1fr)",
+          lg: "repeat(4, 1fr)",
         }}
-        {...other}
-      >
+        {...other}>
         {loading ? renderSkeleton : renderList}
       </Box>
 
@@ -56,7 +60,7 @@ export default function ProductList({ products, loading, itemsPerPage = 8, ...ot
           onChange={handlePageChange}
           sx={{
             mt: 8,
-            justifyContent: 'center',
+            justifyContent: "center",
           }}
         />
       )}

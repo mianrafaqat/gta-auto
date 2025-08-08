@@ -6,9 +6,16 @@ import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
+import { useRouter } from "src/routes/hooks";
 
 import { fCurrency } from "src/utils/format-number";
 
@@ -18,20 +25,33 @@ import Iconify from "src/components/iconify";
 import { ColorPreview } from "src/components/color-utils";
 
 import { useCheckoutContext } from "../checkout/context";
-import { Button, Chip, Divider, IconButton, Typography } from "@mui/material";
 import SimpleDialog from "../_examples/mui/dialog-view/simple-dialog";
 import { useAuthContext } from "src/auth/hooks";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAddOrRemoveFavoriteCar } from "src/hooks/use-cars";
 
 // ----------------------------------------------------------------------
+
+// Add CSS keyframes for spin animation
+const spinKeyframes = `
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
 
 export default function ProductItem({
   product,
   onAddOrRemoveFav = () => {},
   onHome = false,
 }) {
-  const { onAddToCart } = useCheckoutContext();
+  const router = useRouter();
+  const { onAddToCart, onBuyNow, onClearCart } = useCheckoutContext();
+  const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
   const {
     price,
@@ -39,6 +59,7 @@ export default function ProductItem({
     carDetails,
     title,
     image,
+    images, // Add images for new API structure
     id,
     name,
     coverUrl,
@@ -50,6 +71,20 @@ export default function ProductItem({
     owner,
     tel,
   } = product;
+
+  // Get the image array, handling both old and new API structures
+  const imageArray = images || image || [];
+  const firstImage = imageArray[0] || coverUrl || "/assets/placeholder.svg";
+
+  // Debug log to help identify the issue
+  console.log("Product data:", {
+    productId: product._id || id,
+    imageArray,
+    firstImage,
+    hasImages: !!images,
+    hasImage: !!image,
+    hasCoverUrl: !!coverUrl,
+  });
 
   const { user = {} } = useAuthContext()?.user || {};
 
@@ -94,19 +129,55 @@ export default function ProductItem({
 
   const handleAddCart = async () => {
     const newProduct = {
-      id,
-      name,
-      coverUrl,
-      available,
-      price,
-      colors: [colors[0]],
-      size: sizes[0],
+      id: product._id || id,
+      name: title || name,
+      coverUrl: firstImage,
+      available: available || true,
+      price: price || 0,
+      colors: colors && colors.length > 0 ? [colors[0]] : [],
+      size: sizes && sizes.length > 0 ? sizes[0] : "Default",
       quantity: 1,
+      // Add car-specific properties if available
+      carDetails: carDetails || {},
+      category: category || "sale",
+      location: location || "",
+      postalCode: postalCode || "",
     };
     try {
       onAddToCart(newProduct);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    setIsBuyNowLoading(true);
+    const newProduct = {
+      id: product._id || id,
+      name: title || name,
+      coverUrl: firstImage,
+      available: available || true,
+      price: price || 0,
+      colors: colors && colors.length > 0 ? [colors[0]] : [],
+      size: sizes && sizes.length > 0 ? sizes[0] : "Default",
+      quantity: 1,
+      // Add car-specific properties if available
+      carDetails: carDetails || {},
+      category: category || "sale",
+      location: location || "",
+      postalCode: postalCode || "",
+    };
+    try {
+      // Clear cart first, then use Buy Now function
+      onClearCart();
+      onBuyNow(newProduct);
+      // Small delay to ensure cart state is updated
+      setTimeout(() => {
+        router.push(paths.product.checkout);
+      }, 100);
+    } catch (error) {
+      console.error(error);
+      setIsBuyNowLoading(false);
     }
   };
 
@@ -192,232 +263,107 @@ export default function ProductItem({
   }, [product?.status]);
 
   const RenderImg = () => {
-    // Get the actual user data from the nested structure
-    const actualUser = user?.user || user;
-
     return (
-      <Box sx={{ position: "relative", p: 1 }}>
-        <Link
-          style={{ textDecoration: "none" }}
-          href={paths.dashboard.cars.details(product?._id)}>
-          <Image
-            alt={name}
-            src={image[0]}
-            ratio="4/3"
-            sx={{
-              borderRadius: 2,
-            }}
-          />
-        </Link>
-        {actualUser &&
-          Object.keys(actualUser).length > 0 &&
-          actualUser?._id && (
-            <IconButton
-              size="small"
-              color="error"
-              disabled={addOrRemoveFavoriteMutation.isPending}
-              sx={{
-                background: "#fff",
-                position: "absolute",
-                right: "10px",
-                top: "10px",
-              }}
-              onClick={handleAddOrRemoveFav}>
-              <Iconify
-                style={{ color: "#4caf50", width: "30px", height: "30px" }}
-                fontSize="inherit"
-                icon={
-                  actualUser?.favourite?.includes(product?._id)
-                    ? "mdi:favourite"
-                    : "mdi:favourite-border"
-                }
-              />
-            </IconButton>
-          )}
+      <Box sx={{ position: "relative" }}>
+        <Image
+          alt={name}
+          src={firstImage}
+          ratio="4/3"
+          sx={{
+            borderRadius: "12px 12px 0 0",
+            width: "100%",
+            height: "auto",
+          }}
+        />
       </Box>
     );
   };
 
   const renderContent = (
-    <Stack spacing={2.5} sx={{ p: 3, pt: 2 }}>
-      {onHome ? (
-        <Stack
-          direction={onHome ? "column" : "row"}
-          alignItems="start"
-          justifyContent="space-between">
-          <Stack
-            direction="column"
-            spacing={0.5}
-            sx={{ typography: "subtitle1" }}>
-            <Link
-              style={{ textDecoration: "none" }}
-              href={paths.dashboard.cars.details(product?._id)}>
-              <Box
-                component="p"
-                sx={{
-                  maxWidth: "230px",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  margin: 0,
-                  color: "white",
-                  ...(onHome ? { fontSize: "14px", maxWidth: "200px" } : {}),
-                }}>
-                {title}
-              </Box>
-            </Link>
-          </Stack>
-          <Box fontWeight="bold" component="span">
-            <Stack
-              direction="row"
-              gap="12px"
-              alignItems="center"
-              justifyContent="space-between"
-              color="white">
-              PKR{Number(price)?.toLocaleString()}
-              <Typography variant="caption" color="white">
-                {" "}
-                |
-              </Typography>
-              <Typography variant="caption" color="white">
-                {" "}
-                {carDetails?.mileage} mi
-              </Typography>
-            </Stack>
-          </Box>
-        </Stack>
-      ) : (
-        <Stack
-          direction={onHome ? "column" : "row"}
-          alignItems="start"
-          justifyContent="space-between">
-          <Stack
-            direction="column"
-            spacing={0.5}
-            sx={{ typography: "subtitle1" }}>
-            <Link
-              style={{ textDecoration: "none" }}
-              href={paths.dashboard.cars.details(product?._id)}>
-              <Box
-                component="p"
-                sx={{
-                  maxWidth: "230px",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  margin: 0,
-                  color: "white",
-                  ...(onHome
-                    ? {
-                        fontSize: "14px",
-                        maxWidth: { md: "230px", xs: "330px", sm: "330px" },
-                      }
-                    : {}),
-                }}>
-                {title}
-              </Box>
-            </Link>
-            <Typography variant="caption" color="white">
-              {carDetails?.mileage} mi
-            </Typography>
-          </Stack>
-          <Box fontWeight="bold" component="span" color="white">
-            PKR{Number(price)?.toLocaleString()}
-          </Box>
-        </Stack>
-      )}
-
-      <Stack
-        direction={onHome ? "column" : "row"}
+    <Stack spacing={2} sx={{ p: 2 }}>
+      {/* Product Title */}
+      <Typography
+        variant="h6"
         sx={{
-          justifyContent: "space-between",
-          flex: 1,
-          ...(onHome ? { justifyContent: "center", alignItems: "center" } : {}),
-        }}
-        gap={1}>
-        <Chip
-          sx={{
-            textTransform: "capitalize",
-            background: "#4caf50",
-            color: "#fff",
-            width: "30%",
-            ...(onHome ? { width: "100%", fontSize: "13px" } : {}),
-          }}
-          label={`For ${category}`}></Chip>
-        {status}
-      </Stack>
-      {!onHome && (
-        <Stack
-          direction="row"
-          sx={{
-            flexWrap: "wrap",
-            minHeight: carDetails?.features ? "unset" : "56px",
-          }}
-          gap={1}>
-          {carDetails?.features?.slice(0, 3).map((f, index) => (
-            <Label key={index} color="primary" variant="soft">
-              {f}
-            </Label>
-          ))}
-          {carDetails?.features?.length > 3 && (
-            <Label key="more" color="primary" variant="soft">
-              +more
-            </Label>
-          )}
-        </Stack>
-      )}
+          fontWeight: "bold",
+          color: "#333333",
+          fontSize: "16px",
+          lineHeight: 1.2,
+        }}>
+        {carDetails?.yearOfManufacture
+          ? `${carDetails.yearOfManufacture} - `
+          : ""}
+        {title || name}
+      </Typography>
 
-      {onHome ? (
-        <Link
-          component={postalCode ? "a" : "button"}
-          sx={{ display: "flex", fontSize: "13px", color: "white" }}
-          gap={1}
-          fontWeight="bold"
-          alignItems="center"
-          target="_blank"
-          href={
-            postalCode ? `https://www.google.com/maps/place/${postalCode}` : "#"
-          }>
-          {" "}
-          {postalCode ? location + ", " + postalCode : "Location Not Available"}
-        </Link>
-      ) : (
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          gap="15px"
-          alignContent="flex-end">
-          <Box
-            sx={{
-              width: "20px",
-              cursor: postalCode ? "pointer !important" : "default",
-            }}>
-            <Tooltip
-              title={
-                postalCode
-                  ? location + ", " + postalCode
-                  : "Location Not Available"
-              }>
-              <Link
-                component={postalCode ? "a" : "button"}
-                sx={{ display: "flex" }}
-                gap={1}
-                fontWeight="bold"
-                alignItems="center"
-                target="_blank"
-                href={
-                  postalCode
-                    ? `https://www.google.com/maps/place/${postalCode}`
-                    : "#"
-                }>
-                <Iconify icon="tabler:location" />
-              </Link>
-            </Tooltip>
-          </Box>
-          <SimpleDialog />
-        </Stack>
-      )}
+      {/* Price Section */}
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "#999999",
+            textDecoration: "line-through",
+            fontSize: "14px",
+          }}>
+          PKR {Number(price)?.toLocaleString()}
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: "bold",
+            color: "#333333",
+            fontSize: "16px",
+          }}>
+          PKR {Number(price)?.toLocaleString()}
+        </Typography>
+      </Stack>
+
+      {/* Action Buttons */}
+      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+        <Button
+          fullWidth
+          variant="outlined"
+          size="medium"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAddCart();
+          }}
+          sx={{
+            borderColor: "#4caf50",
+            color: "#4caf50",
+            backgroundColor: "#ffffff",
+            textTransform: "none",
+            fontSize: "14px",
+            fontWeight: 500,
+            "&:hover": {
+              borderColor: "#45a049",
+              backgroundColor: "rgba(76, 175, 80, 0.04)",
+            },
+          }}>
+          Add to Cart
+        </Button>
+
+        <LoadingButton
+          fullWidth
+          variant="contained"
+          size="medium"
+          loading={isBuyNowLoading}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleBuyNow();
+          }}
+          sx={{
+            backgroundColor: "#4caf50",
+            textTransform: "none",
+            fontSize: "14px",
+            fontWeight: 500,
+            "&:hover": {
+              backgroundColor: "#45a049",
+            },
+          }}>
+          Buy Now
+        </LoadingButton>
+      </Stack>
     </Stack>
   );
 
@@ -425,9 +371,20 @@ export default function ProductItem({
     <Card
       sx={{
         width: "100%",
-        borderRadius: "24px",
-        background: "transparent ",
-        border: "1px solid #4caf50",
+        borderRadius: "12px",
+        background: "#ffffff",
+        border: "1px solid #e0e0e0",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        transition: "all 0.3s ease",
+        overflow: "hidden",
+        cursor: "pointer",
+        "&:hover": {
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        },
+      }}
+      onClick={() => {
+        // Navigate to product details
+        router.push(paths.product.details(product._id || id));
       }}>
       <RenderImg />
       {renderContent}

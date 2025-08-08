@@ -1,53 +1,53 @@
-'use client';
+"use client";
 
-import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
+import PropTypes from "prop-types";
+import { useState, useCallback } from "react";
 
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
-import { alpha } from '@mui/material/styles';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
+import { alpha } from "@mui/material/styles";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Unstable_Grid2";
+import Typography from "@mui/material/Typography";
 
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
+import { paths } from "src/routes/paths";
+import { RouterLink } from "src/routes/components";
 
-import { useGetProduct } from 'src/api/product';
+import { useGetProduct } from "src/api/product";
 
-import Iconify from 'src/components/iconify';
-import EmptyContent from 'src/components/empty-content';
-import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import Iconify from "src/components/iconify";
+import EmptyContent from "src/components/empty-content";
+import { useSettingsContext } from "src/components/settings";
+import CustomBreadcrumbs from "src/components/custom-breadcrumbs";
 
-import CartIcon from '../common/cart-icon';
-import { useCheckoutContext } from '../../checkout/context';
-import ProductDetailsReview from '../product-details-review';
-import { ProductDetailsSkeleton } from '../product-skeleton';
-import ProductDetailsSummary from '../product-details-summary';
-import ProductDetailsCarousel from '../product-details-carousel';
-import ProductDetailsDescription from '../product-details-description';
+import CartIcon from "../common/cart-icon";
+import { useCheckoutContext } from "../../checkout/context";
+import ProductDetailsReview from "../product-details-review";
+import { ProductDetailsSkeleton } from "../product-skeleton";
+import ProductDetailsSummary from "../product-details-summary";
+import ProductDetailsCarousel from "../product-details-carousel";
+import ProductDetailsDescription from "../product-details-description";
 
 // ----------------------------------------------------------------------
 
 const SUMMARY = [
   {
-    title: '100% Original',
-    description: 'Chocolate bar candy canes ice cream toffee cookie halvah.',
-    icon: 'solar:verified-check-bold',
+    title: "100% Original",
+    description: "Chocolate bar candy canes ice cream toffee cookie halvah.",
+    icon: "solar:verified-check-bold",
   },
   {
-    title: '10 Day Replacement',
-    description: 'Marshmallow biscuit donut dragée fruitcake wafer.',
-    icon: 'solar:clock-circle-bold',
+    title: "10 Day Replacement",
+    description: "Marshmallow biscuit donut dragée fruitcake wafer.",
+    icon: "solar:clock-circle-bold",
   },
   {
-    title: 'Year Warranty',
-    description: 'Cotton candy gingerbread cake I love sugar sweet.',
-    icon: 'solar:shield-check-bold',
+    title: "Year Warranty",
+    description: "Cotton candy gingerbread cake I love sugar sweet.",
+    icon: "solar:shield-check-bold",
   },
 ];
 
@@ -58,9 +58,17 @@ export default function ProductShopDetailsView({ id }) {
 
   const checkout = useCheckoutContext();
 
-  const [currentTab, setCurrentTab] = useState('description');
+  const [currentTab, setCurrentTab] = useState("description");
 
   const { product, productLoading, productError } = useGetProduct(id);
+
+  // Debug log to help identify the issue
+  console.log("Product details view:", {
+    id,
+    product,
+    productLoading,
+    productError,
+  });
 
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
@@ -71,14 +79,13 @@ export default function ProductShopDetailsView({ id }) {
   const renderError = (
     <EmptyContent
       filled
-      title={`${productError?.message}`}
+      title={productError?.message || "Product not found"}
       action={
         <Button
           component={RouterLink}
           href={paths.product.root}
           startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
-          sx={{ mt: 3 }}
-        >
+          sx={{ mt: 3 }}>
           Back to List
         </Button>
       }
@@ -90,12 +97,12 @@ export default function ProductShopDetailsView({ id }) {
     <>
       <CustomBreadcrumbs
         links={[
-          { name: 'Home', href: '/' },
+          { name: "Home", href: "/" },
           {
-            name: 'Cars',
+            name: "Products",
             href: paths.product.root,
           },
-          { name: product?.name },
+          { name: product?.name || "Product Details" },
         ]}
         sx={{ mb: 5 }}
       />
@@ -119,20 +126,23 @@ export default function ProductShopDetailsView({ id }) {
         gap={5}
         display="grid"
         gridTemplateColumns={{
-          xs: 'repeat(1, 1fr)',
-          md: 'repeat(3, 1fr)',
+          xs: "repeat(1, 1fr)",
+          md: "repeat(3, 1fr)",
         }}
-        sx={{ my: 10 }}
-      >
+        sx={{ my: 10 }}>
         {SUMMARY.map((item) => (
-          <Box key={item.title} sx={{ textAlign: 'center', px: 5 }}>
-            <Iconify icon={item.icon} width={32} sx={{ color: 'primary.main' }} />
+          <Box key={item.title} sx={{ textAlign: "center", px: 5 }}>
+            <Iconify
+              icon={item.icon}
+              width={32}
+              sx={{ color: "primary.main" }}
+            />
 
             <Typography variant="subtitle1" sx={{ mb: 1, mt: 2 }}>
               {item.title}
             </Typography>
 
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
               {item.description}
             </Typography>
           </Box>
@@ -145,33 +155,33 @@ export default function ProductShopDetailsView({ id }) {
           onChange={handleChangeTab}
           sx={{
             px: 3,
-            boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-          }}
-        >
+            boxShadow: (theme) =>
+              `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+          }}>
           {[
             {
-              value: 'description',
-              label: 'Description',
+              value: "description",
+              label: "Description",
             },
             {
-              value: 'reviews',
-              label: `Reviews (${product.reviews.length})`,
+              value: "reviews",
+              label: `Reviews (${product.reviews?.length || 0})`,
             },
           ].map((tab) => (
             <Tab key={tab.value} value={tab.value} label={tab.label} />
           ))}
         </Tabs>
 
-        {currentTab === 'description' && (
+        {currentTab === "description" && (
           <ProductDetailsDescription description={product?.description} />
         )}
 
-        {currentTab === 'reviews' && (
+        {currentTab === "reviews" && product && (
           <ProductDetailsReview
-            ratings={product.ratings}
-            reviews={product.reviews}
-            totalRatings={product.totalRatings}
-            totalReviews={product.totalReviews}
+            ratings={product.ratings || []}
+            reviews={product.reviews || []}
+            totalRatings={product.totalRatings || 0}
+            totalReviews={product.totalReviews || 0}
           />
         )}
       </Card>
@@ -180,17 +190,33 @@ export default function ProductShopDetailsView({ id }) {
 
   return (
     <Container
-      maxWidth={settings.themeStretch ? false : 'lg'}
+      maxWidth={settings.themeStretch ? false : "lg"}
       sx={{
         mt: 5,
         mb: 15,
-      }}
-    >
+      }}>
       {/* <CartIcon totalItems={checkout.totalItems} /> */}
 
       {productLoading && renderSkeleton}
 
       {productError && renderError}
+
+      {!productLoading && !productError && !product && (
+        <EmptyContent
+          filled
+          title="Product not found"
+          action={
+            <Button
+              component={RouterLink}
+              href={paths.product.root}
+              startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
+              sx={{ mt: 3 }}>
+              Back to List
+            </Button>
+          }
+          sx={{ py: 10 }}
+        />
+      )}
 
       {product && renderProduct}
     </Container>

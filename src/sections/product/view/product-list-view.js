@@ -85,7 +85,38 @@ export default function ProductListView() {
 
   useEffect(() => {
     if (products.length) {
-      setTableData(products);
+      // Map the API response to match the expected table structure
+      const mappedProducts = products.map((product) => ({
+        id: product._id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        regularPrice: product.regularPrice,
+        salePrice: product.salePrice,
+        category: product.categories?.[0]?.name || "",
+        categories: product.categories || [],
+        images: product.images || [],
+        stockStatus: product.stockStatus,
+        status: product.status,
+        publish: product.status, // Map status to publish field
+        inventoryType: product.stockStatus, // Map stockStatus to inventoryType
+        type: product.type,
+        attributes: product.attributes || [],
+        featured: product.featured,
+        soldIndividually: product.soldIndividually,
+        reviewsAllowed: product.reviewsAllowed,
+        averageRating: product.averageRating,
+        ratingCount: product.ratingCount,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+        // Add dimensions if available
+        dimensions: product.dimensions,
+        // Add slug for routing
+        slug: product.slug,
+      }));
+
+      console.log("Mapped products:", mappedProducts);
+      setTableData(mappedProducts);
     }
   }, [products]);
 
@@ -146,7 +177,9 @@ export default function ProductListView() {
     {
       field: "category",
       headerName: "Category",
+      width: 160,
       filterable: false,
+      renderCell: (params) => <div>{params.row.category || "No Category"}</div>,
     },
     {
       field: "name",

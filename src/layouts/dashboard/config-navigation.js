@@ -165,11 +165,6 @@ export function useNavData() {
                   icon: ICONS.user,
                   children: [
                     {
-                      title: "My",
-                      path: paths.dashboard.video.my.list,
-                      roles: [ROLES.USER, ROLES.ADMIN],
-                    },
-                    {
                       title: "Add",
                       path: paths.dashboard.product.new,
                       roles: [ROLES.USER, ROLES.ADMIN],
