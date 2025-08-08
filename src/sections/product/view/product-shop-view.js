@@ -25,7 +25,7 @@ import {
   PRODUCT_COLOR_OPTIONS,
   PRODUCT_GENDER_OPTIONS,
   PRODUCT_RATING_OPTIONS,
-  PRODUCT_CATEGORY_OPTIONS,
+  PRODUCT_CATEGORY_GROUP_OPTIONS,
 } from "src/_mock";
 
 import EmptyContent from "src/components/empty-content";
@@ -279,6 +279,7 @@ export default function ProductShopView() {
             ratingOptions={PRODUCT_RATING_OPTIONS}
             genderOptions={PRODUCT_GENDER_OPTIONS}
             fuelOptions={[...FUEL_TYPES_LIST]}
+            categoryOptions={PRODUCT_CATEGORY_GROUP_OPTIONS}
             reset={reset}
           />
         </Box>

@@ -224,6 +224,39 @@ export default function ProductFilters({
     </Stack>
   );
 
+  const renderCategory = (
+    <Stack>
+      <Typography fontSize="18px" color="#fff" sx={{ flexGrow: 1 }}>
+        Category
+      </Typography>
+
+      {categoryOptions &&
+        categoryOptions.map((category) => (
+          <FormControlLabel
+            key={category.value}
+            control={
+              <Checkbox
+                checked={selectedCategory === category.value}
+                onChange={() => {
+                  setSelectedCategory(category.value);
+                  handleFilterCategory(null, category.value);
+                }}
+                sx={{
+                  color: "#fff",
+                  "&.Mui-checked": {
+                    color: "#4caf50",
+                  },
+                }}
+              />
+            }
+            label={
+              <Typography sx={{ color: "#fff" }}>{category.label}</Typography>
+            }
+          />
+        ))}
+    </Stack>
+  );
+
   const control = {
     value: selectedCategory,
     onChange: handleFilterCategory,
@@ -503,8 +536,13 @@ export default function ProductFilters({
 
   return (
     <>
-      <Scrollbar sx={{ px: 2.5, py: 3 }}>
+      <Scrollbar sx={{ px: 2.5, py: 3, backgroundColor: "#000" }}>
+        <Typography fontSize="24px" color="#fff" sx={{ mb: 2 }}>
+          Filters
+        </Typography>
         <Stack spacing={3}>
+          {renderCategory}
+
           {renderHead}
           <CategoriesButtons />
           {renderTabs}

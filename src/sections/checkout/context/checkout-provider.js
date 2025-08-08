@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import uniq from 'lodash/uniq';
-import PropTypes from 'prop-types';
-import { useMemo, useEffect, useCallback } from 'react';
+import uniq from "lodash/uniq";
+import PropTypes from "prop-types";
+import { useMemo, useEffect, useCallback } from "react";
 
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
 
-import { getStorage, useLocalStorage } from 'src/hooks/use-local-storage';
+import { getStorage, useLocalStorage } from "src/hooks/use-local-storage";
 
-import { PRODUCT_CHECKOUT_STEPS } from 'src/_mock/_product';
+import { PRODUCT_CHECKOUT_STEPS } from "src/_mock/_product";
 
-import { CheckoutContext } from './checkout-context';
+import { CheckoutContext } from "./checkout-context";
 
 // ----------------------------------------------------------------------
 
-const STORAGE_KEY = 'checkout';
+const STORAGE_KEY = "checkout";
 
 const initialState = {
   activeStep: 0,
@@ -34,16 +34,22 @@ export function CheckoutProvider({ children }) {
   const { state, update, reset } = useLocalStorage(STORAGE_KEY, initialState);
 
   const onGetCart = useCallback(() => {
-    const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+    const totalItems = state.items.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
 
-    const subTotal = state.items.reduce((total, item) => total + item.quantity * item.price, 0);
+    const subTotal = state.items.reduce(
+      (total, item) => total + item.quantity * item.price,
+      0
+    );
 
-    update('subTotal', subTotal);
-    update('totalItems', totalItems);
-    update('billing', state.activeStep === 1 ? null : state.billing);
-    update('discount', state.items.length ? state.discount : 0);
-    update('shipping', state.items.length ? state.shipping : 0);
-    update('total', state.subTotal - state.discount + state.shipping);
+    update("subTotal", subTotal);
+    update("totalItems", totalItems);
+    update("billing", state.activeStep === 1 ? null : state.billing);
+    update("discount", state.items.length ? state.discount : 0);
+    update("shipping", state.items.length ? state.shipping : 0);
+    update("total", state.subTotal - state.discount + state.shipping);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     state.items,
@@ -79,31 +85,68 @@ export function CheckoutProvider({ children }) {
         updatedItems.push(newItem);
       }
 
-      update('items', updatedItems);
+      update("items", updatedItems);
     },
     [update, state.items]
   );
+
+  const onBuyNow = useCallback(
+    (newItem) => {
+      // Create a separate checkout flow for immediate purchase
+      const buyNowItems = [newItem];
+      const totalItems = buyNowItems.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+      const subTotal = buyNowItems.reduce(
+        (total, item) => total + item.quantity * item.price,
+        0
+      );
+
+      // Update state for immediate purchase
+      update("items", buyNowItems);
+      update("subTotal", subTotal);
+      update("totalItems", totalItems);
+      update("activeStep", 0);
+      update("billing", null);
+      update("discount", 0);
+      update("shipping", 0);
+      update("total", subTotal);
+    },
+    [update]
+  );
+
+  const onClearCart = useCallback(() => {
+    update("items", []);
+    update("subTotal", 0);
+    update("totalItems", 0);
+    update("activeStep", 0);
+    update("billing", null);
+    update("discount", 0);
+    update("shipping", 0);
+    update("total", 0);
+  }, [update]);
 
   const onDeleteCart = useCallback(
     (itemId) => {
       const updatedItems = state.items.filter((item) => item.id !== itemId);
 
-      update('items', updatedItems);
+      update("items", updatedItems);
     },
     [update, state.items]
   );
 
   const onBackStep = useCallback(() => {
-    update('activeStep', state.activeStep - 1);
+    update("activeStep", state.activeStep - 1);
   }, [update, state.activeStep]);
 
   const onNextStep = useCallback(() => {
-    update('activeStep', state.activeStep + 1);
+    update("activeStep", state.activeStep + 1);
   }, [update, state.activeStep]);
 
   const onGotoStep = useCallback(
     (step) => {
-      update('activeStep', step);
+      update("activeStep", step);
     },
     [update]
   );
@@ -120,7 +163,7 @@ export function CheckoutProvider({ children }) {
         return item;
       });
 
-      update('items', updatedItems);
+      update("items", updatedItems);
     },
     [update, state.items]
   );
@@ -137,14 +180,14 @@ export function CheckoutProvider({ children }) {
         return item;
       });
 
-      update('items', updatedItems);
+      update("items", updatedItems);
     },
     [update, state.items]
   );
 
   const onCreateBilling = useCallback(
     (address) => {
-      update('billing', address);
+      update("billing", address);
 
       onNextStep();
     },
@@ -153,14 +196,14 @@ export function CheckoutProvider({ children }) {
 
   const onApplyDiscount = useCallback(
     (discount) => {
-      update('discount', discount);
+      update("discount", discount);
     },
     [update]
   );
 
   const onApplyShipping = useCallback(
     (shipping) => {
-      update('shipping', shipping);
+      update("shipping", shipping);
     },
     [update]
   );
@@ -181,6 +224,8 @@ export function CheckoutProvider({ children }) {
       completed,
       //
       onAddToCart,
+      onBuyNow,
+      onClearCart,
       onDeleteCart,
       //
       onIncreaseQuantity,
@@ -199,6 +244,8 @@ export function CheckoutProvider({ children }) {
     [
       completed,
       onAddToCart,
+      onBuyNow,
+      onClearCart,
       onApplyDiscount,
       onApplyShipping,
       onBackStep,
@@ -213,7 +260,11 @@ export function CheckoutProvider({ children }) {
     ]
   );
 
-  return <CheckoutContext.Provider value={memoizedValue}>{children}</CheckoutContext.Provider>;
+  return (
+    <CheckoutContext.Provider value={memoizedValue}>
+      {children}
+    </CheckoutContext.Provider>
+  );
 }
 
 CheckoutProvider.propTypes = {

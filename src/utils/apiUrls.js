@@ -26,6 +26,18 @@ export const API_URLS = {
     registerAdmin: "/api/user/register-admin",
     delete: "/api/user/delete",
   },
+  products: {
+    // Public Routes
+    getAll: "/api/products",
+    getById: (id) => `/api/products/${id}`,
+    getBySlug: (slug) => `/api/products/slug/${slug}`,
+
+    // Protected Routes
+    create: "/api/products",
+    update: (id) => `/api/products/${id}`,
+    delete: (id) => `/api/products/${id}`,
+    uploadImages: "/api/products/upload-images",
+  },
   cars: {
     // Public Routes
     getAll: "/api/car/getAll",

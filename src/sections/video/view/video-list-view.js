@@ -1,38 +1,43 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from "react";
 
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableContainer from '@mui/material/TableContainer';
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
 
-import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
+import { useRouter } from "src/routes/hooks";
+import { paths } from "src/routes/paths";
 
-import { useTable } from 'src/components/table';
-import { TableNoData, TableEmptyRows, TableHeadCustom, TablePaginationCustom } from 'src/components/table';
-import { useSnackbar } from 'src/components/snackbar';
-import Scrollbar from 'src/components/scrollbar';
-import Iconify from 'src/components/iconify';
+import { useTable } from "src/components/table";
+import {
+  TableNoData,
+  TableEmptyRows,
+  TableHeadCustom,
+  TablePaginationCustom,
+} from "src/components/table";
+import { useSnackbar } from "src/components/snackbar";
+import Scrollbar from "src/components/scrollbar";
+import Iconify from "src/components/iconify";
 
-import VideoTableRow from '../video-table-row';
-import { VideoService } from 'src/services';
+import VideoTableRow from "../video-table-row";
+import { VideoService } from "src/services";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'title', label: 'Title' },
-  { id: 'url', label: 'Video URL' },
-  { id: 'type', label: 'Type' },
-  { id: 'status', label: 'Status' },
-  { id: 'createdAt', label: 'Created' },
-  { id: '' },
+  { id: "title", label: "Title" },
+  { id: "url", label: "Video URL" },
+  { id: "type", label: "Type" },
+  { id: "status", label: "Status" },
+  { id: "createdAt", label: "Created" },
+  { id: "" },
 ];
 
 // ----------------------------------------------------------------------
@@ -58,7 +63,10 @@ export default function VideoListView() {
       }
     } catch (error) {
       console.error(error);
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to fetch videos', { variant: 'error' });
+      enqueueSnackbar(
+        error?.response?.data?.message || "Failed to fetch videos",
+        { variant: "error" }
+      );
     } finally {
       setLoading(false);
     }
@@ -67,15 +75,18 @@ export default function VideoListView() {
   const handleDeleteRow = async (id) => {
     try {
       const response = await VideoService.delete({
-        videoID: id
+        videoID: id,
       });
       if (response?.status === 200) {
-        enqueueSnackbar('Video deleted successfully');
+        enqueueSnackbar("Video deleted successfully");
         getMyVideos(); // Refresh the list
       }
     } catch (error) {
       console.error(error);
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to delete video', { variant: 'error' });
+      enqueueSnackbar(
+        error?.response?.data?.message || "Failed to delete video",
+        { variant: "error" }
+      );
     }
   };
 
@@ -98,24 +109,24 @@ export default function VideoListView() {
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ mb: 3 }}
-      >
+        sx={{ mb: 3 }}>
         <Typography variant="h4">My Videos</Typography>
 
         <Button
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={() => router.push(paths.dashboard.video.my.add)}
-        >
+          onClick={() => router.push(paths.dashboard.video.my.add)}>
           Add Video
         </Button>
       </Stack>
 
       <Card>
-        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+        <TableContainer sx={{ position: "relative", overflow: "unset" }}>
           <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+            <Table
+              size={table.dense ? "small" : "medium"}
+              sx={{ minWidth: 960 }}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
@@ -135,7 +146,11 @@ export default function VideoListView() {
 
                 <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                  emptyRows={emptyRows(
+                    table.page,
+                    table.rowsPerPage,
+                    tableData.length
+                  )}
                 />
 
                 <TableNoData notFound={notFound} />
@@ -156,4 +171,4 @@ export default function VideoListView() {
       </Card>
     </Container>
   );
-} 
+}

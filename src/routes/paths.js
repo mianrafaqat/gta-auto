@@ -1,6 +1,6 @@
-import { paramCase } from 'src/utils/change-case';
+import { paramCase } from "src/utils/change-case";
 
-import { _id, _postTitles } from 'src/_mock/assets';
+import { _id, _postTitles } from "src/_mock/assets";
 
 // ----------------------------------------------------------------------
 
@@ -9,31 +9,31 @@ function path(root, sublink) {
 }
 
 const ROOTS = {
-  AUTH: '/auth',
-  DASHBOARD: '/dashboard',
+  AUTH: "/auth",
+  DASHBOARD: "/dashboard",
 };
 
 // ----------------------------------------------------------------------
 
 export const paths = {
-  comingSoon: '/coming-soon',
-  maintenance: '/maintenance',
-  pricing: '/pricing',
-  payment: '/payment',
-  about: '/about-us',
-  contact: '/contact-us',
-  faqs: '/faqs',
-  page403: '/error/403',
-  page404: '/error/404',
-  page500: '/error/500',
-  components: '/components',
-  docs: 'https://docs.minimals.cc',
-  changelog: 'https://docs.minimals.cc/changelog',
-  zoneUI: 'https://mui.com/store/items/zone-landing-page/',
-  minimalUI: 'https://mui.com/store/items/minimal-dashboard/',
-  freeUI: 'https://mui.com/store/items/minimal-dashboard-free/',
+  comingSoon: "/coming-soon",
+  maintenance: "/maintenance",
+  pricing: "/pricing",
+  payment: "/payment",
+  about: "/about-us",
+  contact: "/contact-us",
+  faqs: "/faqs",
+  page403: "/error/403",
+  page404: "/error/404",
+  page500: "/error/500",
+  components: "/components",
+  docs: "https://docs.minimals.cc",
+  changelog: "https://docs.minimals.cc/changelog",
+  zoneUI: "https://mui.com/store/items/zone-landing-page/",
+  minimalUI: "https://mui.com/store/items/minimal-dashboard/",
+  freeUI: "https://mui.com/store/items/minimal-dashboard-free/",
   figma:
-    'https://www.figma.com/file/hjxMnGUJCjY7pX8lQbS7kn/%5BPreview%5D-Steel-Web.v5.4.0?type=design&node-id=0-1&mode=design&t=2fxnS70DuiTLGzND-0',
+    "https://www.figma.com/file/hjxMnGUJCjY7pX8lQbS7kn/%5BPreview%5D-Steel-Web.v5.4.0?type=design&node-id=0-1&mode=design&t=2fxnS70DuiTLGzND-0",
   product: {
     root: `/product`,
     checkout: `/product/checkout`,
@@ -59,12 +59,12 @@ export const paths = {
       forgotPassword: `${ROOTS.AUTH}/amplify/forgot-password`,
     },
     jwt: {
-      login: path(ROOTS.AUTH, '/jwt/login'),
-      register: path(ROOTS.AUTH, '/jwt/register'),
-      verify: path(ROOTS.AUTH, '/jwt/verify'),
-      verifyReset: path(ROOTS.AUTH, '/jwt/verify-reset'),
-      newPassword: path(ROOTS.AUTH, '/jwt/new-password'),
-      forgotPassword: path(ROOTS.AUTH, '/jwt/forgot-password'),
+      login: path(ROOTS.AUTH, "/jwt/login"),
+      register: path(ROOTS.AUTH, "/jwt/register"),
+      verify: path(ROOTS.AUTH, "/jwt/verify"),
+      verifyReset: path(ROOTS.AUTH, "/jwt/verify-reset"),
+      newPassword: path(ROOTS.AUTH, "/jwt/new-password"),
+      forgotPassword: path(ROOTS.AUTH, "/jwt/forgot-password"),
     },
     firebase: {
       login: `${ROOTS.AUTH}/firebase/login`,
@@ -140,6 +140,17 @@ export const paths = {
         edit: `${ROOTS.DASHBOARD}/product/${_id[1]}/edit`,
       },
     },
+    products: {
+      root: `${ROOTS.DASHBOARD}/products`,
+      new: `${ROOTS.DASHBOARD}/products/new`,
+      details: (id) => `${ROOTS.DASHBOARD}/products/${id}`,
+      edit: (id) => `${ROOTS.DASHBOARD}/products/${id}/edit`,
+      bySlug: (slug) => `${ROOTS.DASHBOARD}/products/slug/${slug}`,
+      demo: {
+        details: `${ROOTS.DASHBOARD}/products/${_id[1]}`,
+        edit: `${ROOTS.DASHBOARD}/products/${_id[1]}/edit`,
+      },
+    },
     invoice: {
       root: `${ROOTS.DASHBOARD}/invoice`,
       new: `${ROOTS.DASHBOARD}/invoice/new`,
@@ -199,7 +210,7 @@ export const paths = {
     },
     cars: {
       details: (carId) => `/cars/details?carId=${carId}`,
-      all: '/cars/all',
+      all: "/cars/all",
       my: {
         root: `${ROOTS.DASHBOARD}/my-cars`,
         add: `${ROOTS.DASHBOARD}/my-cars/add`,
@@ -215,26 +226,26 @@ export const paths = {
         list: `${ROOTS.DASHBOARD}/admin/users/list`,
       },
       video: {
-        list: path(ROOTS.DASHBOARD, '/admin/video/list'),
+        list: path(ROOTS.DASHBOARD, "/admin/video/list"),
         view: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/view`,
         edit: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/edit`,
       },
     },
     video: {
-      root: path(ROOTS.DASHBOARD, '/video'),
+      root: path(ROOTS.DASHBOARD, "/video"),
       my: {
-        root: path(ROOTS.DASHBOARD, '/video/my'),
-        list: path(ROOTS.DASHBOARD, '/video/my/list'),
-        add: path(ROOTS.DASHBOARD, '/video/my/add'),
+        root: path(ROOTS.DASHBOARD, "/video/my"),
+        list: path(ROOTS.DASHBOARD, "/video/my/list"),
+        add: path(ROOTS.DASHBOARD, "/video/my/add"),
         view: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/view`,
         edit: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/edit`,
       },
     },
   },
   user: {
-    favourites: '/favourites'
+    favourites: "/favourites",
   },
   cars: {
-    root: '/cars'
-  }
+    root: "/cars",
+  },
 };
