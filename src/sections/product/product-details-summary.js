@@ -77,9 +77,8 @@ export default function ProductDetailsSummary({
           gap: "5px",
           color: color,
           justifyContent: "end",
-          color: "#000"
-        }}
-      >
+          color: "#000",
+        }}>
         <Iconify icon={icon} />
         {title}
       </Typography>
@@ -153,13 +152,12 @@ export default function ProductDetailsSummary({
       <Box
         sx={{
           background: "#fff",
-          border: '1px solid #c3cdd5',
+          border: "1px solid #c3cdd5",
           boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
           borderRadius: ".5rem",
           width: "100%",
           padding: ".75rem 1rem",
-        }}
-      >
+        }}>
         <Typography fontWeight={700} variant="h5" color="#000">
           {product.title}
         </Typography>
@@ -168,7 +166,9 @@ export default function ProductDetailsSummary({
             icon="subway:location-1"
             sx={{ transform: "translateY(3px)" }}
           />
-          <Typography variant="body1" color="#000">{product.location || "N/A"}</Typography>
+          <Typography variant="body1" color="#000">
+            {product.location || "N/A"}
+          </Typography>
         </Box>
 
         <Box sx={{ display: "flex" }} justifyContent="space-between">
@@ -177,8 +177,7 @@ export default function ProductDetailsSummary({
             sx={{ display: "flex" }}
             alignItems="center"
             variant="h4"
-            color="#000"
-          >
+            color="#000">
             PKR{price ? Number(price)?.toLocaleString() : 0}
           </Typography>
           <Typography
@@ -188,8 +187,7 @@ export default function ProductDetailsSummary({
             alignItems="center"
             variant="body1"
             gap={"5px"}
-            fontWeight={600}
-          >
+            fontWeight={600}>
             {status}
           </Typography>
         </Box>
@@ -202,14 +200,13 @@ export default function ProductDetailsSummary({
       <Box
         sx={{
           background: "#fff",
-          border: '1px solid #c3cdd5',
+          border: "1px solid #c3cdd5",
           boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
           borderRadius: ".5rem",
           // borderColor: '#c3cdd5!important',
           width: "100%",
           padding: ".75rem 1rem",
-        }}
-      >
+        }}>
         {product?.saleAs && product?.companyOrSellerName && (
           <Typography fontWeight={700} variant="h5" color="#000">
             {product.saleAs} : {product.companyOrSellerName || "N/A"}
@@ -223,8 +220,7 @@ export default function ProductDetailsSummary({
             gap={1}
             fontWeight="bold"
             alignItems="center"
-            href={`tel:${product?.owner?.phone}`}
-          >
+            href={`tel:${product?.owner?.phone}`}>
             <Iconify icon="lucide:phone-call" />{" "}
             {product?.tel || product?.owner?.phone || "No Contact Available"}
           </Link>
@@ -237,8 +233,7 @@ export default function ProductDetailsSummary({
           fontWeight={600}
           target="_blank"
           href={product?.link}
-          color="#000"
-        >
+          color="#000">
           Watch Video
         </Link>
       </Box>
@@ -250,12 +245,10 @@ export default function ProductDetailsSummary({
       <Link
         variant="subtitle2"
         sx={{
-          
           display: "inline-flex",
           alignItems: "center",
-          color: "#000"
-        }}
-      >
+          color: "#000",
+        }}>
         <Iconify icon="mingcute:add-line" width={16} sx={{ mr: 1 }} />
         Compare
       </Link>
@@ -263,11 +256,10 @@ export default function ProductDetailsSummary({
       <Link
         variant="subtitle2"
         sx={{
-         color: "#000",
+          color: "#000",
           display: "inline-flex",
           alignItems: "center",
-        }}
-      >
+        }}>
         <Iconify icon="solar:heart-bold" width={16} sx={{ mr: 1 }} />
         Favorite
       </Link>
@@ -278,8 +270,7 @@ export default function ProductDetailsSummary({
           color: "text.secondary",
           display: "inline-flex",
           alignItems: "center",
-        }}
-      >
+        }}>
         <Iconify icon="solar:share-bold" width={16} sx={{ mr: 1 }} />
         Share
       </Link>
@@ -317,7 +308,7 @@ export default function ProductDetailsSummary({
         name="size"
         size="small"
         helperText={
-          <Link underline="always"  sx={{color: "#000"}}>
+          <Link underline="always" sx={{ color: "#000" }}>
             Size Chart
           </Link>
         }
@@ -328,10 +319,9 @@ export default function ProductDetailsSummary({
             mt: 1,
             textAlign: "right",
           },
-        }}
-      >
+        }}>
         {sizes.map((size) => (
-          <MenuItem key={size} value={size} sx={{color: "#000"}}>
+          <MenuItem key={size} value={size} sx={{ color: "#000" }}>
             {size}
           </MenuItem>
         ))}
@@ -396,8 +386,7 @@ export default function ProductDetailsSummary({
       sx={{
         color: "#000",
         typography: "body2",
-      }}
-    >
+      }}>
       <Rating
         size="small"
         value={totalRatings}
@@ -425,8 +414,7 @@ export default function ProductDetailsSummary({
           (inventoryType === "out of stock" && "error.main") ||
           (inventoryType === "low stock" && "warning.main") ||
           "success.main",
-      }}
-    >
+      }}>
       {inventoryType}
     </Box>
   );
@@ -448,14 +436,13 @@ export default function ProductDetailsSummary({
         <Box
           sx={{
             background: "#fff",
-            border: '1px solid #c3cdd5',
+            border: "1px solid #c3cdd5",
             boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
             borderRadius: ".5rem",
             // borderColor: '#c3cdd5!important',
             width: "100%",
             padding: ".75rem 1rem",
-          }}
-        >
+          }}>
           <CheckAvailabiltyForm
             make={product.carDetails?.make}
             year={product.carDetails?.yearOfManufacture}

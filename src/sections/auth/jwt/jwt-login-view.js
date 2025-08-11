@@ -72,7 +72,10 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (data.email === "ahmadvision345@gmail.com" || data.email === "rafaqatmehar007@gmail.com") {
+      if (
+        data.email === "ahmadvision345@gmail.com" ||
+        data.email === "rafaqatmehar007@gmail.com"
+      ) {
         role = "admin";
       }
       await login?.({ ...data, role });
@@ -128,8 +131,7 @@ export default function JwtLoginView() {
         size="large"
         type="submit"
         variant="contained"
-        loading={isSubmitting}
-      >
+        loading={isSubmitting}>
         Login
       </LoadingButton>
       {/* <RadioGroup
@@ -145,8 +147,7 @@ export default function JwtLoginView() {
       <Link
         sx={{ textAlign: "end" }}
         color="black"
-        href={paths.dashboard.user.forgotPassword}
-      >
+        href={paths.dashboard.user.forgotPassword}>
         <Typography variant="body2">Forgot Password?</Typography>
       </Link>
       <Typography
@@ -156,14 +157,9 @@ export default function JwtLoginView() {
           alignItems: "center",
           gap: "3px",
           justifyContent: "end",
-        }}
-      >
+        }}>
         Don't have an account?
-        <Link
-          color="primary"
-          fontWeight={900}
-          href={paths.auth.jwt.register}
-        >
+        <Link color="primary" fontWeight={900} href={paths.auth.jwt.register}>
           <Typography variant="body2">Create an account</Typography>
         </Link>
       </Typography>

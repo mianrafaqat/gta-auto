@@ -138,11 +138,13 @@ export default function ProductShopDetailsView({ id }) {
               sx={{ color: "primary.main" }}
             />
 
-            <Typography variant="subtitle1" sx={{ mb: 1, mt: 2 }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ mb: 1, mt: 2, color: "#fff" }}>
               {item.title}
             </Typography>
 
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            <Typography variant="body2" sx={{ color: "#fff" }}>
               {item.description}
             </Typography>
           </Box>

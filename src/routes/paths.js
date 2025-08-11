@@ -117,6 +117,15 @@ export const paths = {
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
     },
+    shipping: {
+      root: `${ROOTS.DASHBOARD}/shipping`,
+      methods: {
+        list: path(ROOTS.DASHBOARD, "/shipping/methods"),
+        add: path(ROOTS.DASHBOARD, "/shipping/methods/add"),
+      },
+      settings: `${ROOTS.DASHBOARD}/shipping/settings`,
+    },
+
     user: {
       root: `${ROOTS.DASHBOARD}/user`,
       new: `${ROOTS.DASHBOARD}/user/new`,
@@ -172,11 +181,9 @@ export const paths = {
       },
     },
     order: {
-      root: `${ROOTS.DASHBOARD}/order`,
-      details: (id) => `${ROOTS.DASHBOARD}/order/${id}`,
-      demo: {
-        details: `${ROOTS.DASHBOARD}/order/${_id[1]}`,
-      },
+      root: `${ROOTS.DASHBOARD}/orders`,
+      list: `${ROOTS.DASHBOARD}/orders`,
+      details: (id) => `${ROOTS.DASHBOARD}/orders/${id}`,
     },
     job: {
       root: `${ROOTS.DASHBOARD}/job`,
@@ -230,6 +237,26 @@ export const paths = {
         view: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/view`,
         edit: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/edit`,
       },
+    },
+    category: {
+      root: `${ROOTS.DASHBOARD}/admin/categories/list`,
+      list: path(ROOTS.DASHBOARD, "/admin/categories/list"),
+      add: path(ROOTS.DASHBOARD, "/admin/categories/add"),
+    },
+    attribute: {
+      root: `${ROOTS.DASHBOARD}/admin/attribute/list`,
+      list: path(ROOTS.DASHBOARD, "/admin/attribute/list"),
+      add: path(ROOTS.DASHBOARD, "/admin/attribute/add"),
+    },
+    tax: {
+      root: `${ROOTS.DASHBOARD}/admin/tax/list`,
+      list: path(ROOTS.DASHBOARD, "/admin/tax/list"),
+      add: path(ROOTS.DASHBOARD, "/admin/tax/add"),
+    },
+    coupon: {
+      root: `${ROOTS.DASHBOARD}/admin/coupon/list`,
+      list: path(ROOTS.DASHBOARD, "/admin/coupon/list"),
+      add: path(ROOTS.DASHBOARD, "/admin/coupon/add"),
     },
     video: {
       root: path(ROOTS.DASHBOARD, "/video"),

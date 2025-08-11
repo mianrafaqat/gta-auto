@@ -1,16 +1,7 @@
 "use client";
 
-import uniq from "lodash/uniq";
 import PropTypes from "prop-types";
-import { useMemo, useEffect, useCallback } from "react";
-
-import { paths } from "src/routes/paths";
-import { useRouter } from "src/routes/hooks";
-
-import { getStorage, useLocalStorage } from "src/hooks/use-local-storage";
-
-import { PRODUCT_CHECKOUT_STEPS } from "src/_mock/_product";
-
+import { useCallback, useEffect, useState } from "react";
 import { CheckoutContext } from "./checkout-context";
 
 // ----------------------------------------------------------------------
@@ -25,136 +16,136 @@ const initialState = {
   discount: 0,
   shipping: 0,
   billing: null,
-  totalItems: 0,
+  shippingMethod: null,
 };
 
 export function CheckoutProvider({ children }) {
-  const router = useRouter();
-
-  const { state, update, reset } = useLocalStorage(STORAGE_KEY, initialState);
-
-  const onGetCart = useCallback(() => {
-    const totalItems = state.items.reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
-
-    const subTotal = state.items.reduce(
-      (total, item) => total + item.quantity * item.price,
-      0
-    );
-
-    update("subTotal", subTotal);
-    update("totalItems", totalItems);
-    update("billing", state.activeStep === 1 ? null : state.billing);
-    update("discount", state.items.length ? state.discount : 0);
-    update("shipping", state.items.length ? state.shipping : 0);
-    update("total", state.subTotal - state.discount + state.shipping);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    state.items,
-    state.activeStep,
-    state.billing,
-    state.discount,
-    state.shipping,
-    state.subTotal,
-  ]);
+  const [checkout, setCheckout] = useState(() => {
+    const restored =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem(STORAGE_KEY) || "null")
+        : null;
+    return restored || initialState;
+  });
 
   useEffect(() => {
-    const restored = getStorage(STORAGE_KEY);
-
-    if (restored) {
-      onGetCart();
+    if (checkout !== initialState) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checkout));
     }
-  }, [onGetCart]);
+  }, [checkout]);
 
-  const onAddToCart = useCallback(
-    (newItem) => {
-      const updatedItems = state.items.map((item) => {
-        if (item.id === newItem.id) {
-          return {
-            ...item,
-            colors: uniq([...item.colors, ...newItem.colors]),
-            quantity: item.quantity + 1,
-          };
-        }
-        return item;
-      });
-
-      if (!updatedItems.some((item) => item.id === newItem.id)) {
-        updatedItems.push(newItem);
-      }
-
-      update("items", updatedItems);
-    },
-    [update, state.items]
-  );
-
-  const onBuyNow = useCallback(
-    (newItem) => {
-      // Create a separate checkout flow for immediate purchase
-      const buyNowItems = [newItem];
-      const totalItems = buyNowItems.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-      const subTotal = buyNowItems.reduce(
-        (total, item) => total + item.quantity * item.price,
-        0
-      );
-
-      // Update state for immediate purchase
-      update("items", buyNowItems);
-      update("subTotal", subTotal);
-      update("totalItems", totalItems);
-      update("activeStep", 0);
-      update("billing", null);
-      update("discount", 0);
-      update("shipping", 0);
-      update("total", subTotal);
-    },
-    [update]
-  );
-
-  const onClearCart = useCallback(() => {
-    update("items", []);
-    update("subTotal", 0);
-    update("totalItems", 0);
-    update("activeStep", 0);
-    update("billing", null);
-    update("discount", 0);
-    update("shipping", 0);
-    update("total", 0);
-  }, [update]);
-
-  const onDeleteCart = useCallback(
-    (itemId) => {
-      const updatedItems = state.items.filter((item) => item.id !== itemId);
-
-      update("items", updatedItems);
-    },
-    [update, state.items]
-  );
-
-  const onBackStep = useCallback(() => {
-    update("activeStep", state.activeStep - 1);
-  }, [update, state.activeStep]);
+  const onReset = useCallback(() => {
+    setCheckout(initialState);
+    localStorage.removeItem(STORAGE_KEY);
+  }, []);
 
   const onNextStep = useCallback(() => {
-    update("activeStep", state.activeStep + 1);
-  }, [update, state.activeStep]);
+    setCheckout((prevState) => ({
+      ...prevState,
+      activeStep: prevState.activeStep + 1,
+    }));
+  }, []);
 
-  const onGotoStep = useCallback(
-    (step) => {
-      update("activeStep", step);
-    },
-    [update]
-  );
+  const onBackStep = useCallback(() => {
+    setCheckout((prevState) => ({
+      ...prevState,
+      activeStep: prevState.activeStep - 1,
+    }));
+  }, []);
 
-  const onIncreaseQuantity = useCallback(
-    (itemId) => {
-      const updatedItems = state.items.map((item) => {
-        if (item.id === itemId) {
+  const onGotoStep = useCallback((step) => {
+    setCheckout((prevState) => ({
+      ...prevState,
+      activeStep: step,
+    }));
+  }, []);
+
+  const onApplyShipping = useCallback((shippingMethod) => {
+    setCheckout((prevState) => ({
+      ...prevState,
+      shipping: shippingMethod.price || 0,
+      total:
+        prevState.subTotal -
+        (prevState.discount || 0) +
+        (shippingMethod.price || 0),
+      shippingMethod: {
+        id: shippingMethod.id,
+        name: shippingMethod.name,
+        price: shippingMethod.price,
+        estimatedDelivery: shippingMethod.estimatedDelivery,
+      },
+    }));
+  }, []);
+
+  const onApplyDiscount = useCallback((discount) => {
+    setCheckout((prevState) => ({
+      ...prevState,
+      discount,
+      total: prevState.subTotal - discount + (prevState.shipping || 0),
+    }));
+  }, []);
+
+  const onCreateBilling = useCallback((billing) => {
+    setCheckout((prevState) => ({
+      ...prevState,
+      billing,
+    }));
+  }, []);
+
+  const onAddCart = useCallback((product) => {
+    setCheckout((prevState) => {
+      const newItems = [...prevState.items];
+      const existingProductIndex = newItems.findIndex(
+        (item) => item.id === product.id
+      );
+
+      if (existingProductIndex !== -1) {
+        newItems[existingProductIndex].quantity += 1;
+      } else {
+        newItems.push({
+          id: product.id,
+          name: product.name,
+          coverUrl: product.coverUrl,
+          price: product.price,
+          quantity: 1,
+        });
+      }
+
+      const subTotal = newItems.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+
+      return {
+        ...prevState,
+        items: newItems,
+        subTotal,
+        total: subTotal - (prevState.discount || 0) + (prevState.shipping || 0),
+      };
+    });
+  }, []);
+
+  const onDeleteCart = useCallback((productId) => {
+    setCheckout((prevState) => {
+      const newItems = prevState.items.filter((item) => item.id !== productId);
+      const subTotal = newItems.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+
+      return {
+        ...prevState,
+        items: newItems,
+        subTotal,
+        total: subTotal - (prevState.discount || 0) + (prevState.shipping || 0),
+      };
+    });
+  }, []);
+
+  const onIncreaseQuantity = useCallback((productId) => {
+    setCheckout((prevState) => {
+      const newItems = prevState.items.map((item) => {
+        if (item.id === productId) {
           return {
             ...item,
             quantity: item.quantity + 1,
@@ -163,105 +154,86 @@ export function CheckoutProvider({ children }) {
         return item;
       });
 
-      update("items", updatedItems);
-    },
-    [update, state.items]
-  );
+      const subTotal = newItems.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
 
-  const onDecreaseQuantity = useCallback(
-    (itemId) => {
-      const updatedItems = state.items.map((item) => {
-        if (item.id === itemId) {
-          return {
-            ...item,
-            quantity: item.quantity - 1,
-          };
-        }
-        return item;
-      });
+      return {
+        ...prevState,
+        items: newItems,
+        subTotal,
+        total: subTotal - (prevState.discount || 0) + (prevState.shipping || 0),
+      };
+    });
+  }, []);
 
-      update("items", updatedItems);
-    },
-    [update, state.items]
-  );
+  const onDecreaseQuantity = useCallback((productId) => {
+    setCheckout((prevState) => {
+      const newItems = prevState.items
+        .map((item) => {
+          if (item.id === productId) {
+            return {
+              ...item,
+              quantity: Math.max(0, item.quantity - 1),
+            };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0);
 
-  const onCreateBilling = useCallback(
-    (address) => {
-      update("billing", address);
+      const subTotal = newItems.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
 
-      onNextStep();
-    },
-    [onNextStep, update]
-  );
+      return {
+        ...prevState,
+        items: newItems,
+        subTotal,
+        total: subTotal - (prevState.discount || 0) + (prevState.shipping || 0),
+      };
+    });
+  }, []);
 
-  const onApplyDiscount = useCallback(
-    (discount) => {
-      update("discount", discount);
-    },
-    [update]
-  );
+  const onBuyNow = useCallback((product) => {
+    setCheckout((prevState) => {
+      const newItem = {
+        id: product.id,
+        name: product.name,
+        coverUrl: product.coverUrl,
+        price: product.price,
+        quantity: 1,
+      };
 
-  const onApplyShipping = useCallback(
-    (shipping) => {
-      update("shipping", shipping);
-    },
-    [update]
-  );
+      return {
+        ...prevState,
+        items: [newItem],
+        subTotal: newItem.price,
+        total:
+          newItem.price - (prevState.discount || 0) + (prevState.shipping || 0),
+      };
+    });
+  }, []);
 
-  const completed = state.activeStep === PRODUCT_CHECKOUT_STEPS.length;
-
-  // Reset
-  const onReset = useCallback(() => {
-    if (completed) {
-      reset();
-      router.replace(paths.product.root);
-    }
-  }, [completed, reset, router]);
-
-  const memoizedValue = useMemo(
-    () => ({
-      ...state,
-      completed,
-      //
-      onAddToCart,
-      onBuyNow,
-      onClearCart,
-      onDeleteCart,
-      //
-      onIncreaseQuantity,
-      onDecreaseQuantity,
-      //
-      onCreateBilling,
-      onApplyDiscount,
-      onApplyShipping,
-      //
-      onBackStep,
-      onNextStep,
-      onGotoStep,
-      //
-      onReset,
-    }),
-    [
-      completed,
-      onAddToCart,
-      onBuyNow,
-      onClearCart,
-      onApplyDiscount,
-      onApplyShipping,
-      onBackStep,
-      onCreateBilling,
-      onDecreaseQuantity,
-      onDeleteCart,
-      onGotoStep,
-      onIncreaseQuantity,
-      onNextStep,
-      onReset,
-      state,
-    ]
-  );
+  const value = {
+    checkout,
+    onReset,
+    onNextStep,
+    onBackStep,
+    onGotoStep,
+    onBuyNow,
+    onAddCart,
+    onDeleteCart,
+    onIncreaseQuantity,
+    onDecreaseQuantity,
+    onCreateBilling,
+    onApplyShipping,
+    onApplyDiscount,
+  };
 
   return (
-    <CheckoutContext.Provider value={memoizedValue}>
+    <CheckoutContext.Provider value={value}>
       {children}
     </CheckoutContext.Provider>
   );

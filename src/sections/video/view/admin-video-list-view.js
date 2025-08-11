@@ -1,40 +1,40 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from "react";
 
-import Card from '@mui/material/Card';
-import Table from '@mui/material/Table';
-import Container from '@mui/material/Container';
-import TableBody from '@mui/material/TableBody';
-import TableContainer from '@mui/material/TableContainer';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Card from "@mui/material/Card";
+import Table from "@mui/material/Table";
+import Container from "@mui/material/Container";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
-import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
+import { useRouter } from "src/routes/hooks";
+import { paths } from "src/routes/paths";
 
-import Scrollbar from 'src/components/scrollbar';
-import { useSnackbar } from 'src/components/snackbar';
-import { useTable } from 'src/components/table';
-import TableHeadCustom from 'src/components/table/table-head-custom';
-import { TablePaginationCustom } from 'src/components/table';
-import { TableNoData } from 'src/components/table';
-import { TableEmptyRows } from 'src/components/table';
-import Iconify from 'src/components/iconify';
+import Scrollbar from "src/components/scrollbar";
+import { useSnackbar } from "src/components/snackbar";
+import { useTable } from "src/components/table";
+import TableHeadCustom from "src/components/table/table-head-custom";
+import { TablePaginationCustom } from "src/components/table";
+import { TableNoData } from "src/components/table";
+import { TableEmptyRows } from "src/components/table";
+import Iconify from "src/components/iconify";
 
-import VideoTableRow from '../video-table-row';
-import { VideoService } from 'src/services';
+import VideoTableRow from "../video-table-row";
+import { VideoService } from "src/services";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'title', label: 'Title' },
-  { id: 'url', label: 'Video URL' },
-  { id: 'type', label: 'Type' },
-  { id: 'status', label: 'Status' },
-  { id: 'createdAt', label: 'Created' },
-  { id: '' },
+  { id: "title", label: "Title" },
+  { id: "url", label: "Video URL" },
+  { id: "type", label: "Type" },
+  { id: "status", label: "Status" },
+  { id: "createdAt", label: "Created" },
+  { id: "" },
 ];
 
 // ----------------------------------------------------------------------
@@ -49,13 +49,16 @@ export default function AdminVideoListView() {
   const getAllVideos = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await VideoService.getAll();
+      const response = await VideoService.getAllVideos();
       if (response?.status === 200) {
         setTableData(response.data);
       }
     } catch (error) {
       console.error(error);
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to fetch videos', { variant: 'error' });
+      enqueueSnackbar(
+        error?.response?.data?.message || "Failed to fetch videos",
+        { variant: "error" }
+      );
     } finally {
       setLoading(false);
     }
@@ -63,14 +66,17 @@ export default function AdminVideoListView() {
 
   const handleDeleteRow = async (id) => {
     try {
-      const response = await VideoService.delete(id);
+      const response = await VideoService.deleteVideo(id);
       if (response?.status === 200) {
-        enqueueSnackbar('Video deleted successfully');
+        enqueueSnackbar("Video deleted successfully");
         getAllVideos(); // Refresh the list
       }
     } catch (error) {
       console.error(error);
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to delete video', { variant: 'error' });
+      enqueueSnackbar(
+        error?.response?.data?.message || "Failed to delete video",
+        { variant: "error" }
+      );
     }
   };
 
@@ -91,24 +97,24 @@ export default function AdminVideoListView() {
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ mb: 3 }}
-      >
+        sx={{ mb: 3 }}>
         <Typography variant="h4">All Videos</Typography>
 
         <Button
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={() => router.push(paths.dashboard.admin.video.add)}
-        >
+          onClick={() => router.push(paths.dashboard.admin.video.add)}>
           Add Video
         </Button>
       </Stack>
 
       <Card>
-        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+        <TableContainer sx={{ position: "relative", overflow: "unset" }}>
           <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+            <Table
+              size={table.dense ? "small" : "medium"}
+              sx={{ minWidth: 960 }}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
@@ -149,4 +155,4 @@ export default function AdminVideoListView() {
       </Card>
     </Container>
   );
-} 
+}

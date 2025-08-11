@@ -32,11 +32,39 @@ export const API_URLS = {
     getById: (id) => `/api/products/${id}`,
     getBySlug: (slug) => `/api/products/slug/${slug}`,
 
+    // Product Variations
+    getVariations: (id) => `/api/products/${id}/variations`, // GET: Get Product Variations
+    createVariation: (id) => `/api/products/${id}/variations`, // POST: Create Variation (Protected)
+    updateVariation: (id, variationId) =>
+      `/api/products/${id}/variations/${variationId}`, // PUT: Update Variation (Protected)
+    deleteVariation: (id, variationId) =>
+      `/api/products/${id}/variations/${variationId}`, // DELETE: Delete Variation
+
     // Protected Routes
     create: "/api/products",
     update: (id) => `/api/products/${id}`,
     delete: (id) => `/api/products/${id}`,
     uploadImages: "/api/products/upload-images",
+  },
+
+  shipping: {
+    root: "/api/shipping",
+    calculate: "/api/shipping/calculate",
+    getAvailableMethods: "/api/shipping/available",
+    getById: (id) => `/api/shipping/${id}`,
+    update: (id) => `/api/shipping/${id}`,
+    delete: (id) => `/api/shipping/${id}`,
+  },
+
+  orders: {
+    // User (Protected) Routes
+    create: "/api/orders", // POST: Create Order
+    getMyOrders: "/api/orders", // GET: Get My Orders (with optional query params)
+    getById: (id) => `/api/orders/${id}`, // GET: Get Order by ID
+
+    // Admin Routes
+    getAll: "/api/orders", // GET: Get All Orders (Admin only)
+    updateStatus: (id) => `/api/orders/${id}/status`, // PUT: Update Order Status (Admin only)
   },
   cars: {
     // Public Routes
@@ -81,6 +109,30 @@ export const API_URLS = {
     add: "/api/video/add",
     update: "/api/video/update",
     delete: "/api/video/delete",
+  },
+  category: {
+    getAll: "/api/categories/tree",
+    add: "/api/categories",
+    delete: (id) => `/api/categories/${id}`,
+    update: (id) => `/api/categories/${id}`,
+  },
+  attribute: {
+    getAll: "/api/categories/attributes",
+    add: "/api/categories/attributes",
+    delete: (id) => `/api/attributes/${id}`,
+    update: (id) => `/api/attributes/${id}`,
+  },
+  tax: {
+    getAll: "/api/tax",
+    add: "/api/tax",
+    delete: (id) => `/api/tax/${id}`,
+    update: (id) => `/api/tax/${id}`,
+  },
+  coupon: {
+    getAll: "/api/coupons",
+    add: "/api/coupons",
+    delete: (id) => `/api/coupons/${id}`,
+    update: (id) => `/api/coupons/${id}`,
   },
   ads: {
     // Public Routes

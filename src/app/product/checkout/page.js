@@ -1,11 +1,14 @@
-import { CheckoutView } from 'src/sections/checkout/view';
+"use client";
+
+import { CheckoutProvider } from "src/sections/checkout/context/checkout-provider";
+import { CheckoutView } from "src/sections/checkout";
 
 // ----------------------------------------------------------------------
 
-export const metadata = {
-  title: 'Checkout',
-};
-
 export default function CheckoutPage() {
-  return <CheckoutView />;
+  return (
+    <CheckoutProvider>
+      <CheckoutView />
+    </CheckoutProvider>
+  );
 }

@@ -21,10 +21,6 @@ const icon = (name) => (
     src={`/assets/icons/navbar/${name}.svg`}
     sx={{ width: 1, height: 1 }}
   />
-  // OR
-  // <Iconify icon="fluent:mail-24-filled" />
-  // https://icon-sets.iconify.design/solar/
-  // https://www.streamlinehq.com/icons
 );
 
 const ICONS = {
@@ -52,6 +48,9 @@ const ICONS = {
   ecommerce: icon("ic_ecommerce"),
   analytics: icon("ic_analytics"),
   dashboard: icon("ic_dashboard"),
+  shipping: icon("ic_shipping"),
+  tax: icon("ic_tax"),
+  coupon: icon("ic_coupon"),
 };
 
 // ----------------------------------------------------------------------
@@ -67,14 +66,6 @@ export function useNavData() {
     }
     return false;
   }, [auth]);
-  // const userRole = useMemo(() => {
-  //   const userAccount = auth?.user?.user;
-  //   if (!userAccount) {
-  //     return -1;
-  //   } else {
-  //     return userAccount.userAccountTypeId.toString();
-  //   }
-  // }, [auth]);
 
   const data = useMemo(
     () => [
@@ -92,105 +83,149 @@ export function useNavData() {
             },
           ]
         : []),
-      // OVERVIEW
-      // ----------------------------------------------------------------------
 
       // MANAGEMENT
-      // ----------------------------------------------------------------------
       {
         subheader: t("management"),
         items: [
-          //  SELLER
-          ...(!isAuthenticated
-            ? [
-                {
-                  title: "Connect with eBay",
-                  noTextTransform: true,
-                  path: paths.dashboard.root,
-                  icon: ICONS.external,
-                },
-              ]
-            : [
-                {
-                  roles: [ROLES.USER, ROLES.ADMIN],
-                  title: "Cars",
-                  path: paths.dashboard.users.root,
-                  icon: ICONS.user,
-                  children: [
-                    {
-                      title: "My",
-                      path: paths.dashboard.cars.my.list,
-                      roles: [ROLES.USER],
-                    },
-                    {
-                      title: "Add",
-                      path: paths.dashboard.cars.my.add,
-                      roles: [ROLES.USER],
-                    },
-                    {
-                      title: "List",
-                      path: paths.dashboard.admin.cars.list,
-                      roles: [ROLES.ADMIN],
-                    },
-                  ],
-                },
-                {
-                  roles: [ROLES.ADMIN],
-                  title: "Video",
-                  path: paths.dashboard.video.root,
-                  icon: ICONS.user,
-                  children: [
-                    {
-                      title: "My",
-                      path: paths.dashboard.video.my.list,
-                      roles: [ROLES.USER, ROLES.ADMIN],
-                    },
-                    {
-                      title: "Add",
-                      path: paths.dashboard.video.my.add,
-                      roles: [ROLES.USER, ROLES.ADMIN],
-                    },
-                    {
-                      title: "List",
-                      path: paths.dashboard.admin.video.list,
-                      roles: [ROLES.ADMIN],
-                    },
-                  ],
-                },
-
-                {
-                  roles: [ROLES.ADMIN],
-                  title: "Products",
-                  path: paths.dashboard.product.root,
-                  icon: ICONS.user,
-                  children: [
-                    {
-                      title: "Add",
-                      path: paths.dashboard.product.new,
-                      roles: [ROLES.USER, ROLES.ADMIN],
-                    },
-                    {
-                      title: "List",
-                      path: paths.dashboard.product.root,
-                      roles: [ROLES.ADMIN],
-                    },
-                  ],
-                },
-
-                {
-                  roles: [ROLES.ADMIN],
-                  title: "Users",
-                  path: paths.dashboard.users.root,
-                  icon: ICONS.user,
-                  children: [
-                    {
-                      title: "List",
-                      path: paths.dashboard.admin.users.list,
-                      roles: [ROLES.ADMIN],
-                    },
-                  ],
-                },
-              ]),
+          // ECOMMERCE
+          {
+            title: t("ecommerce"),
+            path: paths.dashboard.general.ecommerce,
+            icon: ICONS.ecommerce,
+            children: [
+              {
+                title: t("products"),
+                path: paths.dashboard.product.root,
+                icon: ICONS.product,
+                children: [
+                  { title: t("list"), path: paths.dashboard.product.root },
+                  { title: t("create"), path: paths.dashboard.product.new },
+                ],
+              },
+              {
+                title: t("Categories"),
+                path: paths.dashboard.category.root,
+                icon: ICONS.product,
+                children: [
+                  { title: t("list"), path: paths.dashboard.category.list },
+                  { title: t("create"), path: paths.dashboard.category.add },
+                ],
+              },
+              {
+                title: t("Attribute"),
+                path: paths.dashboard.attribute.root,
+                icon: ICONS.product,
+                children: [
+                  { title: t("list"), path: paths.dashboard.attribute.list },
+                  { title: t("create"), path: paths.dashboard.attribute.add },
+                ],
+              },
+              {
+                title: t("Tax"),
+                path: paths.dashboard.tax.root,
+                icon: ICONS.tax,
+                children: [
+                  { title: t("list"), path: paths.dashboard.tax.list },
+                  { title: t("create"), path: paths.dashboard.tax.add },
+                ],
+              },
+              {
+                title: t("Coupons"),
+                path: paths.dashboard.coupon.root,
+                icon: ICONS.coupon,
+                children: [
+                  { title: t("list"), path: paths.dashboard.coupon.list },
+                  { title: t("create"), path: paths.dashboard.coupon.add },
+                ],
+              },
+              {
+                title: t("orders"),
+                path: paths.dashboard.order.root,
+                icon: ICONS.order,
+                children: [
+                  { title: t("list"), path: paths.dashboard.order.list },
+                ],
+              },
+              {
+                title: t("shipping"),
+                path: paths.dashboard.shipping.root,
+                icon: ICONS.shipping,
+                children: [
+                  {
+                    title: t("methods"),
+                    path: paths.dashboard.shipping.methods.root,
+                  },
+                  {
+                    title: t("settings"),
+                    path: paths.dashboard.shipping.settings,
+                  },
+                ],
+              },
+            ],
+          },
+          // Cars section
+          {
+            roles: [ROLES.USER, ROLES.ADMIN],
+            title: "Cars",
+            path: paths.dashboard.users.root,
+            icon: ICONS.user,
+            children: [
+              {
+                title: "My",
+                path: paths.dashboard.cars.my.list,
+                roles: [ROLES.USER],
+              },
+              {
+                title: "Add",
+                path: paths.dashboard.cars.my.add,
+                roles: [ROLES.USER],
+              },
+              {
+                title: "List",
+                path: paths.dashboard.admin.cars.list,
+                roles: [ROLES.ADMIN],
+              },
+            ],
+          },
+          // Video section
+          {
+            roles: [ROLES.ADMIN],
+            title: "Video",
+            path: paths.dashboard.video.root,
+            icon: ICONS.user,
+            children: [
+              {
+                title: "My",
+                path: paths.dashboard.video.my.list,
+                roles: [ROLES.USER, ROLES.ADMIN],
+              },
+              {
+                title: "Add",
+                path: paths.dashboard.video.my.add,
+                roles: [ROLES.USER, ROLES.ADMIN],
+              },
+              {
+                title: "List",
+                path: paths.dashboard.admin.video.list,
+                roles: [ROLES.ADMIN],
+              },
+            ],
+          },
+          // Users section
+          {
+            roles: [ROLES.ADMIN],
+            title: "Users",
+            path: paths.dashboard.users.root,
+            icon: ICONS.user,
+            children: [
+              {
+                title: "List",
+                path: paths.dashboard.admin.users.list,
+                roles: [ROLES.ADMIN],
+              },
+            ],
+          },
         ],
       },
     ],

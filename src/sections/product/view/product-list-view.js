@@ -23,7 +23,8 @@ import { RouterLink } from "src/routes/components";
 
 import { useBoolean } from "src/hooks/use-boolean";
 
-import { useGetProducts } from "src/api/product";
+// --- Updated integration: use products.service.js directly ---
+import productService from "src/services/products/products.service";
 import { PRODUCT_STOCK_OPTIONS } from "src/_mock";
 
 import Iconify from "src/components/iconify";
@@ -72,7 +73,31 @@ export default function ProductListView() {
 
   const settings = useSettingsContext();
 
-  const { products, productsLoading } = useGetProducts();
+  // --- Replace useGetProducts with direct service call ---
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    let ignore = false;
+    setProductsLoading(true);
+    productService
+      .getAll()
+      .then((data) => {
+        if (!ignore) {
+          // If the API returns { products: [], ... }
+          setProducts(Array.isArray(data.products) ? data.products : []);
+        }
+      })
+      .catch(() => {
+        if (!ignore) setProducts([]);
+      })
+      .finally(() => {
+        if (!ignore) setProductsLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const [tableData, setTableData] = useState([]);
 
@@ -115,8 +140,10 @@ export default function ProductListView() {
         slug: product.slug,
       }));
 
-      console.log("Mapped products:", mappedProducts);
+      // console.log("Mapped products:", mappedProducts);
       setTableData(mappedProducts);
+    } else {
+      setTableData([]);
     }
   }, [products]);
 
@@ -140,6 +167,7 @@ export default function ProductListView() {
 
   const handleDeleteRow = useCallback(
     (id) => {
+      // Optionally, call productService.delete(id) here for real API deletion
       const deleteRow = tableData.filter((row) => row.id !== id);
 
       enqueueSnackbar("Delete success!");
@@ -150,6 +178,7 @@ export default function ProductListView() {
   );
 
   const handleDeleteRows = useCallback(() => {
+    // Optionally, call productService.delete for each id in selectedRowIds
     const deleteRows = tableData.filter(
       (row) => !selectedRowIds.includes(row.id)
     );
