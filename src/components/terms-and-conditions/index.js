@@ -1,53 +1,147 @@
-import { Box, Container, Link, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Link,
+  Typography,
+  Divider,
+  List,
+  ListItem,
+  Paper,
+} from "@mui/material";
 import React from "react";
+import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
+import GavelIcon from "@mui/icons-material/Gavel";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import UpdateIcon from "@mui/icons-material/Update";
+import EmailIcon from "@mui/icons-material/Email";
 
 export default function TermsAndConditions() {
   return (
     <Container
+      maxWidth="md"
       sx={{
-        py: { xs: 2, md: 5 },
+        py: { xs: 4, md: 8 },
         textAlign: { xs: "center", md: "unset" },
-      }}
-    >
-      <Typography mb={2} variant="h3">
-        Terms and Conditions
-      </Typography>
-      <Typography sx={{textAlign: 'justify'}}>
-        Welcome to GTA Auto! Our goal is to become the leading online vehicle
-        marketplace in the UK, bringing together new and used car buyers and
-        sellers. Please take a moment to read over the following Terms &
-        Conditions before you start using our platform. You accept these Terms
-        and Conditions by accessing or using GTA Auto (gtaAutos.co.uk) or our
-        mobile applications. If you don't agree with any part of these terms,
-        please refrain from using our services. All vehicles listed on City
-        Autos are complies completely with current industry regulations. You can
-        purchase or sell with confidence knowing that the cars meet the required
-        standards. Our mobile applications are compatible with iOS and Android
-        devices, so you can easily use GTA Auto on them. Everywhere you go,
-        carry the marketplace with you. We're dedicated to making your City
-        Autos purchasing and selling experiences better. Our team is committed
-        to developing the safest and most reliable platform possible. We're
-        always looking for ways to improve, so your feedback is invaluable to
-        us. As a user of GTA Auto, you agree to use our platform responsibly
-        and ethically. This includes providing correct information, abide by all
-        relevant rules and laws, and showing respect for other people. The
-        content and materials on GTA Auto, including logos and trademarks, are
-        protected by intellectual property laws. Without our express written
-        consent, you are not permitted to use our intellectual property.
-        Although we work hard to offer a dependable platform, we cannot
-        guarantee that GTA Auto will never experience an issue or be
-        unavailable at all. You acknowledge that GTA Auto will not be
-        responsible for any losses or damages resulting from your usage of the
-        platform by using our services. These Terms and Conditions could be
-        changed at any time. Any modifications will take effect as soon as they
-        are posted. Acceptance of the updated terms is indicated by your
-        continued usage of GTA Auto. These Terms and Conditions are governed
-        by the laws of the United Kingdom. The courts in the United Kingdom
-        shall have exclusive jurisdiction over any disputes arising out of or
-        pertaining to these agreements. Thank you for choosing GTA Auto as
-        your online vehicle marketplace. If you have any questions or concerns
-        about these Terms and Conditions, please don't hesitate to contact us at <Link href="mailto:info@gtaAutos.co.uk">info@gtaAutos.co.uk</Link>.
-      </Typography>
+        minHeight: "80vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}>
+      <Paper
+        elevation={6}
+        sx={{
+          p: { xs: 2, md: 5 },
+          background: "linear-gradient(135deg, #232526 0%, #414345 100%)",
+          borderRadius: 4,
+        }}>
+        <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+          <DirectionsCarFilledIcon
+            sx={{ fontSize: 48, color: "#4caf50", mr: 1 }}
+          />
+          <Typography variant="h3" color="#fff" fontWeight={700}>
+            Terms and Conditions
+          </Typography>
+        </Box>
+        <Typography
+          mb={3}
+          color="#fff"
+          variant="subtitle1"
+          sx={{ textAlign: "center" }}>
+          Welcome to <b>GTA Auto</b>! Please review our Terms & Conditions
+          before using our platform.
+        </Typography>
+        <Divider sx={{ mb: 3, bgcolor: "#4caf50" }} />
+        <List sx={{ color: "#fff", pl: 3, mb: 3 }}>
+          <ListItem sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
+            <GavelIcon sx={{ color: "#4caf50", mr: 2, mt: 0.5 }} />
+            <Box>
+              <Typography variant="h6" color="#4caf50">
+                Acceptance of Terms
+              </Typography>
+              <Typography variant="body2">
+                By accessing or using GTA Auto (<b>gtaAutos.co.uk</b>) or our
+                mobile apps, you agree to these Terms and Conditions. If you do
+                not agree, please do not use our services.
+              </Typography>
+            </Box>
+          </ListItem>
+          <ListItem sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
+            <VerifiedUserIcon sx={{ color: "#4caf50", mr: 2, mt: 0.5 }} />
+            <Box>
+              <Typography variant="h6" color="#4caf50">
+                Platform Integrity & Safety
+              </Typography>
+              <Typography variant="body2">
+                All vehicles listed on GTA Auto comply with current industry
+                regulations. Our apps are compatible with iOS and Android, so
+                you can buy and sell with confidence—anywhere, anytime.
+              </Typography>
+            </Box>
+          </ListItem>
+          <ListItem sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
+            <DirectionsCarFilledIcon
+              sx={{ color: "#4caf50", mr: 2, mt: 0.5 }}
+            />
+            <Box>
+              <Typography variant="h6" color="#4caf50">
+                User Responsibilities
+              </Typography>
+              <Typography variant="body2">
+                Use GTA Auto responsibly and ethically. Provide accurate
+                information, follow all applicable laws, and respect other
+                users. Intellectual property (logos, trademarks, content) is
+                protected—do not use without written consent.
+              </Typography>
+            </Box>
+          </ListItem>
+          <ListItem sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
+            <UpdateIcon sx={{ color: "#4caf50", mr: 2, mt: 0.5 }} />
+            <Box>
+              <Typography variant="h6" color="#4caf50">
+                Service Availability & Changes
+              </Typography>
+              <Typography variant="body2">
+                We strive for a reliable platform, but cannot guarantee
+                uninterrupted service. GTA Auto is not liable for any losses or
+                damages from use. Terms may change at any time; continued use
+                means acceptance of updates.
+              </Typography>
+            </Box>
+          </ListItem>
+          <ListItem sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
+            <GavelIcon sx={{ color: "#4caf50", mr: 2, mt: 0.5 }} />
+            <Box>
+              <Typography variant="h6" color="#4caf50">
+                Governing Law
+              </Typography>
+              <Typography variant="body2">
+                These Terms and Conditions are governed by the laws of the
+                United Kingdom. UK courts have exclusive jurisdiction over
+                disputes.
+              </Typography>
+            </Box>
+          </ListItem>
+        </List>
+        <Divider sx={{ mb: 3, bgcolor: "#4caf50" }} />
+        <Typography color="#fff" sx={{ mb: 2, textAlign: "center" }}>
+          Thank you for choosing <b>GTA Auto</b> as your online vehicle
+          marketplace.
+          <br />
+          <Box
+            component="span"
+            sx={{ display: "inline-flex", alignItems: "center", mt: 1 }}>
+            <EmailIcon sx={{ color: "#4caf50", mr: 1 }} />
+            <Link
+              href="mailto:info@gtaAutos.co.uk"
+              underline="hover"
+              color="#4caf50"
+              fontWeight={600}
+              sx={{ fontSize: "1.1rem" }}>
+              info@gtaAutos.co.uk
+            </Link>
+          </Box>
+        </Typography>
+      </Paper>
     </Container>
   );
 }
