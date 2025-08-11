@@ -222,7 +222,7 @@ export default function ProductDetailsSummary({
             alignItems="center"
             href={`tel:${product?.owner?.phone}`}>
             <Iconify icon="lucide:phone-call" />{" "}
-            {product?.tel || product?.owner?.phone || "No Contact Available"}
+            {product?.carDetails?.tel || "No Contact Available"}
           </Link>
         </Box>
         <Link

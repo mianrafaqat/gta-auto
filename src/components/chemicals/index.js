@@ -1,17 +1,20 @@
-import { Box } from '@mui/material'
-import React from 'react'
-import ExpertCar from './expert-car'
-import Washing from './washing'
-import Packages from './package'
+"use client";
+import { Box } from "@mui/material";
+import React from "react";
+import ExpertCar from "./expert-car";
+import Washing from "./washing";
+import Packages from "./package";
+import HeroBanner from "./HeroBanner";
 
 const Chemicals = () => {
   return (
     <Box>
-        <ExpertCar />
-        <Washing />
-        <Packages />
+      <HeroBanner />
+      <ExpertCar />
+      <Washing />
+      <Packages />
     </Box>
-  )
-}
+  );
+};
 
-export default Chemicals
+export default Chemicals;

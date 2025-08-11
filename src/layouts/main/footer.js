@@ -58,8 +58,7 @@ export default function Footer() {
         textAlign: "center",
         position: "relative",
         bgcolor: "background.default",
-      }}
-    >
+      }}>
       <Container>
         <Logo sx={{ mb: 1, mx: "auto" }} />
 
@@ -79,8 +78,7 @@ export default function Footer() {
         minHeight: { xs: "1000px", md: "550px" },
         overflow: "hidden",
         pb: { xs: 16, md: 12 }, // Increased bottom padding for mobile
-      }}
-    >
+      }}>
       {/* Background Image */}
       <Box
         sx={{
@@ -106,7 +104,8 @@ export default function Footer() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: "linear-gradient(135deg, rgba(139, 69, 19, 0.7) 0%, rgba(75, 0, 130, 0.8) 100%)",
+          background:
+            "linear-gradient(135deg, rgba(139, 69, 19, 0.7) 0%, rgba(75, 0, 130, 0.8) 100%)",
           zIndex: 2,
         }}
       />
@@ -117,10 +116,7 @@ export default function Footer() {
           pb: { xs: 14, md: 12 }, // Increased bottom padding for mobile
           position: "relative",
           zIndex: 3,
-        }}
-      >
-
-
+        }}>
         {/* Main Content Grid */}
         <Grid container spacing={{ xs: 3, md: 4 }}>
           {/* Contact Us Column */}
@@ -147,8 +143,7 @@ export default function Footer() {
                 mb: 2,
                 fontSize: { xs: "16px", md: "18px" },
                 textTransform: "uppercase",
-              }}
-            >
+              }}>
               CONTACT US
             </Typography>
             <Box
@@ -161,7 +156,10 @@ export default function Footer() {
             />
 
             {/* WhatsApp */}
-            <Stack direction="row" spacing={2} sx={{ mb: 2, alignItems: "center" }}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ mb: 2, alignItems: "center" }}>
               <Typography
                 variant="body2"
                 sx={{
@@ -169,20 +167,42 @@ export default function Footer() {
                   fontWeight: "bold",
                   minWidth: "80px",
                   fontSize: { xs: "12px", md: "14px" },
-                }}
-              >
+                }}>
                 WhatsApp
               </Typography>
-              <Link href="https://wa.me/+923008411160" target="_blank" rel="noopener" sx={{ display: 'flex', alignItems: 'center', gap: 1, textDecoration: 'none' }}>
-                <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
-                <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
-                  +92 300-8411160
+              <Link
+                href="https://wa.me/+923263333456"
+                target="_blank"
+                rel="noopener"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  textDecoration: "none",
+                }}>
+                <Iconify
+                  icon="eva:message-circle-fill"
+                  sx={{
+                    color: "#ffffff",
+                    fontSize: { xs: "16px", md: "20px" },
+                  }}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#ffffff",
+                    fontSize: { xs: "12px", md: "14px" },
+                  }}>
+                  +923263333456
                 </Typography>
               </Link>
             </Stack>
 
             {/* Call Us */}
-            <Stack direction="row" spacing={2} sx={{ mb: 2, alignItems: "center" }}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ mb: 2, alignItems: "center" }}>
               <Typography
                 variant="body2"
                 sx={{
@@ -190,14 +210,31 @@ export default function Footer() {
                   fontWeight: "bold",
                   minWidth: "80px",
                   fontSize: { xs: "12px", md: "14px" },
-                }}
-              >
+                }}>
                 Call Us
               </Typography>
-              <Link href="tel:+92 300 8411160" sx={{ display: 'flex', alignItems: 'center', gap: 1, textDecoration: 'none' }}>
-                <Iconify icon="eva:phone-fill" sx={{ color: "#ffffff", fontSize: { xs: "16px", md: "20px" } }} />
-                <Typography variant="body2" sx={{ color: "#ffffff", fontSize: { xs: "12px", md: "14px" } }}>
-                  +92 300-8411160
+              <Link
+                href="tel:+923263333456"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  textDecoration: "none",
+                }}>
+                <Iconify
+                  icon="eva:phone-fill"
+                  sx={{
+                    color: "#ffffff",
+                    fontSize: { xs: "16px", md: "20px" },
+                  }}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#ffffff",
+                    fontSize: { xs: "12px", md: "14px" },
+                  }}>
+                  +923263333456
                 </Typography>
               </Link>
             </Stack>
@@ -213,8 +250,7 @@ export default function Footer() {
                 mb: 2,
                 fontSize: { xs: "16px", md: "18px" },
                 textTransform: "uppercase",
-              }}
-            >
+              }}>
               QUICK LINKS
             </Typography>
             <Box
@@ -239,8 +275,7 @@ export default function Footer() {
                     "&:hover": {
                       color: "#4caf50",
                     },
-                  }}
-                >
+                  }}>
                   {link.name}
                 </Link>
               ))}
@@ -257,8 +292,7 @@ export default function Footer() {
                 mb: 2,
                 fontSize: { xs: "16px", md: "18px" },
                 textTransform: "uppercase",
-              }}
-            >
+              }}>
               CUSTOMER SERVICES
             </Typography>
             <Box
@@ -283,8 +317,7 @@ export default function Footer() {
                     "&:hover": {
                       color: "#4caf50",
                     },
-                  }}
-                >
+                  }}>
                   {link.name}
                 </Link>
               ))}
@@ -299,8 +332,7 @@ export default function Footer() {
                 mb: 2,
                 fontSize: { xs: "16px", md: "18px" },
                 textTransform: "uppercase",
-              }}
-            >
+              }}>
               SOCIAL LINKS
             </Typography>
             <Box
@@ -330,9 +362,11 @@ export default function Footer() {
                       backgroundColor: "rgba(255, 255, 255, 0.2)",
                       transform: "scale(1.1)",
                     },
-                  }}
-                >
-                  <Iconify icon={social.icon} sx={{ fontSize: { xs: "18px", md: "20px" } }} />
+                  }}>
+                  <Iconify
+                    icon={social.icon}
+                    sx={{ fontSize: { xs: "18px", md: "20px" } }}
+                  />
                 </IconButton>
               ))}
             </Stack>
@@ -346,14 +380,12 @@ export default function Footer() {
             sx={{
               color: "#ffffff",
               fontSize: { xs: "12px", md: "14px" },
-            }}
-          >
-            © 2025 Garage Tuned Autos. All rights reserved. Powered by Digital Stay Active
+            }}>
+            © 2025 Garage Tuned Autos. All rights reserved. Powered by Digital
+            Stay Active
           </Typography>
         </Box>
       </Container>
-
-     
 
       {/* Floating Chat Icon */}
       <Box
@@ -362,8 +394,7 @@ export default function Footer() {
           bottom: { xs: "10px", md: "20px" },
           right: { xs: "10px", md: "20px" },
           zIndex: 1000,
-        }}
-      >
+        }}>
         <Stack spacing={1}>
           <Box
             sx={{
@@ -376,9 +407,11 @@ export default function Footer() {
               justifyContent: "center",
               boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
               cursor: "pointer",
-            }}
-          >
-            <Iconify icon="eva:message-circle-fill" sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }} />
+            }}>
+            <Iconify
+              icon="eva:message-circle-fill"
+              sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }}
+            />
           </Box>
           <Box
             sx={{
@@ -391,9 +424,11 @@ export default function Footer() {
               justifyContent: "center",
               boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
               cursor: "pointer",
-            }}
-          >
-            <Iconify icon="eva:arrow-up-fill" sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }} />
+            }}>
+            <Iconify
+              icon="eva:arrow-up-fill"
+              sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }}
+            />
           </Box>
         </Stack>
       </Box>
