@@ -10,7 +10,7 @@ import { RouterLink } from "src/routes/components";
 import Iconify from "src/components/iconify";
 import EmptyContent from "src/components/empty-content";
 
-import { useCheckoutContext } from "./context";
+import { useCheckoutContext } from "./context/checkout-context";
 import CheckoutSummary from "./checkout-summary";
 import CheckoutCartProductList from "./checkout-cart-product-list";
 
@@ -36,7 +36,7 @@ export default function CheckoutCart() {
               <Typography variant="h6">
                 Cart
                 <Typography component="span" sx={{ color: "#4caf50" }}>
-                  &nbsp;({checkout.totalItems} item)
+                  &nbsp;({checkout.items.length} item)
                 </Typography>
               </Typography>
             }

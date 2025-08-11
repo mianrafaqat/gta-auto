@@ -70,17 +70,25 @@ export default function ProductItem({
     postalCode,
     owner,
     tel,
+    _id, // Add _id for new API structure
   } = product;
+
+  // Get the product ID, handling both old and new API structures
+  const productId = _id || id;
 
   // Get the image array, handling both old and new API structures
   const imageArray = images || image || [];
   const firstImage = imageArray[0] || coverUrl || "/assets/placeholder.svg";
 
+  // Get the product name, handling both old and new API structures
+  const productName = name || title || "Product";
+
   // Debug log to help identify the issue
   console.log("Product data:", {
-    productId: product._id || id,
+    productId,
     imageArray,
     firstImage,
+    productName,
     hasImages: !!images,
     hasImage: !!image,
     hasCoverUrl: !!coverUrl,
@@ -129,8 +137,8 @@ export default function ProductItem({
 
   const handleAddCart = async () => {
     const newProduct = {
-      id: product._id || id,
-      name: title || name,
+      id: productId,
+      name: productName,
       coverUrl: firstImage,
       available: available || true,
       price: price || 0,
@@ -145,16 +153,17 @@ export default function ProductItem({
     };
     try {
       onAddToCart(newProduct);
+      console.log("Added to cart:", newProduct);
     } catch (error) {
-      console.error(error);
+      console.error("Error adding to cart:", error);
     }
   };
 
   const handleBuyNow = async () => {
     setIsBuyNowLoading(true);
     const newProduct = {
-      id: product._id || id,
-      name: title || name,
+      id: productId,
+      name: productName,
       coverUrl: firstImage,
       available: available || true,
       price: price || 0,
@@ -171,12 +180,13 @@ export default function ProductItem({
       // Clear cart first, then use Buy Now function
       onClearCart();
       onBuyNow(newProduct);
+      console.log("Buy now:", newProduct);
       // Small delay to ensure cart state is updated
       setTimeout(() => {
         router.push(paths.product.checkout);
       }, 100);
     } catch (error) {
-      console.error(error);
+      console.error("Error with buy now:", error);
       setIsBuyNowLoading(false);
     }
   };
@@ -293,7 +303,7 @@ export default function ProductItem({
         {carDetails?.yearOfManufacture
           ? `${carDetails.yearOfManufacture} - `
           : ""}
-        {title || name}
+        {productName}
       </Typography>
 
       {/* Price Section */}
@@ -384,7 +394,7 @@ export default function ProductItem({
       }}
       onClick={() => {
         // Navigate to product details
-        router.push(paths.product.details(product._id || id));
+        router.push(paths.product.details(productId));
       }}>
       <RenderImg />
       {renderContent}

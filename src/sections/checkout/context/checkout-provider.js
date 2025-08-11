@@ -216,6 +216,15 @@ export function CheckoutProvider({ children }) {
     });
   }, []);
 
+  const onClearCart = useCallback(() => {
+    setCheckout((prevState) => ({
+      ...prevState,
+      items: [],
+      subTotal: 0,
+      total: 0,
+    }));
+  }, []);
+
   const value = {
     checkout,
     onReset,
@@ -230,6 +239,7 @@ export function CheckoutProvider({ children }) {
     onCreateBilling,
     onApplyShipping,
     onApplyDiscount,
+    onClearCart,
   };
 
   return (

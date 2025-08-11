@@ -48,7 +48,7 @@ export default function Header() {
 
   // Get cart data from checkout context
   const checkout = useCheckoutContext();
-  const cartItems = checkout?.totalItems || 0;
+  const cartItems = checkout?.items?.length || 0;
 
   // Cart drawer state
   const [openCartDrawer, setOpenCartDrawer] = useState(false);
@@ -238,7 +238,7 @@ function CartDrawer({ open, onClose, checkout }) {
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Iconify icon="eva:shopping-cart-fill" />
             <Typography variant="h6">
-              Cart ({checkout?.totalItems || 0})
+              Cart ({checkout?.items?.length || 0})
             </Typography>
           </Box>
           <IconButton onClick={onClose}>

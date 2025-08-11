@@ -5,15 +5,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Alert from "@mui/material/Alert";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 
-import { FormProvider, RHFTextField } from "src/components/hook-form";
+import FormProvider from "src/components/hook-form/form-provider";
+import RHFTextField from "src/components/hook-form/rhf-text-field";
 
 // ----------------------------------------------------------------------
 
@@ -31,45 +28,6 @@ export default function CheckoutBilling({ onSubmit, loading, error }) {
     shippingState: Yup.string().required("State is required"),
     shippingPostcode: Yup.string().required("Postal code is required"),
     shippingCountry: Yup.string().required("Country is required"),
-
-    // Billing Address (only if different from shipping)
-    sameAsBilling: Yup.boolean(),
-    billingFirstName: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("First name is required"),
-    }),
-    billingLastName: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("Last name is required"),
-    }),
-    billingEmail: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().email("Invalid email").required("Email is required"),
-    }),
-    billingPhone: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("Phone number is required"),
-    }),
-    billingAddress1: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("Address is required"),
-    }),
-    billingCity: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("City is required"),
-    }),
-    billingState: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("State is required"),
-    }),
-    billingPostcode: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("Postal code is required"),
-    }),
-    billingCountry: Yup.string().when("sameAsBilling", {
-      is: false,
-      then: Yup.string().required("Country is required"),
-    }),
   });
 
   const defaultValues = {
@@ -83,18 +41,6 @@ export default function CheckoutBilling({ onSubmit, loading, error }) {
     shippingState: "",
     shippingPostcode: "",
     shippingCountry: "",
-
-    // Billing Address
-    sameAsBilling: true,
-    billingFirstName: "",
-    billingLastName: "",
-    billingEmail: "",
-    billingPhone: "",
-    billingAddress1: "",
-    billingCity: "",
-    billingState: "",
-    billingPostcode: "",
-    billingCountry: "",
   };
 
   const methods = useForm({
@@ -102,8 +48,7 @@ export default function CheckoutBilling({ onSubmit, loading, error }) {
     defaultValues,
   });
 
-  const { watch, handleSubmit } = methods;
-  const sameAsBilling = watch("sameAsBilling");
+  const { handleSubmit } = methods;
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -140,53 +85,6 @@ export default function CheckoutBilling({ onSubmit, loading, error }) {
           <RHFTextField name="shippingPostcode" label="Postal Code" />
           <RHFTextField name="shippingCountry" label="Country" />
         </Box>
-
-        <Stack spacing={2} sx={{ mt: 3 }}>
-          <Typography variant="subtitle1">Billing Address</Typography>
-          <RadioGroup
-            name="sameAsBilling"
-            value={sameAsBilling}
-            onChange={(e) =>
-              methods.setValue("sameAsBilling", e.target.value === "true")
-            }>
-            <FormControlLabel
-              value={true}
-              control={<Radio />}
-              label="Same as shipping address"
-            />
-            <FormControlLabel
-              value={false}
-              control={<Radio />}
-              label="Use different billing address"
-            />
-          </RadioGroup>
-        </Stack>
-
-        {!sameAsBilling && (
-          <Box
-            rowGap={3}
-            columnGap={2}
-            display="grid"
-            gridTemplateColumns={{
-              xs: "repeat(1, 1fr)",
-              sm: "repeat(2, 1fr)",
-            }}
-            sx={{ mt: 3 }}>
-            <RHFTextField name="billingFirstName" label="First Name" />
-            <RHFTextField name="billingLastName" label="Last Name" />
-            <RHFTextField name="billingEmail" label="Email" />
-            <RHFTextField name="billingPhone" label="Phone" />
-            <RHFTextField
-              name="billingAddress1"
-              label="Address"
-              sx={{ gridColumn: { sm: "1 / -1" } }}
-            />
-            <RHFTextField name="billingCity" label="City" />
-            <RHFTextField name="billingState" label="State" />
-            <RHFTextField name="billingPostcode" label="Postal Code" />
-            <RHFTextField name="billingCountry" label="Country" />
-          </Box>
-        )}
 
         <LoadingButton
           fullWidth
