@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Box, Typography, Stack } from "@mui/material";
 import React from "react";
@@ -9,25 +9,25 @@ const ExpertCar = () => {
     {
       id: 1,
       title: "CERAMIC\nCOATING",
-      image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=600&fit=crop&crop=center",
+      image: "/assets/car-wash.jpeg", // Fixed path
       onClick: () => console.log("Book Ceramic Coating"),
     },
     {
       id: 2,
       title: "WHEEL\nSCRATCH\nREPAIRS",
-      image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=600&fit=crop&crop=center",
+      image: "/assets/engine-designer.jpeg", // Fixed path
       onClick: () => console.log("Book Wheel Scratch Repairs"),
     },
     {
       id: 3,
       title: "WHEEL\nSCRATCH\nREPAIRS",
-      image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=600&fit=crop&crop=center",
+      image: "/assets/interior-shiner.jpeg", // Fixed path
       onClick: () => console.log("Book Wheel Scratch Repairs"),
     },
     {
       id: 4,
       title: "DETAILING",
-      image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=600&fit=crop&crop=center",
+      image: "/assets/all-cleaser.jpeg", // Fixed path
       onClick: () => console.log("Book Detailing"),
     },
   ];
@@ -45,13 +45,11 @@ const ExpertCar = () => {
       <Box sx={{ width: "100%", mx: "auto" }}>
         <Stack
           direction="row"
-         
           sx={{
             justifyContent: "center",
             flexWrap: "wrap",
             gap: "24px",
-          }}
-        >
+          }}>
           {services.map((service) => (
             <ServiceCard
               key={service.id}

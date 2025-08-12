@@ -206,6 +206,9 @@ export default function GarageView() {
             height: "fit-content",
             borderRadius: "6px",
             mt: "34px",
+            position: "sticky",
+            top: "120px",
+            mb: "30px",
           }}>
           <GarageFilters
             open={openFilters.value}
@@ -229,9 +232,10 @@ export default function GarageView() {
           PaperProps={{
             sx: {
               width: "75%",
+              bgcolor: "#000",
             },
           }}>
-          <Box>
+          <Box sx={{ bgcolor: "#000" }}>
             <GarageFilters
               open={openFilters.value}
               onOpen={openFilters.onTrue}

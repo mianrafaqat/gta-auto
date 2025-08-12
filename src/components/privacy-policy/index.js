@@ -97,7 +97,9 @@ export default function PrivacyPolicyPage() {
       <Typography mb={1} color="#fff">
         If you have any questions or concerns about this Privacy Policy or our
         data practices, please contact us at{" "}
-        <Link href="mailto:info@gtaAutos.co.uk">info@gtaAutos.co.uk</Link>
+        <Link href="mailto:support@garagetunedautos.com">
+          support@garagetunedautos.com
+        </Link>
       </Typography>
       <Typography mb={2} color="#fff">
         Thank you for trusting GTA Auto with your personal information. We're

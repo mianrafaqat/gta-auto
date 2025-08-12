@@ -217,10 +217,6 @@ export default function GarageFilters({
           </Badge>
         </IconButton>
       </Tooltip>
-
-      {/* <IconButton onClick={onClose}>
-        <Iconify icon="mingcute:close-line" />
-      </IconButton> */}
     </Stack>
   );
 

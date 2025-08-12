@@ -36,7 +36,7 @@ const RefundAndCancelation = () => {
     {
       icon: <Phone color="primary" />,
       label: "Phone",
-      value: "+44-740-000-0000",
+      value: "+923263333456",
     },
     {
       icon: <Email color="primary" />,
@@ -46,7 +46,7 @@ const RefundAndCancelation = () => {
     {
       icon: <WhatsApp color="success" />,
       label: "WhatsApp",
-      value: "+44-740-000-0000",
+      value: "+923263333456",
     },
   ];
 
@@ -88,26 +88,59 @@ const RefundAndCancelation = () => {
         <Grid container spacing={3} justifyContent="center" mb={4}>
           {contactInfo.map((contact, index) => (
             <Grid item xs={12} sm={4} key={index}>
-              <Card
-                sx={{
-                  height: "100%",
-                  textAlign: "center",
-                  transition: "transform 0.2s",
-                  "&:hover": { transform: "translateY(-4px)" },
-                }}>
-                <CardContent>
-                  <Box sx={{ mb: 2 }}>{contact.icon}</Box>
-                  <Typography
-                    variant="subtitle2"
-                    color="text.secondary"
-                    gutterBottom>
-                    {contact.label}
-                  </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: "medium" }}>
-                    {contact.value}
-                  </Typography>
-                </CardContent>
-              </Card>
+              {(() => {
+                const label = contact.label.toLowerCase();
+                let href = "#";
+                let target = undefined;
+                if (label.includes("phone")) {
+                  // Remove any non-digit/plus characters for tel: link
+                  const phone = contact.value.replace(/[^+\d]/g, "");
+                  href = `tel:${phone}`;
+                } else if (label.includes("email")) {
+                  href = `mailto:${contact.value}`;
+                } else if (label.includes("whatsapp")) {
+                  // Remove any non-digit characters for WhatsApp
+                  const phone = contact.value.replace(/[^+\d]/g, "");
+                  // WhatsApp link format: https://wa.me/<number>
+                  // Remove leading "+" for wa.me
+                  const waNumber = phone.replace(/^\+/, "");
+                  href = `https://wa.me/${waNumber}`;
+                  target = "_blank";
+                }
+                return (
+                  <a
+                    href={href}
+                    target={target}
+                    rel={
+                      target === "_blank" ? "noopener noreferrer" : undefined
+                    }
+                    style={{ textDecoration: "none" }}>
+                    <Card
+                      sx={{
+                        height: "100%",
+                        textAlign: "center",
+                        transition: "transform 0.2s",
+                        cursor: "pointer",
+                        "&:hover": { transform: "translateY(-4px)" },
+                      }}>
+                      <CardContent>
+                        <Box sx={{ mb: 2 }}>{contact.icon}</Box>
+                        <Typography
+                          variant="subtitle2"
+                          color="text.secondary"
+                          gutterBottom>
+                          {contact.label}
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: "medium" }}>
+                          {contact.value}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </a>
+                );
+              })()}
             </Grid>
           ))}
         </Grid>
@@ -391,19 +424,42 @@ const RefundAndCancelation = () => {
               <Stack spacing={1}>
                 <Typography
                   variant="body2"
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    cursor: "pointer",
+                  }}
+                  component="a"
+                  href="tel:+923263333456">
                   <Phone fontSize="small" />
                   +923263333456
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    cursor: "pointer",
+                  }}
+                  component="a"
+                  href="mailto:support@garagetunedautos.com">
                   <Email fontSize="small" />
-                  customersupport@gtaAutos.co.uk
+                  support@garagetunedautos.com
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    cursor: "pointer",
+                  }}
+                  component="a"
+                  href="https://wa.me/923263333456"
+                  target="_blank"
+                  rel="noopener noreferrer">
                   <WhatsApp fontSize="small" />
                   WhatsApp +923263333456
                 </Typography>

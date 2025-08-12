@@ -132,12 +132,12 @@ export default function TermsAndConditions() {
             sx={{ display: "inline-flex", alignItems: "center", mt: 1 }}>
             <EmailIcon sx={{ color: "#4caf50", mr: 1 }} />
             <Link
-              href="mailto:info@gtaAutos.co.uk"
+              href="mailto:support@garagetunedautos.com"
               underline="hover"
               color="#4caf50"
               fontWeight={600}
               sx={{ fontSize: "1.1rem" }}>
-              info@gtaAutos.co.uk
+              support@garagetunedautos.com
             </Link>
           </Box>
         </Typography>

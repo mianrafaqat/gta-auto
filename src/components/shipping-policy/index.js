@@ -31,7 +31,7 @@ import {
   CheckCircle,
   Warning,
   Info,
-  Support,
+  SupportAgent,
   Phone,
   Email,
   WhatsApp,
@@ -177,18 +177,51 @@ const ShippingPolicy = () => {
                   transition: "transform 0.2s",
                   "&:hover": { transform: "translateY(-4px)" },
                 }}>
-                <CardContent>
-                  <Box sx={{ mb: 2 }}>{contact.icon}</Box>
-                  <Typography
-                    variant="subtitle2"
-                    color="text.secondary"
-                    gutterBottom>
-                    {contact.label}
-                  </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: "medium" }}>
-                    {contact.value}
-                  </Typography>
-                </CardContent>
+                {(() => {
+                  const label = contact.label.toLowerCase();
+                  let href = "#";
+                  let target = undefined;
+                  if (label.includes("phone")) {
+                    // Remove any non-digit/plus characters for tel: link
+                    const phone = contact.value.replace(/[^+\d]/g, "");
+                    href = `tel:${phone}`;
+                  } else if (label.includes("email")) {
+                    href = `mailto:${contact.value}`;
+                  } else if (label.includes("whatsapp")) {
+                    // Remove any non-digit characters for WhatsApp
+                    const phone = contact.value.replace(/[^+\d]/g, "");
+                    // WhatsApp link format: https://wa.me/<number>
+                    // Remove leading "+" for wa.me
+                    const waNumber = phone.replace(/^\+/, "");
+                    href = `https://wa.me/${waNumber}`;
+                    target = "_blank";
+                  }
+                  return (
+                    <a
+                      href={href}
+                      target={target}
+                      rel={
+                        target === "_blank" ? "noopener noreferrer" : undefined
+                      }
+                      style={{ textDecoration: "none" }}>
+                      <CardContent sx={{ cursor: "pointer" }}>
+                        <Box sx={{ mb: 2 }}>{contact.icon}</Box>
+                        <Typography
+                          variant="subtitle2"
+                          color="text.secondary"
+                          gutterBottom>
+                          {contact.label}
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          color="text.secondary"
+                          sx={{ fontWeight: "medium" }}>
+                          {contact.value}
+                        </Typography>
+                      </CardContent>
+                    </a>
+                  );
+                })()}
               </Card>
             </Grid>
           ))}
@@ -453,7 +486,7 @@ const ShippingPolicy = () => {
         <Grid item xs={12} lg={4}>
           {/* Free Shipping Banner */}
           <Card sx={{ mb: 4, backgroundColor: "success.main", color: "white" }}>
-            <CardContent textAlign="center">
+            <CardContent sx={{ textAlign: "center" }}>
               <LocalOffer sx={{ fontSize: 48, mb: 2 }} />
               <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
                 Free Shipping
@@ -536,7 +569,7 @@ const ShippingPolicy = () => {
                   alignItems: "center",
                   gap: 1,
                 }}>
-                <Support />
+                <SupportAgent />
                 Need Help?
               </Typography>
               <Typography variant="body2" paragraph>

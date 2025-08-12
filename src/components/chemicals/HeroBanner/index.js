@@ -64,7 +64,7 @@ const HeroBanner = () => {
         sx={{
           position: "relative",
           zIndex: 3,
-          height: "100vh",
+          height: "calc(100vh - 80px)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -82,7 +82,7 @@ const HeroBanner = () => {
             justifyContent: "center",
             maxWidth: "600px",
           }}>
-          {navButtons.map((button, index) => (
+          {/* {navButtons.map((button, index) => (
             <Chip
               key={index}
               label={button}
@@ -99,161 +99,9 @@ const HeroBanner = () => {
                 transition: "all 0.3s ease",
               }}
             />
-          ))}
-        </Box>
-
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: "10%",
-            left: "5%",
-            right: "5%",
-            display: "flex",
-            gap: 3,
-            justifyContent: "space-between",
-            flexWrap: { xs: "wrap", lg: "nowrap" },
-          }}>
-          {/* Left Card - Customer Focus */}
-          <Card
-            sx={{
-              flex: { xs: "1 1 100%", md: "1 1 30%" },
-              backgroundColor: "rgba(255, 255, 255, 0.95)",
-              borderRadius: 3,
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-5px)",
-              },
-            }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  color: "#333",
-                  mb: 2,
-                  lineHeight: 1.4,
-                }}>
-                Our Customers are the most important part of our business
-              </Typography>
-              <Button
-                endIcon={<ArrowForward />}
-                sx={{
-                  color: "#667eea",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  "&:hover": {
-                    backgroundColor: "rgba(102, 126, 234, 0.1)",
-                  },
-                }}>
-                Read More
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Right Card - Reviews & Rating */}
-          <Card
-            sx={{
-              flex: { xs: "1 1 100%", md: "1 1 35%" },
-              backgroundColor: "rgba(255, 255, 255, 0.95)",
-              borderRadius: 3,
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-5px)",
-              },
-            }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "#333",
-                  mb: 2,
-                  lineHeight: 1.5,
-                  fontSize: "0.95rem",
-                }}>
-                Our professional and reliable car cleaners provide thorough Car
-                Detailing, Interior Deep Cleaning
-              </Typography>
-
-              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 900,
-                    color: "#333",
-                    mr: 2,
-                  }}>
-                  4.6
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#666",
-                    fontWeight: 500,
-                  }}>
-                  150k happy guests
-                </Typography>
-              </Box>
-
-              {/* Customer Avatars */}
-              <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-                {customerAvatars.map((avatar, index) => (
-                  <Avatar
-                    key={index}
-                    src={avatar}
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      border: "2px solid white",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    }}
-                  />
-                ))}
-              </Stack>
-
-              {/* Rating Stars */}
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Rating
-                  value={5}
-                  readOnly
-                  sx={{
-                    "& .MuiRating-iconFilled": {
-                      color: "#FFD700",
-                    },
-                  }}
-                />
-              </Box>
-
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "#666",
-                  fontWeight: 500,
-                }}>
-                18,922 reviews
-              </Typography>
-            </CardContent>
-          </Card>
+          ))} */}
         </Box>
       </Container>
-
-      {/* CSS Animation for steam effect */}
-      <style jsx>{`
-        @keyframes steam {
-          0%,
-          100% {
-            opacity: 0.3;
-            transform: translateY(0) scale(1);
-          }
-          50% {
-            opacity: 0.8;
-            transform: translateY(-10px) scale(1.2);
-          }
-        }
-      `}</style>
     </Box>
   );
 };
