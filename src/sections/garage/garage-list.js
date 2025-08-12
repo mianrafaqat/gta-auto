@@ -20,7 +20,7 @@ export default function GarageList({
 
   // Calculate the index range for the current page
   const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, products.length);
+  const endIndex = Math.min(startIndex + itemsPerPage, products?.length);
 
   const renderSkeleton = (
     <>

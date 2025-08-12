@@ -61,7 +61,7 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
 export default function ProductShopView() {
   const defaultFilters = {
-    priceRange: [0, 2000000],
+    priceRange: [0, 20000000],
     category: "all",
     searchByTitle: "",
     year: [1940, new Date().getFullYear()],
@@ -239,7 +239,7 @@ export default function ProductShopView() {
           },
         }}>
         <Box>
-          <ProductFilters
+          {/* <ProductFilters
             open={openFilters.value}
             onOpen={openFilters.onTrue}
             onClose={openFilters.onFalse}
@@ -253,7 +253,7 @@ export default function ProductShopView() {
             fuelOptions={[...FUEL_TYPES_LIST]}
             categoryOptions={PRODUCT_CATEGORY_GROUP_OPTIONS}
             reset={reset}
-          />
+          /> */}
         </Box>
       </Drawer>
 

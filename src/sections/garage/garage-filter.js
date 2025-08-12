@@ -390,9 +390,9 @@ export default function GarageFilters({
       <Slider
         value={filters.priceRange}
         onChange={handleFilterPriceRange}
-        step={500}
-        min={0}
-        max={100000}
+        step={10000}
+        min={100000}
+        max={25000000}
         // marks={marksLabel}
         getAriaValueText={(value) => `$${value}`}
         valueLabelFormat={(value) => `$${value}`}

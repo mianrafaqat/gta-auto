@@ -34,7 +34,7 @@ export default function CarsFiltersPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Desktop playback IDs for 2 slides
-  const desktopPlaybackIds = ["8YObs002Jd4TxxHXlXiw7DXgXkR5OwD7gXixt4AukMUA"];
+  const desktopPlaybackIds = ["B00IsdVWbxXksKmwxCMXjR9JCcUkLsdy02v64HZSQvCg4"];
 
   // Mobile playback ID
   const mobilePlaybackId = "gzB22KDrzm1XR4sfmnGnmQ1vF0000yNzo00f02rcNO2VlXg";

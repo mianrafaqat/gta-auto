@@ -4,6 +4,7 @@ import React from "react";
 import ProductItem from "src/sections/product/product-item";
 import { useGetAllCars } from "src/hooks/use-cars";
 import { useRouter } from "next/navigation";
+import GarageItem from "src/sections/garage/garage-item";
 
 export default function LastestEightCars() {
   const { data: allCarsData, isLoading, error } = useGetAllCars();
@@ -110,8 +111,8 @@ export default function LastestEightCars() {
                     }
                   }}
                 >
-                  <ProductItem onHome product={product} />
-                </Box>
+        <GarageItem onHome key={product._id} product={product} />
+        </Box>
               ))}
             </Box>
           </Box>

@@ -37,10 +37,10 @@ const CUSTOMER_SERVICES = [
 ];
 
 const SOCIAL_LINKS = [
-  { name: "Facebook", icon: "mdi:facebook", href: "#", color: "#1877F2" },
-  { name: "Instagram", icon: "mdi:instagram", href: "#", color: "#E4405F" },
-  { name: "LinkedIn", icon: "mdi:linkedin", href: "#", color: "#0077B5" },
-  { name: "YouTube", icon: "mdi:youtube", href: "#", color: "#FF0000" },
+  // { name: "Facebook", icon: "mdi:facebook", href: "https://m.facebook.com/GarageTunedAutos/", color: "#1877F2" },
+  { name: "Instagram", icon: "mdi:instagram", href: "https://www.instagram.com/garagetunedautos?igsh=MTl0d3cyZWZ1OWRjag==", color: "#E4405F" },
+  // { name: "LinkedIn", icon: "mdi:linkedin", href: "#", color: "#0077B5" },
+  { name: "YouTube", icon: "mdi:youtube", href: "https://youtube.com/@garagetunedautos?si=qI3aK4AOdCpDp7ap", color: "#FF0000" },
 ];
 
 // ----------------------------------------------------------------------

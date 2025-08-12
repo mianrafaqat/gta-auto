@@ -62,7 +62,7 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
 export default function GarageView() {
   const defaultFilters = {
-    priceRange: [0, 2000000],
+    priceRange: [100000, 25000000],
     category: "all",
     searchByTitle: "",
     year: [1940, new Date().getFullYear()],

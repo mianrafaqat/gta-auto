@@ -404,7 +404,7 @@ export default function ProductFilters({
   const renderPrice = (
     <Stack>
       <Typography variant="subtitle2" color="#fff" sx={{ flexGrow: 1 }}>
-        Price (PKR)
+        Price (PKR) 
       </Typography>
 
       <Stack direction="row" spacing={5} sx={{ my: 2 }}>
@@ -423,9 +423,9 @@ export default function ProductFilters({
       <Slider
         value={filters.priceRange}
         onChange={handleFilterPriceRange}
-        step={500}
-        min={0}
-        max={100000}
+        step={10000}
+        min={100000}
+        max={250000000}
         // marks={marksLabel}
         getAriaValueText={(value) => `$${value}`}
         valueLabelFormat={(value) => `$${value}`}

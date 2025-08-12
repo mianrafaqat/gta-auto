@@ -11,7 +11,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import SearchByModels from "./search-by-models";
 
 const Hero = () => {
-  const desktopPlaybackIds = ["8YObs002Jd4TxxHXlXiw7DXgXkR5OwD7gXixt4AukMUA"];
+  const desktopPlaybackIds = ["B00IsdVWbxXksKmwxCMXjR9JCcUkLsdy02v64HZSQvCg4"];
 
   // Mobile playback ID
   const mobilePlaybackId = "gzB22KDrzm1XR4sfmnGnmQ1vF0000yNzo00f02rcNO2VlXg";
