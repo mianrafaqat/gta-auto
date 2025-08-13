@@ -5,6 +5,7 @@ import ExpertCar from "./expert-car";
 import Washing from "./washing";
 import Packages from "./package";
 import HeroBanner from "./HeroBanner";
+import Comics from "./comics";
 
 const Chemicals = () => {
   return (
@@ -12,7 +13,8 @@ const Chemicals = () => {
       <HeroBanner />
       <ExpertCar />
       <Washing />
-      <Packages />
+      {/* <Packages /> */}
+      <Comics />
     </Box>
   );
 };
