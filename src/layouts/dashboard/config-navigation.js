@@ -8,6 +8,11 @@ import { useAuthContext } from "src/auth/hooks";
 import Label from "src/components/label";
 import Iconify from "src/components/iconify";
 import SvgColor from "src/components/svg-color";
+import CategoryIcon from "@mui/icons-material/Category";
+import AttributionIcon from "@mui/icons-material/Attribution";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import DiscountIcon from "@mui/icons-material/Discount";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 export const ROLES = {
   ADMIN: "admin",
@@ -106,7 +111,7 @@ export function useNavData() {
               {
                 title: t("Categories"),
                 path: paths.dashboard.category.root,
-                icon: ICONS.product,
+                icon: <CategoryIcon />,
                 children: [
                   { title: t("list"), path: paths.dashboard.category.list },
                   { title: t("create"), path: paths.dashboard.category.add },
@@ -115,7 +120,7 @@ export function useNavData() {
               {
                 title: t("Attribute"),
                 path: paths.dashboard.attribute.root,
-                icon: ICONS.product,
+                icon: <AttributionIcon />,
                 children: [
                   { title: t("list"), path: paths.dashboard.attribute.list },
                   { title: t("create"), path: paths.dashboard.attribute.add },
@@ -124,7 +129,7 @@ export function useNavData() {
               {
                 title: t("Tax"),
                 path: paths.dashboard.tax.root,
-                icon: ICONS.tax,
+                icon: <ReceiptIcon />,
                 children: [
                   { title: t("list"), path: paths.dashboard.tax.list },
                   { title: t("create"), path: paths.dashboard.tax.add },
@@ -133,7 +138,7 @@ export function useNavData() {
               {
                 title: t("Coupons"),
                 path: paths.dashboard.coupon.root,
-                icon: ICONS.coupon,
+                icon: <DiscountIcon />,
                 children: [
                   { title: t("list"), path: paths.dashboard.coupon.list },
                   { title: t("create"), path: paths.dashboard.coupon.add },
@@ -150,7 +155,7 @@ export function useNavData() {
               {
                 title: t("shipping"),
                 path: paths.dashboard.shipping.root,
-                icon: ICONS.shipping,
+                icon: <LocalShippingIcon />,
                 children: [
                   {
                     title: t("methods"),
