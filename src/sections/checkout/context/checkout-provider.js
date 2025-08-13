@@ -9,7 +9,7 @@ import { CheckoutContext } from "./checkout-context";
 const STORAGE_KEY = "checkout";
 
 const initialState = {
-  activeStep: 0,
+  activeStep: 1, // Start at billing step
   items: [],
   subTotal: 0,
   total: 0,
@@ -17,6 +17,7 @@ const initialState = {
   shipping: 0,
   billing: null,
   shippingMethod: null,
+  lastOrder: null,
 };
 
 export function CheckoutProvider({ children }) {
@@ -89,6 +90,13 @@ export function CheckoutProvider({ children }) {
     setCheckout((prevState) => ({
       ...prevState,
       billing,
+    }));
+  }, []);
+
+  const onOrderSuccess = useCallback((orderData) => {
+    setCheckout((prevState) => ({
+      ...prevState,
+      lastOrder: orderData,
     }));
   }, []);
 
@@ -237,6 +245,7 @@ export function CheckoutProvider({ children }) {
     onIncreaseQuantity,
     onDecreaseQuantity,
     onCreateBilling,
+    onOrderSuccess,
     onApplyShipping,
     onApplyDiscount,
     onClearCart,

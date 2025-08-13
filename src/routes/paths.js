@@ -37,6 +37,7 @@ export const paths = {
   product: {
     root: `/product`,
     checkout: `/product/checkout`,
+    orderSuccess: `/product/checkout/success`,
     details: (id) => `/product/${id}`,
     demo: {
       details: `/product/${_id[1]}`,

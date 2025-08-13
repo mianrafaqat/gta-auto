@@ -33,7 +33,7 @@ export function useCreateOrder() {
       if (!token) {
         throw new Error("Authentication required");
       }
-      return OrdersService.createOrder(orderData);
+      return OrdersService.create(orderData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["orders"]);
@@ -48,7 +48,7 @@ export function useGetAllOrders() {
     queryFn: async () => {
       // Check admin role before making the request
       checkAdminRole();
-      return OrdersService.getAllOrders();
+      return OrdersService.getAll();
     },
     retry: false,
   });
@@ -63,7 +63,7 @@ export function useGetOrderById(id) {
       if (!token) {
         throw new Error("Authentication required");
       }
-      return OrdersService.getOrderById(id);
+      return OrdersService.getById(id);
     },
     enabled: !!id,
   });
@@ -77,7 +77,7 @@ export function useUpdateOrderStatus() {
     mutationFn: async ({ id, data }) => {
       // Check admin role before making the request
       checkAdminRole();
-      return OrdersService.updateOrderStatus(id, data);
+      return OrdersService.updateStatus(id, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["orders"]);
