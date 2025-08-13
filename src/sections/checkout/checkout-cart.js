@@ -19,7 +19,36 @@ import CheckoutCartProductList from "./checkout-cart-product-list";
 export default function CheckoutCart() {
   const checkout = useCheckoutContext();
 
-  const empty = !checkout.items.length;
+  // Add null checks to prevent errors
+  const items = checkout?.items || [];
+  const empty = !items.length;
+
+  // Debug logging
+  console.log("CheckoutCart Debug:", {
+    checkout,
+    items,
+    itemsLength: items.length,
+    empty,
+    hasCheckout: !!checkout,
+    checkoutKeys: checkout ? Object.keys(checkout) : [],
+    itemsType: typeof items,
+    itemsIsArray: Array.isArray(items),
+  });
+
+  // Log each item in detail
+  if (items.length > 0) {
+    console.log(
+      "Cart Items Details:",
+      items.map((item, index) => ({
+        index,
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        coverUrl: item.coverUrl,
+      }))
+    );
+  }
 
   return (
     <Grid container spacing={3}>
@@ -36,7 +65,7 @@ export default function CheckoutCart() {
               <Typography variant="h6">
                 Cart
                 <Typography component="span" sx={{ color: "#4caf50" }}>
-                  &nbsp;({checkout.items.length} item)
+                  &nbsp;({items.length} item)
                 </Typography>
               </Typography>
             }
@@ -52,7 +81,7 @@ export default function CheckoutCart() {
             />
           ) : (
             <CheckoutCartProductList
-              products={checkout.items}
+              products={items}
               onDelete={checkout.onDeleteCart}
               onIncreaseQuantity={checkout.onIncreaseQuantity}
               onDecreaseQuantity={checkout.onDecreaseQuantity}

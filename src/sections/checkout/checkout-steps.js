@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import Stack from "@mui/material/Stack";
@@ -29,20 +29,27 @@ export default function CheckoutSteps() {
   // Use checkout.activeStep instead of local state
   const activeStep = checkout.activeStep;
 
+  // Check if there are items in the cart
+  const hasItems = checkout.items && checkout.items.length > 0;
+
   const handleNextStep = () => {
+    console.log("Moving to next step from:", activeStep);
     onNext();
   };
 
   const handleBackStep = () => {
+    console.log("Moving to previous step from:", activeStep);
     onBack();
   };
 
   const handleGotoStep = (step) => {
+    console.log("Moving to step:", step);
     // Use the context's onGotoStep function
     onGotoStep(step);
   };
 
   const handleBillingSubmit = (data) => {
+    console.log("Billing form submitted:", data);
     // Convert billing form data to the expected format
     const billingData = {
       name: `${data.shippingFirstName} ${data.shippingLastName}`,
@@ -64,6 +71,7 @@ export default function CheckoutSteps() {
   };
 
   const handleOrderSuccess = (orderData) => {
+    console.log("Order success handler called:", orderData);
     // Store order data in context
     onOrderSuccess(orderData);
     // Navigate to success step
@@ -71,15 +79,26 @@ export default function CheckoutSteps() {
   };
 
   const renderContent = () => {
+    console.log("Rendering content for step:", activeStep);
+
+    // If no items in cart, show cart step
+    if (!hasItems) {
+      console.log("No items in cart, showing cart step");
+      return <CheckoutCart onNextStep={handleNextStep} />;
+    }
+
     if (activeStep === 0) {
+      console.log("Showing cart step");
       return <CheckoutCart onNextStep={handleNextStep} />;
     }
 
     if (activeStep === 1) {
+      console.log("Showing billing step");
       return <CheckoutBilling onSubmit={handleBillingSubmit} />;
     }
 
     if (activeStep === 2) {
+      console.log("Showing payment step");
       return (
         <CheckoutPayment
           onBackStep={handleBackStep}
@@ -89,9 +108,11 @@ export default function CheckoutSteps() {
     }
 
     if (activeStep === 3) {
+      console.log("Showing success step");
       return <OrderSuccess order={checkout.lastOrder} />;
     }
 
+    console.log("Default case, showing cart step");
     return <CheckoutCart onNextStep={handleNextStep} />;
   };
 

@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
 import { fCurrency } from "src/utils/format-number";
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
 
 import Label from "src/components/label";
 import Iconify from "src/components/iconify";
@@ -25,11 +27,30 @@ export default function CheckoutCartProduct({
   onDecrease,
   onIncrease,
 }) {
-  const { name, size, price, colors, coverUrl, quantity, available } = row;
+  const router = useRouter();
+  const { name, size, price, colors, coverUrl, quantity, available, slug, id } =
+    row;
+
+  const handleProductClick = () => {
+    // Navigate to product details using slug if available, otherwise use ID
+    const productPath = slug
+      ? paths.product.details(slug)
+      : paths.product.details(id);
+    router.push(productPath);
+  };
 
   return (
     <TableRow>
-      <TableCell sx={{ display: "flex", alignItems: "center" }}>
+      <TableCell
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          cursor: "pointer",
+          "&:hover": {
+            backgroundColor: "rgba(76, 175, 80, 0.1)",
+          },
+        }}
+        onClick={handleProductClick}>
         <Avatar
           variant="rounded"
           alt={name}
@@ -41,7 +62,13 @@ export default function CheckoutCartProduct({
           <Typography
             noWrap
             variant="subtitle2"
-            sx={{ maxWidth: 240, color: "#fff" }}>
+            sx={{
+              maxWidth: 240,
+              color: "#fff",
+              "&:hover": {
+                color: "#4caf50",
+              },
+            }}>
             {name}
           </Typography>
 
