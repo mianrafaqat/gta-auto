@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import * as Yup from "yup";
@@ -37,6 +38,20 @@ import FormProvider from "src/components/hook-form/form-provider";
 import RHFTextField from "src/components/hook-form/rhf-text-field";
 import ShippingService from "src/services/shipping/shipping.service";
 =======
+=======
+import * as Yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Unstable_Grid2';
+import LoadingButton from '@mui/lab/LoadingButton';
+
+import Iconify from 'src/components/iconify';
+import FormProvider from 'src/components/hook-form';
+import { useSnackbar } from 'src/components/snackbar';
+
+>>>>>>> Stashed changes
 import { useCheckoutContext } from './context';
 import CheckoutSummary from './checkout-summary';
 import CheckoutDelivery from './checkout-delivery';
@@ -45,6 +60,9 @@ import CheckoutPaymentMethods from './checkout-payment-methods';
 import { useCreateOrder } from 'src/hooks/use-orders';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 // ----------------------------------------------------------------------
@@ -89,8 +107,11 @@ const PAYMENT_OPTIONS = [
 ];
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 export default function CheckoutPayment({ onBackStep, onOrderSuccess }) {
 =======
+=======
+>>>>>>> Stashed changes
 const CARDS_OPTIONS = [
   { value: 'ViSa1', label: '**** **** **** 1212 - Jimmy Holland' },
   { value: 'ViSa2', label: '**** **** **** 2424 - Shawn Stokes' },
@@ -100,6 +121,7 @@ const CARDS_OPTIONS = [
 export default function CheckoutPayment() {
   const checkout = useCheckoutContext();
   const { enqueueSnackbar } = useSnackbar();
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
   const router = useRouter();
   const createOrderMutation = useCreateOrder();
@@ -143,6 +165,18 @@ export default function CheckoutPayment() {
     delivery: checkout.shipping,
     payment: '',
 >>>>>>> Stashed changes
+=======
+  const router = useRouter();
+  const createOrderMutation = useCreateOrder();
+
+  const PaymentSchema = Yup.object().shape({
+    payment: Yup.string().required('Payment is required'),
+  });
+
+  const defaultValues = {
+    delivery: checkout.shipping,
+    payment: '',
+>>>>>>> Stashed changes
   };
 
   const methods = useForm({
@@ -150,6 +184,7 @@ export default function CheckoutPayment() {
     defaultValues,
   });
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
   const { handleSubmit, watch, setValue } = methods;
   const selectedShippingMethod = watch("shippingMethod");
@@ -207,11 +242,24 @@ export default function CheckoutPayment() {
       if (!checkout.items || checkout.items.length === 0) {
         enqueueSnackbar('No items in cart', { variant: 'error' });
 >>>>>>> Stashed changes
+=======
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      // Validate required data
+      if (!checkout.items || checkout.items.length === 0) {
+        enqueueSnackbar('No items in cart', { variant: 'error' });
+>>>>>>> Stashed changes
         return;
       }
 
       if (!checkout.billing) {
         enqueueSnackbar('Please provide billing information', { variant: 'error' });
+<<<<<<< Updated upstream
         return;
       }
 <<<<<<< Updated upstream
@@ -233,6 +281,11 @@ export default function CheckoutPayment() {
 =======
       // Prepare order data according to API specification
 >>>>>>> Stashed changes
+=======
+        return;
+      }
+      // Prepare order data according to API specification
+>>>>>>> Stashed changes
       const orderData = {
         items: checkout.items.map(item => ({
           product: item.id,
@@ -240,6 +293,7 @@ export default function CheckoutPayment() {
           quantity: item.quantity
         })),
         shippingAddress: {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
           firstName: checkout.billing.name?.split(" ")[0] || "",
           lastName: checkout.billing.name?.split(" ").slice(1).join(" ") || "",
@@ -341,6 +395,33 @@ export default function CheckoutPayment() {
         paymentMethod: data.payment || 'cash',
         couponCode: checkout.discount > 0 ? 'DISCOUNT10' : undefined
       };
+=======
+          firstName: checkout.billing?.firstName || checkout.billing?.name?.split(' ')[0] || '',
+          lastName: checkout.billing?.lastName || checkout.billing?.name?.split(' ').slice(1).join(' ') || '',
+          address1: checkout.billing?.fullAddress || '',
+          city: checkout.billing?.city || '',
+          state: checkout.billing?.state || '',
+          postcode: checkout.billing?.postcode || '',
+          country: checkout.billing?.country || '',
+          email: checkout.billing?.email || '',
+          phone: checkout.billing?.phoneNumber || ''
+        },
+        billingAddress: {
+          firstName: checkout.billing?.firstName || checkout.billing?.name?.split(' ')[0] || '',
+          lastName: checkout.billing?.lastName || checkout.billing?.name?.split(' ').slice(1).join(' ') || '',
+          address1: checkout.billing?.fullAddress || '',
+          city: checkout.billing?.city || '',
+          state: checkout.billing?.state || '',
+          postcode: checkout.billing?.postcode || '',
+          country: checkout.billing?.country || '',
+          email: checkout.billing?.email || '',
+          phone: checkout.billing?.phoneNumber || ''
+        },
+        shippingMethod: data.delivery || '689d373f5099e06126e689ca',
+        paymentMethod: data.payment || 'cash',
+        couponCode: checkout.discount > 0 ? 'DISCOUNT10' : undefined
+      };
+>>>>>>> Stashed changes
 //       console.log("data", data);
 //       console.log(orderData);
 //  return;
@@ -356,6 +437,9 @@ export default function CheckoutPayment() {
       checkout.onNextStep();
       checkout.onReset();
       
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     } catch (error) {
       console.error('Order creation failed:', error);
@@ -382,6 +466,7 @@ export default function CheckoutPayment() {
         <Grid xs={12} md={8}>
           <CheckoutDelivery onApplyShipping={checkout.onApplyShipping} options={DELIVERY_OPTIONS} />
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         {errorMsg && (
           <Alert
@@ -522,10 +607,15 @@ export default function CheckoutPayment() {
             name="couponCode"
             label="Enter coupon code (optional)"
 =======
+=======
+>>>>>>> Stashed changes
           <CheckoutPaymentMethods
             cardOptions={CARDS_OPTIONS}
             options={PAYMENT_OPTIONS}
             sx={{ my: 3 }}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           />
 
@@ -557,15 +647,21 @@ export default function CheckoutPayment() {
             type="submit"
             variant="contained"
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             loading={submitting}
             disabled={!checkout.billing}
             sx={{ flex: 1 }}>
             Place Order
 =======
+=======
+>>>>>>> Stashed changes
             loading={isSubmitting || createOrderMutation.isPending}
             disabled={isSubmitting || createOrderMutation.isPending}
           >
             {createOrderMutation.isPending ? 'Creating Order...' : 'Complete Order'}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </LoadingButton>
         </Grid>

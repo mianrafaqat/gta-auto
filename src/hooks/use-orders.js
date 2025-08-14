@@ -41,10 +41,14 @@ export function useCreateOrder() {
   return useMutation({
     mutationFn: (orderData) => {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       const token = localStorage.getItem(ACCESS_TOKEN_KEY);
       if (!token) {
         throw new Error("Authentication required");
       }
+=======
+      checkAuthentication();
+>>>>>>> Stashed changes
 =======
       checkAuthentication();
 >>>>>>> Stashed changes
@@ -62,10 +66,13 @@ export function useGetAllOrders() {
     queryKey: ["orders", "all"],
     queryFn: async () => {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       // Check admin role before making the request
       checkAdminRole();
       return OrdersService.getAll();
 =======
+=======
+>>>>>>> Stashed changes
       try {
         // First try to get all orders (admin only)
         checkAdminRole();
@@ -98,6 +105,9 @@ export function useGetMyOrders(params = {}) {
     queryFn: async () => {
       checkAuthentication();
       return OrdersService.getMyOrders(params);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     },
     retry: false,
@@ -144,7 +154,10 @@ export function useGetOrderById(id) {
         throw error;
       }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       return OrdersService.getById(id);
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     },
@@ -162,7 +175,10 @@ export function useUpdateOrderStatus() {
       checkAdminRole();
       return OrdersService.updateStatus(id, data);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["orders"]);
@@ -193,6 +209,9 @@ export function useDeleteOrder() {
     mutationFn: async (id) => {
       checkAdminRole();
       return OrdersService.delete(id);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     },
     onSuccess: () => {

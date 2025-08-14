@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 "use client";
 
 import PropTypes from "prop-types";
@@ -297,6 +298,8 @@ CheckoutProvider.propTypes = {
   children: PropTypes.node,
 };
 =======
+=======
+>>>>>>> Stashed changes
 'use client';
 
 import uniq from 'lodash/uniq';
@@ -592,4 +595,7 @@ export function CheckoutProvider({ children }) {
 CheckoutProvider.propTypes = {
   children: PropTypes.node,
 };
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

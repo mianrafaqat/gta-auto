@@ -52,7 +52,11 @@ export default function ProductItem({
 }) {
   const router = useRouter();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const { onAddToCart, onBuyNow, onClearCart, onReset } = useCheckoutContext();
+=======
+  const { onAddToCart, onGotoStep, update, onClearCart } = useCheckoutContext();
+>>>>>>> Stashed changes
 =======
   const { onAddToCart, onGotoStep, update, onClearCart } = useCheckoutContext();
 >>>>>>> Stashed changes
@@ -187,6 +191,7 @@ export default function ProductItem({
   const handleBuyNow = async () => {
     setIsBuyNowLoading(true);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     try {
       console.log("Buy Now clicked for product ID:", productId);
 
@@ -260,6 +265,24 @@ export default function ProductItem({
     //   postalCode: productPostalCode,
     // };
     try {
+=======
+    // const newProduct = {
+    //   id: productId,
+    //   name: productName,
+    //   coverUrl: firstImage,
+    //   available: productAvailable,
+    //   price: productPrice,
+    //   colors: colors && colors.length > 0 ? [colors[0]] : [],
+    //   size: sizes && sizes.length > 0 ? sizes[0] : "Default",
+    //   quantity: 1,
+    //   // Add car-specific properties if available
+    //   carDetails: carDetails || {},
+    //   category: productCategory,
+    //   location: productLocation,
+    //   postalCode: productPostalCode,
+    // };
+    try {
+>>>>>>> Stashed changes
       // Clear cart first, then add the product to cart
       // onClearCart();
       // onAddToCart(newProduct);

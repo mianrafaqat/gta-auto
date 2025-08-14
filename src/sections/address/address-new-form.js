@@ -9,6 +9,9 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 import Box from "@mui/material/Box";
@@ -34,6 +37,7 @@ import FormProvider, {
 export default function AddressNewForm({ open, onClose, onCreate, isEdit = false, editData = null }) {
   const NewAddressSchema = Yup.object().shape({
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     name: Yup.string().required("Fullname is required"),
     phoneNumber: Yup.string().required("Phone number is required"),
     address: Yup.string().required("Address is required"),
@@ -43,6 +47,8 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
     zipCode: Yup.string().required("Zip code is required"),
     // not required
 =======
+=======
+>>>>>>> Stashed changes
     name: Yup.string().required('Full name is required'),
     email: Yup.string().email('Invalid email address').required('Email is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
@@ -54,6 +60,9 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
     // Optional fields
     company: Yup.string(),
     address2: Yup.string(),
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     addressType: Yup.string(),
     primary: Yup.boolean(),
@@ -83,6 +92,9 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
     country: '',
     addressType: 'Home',
     primary: false,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   };
 
@@ -116,12 +128,16 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
         email: data.email,
         phoneNumber: data.phoneNumber,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         fullAddress: `${data.address}, ${data.city}, ${data.state}, ${data.country}, ${data.zipCode}`,
         address: data.address,
         city: data.city,
         state: data.state,
         country: data.country,
         zipCode: data.zipCode,
+=======
+        company: data.company || '',
+>>>>>>> Stashed changes
 =======
         company: data.company || '',
 >>>>>>> Stashed changes
@@ -167,6 +183,9 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
                 { label: 'Home', value: 'Home' },
                 { label: 'Office', value: 'Office' },
                 { label: 'Other', value: 'Other' },
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
               ]}
             />
@@ -192,6 +211,22 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
                 sm: 'repeat(2, 1fr)',
               }}
             >
+<<<<<<< Updated upstream
+=======
+              <RHFTextField name="name" label="Full Name" />
+              <RHFTextField name="email" label="Email Address" />
+            </Box>
+
+            <Box
+              rowGap={3}
+              columnGap={2}
+              display="grid"
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+              }}
+            >
+>>>>>>> Stashed changes
               <RHFTextField name="company" label="Company (Optional)" />
               <RHFTextField name="phoneNumber" label="Phone Number" />
             </Box>
@@ -205,6 +240,7 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
               display="grid"
               gridTemplateColumns={{
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 xs: "repeat(1, 1fr)",
                 sm: "repeat(3, 1fr)",
               }}>
@@ -214,6 +250,8 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
 
               <RHFTextField name="zipCode" label="Zip/Code" />
 =======
+=======
+>>>>>>> Stashed changes
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat(3, 1fr)',
               }}
@@ -221,6 +259,9 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
               <RHFTextField name="city" label="City" />
               <RHFTextField name="state" label="State/Province" />
               <RHFTextField name="postcode" label="Postal Code" />
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             </Box>
 
@@ -243,11 +284,16 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
           </Button>
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
           <LoadingButton
             type="submit"
             variant="contained"
             loading={isSubmitting}>
             Deliver to this Address
+=======
+          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            {isEdit ? 'Update Address' : 'Add Address'}
+>>>>>>> Stashed changes
 =======
           <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
             {isEdit ? 'Update Address' : 'Add Address'}

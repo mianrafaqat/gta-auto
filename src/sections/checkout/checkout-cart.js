@@ -59,8 +59,13 @@ export default function CheckoutCart() {
               <Typography variant="h6">
                 Cart
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 <Typography component="span" sx={{ color: "#4caf50" }}>
                   &nbsp;({items.length} item)
+=======
+                <Typography component="span" sx={{ color: 'text.secondary' }}>
+                  &nbsp;({checkout.totalItems} item)
+>>>>>>> Stashed changes
 =======
                 <Typography component="span" sx={{ color: 'text.secondary' }}>
                   &nbsp;({checkout.totalItems} item)
