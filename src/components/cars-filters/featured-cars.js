@@ -1,12 +1,19 @@
-import React from 'react';
-import { Box, Typography, Grid, Card, CardContent, Button, IconButton, Container } from '@mui/material';
-import Iconify from '../iconify';
-import LatestProductsSection from './latest-products';
-import LastestEightCars from '../first-eight-cars';
+import React from "react";
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  IconButton,
+  Container,
+} from "@mui/material";
+import Iconify from "../iconify";
+import LatestProductsSection from "./latest-products";
+import LastestEightCars from "../first-eight-cars";
 
-
-
-export default function FeaturedCarsSection({allCars}) {
+export default function FeaturedCarsSection({ allCars }) {
   return (
     // <Container
     //   maxWidth="xl"
@@ -31,7 +38,7 @@ export default function FeaturedCarsSection({allCars}) {
     //       >
     //         Featured Used Cars for Sale
     //       </Typography>
-          
+
     //       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
     //         <Typography
     //           variant="body2"
@@ -93,7 +100,7 @@ export default function FeaturedCarsSection({allCars}) {
     //                 >
     //                   {car.brand}
     //                 </Typography>
-                    
+
     //                 <Typography
     //                   variant="h6"
     //                   sx={{
@@ -114,14 +121,14 @@ export default function FeaturedCarsSection({allCars}) {
     //                       {car.mileage}
     //                     </Typography>
     //                   </Box>
-                      
+
     //                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
     //                     <Iconify icon="eva:droplet-fill" sx={{ fontSize: '14px', color: 'text.secondary' }} />
     //                     <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '11px' }}>
     //                       {car.fuelType}
     //                     </Typography>
     //                   </Box>
-                      
+
     //                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
     //                     <Iconify icon="eva:settings-2-fill" sx={{ fontSize: '14px', color: 'text.secondary' }} />
     //                     <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '11px' }}>
@@ -142,7 +149,7 @@ export default function FeaturedCarsSection({allCars}) {
     //                     objectFit: 'cover',
     //                   }}
     //                 />
-                    
+
     //                 {/* Watermark */}
     //                 <Typography
     //                   variant="caption"
@@ -174,7 +181,7 @@ export default function FeaturedCarsSection({allCars}) {
     //                   >
     //                     <Iconify icon="eva:close-fill" sx={{ fontSize: '12px' }} />
     //                   </IconButton>
-                      
+
     //                   <IconButton
     //                     size="small"
     //                     sx={{
@@ -205,7 +212,7 @@ export default function FeaturedCarsSection({allCars}) {
     //                 >
     //                   {car.price}
     //                 </Typography>
-                    
+
     //                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
     //                   <Iconify icon="eva:pin-fill" sx={{ fontSize: '14px', color: '#4caf50' }} />
     //                   <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '12px' }}>
@@ -220,7 +227,6 @@ export default function FeaturedCarsSection({allCars}) {
     //     </Grid>
     //   </Box>
     // </Container>
-<LastestEightCars allCars={allCars} />
-   
+    <LastestEightCars allCars={allCars} />
   );
-} 
+}

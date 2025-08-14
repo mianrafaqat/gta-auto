@@ -56,6 +56,7 @@ import Loading from "src/app/loading";
 import { SplashScreen } from "src/components/loading-screen";
 import { Icon } from "@iconify/react";
 import { WhatsApp } from "@mui/icons-material";
+import Image from "next/image";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -107,7 +108,7 @@ export default function ProductShopView() {
     try {
       setLoading(true);
       const response = await ProductService.getAll();
-      
+
       if (response && response.products) {
         setAllCars(response.products);
       } else if (response && response.data) {
@@ -116,7 +117,7 @@ export default function ProductShopView() {
         setAllCars([]);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
       setAllCars([]);
     } finally {
       setLoading(false);
@@ -344,20 +345,119 @@ export default function ProductShopView() {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  mt: "32px",
                 }}>
                 <Typography
                   variant="h4"
                   sx={{
                     my: { xs: 3, md: 5 },
                     color: "#fff",
+                    fontSize: "32px !important",
                   }}>
                   Shop
                 </Typography>
-                {/* {!lgUp && !loading && (
-                  <IconButton onClick={() => setToggle(!toggle)}>
-                    <Icon icon="mage:filter-fill" />
-                  </IconButton>
-                )} */}
+
+                <Box
+                  sx={{ width: "80%", display: { md: "block", xs: "none" } }}>
+                  <Card
+                    sx={{
+                      background: "#25D366",
+                      borderRadius: 3,
+                      mb: 4,
+                      height: "100%",
+                      overflow: "hidden",
+                      position: "relative",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                      },
+                    }}>
+                    <CardContent
+                      sx={{
+                        p: { xs: 4, md: "32px" },
+                        textAlign: "center",
+                        position: "relative",
+                        zIndex: 2,
+                      }}>
+                      <Stack direction="row" gap={2} alignItems="center">
+                        <Box>
+                          <img
+                            src="/assets/convertable.png"
+                            alt="Comic"
+                            // width={450}
+                            // height={150}
+                          />
+                        </Box>
+
+                        <Box>
+                          <Typography
+                            variant="h2"
+                            sx={{
+                              color: "#000",
+                              fontWeight: 700,
+                              mb: 2,
+                              fontSize: { xs: "2rem", md: "34px !important" },
+                              lineHeight: 1.2,
+                            }}>
+                            Import your desire accessories
+                          </Typography>
+                          <Typography
+                            variant="h5"
+                            sx={{
+                              color: "#ffffff",
+                              fontSize: "16px !important",
+                              mb: 4,
+                              fontWeight: 400,
+                              opacity: 0.9,
+                              maxWidth: 800,
+                              mx: "auto",
+                              lineHeight: 1.2,
+                              textAlign: "center",
+                              maxWidth: 400,
+                            }}>
+                            From genuine OEM parts to aftermarket upgrades, we
+                            source and import quality car parts for all brands.
+                          </Typography>
+                        </Box>
+                        <Stack
+                          direction={{ xs: "column", sm: "row" }}
+                          spacing={3}
+                          justifyContent="center"
+                          alignItems="center">
+                          <Button
+                            variant="contained"
+                            size="large"
+                            startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
+                            onClick={() => {
+                              const message =
+                                "Hi! I'm interested in importing car parts. Can you help me find the parts I need?";
+                              const whatsappUrl = `https://wa.me/923263331000?text=${encodeURIComponent(message)}`;
+                              window.open(whatsappUrl, "_blank");
+                            }}
+                            sx={{
+                              backgroundColor: "transparent",
+                              border: "1px solid #fff",
+                              color: "#000",
+                              px: 4,
+                              py: 2,
+                              fontSize: "16px !important",
+                              fontWeight: 700,
+                              textTransform: "uppercase",
+                              borderRadius: "50px",
+                              minWidth: 250,
+                              whiteSpace: "nowrap",
+                            }}>
+                            Chat on WhatsApp
+                          </Button>
+                        </Stack>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Box>
               </Stack>
             </Grid>
             <Stack
@@ -370,206 +470,6 @@ export default function ProductShopView() {
 
               {/* {canReset && renderResults} */}
             </Stack>
-
-            <Box sx={{ width: "100%" }}>
-              <Card
-                sx={{
-                  background: `linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%), url('/assets/convertable.png')`,
-                  backgroundSize: "contain",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  borderRadius: 4,
-                  mb: 4,
-                  height: "100%",
-                  overflow: "hidden",
-                  position: "relative",
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background:
-                      "linear-gradient(45deg, rgba(76, 175, 80, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%)",
-                    zIndex: 1,
-                  },
-                }}>
-                <CardContent
-                  sx={{
-                    p: { xs: 4, md: 8 },
-                    textAlign: "center",
-                    position: "relative",
-                    zIndex: 2,
-                  }}>
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      color: "#4caf50",
-                      fontWeight: 700,
-                      mb: 3,
-                      fontSize: { xs: "2rem", md: "3.5rem" },
-                      textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
-                      lineHeight: 1.2,
-                    }}>
-                    Import Car Parts
-                  </Typography>
-
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      color: "#ffffff",
-                      mb: 4,
-                      fontWeight: 400,
-                      opacity: 0.9,
-                      maxWidth: 800,
-                      mx: "auto",
-                      lineHeight: 1.6,
-                      textShadow: "1px 1px 2px rgba(0, 0, 0, 0.8)",
-                    }}>
-                    From genuine OEM parts to aftermarket upgrades, we source
-                    and import quality car parts for all brands. Expert
-                    sourcing, competitive pricing, and reliable delivery to keep
-                    your vehicle running perfectly.
-                  </Typography>
-
-                  <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={3}
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{ mt: 4 }}>
-                    <Button
-                      variant="contained"
-                      size="large"
-                      startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
-                      onClick={() => {
-                        const message =
-                          "Hi! I'm interested in importing car parts. Can you help me find the parts I need?";
-                        const whatsappUrl = `https://wa.me/923263333456?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, "_blank");
-                      }}
-                      sx={{
-                        backgroundColor: "#25D366",
-                        color: "#ffffff",
-                        px: 4,
-                        py: 2,
-                        fontSize: "1.1rem",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        borderRadius: "50px",
-
-                        minWidth: 250,
-                      }}>
-                      Chat on WhatsApp
-                    </Button>
-                  </Stack>
-
-                  {/* Features */}
-                  <Stack
-                    direction={{ xs: "column", md: "row" }}
-                    spacing={3}
-                    justifyContent="center"
-                    sx={{ mt: 6 }}>
-                    <Box
-                      sx={{
-                        textAlign: "center",
-                        p: 2,
-                      }}>
-                      <Icon
-                        icon="mdi:cog"
-                        style={{
-                          fontSize: "2.5rem",
-                          color: "#4caf50",
-                          marginBottom: "0.5rem",
-                        }}
-                      />
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: "#ffffff",
-                          fontWeight: 600,
-                          mb: 1,
-                        }}>
-                        All Parts
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#ffffff",
-                          opacity: 0.8,
-                        }}>
-                        Engine to body parts
-                      </Typography>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        textAlign: "center",
-                        p: 2,
-                      }}>
-                      <Icon
-                        icon="mdi:shield-check"
-                        style={{
-                          fontSize: "2.5rem",
-                          color: "#4caf50",
-                          marginBottom: "0.5rem",
-                        }}
-                      />
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: "#ffffff",
-                          fontWeight: 600,
-                          mb: 1,
-                        }}>
-                        Genuine Quality
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#ffffff",
-                          opacity: 0.8,
-                        }}>
-                        OEM & aftermarket
-                      </Typography>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        textAlign: "center",
-                        p: 2,
-                      }}>
-                      <Icon
-                        icon="mdi:truck-delivery"
-                        style={{
-                          fontSize: "2.5rem",
-                          color: "#4caf50",
-                          marginBottom: "0.5rem",
-                        }}
-                      />
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: "#ffffff",
-                          fontWeight: 600,
-                          mb: 1,
-                        }}>
-                        Fast Delivery
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#ffffff",
-                          opacity: 0.8,
-                        }}>
-                        Quick shipping
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Box>
 
             {/* Render NotFound component if no results */}
             <Grid item xs={12}>

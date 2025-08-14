@@ -27,8 +27,7 @@ const Services = () => {
       title: "Call a Mechanics",
       description:
         "Professional mobile mechanics available 24/7. We come to your location with all necessary tools and equipment to diagnose and fix your vehicle issues on the spot. No need to tow your vehicle - we bring the workshop to you.",
-      image:
-        "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image: "/assets/Call-a-mechanic.png",
       icon: <Build sx={{ fontSize: 30, color: "#4caf50" }} />,
       features: [
         "24/7 Emergency Service",
@@ -45,8 +44,7 @@ const Services = () => {
       title: "Towing Service",
       description:
         "Reliable towing service for all types of vehicles. Whether you're stranded on the road or need vehicle transport, our professional team is ready to help. We handle everything from small cars to large trucks.",
-      image:
-        "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/towing-service.png",
       icon: <DirectionsCar sx={{ fontSize: 30, color: "#4caf50" }} />,
       features: [
         "24/7 Emergency Towing",
@@ -63,8 +61,7 @@ const Services = () => {
       title: "Car Studio",
       description:
         "Premium car detailing and studio services. From basic wash to complete detailing, ceramic coating, and paint protection - we make your car look brand new. Professional care for your vehicle's appearance.",
-      image:
-        "https://images.unsplash.com/photo-1508974239320-0a029497e820?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image: "/assets/car-studio.png",
       icon: <LocalCarWash sx={{ fontSize: 30, color: "#4caf50" }} />,
       features: [
         "Premium Detailing",
@@ -80,7 +77,7 @@ const Services = () => {
 
   const handleWhatsAppClick = (serviceName) => {
     const message = `Hi! I'm interested in your ${serviceName} service. Can you provide more details?`;
-    const whatsappUrl = `https://wa.me/923263333456?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/92363330222?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
 

@@ -1,204 +1,195 @@
-import React from 'react';
-import { Box, Typography, Grid, Card, CardContent, Button, IconButton, Container } from '@mui/material';
-import Iconify from '../iconify';
-
-const latestProducts = [
-  {
-    id: 1,
-    name: 'Jeelo Flavour Gray Premium',
-    category: 'Uncategorized',
-    price: 'Rs850.00',
-    image: '/assets/jeelo.webp', // Placeholder - replace with actual product image
-  },
-  {
-    id: 2,
-    name: 'Car Washing Spong',
-    category: 'Car Care',
-    price: 'Rs1,000.00',
-    image: '/assets/spong.webp', // Placeholder - replace with actual product image
-  },
-  {
-    id: 3,
-    name: '5D Matt, Corolla Alto City, cultus...',
-    category: 'Car Interior Accessories, Interior',
-    price: 'Rs3,000.00',
-    image: '/assets/mat.webp', // Placeholder - replace with actual product image
-  },
-  {
-    id: 4,
-    name: 'Double Sllencer Cover',
-    category: 'Uncategorized',
-    price: 'Rs1,500.00',
-    image: '/assets/silencer.webp', // Placeholder - replace with actual product image
-  },
-];
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Grid,
+  Container,
+  CardContent,
+  Card,
+  Stack,
+  Button,
+} from "@mui/material";
+import ProductList from "src/sections/product/product-list";
+import ProductService from "src/services/products/products.service";
+import { WhatsApp } from "@mui/icons-material";
 
 export default function LatestProductsSection() {
+  const [latestProducts, setLatestProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLatestProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await ProductService.getAll();
+        let products = [];
+        if (response && response.products) {
+          products = response.products;
+        } else if (response && response.data) {
+          products = response.data;
+        }
+        // Sort by createdAt descending if available, else just take first 4
+        if (products && products.length > 0) {
+          // If products have a createdAt field, sort by it
+          if (products[0]?.createdAt) {
+            products = products
+              .slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime()
+              );
+          }
+          setLatestProducts(products.slice(0, 4));
+        } else {
+          setLatestProducts([]);
+        }
+      } catch (error) {
+        setLatestProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestProducts();
+  }, []);
+
   return (
     <Container
-      maxWidth="xl"
+      maxWidth="lg"
       sx={{
         py: 8,
         px: { xs: 2, sm: 3, md: 4 },
-        backgroundColor: 'black',
-        minHeight: '600px',
-      }}
-    >
-      <Box sx={{ position: 'relative', zIndex: 2 }}>
+        backgroundColor: "black",
+        minHeight: "600px",
+      }}>
+      <Box sx={{ position: "relative", zIndex: 2 }}>
         {/* Section Title */}
         <Typography
           variant="h3"
           sx={{
-            color: '#4caf50',
-            fontWeight: 'bold',
-            fontSize: { xs: '24px', md: '32px' },
+            color: "#4caf50",
+            fontWeight: "bold",
+            fontSize: { xs: "24px", md: "32px" },
             mb: 6,
-            textTransform: 'uppercase',
-          }}
-        >
+            textTransform: "uppercase",
+          }}>
           Latest Products
         </Typography>
 
-        {/* Products Grid */}
-        <Grid container spacing={3}>
-          {latestProducts.map((product) => (
-            <Grid item key={product.id} xs={12} sm={6} md={3}>
-              <Card
-                sx={{
-                  backgroundColor: 'transparent',
-                  borderRadius: '8px',
-                  border: '1px solid #4caf50',
-                  overflow: 'hidden',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  '&:hover': {
-                    boxShadow: '0 8px 30px rgba(76, 175, 80, 0.3)',
-                    transform: 'translateY(-4px)',
-                    transition: 'all 0.3s ease',
-                  },
-                }}
-              >
-                {/* Product Image Area */}
-                <Box
-                  sx={{
-                    position: 'relative',
-                    // height: '200px',
-                    padding: "24px",
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'url("/assets/garage-tuned-autos-pattern.png")', // Watermark pattern
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
+        <Grid item xs={12}>
+          <ProductList
+            products={latestProducts}
+            loading={loading}
+            itemsPerPage={4}
+          />
+        </Grid>
+        <Box
+          sx={{
+            width: "100%",
+            mt: "32px",
+            display: { md: "block", xs: "none" },
+          }}>
+          <Card
+            sx={{
+              background: "#25D366",
+              borderRadius: 3,
+              mb: 4,
+              height: "100%",
+              overflow: "hidden",
+              position: "relative",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              },
+            }}>
+            <CardContent
+              sx={{
+                p: { xs: 4, md: "32px" },
+                textAlign: "center",
+                position: "relative",
+                zIndex: 2,
+              }}>
+              <Stack direction="row" gap={2} alignItems="center">
+                <Box>
                   <img
-                    src={product.image}
-                    alt={product.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
-                    }}
+                    src="/assets/convertable.png"
+                    alt="Comic"
+                    // width={450}
+                    // height={150}
                   />
-                  
                 </Box>
 
-                {/* Product Details */}
-                <CardContent sx={{ p: 3, flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'transparent' }}>
-                  {/* Category */}
+                <Box>
                   <Typography
-                    variant="caption"
+                    variant="h2"
                     sx={{
-                      color: '#ffffff',
-                      fontSize: '11px',
-                      mb: 1,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    {product.category}
+                      color: "#000",
+                      fontWeight: 700,
+                      mb: 2,
+                      fontSize: { xs: "2rem", md: "34px !important" },
+                      lineHeight: 1.2,
+                    }}>
+                    Import your desire accessories
                   </Typography>
-
-                  {/* Product Name */}
                   <Typography
-                    variant="h6"
+                    variant="h5"
                     sx={{
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      mb: 1,
-                      lineHeight: 1.3,
-                      color: '#ffffff',
-                    }}
-                  >
-                    {product.name}
+                      color: "#ffffff",
+                      fontSize: "16px !important",
+                      mb: 4,
+                      fontWeight: 400,
+                      opacity: 0.9,
+                      maxWidth: 800,
+                      mx: "auto",
+                      lineHeight: 1.2,
+                      textAlign: "center",
+                      maxWidth: 400,
+                    }}>
+                    From genuine OEM parts to aftermarket upgrades, we source
+                    and import quality car parts for all brands.
                   </Typography>
-
-                  {/* Price */}
-                  <Typography
-                    variant="h6"
+                </Box>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={3}
+                  justifyContent="center"
+                  alignItems="center">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
+                    onClick={() => {
+                      const message =
+                        "Hi! I'm interested in importing car parts. Can you help me find the parts I need?";
+                      const whatsappUrl = `https://wa.me/923263331000?text=${encodeURIComponent(message)}`;
+                      window.open(whatsappUrl, "_blank");
+                    }}
                     sx={{
-                      color: '#ffffff',
-                      fontWeight: 'bold',
-                      fontSize: '16px',
-                      mb: 3,
-                    }}
-                  >
-                    {product.price}
-                  </Typography>
-
-                  {/* Action Buttons */}
-                  <Box sx={{ display: 'flex', gap: 1, mt: 'auto' }}>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        backgroundColor: '#ffffff',
-                        color: '#666666',
-                        textTransform: 'none',
-                        fontSize: '12px',
-                        px: 2,
-                        py: 1,
-                        borderRadius: '4px',
-                        boxShadow: 'none',
-                        '&:hover': {
-                          backgroundColor: '#f5f5f5',
-                          color: '#666666',
-                          boxShadow: 'none',
-                        },
-                      }}
-                    >
-                      Add To Cart
-                    </Button>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        backgroundColor: '#ffffff',
-                        color: '#666666',
-                        textTransform: 'none',
-                        fontSize: '12px',
-                        px: 2,
-                        py: 1,
-                        borderRadius: '4px',
-                        boxShadow: 'none',
-                        '&:hover': {
-                          backgroundColor: '#f5f5f5',
-                          color: '#666666',
-                          boxShadow: 'none',
-                        },
-                      }}
-                    >
-                      Buy Now
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                      backgroundColor: "transparent",
+                      border: "1px solid #fff",
+                      color: "#000",
+                      px: 4,
+                      py: 2,
+                      fontSize: "16px !important",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      borderRadius: "50px",
+                      minWidth: 250,
+                      whiteSpace: "nowrap",
+                    }}>
+                    Chat on WhatsApp
+                  </Button>
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Box>
       </Box>
     </Container>
   );
-} 
+}
