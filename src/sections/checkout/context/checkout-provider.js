@@ -293,7 +293,3 @@ export function CheckoutProvider({ children }) {
 CheckoutProvider.propTypes = {
   children: PropTypes.node,
 };
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
