@@ -9,17 +9,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { fCurrency } from "src/utils/format-number";
-import { paths } from "src/routes/paths";
-import { useRouter } from "src/routes/hooks";
-=======
 import { fCurrency } from 'src/utils/format-number';
->>>>>>> Stashed changes
-=======
-import { fCurrency } from 'src/utils/format-number';
->>>>>>> Stashed changes
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -29,57 +19,6 @@ import IncrementerButton from '../product/common/incrementer-button';
 
 // ----------------------------------------------------------------------
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-export default function CheckoutCartProduct({
-  row,
-  onDelete,
-  onDecrease,
-  onIncrease,
-}) {
-  const router = useRouter();
-  const { name, size, price, colors, coverUrl, quantity, available, slug, id } =
-    row;
-
-  const handleProductClick = () => {
-    // Navigate to product details using slug if available, otherwise use ID
-    const productPath = slug
-      ? paths.product.details(slug)
-      : paths.product.details(id);
-    router.push(productPath);
-  };
-
-  return (
-    <TableRow>
-      <TableCell
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          cursor: "pointer",
-          "&:hover": {
-            backgroundColor: "rgba(76, 175, 80, 0.1)",
-          },
-        }}
-        onClick={handleProductClick}>
-        <Avatar
-          variant="rounded"
-          alt={name}
-          src={coverUrl}
-          sx={{ width: 64, height: 64, mr: 2 }}
-        />
-
-        <Stack spacing={0.5}>
-          <Typography
-            noWrap
-            variant="subtitle2"
-            sx={{
-              maxWidth: 240,
-              color: "#fff",
-              "&:hover": {
-                color: "#4caf50",
-              },
-            }}>
-=======
 export default function CheckoutCartProduct({ row, onDelete, onDecrease, onIncrease }) {
   const { name, size, price, colors, coverUrl, quantity, available } = row;
 
@@ -90,19 +29,6 @@ export default function CheckoutCartProduct({ row, onDelete, onDecrease, onIncre
 
         <Stack spacing={0.5}>
           <Typography noWrap variant="subtitle2" sx={{ maxWidth: 240 }}>
->>>>>>> Stashed changes
-=======
-export default function CheckoutCartProduct({ row, onDelete, onDecrease, onIncrease }) {
-  const { name, size, price, colors, coverUrl, quantity, available } = row;
-
-  return (
-    <TableRow>
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar variant="rounded" alt={name} src={coverUrl} sx={{ width: 64, height: 64, mr: 2 }} />
-
-        <Stack spacing={0.5}>
-          <Typography noWrap variant="subtitle2" sx={{ maxWidth: 240 }}>
->>>>>>> Stashed changes
             {name}
           </Typography>
 

@@ -1,7 +1,7 @@
-import * as Yup from "yup";
-import PropTypes from "prop-types";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from 'yup';
+import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
 
 import Box from "@mui/material/Box";
@@ -26,28 +26,34 @@ import FormProvider, {
 
 export default function AddressNewForm({ open, onClose, onCreate, isEdit = false, editData = null }) {
   const NewAddressSchema = Yup.object().shape({
-    name: Yup.string().required("Fullname is required"),
-    phoneNumber: Yup.string().required("Phone number is required"),
-    address: Yup.string().required("Address is required"),
-    city: Yup.string().required("City is required"),
-    state: Yup.string().required("State is required"),
-    country: Yup.string().required("Country is required"),
-    zipCode: Yup.string().required("Zip code is required"),
-    // not required
+    name: Yup.string().required('Full name is required'),
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+    phoneNumber: Yup.string().required('Phone number is required'),
+    address1: Yup.string().required('Address is required'),
+    city: Yup.string().required('City is required'),
+    state: Yup.string().required('State is required'),
+    postcode: Yup.string().required('Postal code is required'),
+    country: Yup.string().required('Country is required'),
+    // Optional fields
+    company: Yup.string(),
+    address2: Yup.string(),
     addressType: Yup.string(),
     primary: Yup.boolean(),
   });
 
   const defaultValues = {
-    name: "",
-    city: "",
-    state: "",
-    address: "",
-    zipCode: "",
-    primary: true,
-    phoneNumber: "",
-    addressType: "Home",
-    country: "",
+    name: '',
+    email: '',
+    company: '',
+    phoneNumber: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    postcode: '',
+    country: '',
+    addressType: 'Home',
+    primary: false,
   };
 
   const methods = useForm({
@@ -72,16 +78,22 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      // Generate fullAddress if not provided
+      const fullAddress = data.fullAddress || `${data.address1}${data.address2 ? `, ${data.address2}` : ''}, ${data.city}, ${data.state}, ${data.postcode}, ${data.country}`;
+      
       const addressData = {
         name: data.name,
+        email: data.email,
         phoneNumber: data.phoneNumber,
-        fullAddress: `${data.address}, ${data.city}, ${data.state}, ${data.country}, ${data.zipCode}`,
-        address: data.address,
+        company: data.company || '',
+        addressType: data.addressType,
+        address1: data.address1,
+        address2: data.address2 || '',
         city: data.city,
         state: data.state,
+        postcode: data.postcode,
         country: data.country,
-        zipCode: data.zipCode,
-        addressType: data.addressType,
+        fullAddress,
         primary: data.primary,
       };
 
@@ -109,8 +121,9 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
               row
               name="addressType"
               options={[
-                { label: "Home", value: "Home" },
-                { label: "Office", value: "Office" },
+                { label: 'Home', value: 'Home' },
+                { label: 'Office', value: 'Office' },
+                { label: 'Other', value: 'Other' },
               ]}
             />
 
@@ -123,24 +136,37 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
                 sm: "repeat(2, 1fr)",
               }}>
               <RHFTextField name="name" label="Full Name" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
+              <RHFTextField name="email" label="Email Address" />
             </Box>
-
-            <RHFTextField name="address" label="Address" />
 
             <Box
               rowGap={3}
               columnGap={2}
               display="grid"
               gridTemplateColumns={{
-                xs: "repeat(1, 1fr)",
-                sm: "repeat(3, 1fr)",
-              }}>
-              <RHFTextField name="city" label="Town / City" />
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+              }}
+            >
+              <RHFTextField name="company" label="Company (Optional)" />
+              <RHFTextField name="phoneNumber" label="Phone Number" />
+            </Box>
 
-              <RHFTextField name="state" label="State" />
+            <RHFTextField name="address1" label="Address Line 1" />
+            <RHFTextField name="address2" label="Address Line 2 (Optional)" />
 
-              <RHFTextField name="zipCode" label="Zip/Code" />
+            <Box
+              rowGap={3}
+              columnGap={2}
+              display="grid"
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(3, 1fr)',
+              }}
+            >
+              <RHFTextField name="city" label="City" />
+              <RHFTextField name="state" label="State/Province" />
+              <RHFTextField name="postcode" label="Postal Code" />
             </Box>
 
             <RHFAutocomplete
@@ -161,11 +187,8 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
             Cancel
           </Button>
 
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            loading={isSubmitting}>
-            Deliver to this Address
+          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            {isEdit ? 'Update Address' : 'Add Address'}
           </LoadingButton>
         </DialogActions>
       </FormProvider>

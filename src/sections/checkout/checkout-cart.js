@@ -58,8 +58,8 @@ export default function CheckoutCart() {
             title={
               <Typography variant="h6">
                 Cart
-                <Typography component="span" sx={{ color: "#4caf50" }}>
-                  &nbsp;({items.length} item)
+                <Typography component="span" sx={{ color: 'text.secondary' }}>
+                  &nbsp;({checkout.totalItems} item)
                 </Typography>
               </Typography>
             }

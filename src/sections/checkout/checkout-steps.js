@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
@@ -9,115 +8,58 @@ import { styled } from '@mui/material/styles';
 import StepLabel, { stepLabelClasses } from '@mui/material/StepLabel';
 import MuiStepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 
-import { useCheckoutContext } from "./context/checkout-context";
-import CheckoutCart from "./checkout-cart";
-import CheckoutBilling from "./checkout-billing";
-import CheckoutPayment from "./checkout-payment";
-import OrderSuccess from "./order-success";
+import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-const STEPS = ["Cart", "Billing & address", "Payment", "Success"];
+const StepConnector = styled(MuiStepConnector)(({ theme }) => ({
+  top: 10,
+  left: 'calc(-50% + 20px)',
+  right: 'calc(50% + 20px)',
+  [`& .${stepConnectorClasses.line}`]: {
+    borderTopWidth: 2,
+    borderColor: theme.palette.divider,
+  },
+  [`&.${stepConnectorClasses.active}, &.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+}));
 
-export default function CheckoutSteps() {
-  const {
-    checkout,
-    onNextStep: onNext,
-    onBackStep: onBack,
-    onCreateBilling,
-    onGotoStep,
-    onOrderSuccess,
-  } = useCheckoutContext();
+// ----------------------------------------------------------------------
 
-  // Use checkout.activeStep instead of local state
-  const activeStep = checkout.activeStep;
-
-  // Check if there are items in the cart
-  const hasItems = checkout.items && checkout.items.length > 0;
-
-  const handleNextStep = () => {
-    console.log("Moving to next step from:", activeStep);
-    onNext();
-  };
-
-  const handleBackStep = () => {
-    console.log("Moving to previous step from:", activeStep);
-    onBack();
-  };
-
-  const handleGotoStep = (step) => {
-    console.log("Moving to step:", step);
-    // Use the context's onGotoStep function
-    onGotoStep(step);
-  };
-
-  const handleBillingSubmit = (data) => {
-    console.log("Billing form submitted:", data);
-    // Convert billing form data to the expected format
-    const billingData = {
-      name: `${data.shippingFirstName} ${data.shippingLastName}`,
-      email: data.shippingEmail,
-      phoneNumber: data.shippingPhone,
-      fullAddress: `${data.shippingAddress1}, ${data.shippingCity}, ${data.shippingState}, ${data.shippingCountry}, ${data.shippingPostcode}`,
-      address: data.shippingAddress1,
-      city: data.shippingCity,
-      state: data.shippingState,
-      country: data.shippingCountry,
-      zipCode: data.shippingPostcode,
-    };
-
-    // Save billing data to checkout context
-    onCreateBilling(billingData);
-
-    // Proceed to next step
-    handleNextStep();
-  };
-
-  const handleOrderSuccess = (orderData) => {
-    console.log("Order success handler called:", orderData);
-    // Store order data in context
-    onOrderSuccess(orderData);
-    // Navigate to success step
-    onGotoStep(3); // Success step
-  };
-
-  const renderContent = () => {
-    console.log("Rendering content for step:", activeStep);
-
-    // If no items in cart, show cart step
-    if (!hasItems) {
-      console.log("No items in cart, showing cart step");
-      return <CheckoutCart onNextStep={handleNextStep} />;
-    }
-
-    if (activeStep === 0) {
-      console.log("Showing cart step");
-      return <CheckoutCart onNextStep={handleNextStep} />;
-    }
-
-    if (activeStep === 1) {
-      console.log("Showing billing step");
-      return <CheckoutBilling onSubmit={handleBillingSubmit} />;
-    }
-
-    if (activeStep === 2) {
-      console.log("Showing payment step");
-      return (
-        <CheckoutPayment
-          onBackStep={handleBackStep}
-          onOrderSuccess={handleOrderSuccess}
-        />
-      );
-    }
-
-    if (activeStep === 3) {
-      console.log("Showing success step");
-      return <OrderSuccess order={checkout.lastOrder} />;
-    }
-
-    console.log("Default case, showing cart step");
-    return <CheckoutCart onNextStep={handleNextStep} />;
-  };
+export default function CheckoutSteps({ steps, activeStep, sx, ...other }) {
+  return (
+    <Stepper
+      alternativeLabel
+      activeStep={activeStep}
+      connector={<StepConnector />}
+      sx={{
+        color: 'white !important',
+        mb: { xs: 3, md: 5 },
+        ...sx,
+      }}
+      {...other}
+    >
+      {steps.map((label) => (
+        <Step key={label}>
+          <StepLabel
+            color='white !important'
+            StepIconComponent={StepIcon}
+            sx={{
+              [`& .${stepLabelClasses.label}`]: {
+                color: 'white !important',
+                fontWeight: 'fontWeightSemiBold',
+              },
+            }}
+          >
+            {label}
+          </StepLabel>
+        </Step>
+      ))}
+    </Stepper>
+  );
 }
 
 CheckoutSteps.propTypes = {

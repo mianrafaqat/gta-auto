@@ -51,15 +51,7 @@ export default function ProductItem({
   onHome = false,
 }) {
   const router = useRouter();
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  const { onAddToCart, onBuyNow, onClearCart, onReset } = useCheckoutContext();
-=======
   const { onAddToCart, onGotoStep, update, onClearCart } = useCheckoutContext();
->>>>>>> Stashed changes
-=======
-  const { onAddToCart, onGotoStep, update, onClearCart } = useCheckoutContext();
->>>>>>> Stashed changes
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
   const {
@@ -190,65 +182,6 @@ export default function ProductItem({
 
   const handleBuyNow = async () => {
     setIsBuyNowLoading(true);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    try {
-      console.log("Buy Now clicked for product ID:", productId);
-
-      // Fetch product details from API using the product ID
-      const productDetails = await ProductService.getById(productId);
-      console.log("Fetched product details:", productDetails);
-
-      // Create product object from API data
-      const newProduct = {
-        id: productDetails._id,
-        name: productDetails.name,
-        coverUrl:
-          productDetails.images && productDetails.images.length > 0
-            ? productDetails.images[0]
-            : "/assets/placeholder.svg",
-        available: productDetails.stockStatus === "instock",
-        price: productDetails.price || productDetails.salePrice || 0,
-        regularPrice: productDetails.regularPrice || productDetails.price || 0,
-        colors:
-          productDetails.attributes?.find((attr) => attr.name === "color")
-            ?.options || [],
-        size:
-          productDetails.attributes?.find((attr) => attr.name === "size")
-            ?.options?.[0] || "Default",
-        quantity: 1,
-        // Add car-specific properties if available
-        carDetails: productDetails.carDetails || {},
-        category: productDetails.categories?.[0]?.name || "sale",
-        location: productDetails.location || "",
-        postalCode: productDetails.postalCode || "",
-        description: productDetails.description,
-        slug: productDetails.slug,
-        status: productDetails.status,
-        type: productDetails.type,
-        dimensions: productDetails.dimensions,
-        averageRating: productDetails.averageRating,
-        ratingCount: productDetails.ratingCount,
-      };
-
-      console.log("Processed product for cart:", newProduct);
-
-      // Reset checkout state first to ensure we start at step 0
-      onReset();
-
-      // Small delay to ensure reset is complete
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
-      // Add product to cart using Buy Now function
-      onBuyNow(newProduct);
-      console.log("Buy now:", newProduct);
-
-      // Small delay to ensure item is added to cart
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
-      // Navigate to checkout page
-      router.push(paths.product.checkout);
-=======
     // const newProduct = {
     //   id: productId,
     //   name: productName,
@@ -265,24 +198,6 @@ export default function ProductItem({
     //   postalCode: productPostalCode,
     // };
     try {
-=======
-    // const newProduct = {
-    //   id: productId,
-    //   name: productName,
-    //   coverUrl: firstImage,
-    //   available: productAvailable,
-    //   price: productPrice,
-    //   colors: colors && colors.length > 0 ? [colors[0]] : [],
-    //   size: sizes && sizes.length > 0 ? sizes[0] : "Default",
-    //   quantity: 1,
-    //   // Add car-specific properties if available
-    //   carDetails: carDetails || {},
-    //   category: productCategory,
-    //   location: productLocation,
-    //   postalCode: productPostalCode,
-    // };
-    try {
->>>>>>> Stashed changes
       // Clear cart first, then add the product to cart
       // onClearCart();
       // onAddToCart(newProduct);
@@ -295,31 +210,8 @@ export default function ProductItem({
       setTimeout(() => {
         router.push(paths.product.checkout);
       }, 100);
->>>>>>> Stashed changes
     } catch (error) {
       console.error("Error with buy now:", error);
-      // Fallback to using local product data if API fails
-      const fallbackProduct = {
-        id: productId,
-        name: productName,
-        coverUrl: firstImage,
-        available: available || true,
-        price: price || 0,
-        colors: colors && colors.length > 0 ? [colors[0]] : [],
-        size: sizes && sizes.length > 0 ? sizes[0] : "Default",
-        quantity: 1,
-        carDetails: carDetails || {},
-        category: category || "sale",
-        location: location || "",
-        postalCode: postalCode || "",
-      };
-
-      onReset();
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      onBuyNow(fallbackProduct);
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      router.push(paths.product.checkout);
-    } finally {
       setIsBuyNowLoading(false);
     }
   };

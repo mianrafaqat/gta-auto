@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { OrdersService } from "src/services";
 import { ACCESS_TOKEN_KEY, STORAGE_USER_KEY } from "src/utils/constants";
+import { transformApiOrderToComponent } from "src/utils/order-transformer";
 
 // Helper function to check if user is authenticated
 const checkAuthentication = () => {
@@ -53,35 +54,24 @@ export function useGetAllOrders() {
   return useQuery({
     queryKey: ["orders", "all"],
     queryFn: async () => {
-      console.log("🔄 [HOOK] useGetAllOrders: Starting API call...");
       try {
         // First try to get all orders (admin only)
-        console.log("🔄 [HOOK] Checking admin role...");
         checkAdminRole();
-        console.log("✅ [HOOK] Admin role confirmed, calling getAll...");
         const result = await OrdersService.getAll();
-        console.log("✅ [HOOK] getAll result:", result);
         return result;
       } catch (adminError) {
-        console.log("⚠️ [HOOK] Admin check failed:", adminError.message);
-        console.log("⚠️ [HOOK] Error details:", adminError);
-        
         // If admin check fails or we get a 403, fall back to user's own orders
         if (adminError.message.includes("permission") || 
             adminError.message.includes("admin") || 
             adminError.status === 403 ||
             adminError.isForbidden) {
-          console.log("🔄 [HOOK] Falling back to user orders...");
           try {
             const userOrders = await OrdersService.getMyOrders();
-            console.log("✅ [HOOK] getMyOrders result:", userOrders);
             return userOrders;
           } catch (userError) {
-            console.log("❌ [HOOK] getMyOrders also failed:", userError);
             throw userError;
           }
         }
-        console.log("❌ [HOOK] Non-admin error, rethrowing:", adminError.message);
         throw adminError;
       }
     },
@@ -106,8 +96,40 @@ export function useGetOrderById(id) {
   return useQuery({
     queryKey: ["orders", id],
     queryFn: async () => {
-      checkAuthentication();
-      return OrdersService.getById(id);
+      try {
+        checkAuthentication();
+        
+        // First try to get the order from user's orders list
+        try {
+          console.log("🔄 [HOOK] Trying to get order from user's orders list first...");
+          const userOrders = await OrdersService.getMyOrders();
+          
+          // Find the specific order in the user's orders
+          const order = userOrders.orders?.find(order => order._id === id) || 
+                       userOrders.find(order => order._id === id);
+          
+          if (order) {
+            console.log("✅ [HOOK] Found order in user's orders list");
+            // Transform the order to ensure it has the correct format
+            const transformedOrder = transformApiOrderToComponent(order);
+            console.log("✅ [HOOK] Transformed order:", transformedOrder);
+            return transformedOrder;
+          }
+        } catch (userOrdersError) {
+          console.log("⚠️ [HOOK] Couldn't get user orders, trying individual endpoint");
+        }
+        
+        // If not found in user orders, try the individual endpoint
+        console.log("🔄 [HOOK] Trying individual order endpoint...");
+        const result = await OrdersService.getById(id);
+        // Transform the result to ensure it has the correct format
+        const transformedResult = transformApiOrderToComponent(result);
+        console.log("✅ [HOOK] Transformed result:", transformedResult);
+        return transformedResult;
+      } catch (error) {
+        console.log("❌ [HOOK] getById error:", error);
+        throw error;
+      }
     },
     enabled: !!id,
     retry: false,
