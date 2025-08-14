@@ -25,7 +25,7 @@ const Comics = () => {
           flexDirection: "column",
           gap: "16px",
         }}>
-        <Typography variant="h1" sx={{ color: "#4caf50", textAlign: "center" }}>
+        <Typography variant="h2" sx={{ color: "#4caf50", textAlign: "center" }}>
           GTA COMICS
         </Typography>
         <Typography color="#fff" textAlign="center">

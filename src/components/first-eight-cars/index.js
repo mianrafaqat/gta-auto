@@ -193,6 +193,7 @@ export default function LastestEightCars() {
                     mb: 2,
                     fontSize: { xs: "2rem", md: "34px !important" },
                     lineHeight: 1.2,
+                    whiteSpace: "nowrap",
                   }}>
                   Import Your Dream Car
                 </Typography>
