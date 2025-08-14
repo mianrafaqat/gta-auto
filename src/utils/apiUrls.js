@@ -44,7 +44,7 @@ export const API_URLS = {
     create: "/api/products",
     update: (id) => `/api/products/${id}`,
     delete: (id) => `/api/products/${id}`,
-    uploadImages: "/api/products/upload-images",
+    uploadImages: "/api/products/upload-image", // Updated to match API docs
   },
 
   shipping: {
@@ -63,8 +63,9 @@ export const API_URLS = {
     getById: (id) => `/api/orders/${id}`, // GET: Get Order by ID
 
     // Admin Routes
-    getAll: "/api/orders", // GET: Get All Orders (Admin only)
+    getAll: "/api/orders/all", // GET: Get All Orders (Admin only) - Updated to match API docs
     updateStatus: (id) => `/api/orders/${id}/status`, // PUT: Update Order Status (Admin only)
+    addTracking: (id) => `/api/orders/${id}/tracking`, // POST: Add Tracking Information (Admin only)
   },
   cars: {
     // Public Routes
@@ -111,28 +112,31 @@ export const API_URLS = {
     delete: "/api/video/delete",
   },
   category: {
-    getAll: "/api/categories/tree",
+    getAll: "/api/categories", // Updated to match API docs
+    getTree: "/api/categories/tree", // Added tree endpoint
     add: "/api/categories",
     delete: (id) => `/api/categories/${id}`,
     update: (id) => `/api/categories/${id}`,
   },
   attribute: {
-    getAll: "/api/categories/attributes",
+    getAll: "/api/categories/attributes", // Updated to match API docs
     add: "/api/categories/attributes",
-    delete: (id) => `/api/attributes/${id}`,
-    update: (id) => `/api/attributes/${id}`,
+    delete: (id) => `/api/categories/attributes/${id}`, // Updated to match API docs
+    update: (id) => `/api/categories/attributes/${id}`, // Updated to match API docs
   },
   tax: {
     getAll: "/api/tax",
     add: "/api/tax",
     delete: (id) => `/api/tax/${id}`,
     update: (id) => `/api/tax/${id}`,
+    calculate: "/api/tax/calculate", // Added calculate endpoint
   },
   coupon: {
     getAll: "/api/coupons",
     add: "/api/coupons",
     delete: (id) => `/api/coupons/${id}`,
     update: (id) => `/api/coupons/${id}`,
+    validate: "/api/coupons/validate", // Added validate endpoint
   },
   ads: {
     // Public Routes
@@ -142,5 +146,15 @@ export const API_URLS = {
     add: "/api/ads/add",
     update: "/api/ads/update",
     delete: "/api/ads/delete",
+  },
+  addressBook: {
+    // Protected Routes
+    getAll: "/api/address-book",
+    getPrimary: "/api/address-book/primary",
+    getById: (id) => `/api/address-book/${id}`,
+    create: "/api/address-book",
+    update: (id) => `/api/address-book/${id}`,
+    delete: (id) => `/api/address-book/${id}`,
+    setPrimary: (id) => `/api/address-book/${id}/primary`,
   },
 };

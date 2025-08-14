@@ -6,12 +6,18 @@ import { useState, useCallback } from 'react';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
 import { paths } from 'src/routes/paths';
 
-import { _orders, ORDER_STATUS_OPTIONS } from 'src/_mock';
+import { ORDER_STATUS_OPTIONS } from 'src/_mock';
 
 import { useSettingsContext } from 'src/components/settings';
+import { useGetOrderById } from 'src/hooks/use-orders';
+import { transformApiOrderToComponent } from 'src/utils/order-transformer';
 
 import OrderDetailsInfo from '../order-details-info';
 import OrderDetailsItems from '../order-details-item';
@@ -23,13 +29,88 @@ import OrderDetailsHistory from '../order-details-history';
 export default function OrderDetailsView({ id }) {
   const settings = useSettingsContext();
 
-  const currentOrder = _orders.filter((order) => order.id === id)[0];
+  // Fetch order from API
+  const { data: apiOrder, isLoading, error, refetch } = useGetOrderById(id);
 
-  const [status, setStatus] = useState(currentOrder.status);
+  // Transform API data to component format
+  const currentOrder = transformApiOrderToComponent(apiOrder);
+
+  const [status, setStatus] = useState(currentOrder?.status || 'pending');
 
   const handleChangeStatus = useCallback((newValue) => {
     setStatus(newValue);
   }, []);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+        <Stack alignItems="center" justifyContent="center" sx={{ py: 10 }}>
+          <CircularProgress />
+        </Stack>
+      </Container>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    const isForbidden = error.status === 403 || error.isForbidden;
+    const isNotFound = error.status === 404 || error.isNotFound;
+    
+    return (
+      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+        <Alert severity={isForbidden ? "warning" : isNotFound ? "info" : "error"} sx={{ mb: 3 }}>
+          <strong>
+            {isForbidden 
+              ? "Access Denied" 
+              : isNotFound
+              ? "Order Not Found"
+              : "Failed to load order:"}
+          </strong> {error.message}
+          {error.response?.status && (
+            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+              Status: {error.response.status} {error.response.statusText}
+            </Box>
+          )}
+          {error.response?.data?.message && (
+            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+              Server: {error.response.data.message}
+            </Box>
+          )}
+          {isForbidden && (
+            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+              You don't have permission to view this order.
+            </Box>
+          )}
+          {isNotFound && (
+            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+              The order you're looking for doesn't exist or has been removed.
+            </Box>
+          )}
+        </Alert>
+        <Button onClick={() => refetch()} variant="contained" sx={{ mr: 2 }}>
+          Retry
+        </Button>
+        <Button 
+          onClick={() => window.location.href = '/dashboard/order'} 
+          variant="outlined"
+        >
+          Back to Orders
+        </Button>
+      </Container>
+    );
+  }
+
+  // Show not found state
+  if (!currentOrder) {
+    return (
+      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+        <Alert severity="warning">
+          Order not found
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

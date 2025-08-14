@@ -1,18 +1,18 @@
-import Card from "@mui/material/Card";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Unstable_Grid2";
-import CardHeader from "@mui/material/CardHeader";
-import Typography from "@mui/material/Typography";
+import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Unstable_Grid2';
+import CardHeader from '@mui/material/CardHeader';
+import Typography from '@mui/material/Typography';
 
-import { paths } from "src/routes/paths";
-import { RouterLink } from "src/routes/components";
+import { paths } from 'src/routes/paths';
+import { RouterLink } from 'src/routes/components';
 
-import Iconify from "src/components/iconify";
-import EmptyContent from "src/components/empty-content";
+import Iconify from 'src/components/iconify';
+import EmptyContent from 'src/components/empty-content';
 
-import { useCheckoutContext } from "./context/checkout-context";
-import CheckoutSummary from "./checkout-summary";
-import CheckoutCartProductList from "./checkout-cart-product-list";
+import { useCheckoutContext } from './context';
+import CheckoutSummary from './checkout-summary';
+import CheckoutCartProductList from './checkout-cart-product-list';
 
 // ----------------------------------------------------------------------
 
@@ -53,19 +53,18 @@ export default function CheckoutCart() {
   return (
     <Grid container spacing={3}>
       <Grid xs={12} md={8}>
-        <Card
-          sx={{
-            mb: 3,
-            background: "transparent",
-            border: "1px solid #4caf50",
-            color: "#fff",
-          }}>
+        <Card sx={{ mb: 3 }}>
           <CardHeader
             title={
               <Typography variant="h6">
                 Cart
+<<<<<<< Updated upstream
                 <Typography component="span" sx={{ color: "#4caf50" }}>
                   &nbsp;({items.length} item)
+=======
+                <Typography component="span" sx={{ color: 'text.secondary' }}>
+                  &nbsp;({checkout.totalItems} item)
+>>>>>>> Stashed changes
                 </Typography>
               </Typography>
             }
@@ -93,10 +92,9 @@ export default function CheckoutCart() {
           component={RouterLink}
           href={paths.product.root}
           color="inherit"
-          sx={{
-            color: "#4caf50",
-          }}
-          startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}>
+          sx={{ color: 'white' }}
+          startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}
+        >
           Continue Shopping
         </Button>
       </Grid>
@@ -114,12 +112,9 @@ export default function CheckoutCart() {
           size="large"
           type="submit"
           variant="contained"
-          // disabled={empty}
-          sx={{
-            bgcolor: "#4caf50",
-            color: "#fff",
-          }}
-          onClick={checkout.onNextStep}>
+          disabled={empty}
+          onClick={checkout.onNextStep}
+        >
           Check Out
         </Button>
       </Grid>

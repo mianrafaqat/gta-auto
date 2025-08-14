@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -55,6 +55,7 @@ export default function AddCategoriesListView({ isEdit = false, categoryId }) {
   const snackbar = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const isSubmittingRef = useRef(false);
 
   const methods = useForm({
     resolver: yupResolver(CategorySchema),
@@ -73,35 +74,34 @@ export default function AddCategoriesListView({ isEdit = false, categoryId }) {
   const nameValue = watch("name");
   const slugValue = watch("slug");
 
-  // Auto-generate slug when name changes
+  // Auto-generate slug when name changes (debounced)
   useEffect(() => {
-    setValue("slug", generateSlug(nameValue || ""));
+    if (!nameValue) {
+      setValue("slug", "");
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setValue("slug", generateSlug(nameValue));
+    }, 300); // Debounce for 300ms
+
+    return () => clearTimeout(timeoutId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nameValue]);
 
-  // Fetch all categories for parent selection
+  // Fetch all categories for parent selection and category for edit
   useEffect(() => {
-    CategoryService.getAll()
-      .then((res) => {
-        setCategories(res?.data || []);
-      })
-      .catch((err) => {
-        setCategories([]);
-      });
-  }, []);
-
-  // Fetch category for edit
-  useEffect(() => {
-    if (isEdit && categoryId) {
-      setLoading(true);
-      CategoryService.getAll()
-        .then((res) => {
-          setCategories(res?.data || []);
-        })
-        .catch(() => setCategories([]));
-      CategoryService.getAll() // Replace with getById if available
-        .then((res) => {
-          const found = (res?.data || []).find((cat) => cat._id === categoryId);
+    const fetchCategories = async () => {
+      console.log('Fetching categories...', { isEdit, categoryId });
+      try {
+        setLoading(true);
+        const res = await CategoryService.getAll();
+        const categoriesData = res?.data || [];
+        setCategories(categoriesData);
+        
+        // If editing, find the specific category
+        if (isEdit && categoryId) {
+          const found = categoriesData.find((cat) => cat._id === categoryId);
           if (found) {
             reset({
               name: found.name || "",
@@ -110,55 +110,85 @@ export default function AddCategoriesListView({ isEdit = false, categoryId }) {
               parent: found.parent || "",
             });
           }
-        })
-        .catch((error) => {
-          console.error(error);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setCategories([]);
+        if (isEdit && categoryId) {
           snackbar.enqueueSnackbar(
             error?.message || "Failed to fetch category",
-            {
-              variant: "error",
-            }
+            { variant: "error" }
           );
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
   }, [isEdit, categoryId, reset, snackbar]);
 
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      setLoading(true);
-      const payload = {
-        name: data.name,
-        slug: data.slug,
-        description: data.description,
-        parent: data.parent || null,
-      };
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      isSubmittingRef.current = false;
+    };
+  }, []);
 
-      if (isEdit) {
-        const response = await CategoryService.update(categoryId, payload);
-        if (response?.status === 200) {
-          snackbar.enqueueSnackbar("Category updated successfully!");
-          router.push(paths.dashboard.admin.categories.list);
-        }
-      } else {
-        const response = await CategoryService.add(payload);
-        if (response?.status === 200) {
-          snackbar.enqueueSnackbar("Category added successfully!");
-          router.push(paths.dashboard.admin.categories.list);
-        }
+  const onSubmit = useCallback(
+    handleSubmit(async (data) => {
+      // Prevent multiple submissions using ref
+      if (isSubmittingRef.current || loading || isSubmitting) {
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      snackbar.enqueueSnackbar(
-        error?.message || `Failed to ${isEdit ? "update" : "add"} category`,
-        { variant: "error" }
-      );
-    } finally {
-      setLoading(false);
-    }
-  });
+
+      // Validate required fields
+      if (!data.name || !data.slug) {
+        snackbar.enqueueSnackbar("Please fill in all required fields", { variant: "error" });
+        return;
+      }
+
+      try {
+        isSubmittingRef.current = true;
+        setLoading(true);
+        
+        const payload = {
+          name: data.name.trim(),
+          slug: data.slug.trim(),
+          description: data.description?.trim() || "",
+          parent: data.parent || null,
+        };
+
+        let response;
+        if (isEdit) {
+          response = await CategoryService.update(categoryId, payload);
+        } else {
+          response = await CategoryService.add(payload);
+        }
+
+        // Check for successful response
+        if (response?.status === 200 || response?.success) {
+          snackbar.enqueueSnackbar(
+            `Category ${isEdit ? "updated" : "added"} successfully!`,
+            { variant: "success" }
+          );
+          router.push(paths.dashboard.admin.categories.list);
+        } else {
+          throw new Error(response?.message || `Failed to ${isEdit ? "update" : "add"} category`);
+        }
+      } catch (error) {
+        console.error('Category operation error:', error);
+        snackbar.enqueueSnackbar(
+          error?.message || `Failed to ${isEdit ? "update" : "add"} category`,
+          { variant: "error" }
+        );
+      } finally {
+        setLoading(false);
+        isSubmittingRef.current = false;
+      }
+    }),
+    [loading, isSubmitting, isEdit, categoryId, snackbar, router, handleSubmit]
+  );
 
   const handleCancel = useCallback(() => {
     router.push(paths.dashboard.admin.categories.list);
@@ -221,7 +251,8 @@ export default function AddCategoriesListView({ isEdit = false, categoryId }) {
                 <LoadingButton
                   onClick={onSubmit}
                   variant="contained"
-                  loading={isSubmitting || loading}>
+                  loading={isSubmitting || loading}
+                  disabled={isSubmitting || loading || isSubmittingRef.current}>
                   {isEdit ? "Update Category" : "Add Category"}
                 </LoadingButton>
               </Stack>

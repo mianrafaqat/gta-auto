@@ -1,36 +1,33 @@
-import PropTypes from "prop-types";
-import { m, AnimatePresence } from "framer-motion";
+import PropTypes from 'prop-types';
+import { m, AnimatePresence } from 'framer-motion';
 
-import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
-import Stack from "@mui/material/Stack";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
+import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 
-import { OrderCompleteIllustration } from "src/assets/illustrations";
+import { OrderCompleteIllustration } from 'src/assets/illustrations';
 
-import Iconify from "src/components/iconify";
-import { varFade } from "src/components/animate";
+import Iconify from 'src/components/iconify';
+import { varFade } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
-export default function CheckoutOrderComplete({
-  open,
-  onReset,
-  onDownloadPDF,
-}) {
+export default function CheckoutOrderComplete({ open, onReset, onDownloadPDF }) {
   const renderContent = (
     <Stack
       spacing={5}
       sx={{
-        m: "auto",
+        m: 'auto',
         maxWidth: 480,
-        textAlign: "center",
+        textAlign: 'center',
         px: { xs: 2, sm: 0 },
-      }}>
+      }}
+    >
       <Typography variant="h4">Thank you for your purchase!</Typography>
 
       <OrderCompleteIllustration sx={{ height: 260 }} />
@@ -43,27 +40,25 @@ export default function CheckoutOrderComplete({
         <br />
         <br />
         We will send you a notification within 5 days when it ships.
-        <br /> If you have any question or queries then fell to get in contact
-        us. <br /> <br />
+        <br /> If you have any question or queries then fell to get in contact us. <br /> <br />
         All the best,
       </Typography>
 
-      <Divider sx={{ borderStyle: "dashed" }} />
+      <Divider sx={{ borderStyle: 'dashed' }} />
 
       <Stack
         spacing={2}
         justifyContent="space-between"
-        direction={{ xs: "column-reverse", sm: "row" }}>
+        direction={{ xs: 'column-reverse', sm: 'row' }}
+      >
         <Button
           fullWidth
           size="large"
-          color="#4caf50"
+          color="inherit"
           variant="outlined"
           onClick={onReset}
-          sx={{
-            color: "#4caf50",
-          }}
-          startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}>
+          startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}
+        >
           Continue Shopping
         </Button>
 
@@ -72,7 +67,8 @@ export default function CheckoutOrderComplete({
           size="large"
           variant="contained"
           startIcon={<Iconify icon="eva:cloud-download-fill" />}
-          onClick={onDownloadPDF}>
+          onClick={onDownloadPDF}
+        >
           Download as PDF
         </Button>
       </Stack>
@@ -93,16 +89,18 @@ export default function CheckoutOrderComplete({
                 distance: 120,
                 durationIn: 0.32,
                 durationOut: 0.24,
-                easeIn: "easeInOut",
+                easeIn: 'easeInOut',
               }).inUp}
               sx={{
                 width: 1,
                 height: 1,
                 p: { md: 3 },
-              }}>
+              }}
+            >
               <Paper {...props}>{props.children}</Paper>
             </Box>
-          )}>
+          )}
+        >
           {renderContent}
         </Dialog>
       )}

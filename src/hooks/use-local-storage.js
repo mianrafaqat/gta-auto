@@ -60,10 +60,13 @@ export const getStorage = (key) => {
   let value = null;
 
   try {
-    const result = window.localStorage.getItem(key);
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined') {
+      const result = window.localStorage.getItem(key);
 
-    if (result) {
-      value = JSON.parse(result);
+      if (result) {
+        value = JSON.parse(result);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -74,7 +77,10 @@ export const getStorage = (key) => {
 
 export const setStorage = (key, value) => {
   try {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    }
   } catch (error) {
     console.error(error);
   }
@@ -82,7 +88,10 @@ export const setStorage = (key, value) => {
 
 export const removeStorage = (key) => {
   try {
-    window.localStorage.removeItem(key);
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(key);
+    }
   } catch (error) {
     console.error(error);
   }

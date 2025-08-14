@@ -14,6 +14,15 @@ import ProductNewEditForm from "../product-new-edit-form";
 export default function ProductCreateView() {
   const settings = useSettingsContext();
 
+  // Safety check for settings context
+  if (!settings) {
+    return (
+      <Container maxWidth="lg">
+        <div>Loading settings...</div>
+      </Container>
+    );
+  }
+
   return (
     <Container maxWidth={settings.themeStretch ? false : "lg"}>
       <CustomBreadcrumbs

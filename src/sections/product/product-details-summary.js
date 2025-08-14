@@ -39,10 +39,15 @@ export default function ProductDetailsSummary({
 
   const {
     id,
+    _id, // Add _id for new API structure
     name,
+    title, // Keep title for backward compatibility
     sizes = [],
     price,
+    regularPrice,
+    salePrice,
     coverUrl,
+    images, // Add images for new API structure
     colors,
     newLabel = {},
     available,
@@ -50,15 +55,40 @@ export default function ProductDetailsSummary({
     totalRatings,
     totalReviews,
     inventoryType,
+    stockStatus, // Add stockStatus for new API structure
     subDescription,
+    categories, // Add categories for new API structure
+    category, // Keep category for backward compatibility
+    productStatus, // Renamed from status to avoid conflict
+    type, // Add type for new API structure
+    slug, // Add slug for new API structure
   } = product;
 
+  // Get the product ID, handling both old and new API structures
+  const productId = _id || id;
+
+  // Get the product name, handling both old and new API structures
+  const productName = name || title || "Product";
+
+  // Get the product images, handling both old and new API structures
+  const productImages = images || [];
+  const firstImage = productImages[0] || coverUrl || "/assets/placeholder.svg";
+
+  // Get the product category, handling both old and new API structures
+  const productCategory = category || (categories && categories.length > 0 ? categories[0].name : "sale");
+
+  // Get the product stock status, handling both old and new API structures
+  const productStockStatus = stockStatus || inventoryType || "in stock";
+
+  // Get the product status, handling both old and new API structures
+  const productStatusValue = productStatus || "published";
+
   const existProduct =
-    !!items?.length && items.map((item) => item.id).includes(id);
+    !!items?.length && items.map((item) => item.id).includes(productId);
 
   const isMaxQuantity =
     !!items?.length &&
-    items.filter((item) => item.id === id).map((item) => item.quantity)[0] >=
+    items.filter((item) => item.id === productId).map((item) => item.quantity)[0] >=
       available;
 
   // useEffect(() => {
@@ -85,7 +115,7 @@ export default function ProductDetailsSummary({
     );
   };
 
-  const status = useMemo(() => {
+  const dealStatus = useMemo(() => {
     if (product?.status) {
       switch (product?.deal) {
         case "fair":
@@ -159,7 +189,7 @@ export default function ProductDetailsSummary({
           padding: ".75rem 1rem",
         }}>
         <Typography fontWeight={700} variant="h5" color="#000">
-          {product.title}
+          {productName}
         </Typography>
         <Box gap="5px" sx={{ display: "flex" }} alignItems="start">
           <Iconify
@@ -188,7 +218,7 @@ export default function ProductDetailsSummary({
             variant="body1"
             gap={"5px"}
             fontWeight={600}>
-            {status}
+            {dealStatus}
           </Typography>
         </Box>
       </Box>

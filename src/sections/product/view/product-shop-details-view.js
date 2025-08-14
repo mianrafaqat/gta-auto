@@ -1,7 +1,7 @@
 "use client";
 
 import PropTypes from "prop-types";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
-import { useGetProduct } from "src/api/product";
+import ProductService from "src/services/products/products.service";
 
 import Iconify from "src/components/iconify";
 import EmptyContent from "src/components/empty-content";
@@ -55,12 +55,48 @@ const SUMMARY = [
 
 export default function ProductShopDetailsView({ id }) {
   const settings = useSettingsContext();
-
   const checkout = useCheckoutContext();
 
   const [currentTab, setCurrentTab] = useState("description");
+  const [product, setProduct] = useState(null);
+  const [productLoading, setProductLoading] = useState(true);
+  const [productError, setProductError] = useState(null);
 
-  const { product, productLoading, productError } = useGetProduct(id);
+  // Safety check for settings context
+  if (!settings) {
+    return (
+      <Container maxWidth="lg">
+        <div>Loading settings...</div>
+      </Container>
+    );
+  }
+
+  // Fetch product data using ProductService
+  const fetchProduct = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      setProductLoading(true);
+      setProductError(null);
+      
+      const response = await ProductService.getById(id);
+      
+      if (response && response.data) {
+        setProduct(response.data);
+      } else {
+        setProductError(new Error('Product not found'));
+      }
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      setProductError(error);
+    } finally {
+      setProductLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
 
   // Debug log to help identify the issue
   console.log("Product details view:", {

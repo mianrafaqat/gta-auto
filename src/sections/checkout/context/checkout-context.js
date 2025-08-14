@@ -1,17 +1,15 @@
-"use client";
+'use client';
 
-import { createContext, useContext } from "react";
+import { useContext, createContext } from 'react';
 
 // ----------------------------------------------------------------------
 
-export const CheckoutContext = createContext(null);
+export const CheckoutContext = createContext({});
 
-export function useCheckoutContext() {
+export const useCheckoutContext = () => {
   const context = useContext(CheckoutContext);
 
-  if (!context) {
-    throw new Error("useCheckoutContext must be used within CheckoutProvider");
-  }
+  if (!context) throw new Error('useCheckoutContext must be use inside CheckoutProvider');
 
   return context;
-}
+};

@@ -14,111 +14,145 @@ import Label from 'src/components/label';
 
 // ----------------------------------------------------------------------
 
-export function RenderCellPrice({ params }) {
-  return <>{fCurrency(params.row.price)}</>;
+export function RenderCellPrice({ price, regularPrice, salePrice }) {
+  const displayPrice = salePrice > 0 ? salePrice : price;
+  const hasSale = salePrice > 0 && salePrice < regularPrice;
+  
+  const safePrice = price || 0;
+  const safeRegularPrice = regularPrice || safePrice;
+  
+  return (
+    <Box>
+      {hasSale && (
+        <Box component="span" sx={{ textDecoration: 'line-through', color: 'text.disabled', mr: 1 }}>
+          {fCurrency(safeRegularPrice)}
+        </Box>
+      )}
+      <Box component="span" sx={{ color: hasSale ? 'error.main' : 'text.primary' }}>
+        {fCurrency(displayPrice)}
+      </Box>
+    </Box>
+  );
 }
 
 RenderCellPrice.propTypes = {
-  params: PropTypes.shape({
-    row: PropTypes.object,
-  }),
+  price: PropTypes.number,
+  regularPrice: PropTypes.number,
+  salePrice: PropTypes.number,
 };
 
-export function RenderCellPublish({ params }) {
+export function RenderCellPublish({ status }) {
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'published': return 'success';
+      case 'draft': return 'warning';
+      case 'pending': return 'info';
+      default: return 'default';
+    }
+  };
+
+  const safeStatus = status || 'draft';
+
   return (
-    <Label variant="soft" color={(params.row.publish === 'published' && 'info') || 'default'}>
-      {params.row.publish}
+    <Label variant="soft" color={getStatusColor(safeStatus)}>
+      {safeStatus}
     </Label>
   );
 }
 
 RenderCellPublish.propTypes = {
-  params: PropTypes.shape({
-    row: PropTypes.object,
-  }),
+  status: PropTypes.string,
 };
 
-export function RenderCellCreatedAt({ params }) {
-  return (
-    <ListItemText
-      primary={fDate(params.row.createdAt)}
-      secondary={fTime(params.row.createdAt)}
-      primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-      secondaryTypographyProps={{
-        mt: 0.5,
-        component: 'span',
-        typography: 'caption',
-      }}
-    />
-  );
+export function RenderCellCreatedAt({ value }) {
+  if (!value) return '-';
+  
+  try {
+    return (
+      <Box>
+        <Box component="span" sx={{ color: 'text.primary' }}>{fDate(value)}</Box>
+        <Box component="span" sx={{ color: 'text.secondary', ml: 1, typography: 'caption' }}>
+          {fTime(value)}
+        </Box>
+      </Box>
+    );
+  } catch (error) {
+    return 'Invalid Date';
+  }
 }
 
 RenderCellCreatedAt.propTypes = {
-  params: PropTypes.shape({
-    row: PropTypes.object,
-  }),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
 };
 
-export function RenderCellStock({ params }) {
+export function RenderCellStock({ stockStatus, stockQuantity }) {
+  const getStockColor = (status) => {
+    switch (status) {
+      case 'out of stock': return 'error';
+      case 'low stock': return 'warning';
+      case 'in stock': return 'success';
+      default: return 'default';
+    }
+  };
+
+  const safeStockStatus = stockStatus || 'unknown';
+  const safeStockQuantity = stockQuantity || 0;
+
   return (
-    <Stack sx={{ typography: 'caption', color: 'text.secondary' }}>
-      <LinearProgress
-        value={(params.row.available * 100) / params.row.quantity}
-        variant="determinate"
-        color={
-          (params.row.inventoryType === 'out of stock' && 'error') ||
-          (params.row.inventoryType === 'low stock' && 'warning') ||
-          'success'
-        }
-        sx={{ mb: 1, height: 6, maxWidth: 80 }}
-      />
-      {!!params.row.available && params.row.available} {params.row.inventoryType}
-    </Stack>
+    <Box sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+      <Label variant="soft" color={getStockColor(safeStockStatus)}>
+        {safeStockStatus}
+      </Label>
+      {safeStockQuantity !== undefined && (
+        <Box component="span" sx={{ ml: 1 }}>
+          ({safeStockQuantity})
+        </Box>
+      )}
+    </Box>
   );
 }
 
 RenderCellStock.propTypes = {
-  params: PropTypes.shape({
-    row: PropTypes.object,
-  }),
+  stockStatus: PropTypes.string,
+  stockQuantity: PropTypes.number,
 };
 
-export function RenderCellProduct({ params }) {
+export function RenderCellProduct({ name, images, categories }) {
+  const safeName = name || 'Unnamed Product';
+  const safeImages = images || [];
+  const safeCategories = categories || [];
+  
+  const firstImage = safeImages.length > 0 ? safeImages[0] : '/assets/placeholder.svg';
+  const categoryName = safeCategories.length > 0 ? safeCategories[0].name : 'No Category';
+  
   return (
-    <Stack direction="row" alignItems="center" sx={{ py: 2, width: 1 }}>
+    <Stack direction="row" alignItems="center" spacing={2}>
       <Avatar
-        alt={params.row.name}
-        src={params.row.coverUrl}
+        alt={safeName}
+        src={firstImage}
         variant="rounded"
-        sx={{ width: 64, height: 64, mr: 2 }}
+        sx={{ width: 48, height: 48 }}
       />
 
-      <ListItemText
-        disableTypography
-        primary={
-          <Link
-            noWrap
-            color="inherit"
-            variant="subtitle2"
-            onClick={params.row.onViewRow}
-            sx={{ cursor: 'pointer' }}
-          >
-            {params.row.name}
-          </Link>
-        }
-        secondary={
-          <Box component="div" sx={{ typography: 'body2', color: 'text.disabled' }}>
-            {params.row.category}
-          </Box>
-        }
-        sx={{ display: 'flex', flexDirection: 'column' }}
-      />
+      <Box>
+        <Link
+          noWrap
+          color="inherit"
+          variant="subtitle2"
+          sx={{ cursor: 'pointer', display: 'block', mb: 0.5 }}
+        >
+          {safeName}
+        </Link>
+        <Box sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
+          {categoryName}
+        </Box>
+      </Box>
     </Stack>
   );
 }
 
 RenderCellProduct.propTypes = {
-  params: PropTypes.shape({
-    row: PropTypes.object,
-  }),
+  name: PropTypes.string,
+  images: PropTypes.array,
+  categories: PropTypes.array,
 };

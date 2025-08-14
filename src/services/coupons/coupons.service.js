@@ -50,7 +50,7 @@ class CouponService {
   validate = async (data) => {
     try {
       const res = await gtaAutosInstance.post(
-        `${API_URLS.coupon.getAll}/validate`,
+        API_URLS.coupon.validate,
         data
       );
       return res;

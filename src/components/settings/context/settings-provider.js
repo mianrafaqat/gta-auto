@@ -19,7 +19,10 @@ export function SettingsProvider({ children, defaultSettings }) {
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const isArabic = localStorageGetItem('i18nextLng') === 'ar';
+  const isArabic = typeof window !== 'undefined' ? localStorageGetItem('i18nextLng') === 'ar' : false;
+
+  // Ensure we always have a valid state
+  const safeState = state || defaultSettings;
 
   useEffect(() => {
     if (isArabic) {
@@ -45,11 +48,11 @@ export function SettingsProvider({ children, defaultSettings }) {
     setOpenDrawer(false);
   }, []);
 
-  const canReset = !isEqual(state, defaultSettings);
+  const canReset = !isEqual(safeState, defaultSettings);
 
   const memoizedValue = useMemo(
     () => ({
-      ...state,
+      ...safeState,
       onUpdate: update,
       // Direction
       onChangeDirectionByLang,
@@ -64,7 +67,7 @@ export function SettingsProvider({ children, defaultSettings }) {
     [
       reset,
       update,
-      state,
+      safeState,
       canReset,
       openDrawer,
       onCloseDrawer,

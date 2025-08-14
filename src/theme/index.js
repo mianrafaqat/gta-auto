@@ -30,6 +30,25 @@ export default function ThemeProvider({ children }) {
 
   const settings = useSettingsContext();
 
+  // Safety check for settings context
+  if (!settings) {
+    // Return a basic theme while settings are loading
+    const basicTheme = createTheme({
+      palette: palette('light'),
+      typography,
+      shape: { borderRadius: 8 },
+    });
+    
+    return (
+      <NextAppDirEmotionCacheProvider options={{ key: 'css' }}>
+        <MuiThemeProvider theme={basicTheme}>
+          <CssBaseline />
+          {children}
+        </MuiThemeProvider>
+      </NextAppDirEmotionCacheProvider>
+    );
+  }
+
   const presets = createPresets(settings.themeColorPresets);
 
   const contrast = createContrast(settings.themeContrast, settings.themeMode);

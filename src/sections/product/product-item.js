@@ -51,7 +51,11 @@ export default function ProductItem({
   onHome = false,
 }) {
   const router = useRouter();
+<<<<<<< Updated upstream
   const { onAddToCart, onBuyNow, onClearCart, onReset } = useCheckoutContext();
+=======
+  const { onAddToCart, onGotoStep, update, onClearCart } = useCheckoutContext();
+>>>>>>> Stashed changes
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
   const {
@@ -72,6 +76,9 @@ export default function ProductItem({
     owner,
     tel,
     _id, // Add _id for new API structure
+    regularPrice,
+    salePrice,
+    categories,
   } = product;
 
   // Get the product ID, handling both old and new API structures
@@ -83,6 +90,23 @@ export default function ProductItem({
 
   // Get the product name, handling both old and new API structures
   const productName = name || title || "Product";
+
+  // Get the product price, handling both old and new API structures
+  const productPrice = price || 0;
+  const productRegularPrice = regularPrice || price || 0;
+  const productSalePrice = salePrice || 0;
+
+  // Get the product category, handling both old and new API structures
+  const productCategory = category || (categories && categories.length > 0 ? categories[0].name : "sale");
+
+  // Get the product location, handling both old and new API structures
+  const productLocation = location || "";
+
+  // Get the product postal code, handling both old and new API structures
+  const productPostalCode = postalCode || "";
+
+  // Get the product availability, handling both old and new API structures
+  const productAvailable = available !== undefined ? available : true;
 
   // Debug log to help identify the issue
   console.log("Product data:", {
@@ -141,16 +165,16 @@ export default function ProductItem({
       id: productId,
       name: productName,
       coverUrl: firstImage,
-      available: available || true,
-      price: price || 0,
+      available: productAvailable,
+      price: productPrice,
       colors: colors && colors.length > 0 ? [colors[0]] : [],
       size: sizes && sizes.length > 0 ? sizes[0] : "Default",
       quantity: 1,
       // Add car-specific properties if available
       carDetails: carDetails || {},
-      category: category || "sale",
-      location: location || "",
-      postalCode: postalCode || "",
+      category: productCategory,
+      location: productLocation,
+      postalCode: productPostalCode,
     };
     try {
       onAddToCart(newProduct);
@@ -162,6 +186,7 @@ export default function ProductItem({
 
   const handleBuyNow = async () => {
     setIsBuyNowLoading(true);
+<<<<<<< Updated upstream
     try {
       console.log("Buy Now clicked for product ID:", productId);
 
@@ -218,6 +243,36 @@ export default function ProductItem({
 
       // Navigate to checkout page
       router.push(paths.product.checkout);
+=======
+    // const newProduct = {
+    //   id: productId,
+    //   name: productName,
+    //   coverUrl: firstImage,
+    //   available: productAvailable,
+    //   price: productPrice,
+    //   colors: colors && colors.length > 0 ? [colors[0]] : [],
+    //   size: sizes && sizes.length > 0 ? sizes[0] : "Default",
+    //   quantity: 1,
+    //   // Add car-specific properties if available
+    //   carDetails: carDetails || {},
+    //   category: productCategory,
+    //   location: productLocation,
+    //   postalCode: productPostalCode,
+    // };
+    try {
+      // Clear cart first, then add the product to cart
+      // onClearCart();
+      // onAddToCart(newProduct);
+      
+      // Set the active step to 0 (cart step)
+      // onGotoStep(0);
+      
+      // console.log("Buy now:", newProduct);
+      // Small delay to ensure cart state is updated, then navigate to checkout
+      setTimeout(() => {
+        router.push(paths.product.checkout);
+      }, 100);
+>>>>>>> Stashed changes
     } catch (error) {
       console.error("Error with buy now:", error);
       // Fallback to using local product data if API fails
@@ -370,7 +425,7 @@ export default function ProductItem({
             textDecoration: "line-through",
             fontSize: "14px",
           }}>
-          PKR {Number(price)?.toLocaleString()}
+          PKR {Number(productRegularPrice)?.toLocaleString()}
         </Typography>
         <Typography
           variant="h6"
@@ -379,7 +434,7 @@ export default function ProductItem({
             color: "#333333",
             fontSize: "16px",
           }}>
-          PKR {Number(price)?.toLocaleString()}
+          PKR {Number(productSalePrice)?.toLocaleString()}
         </Typography>
       </Stack>
 

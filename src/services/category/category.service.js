@@ -12,6 +12,16 @@ class CategoryService {
     }
   };
 
+  // Get category tree structure
+  getTree = async () => {
+    try {
+      const res = await gtaAutosInstance.get(API_URLS.category.getTree);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
   // Admin Routes
   add = async (data) => {
     try {

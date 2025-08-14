@@ -181,10 +181,14 @@ export const paths = {
         edit: `${ROOTS.DASHBOARD}/post/${paramCase(_postTitles[2])}/edit`,
       },
     },
+   
     order: {
-      root: `${ROOTS.DASHBOARD}/orders`,
-      list: `${ROOTS.DASHBOARD}/orders`,
-      details: (id) => `${ROOTS.DASHBOARD}/orders/${id}`,
+      root: `${ROOTS.DASHBOARD}/order`,
+      details: (id) => `${ROOTS.DASHBOARD}/order/${id}`,
+      list: `${ROOTS.DASHBOARD}/order`,
+      // demo: {
+      //   details: `${ROOTS.DASHBOARD}/order/${_id[1]}`,
+      // },
     },
     job: {
       root: `${ROOTS.DASHBOARD}/job`,

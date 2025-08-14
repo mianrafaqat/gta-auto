@@ -67,7 +67,20 @@ class TaxService {
       throw ex;
     }
   };
+
+  /**
+   * Calculate tax for a given amount and location.
+   * @param {Object} data - { amount: number, country: string, state?: string, includesTax: boolean }
+   * @returns {Promise}
+   */
+  calculate = async (data) => {
+    try {
+      const res = await gtaAutosInstance.post(API_URLS.tax.calculate, data);
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
 }
 
-const instance = new TaxService();
-export default instance;
+export default new TaxService();

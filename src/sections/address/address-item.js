@@ -10,7 +10,25 @@ import Label from 'src/components/label';
 // ----------------------------------------------------------------------
 
 export default function AddressItem({ address, action, sx, ...other }) {
-  const { name, fullAddress, addressType, phoneNumber, primary } = address;
+  // Handle both old and new address structures
+  const { 
+    name, 
+    fullAddress, 
+    addressType, 
+    phoneNumber, 
+    primary,
+    email,
+    company,
+    address1,
+    address2,
+    city,
+    state,
+    postcode,
+    country
+  } = address;
+
+  // Generate fullAddress if not provided (for backward compatibility)
+  const displayAddress = fullAddress || `${address1}${address2 ? `, ${address2}` : ''}, ${city}, ${state}, ${postcode}, ${country}`;
 
   return (
     <Stack
@@ -25,7 +43,7 @@ export default function AddressItem({ address, action, sx, ...other }) {
       {...other}
     >
       <Stack flexGrow={1} spacing={1}>
-        <Stack direction="row" alignItems="center">
+        <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
           <Typography variant="subtitle2">
             {name}
             <Box component="span" sx={{ ml: 0.5, typography: 'body2', color: 'text.secondary' }}>
@@ -40,8 +58,20 @@ export default function AddressItem({ address, action, sx, ...other }) {
           )}
         </Stack>
 
+        {email && (
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {email}
+          </Typography>
+        )}
+
+        {company && (
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {company}
+          </Typography>
+        )}
+
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {fullAddress}
+          {displayAddress}
         </Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>

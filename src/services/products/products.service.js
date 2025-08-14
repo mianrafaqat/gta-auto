@@ -176,6 +176,28 @@ class ProductService {
       throw ex;
     }
   };
+
+  /**
+   * Upload product image(s).
+   * @param {FormData} formData - Multipart form data with image file(s)
+   * @returns {Promise<Object>}
+   */
+  uploadImage = async (formData) => {
+    try {
+      const res = await gtaAutosInstance.post(
+        API_URLS.products.uploadImages,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      return res.data;
+    } catch (ex) {
+      throw ex;
+    }
+  };
 }
 
 const instance = new ProductService();

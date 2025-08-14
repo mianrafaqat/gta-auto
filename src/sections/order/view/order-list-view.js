@@ -13,15 +13,20 @@ import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useGetAllOrders } from 'src/hooks/use-orders';
 
 import { isAfter, isBetween } from 'src/utils/format-time';
+import { transformApiOrdersToComponent } from 'src/utils/order-transformer';
 
-import { _orders, ORDER_STATUS_OPTIONS } from 'src/_mock';
+import { ORDER_STATUS_OPTIONS } from 'src/_mock';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -56,7 +61,6 @@ const TABLE_HEAD = [
   { id: 'totalQuantity', label: 'Items', width: 120, align: 'center' },
   { id: 'totalAmount', label: 'Price', width: 140 },
   { id: 'status', label: 'Status', width: 110 },
-  { id: '', width: 88 },
 ];
 
 const defaultFilters = {
@@ -79,7 +83,11 @@ export default function OrderListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_orders);
+  // Fetch orders from API
+  const { data: apiOrders, isLoading, error, refetch } = useGetAllOrders();
+
+  // Transform API data to component format
+  const tableData = transformApiOrdersToComponent(apiOrders || []);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -122,28 +130,14 @@ export default function OrderListView() {
   const handleDeleteRow = useCallback(
     (id) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
-
-      enqueueSnackbar('Delete success!');
-
       setTableData(deleteRow);
 
       table.onUpdatePageDeleteRow(dataInPage.length);
+
+      enqueueSnackbar('Delete success!');
     },
     [dataInPage.length, enqueueSnackbar, table, tableData]
   );
-
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    enqueueSnackbar('Delete success!');
-
-    setTableData(deleteRows);
-
-    table.onUpdatePageDeleteRows({
-      totalRowsInPage: dataInPage.length,
-      totalRowsFiltered: dataFiltered.length,
-    });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
 
   const handleViewRow = useCallback(
     (id) => {
@@ -152,226 +146,238 @@ export default function OrderListView() {
     [router]
   );
 
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('status', newValue);
-    },
-    [handleFilters]
-  );
-
-  return (
-    <>
+  // Show loading state
+  if (isLoading) {
+    return (
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        <CustomBreadcrumbs
-          heading="List"
-          links={[
-            {
-              name: 'Dashboard',
-              href: paths.dashboard.root,
-            },
-            {
-              name: 'Order',
-              href: paths.dashboard.order.root,
-            },
-            { name: 'List' },
-          ]}
-          sx={{
-            mb: { xs: 3, md: 5 },
-          }}
-        />
-
-        <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'completed' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'cancelled' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['completed', 'pending', 'cancelled', 'refunded'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
-
-          <OrderTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            //
-            dateError={dateError}
-          />
-
-          {canReset && (
-            <OrderTableFiltersResult
-              filters={filters}
-              onFilters={handleFilters}
-              //
-              onResetFilters={handleResetFilters}
-              //
-              results={dataFiltered.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )}
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-            <TableSelectedAction
-              dense={table.dense}
-              numSelected={table.selected.length}
-              rowCount={dataFiltered.length}
-              onSelectAllRows={(checked) =>
-                table.onSelectAllRows(
-                  checked,
-                  dataFiltered.map((row) => row.id)
-                )
-              }
-              action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
-                  </IconButton>
-                </Tooltip>
-              }
-            />
-
-            <Scrollbar>
-              <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
-                <TableHeadCustom
-                  order={table.order}
-                  orderBy={table.orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={dataFiltered.length}
-                  numSelected={table.selected.length}
-                  onSort={table.onSort}
-                  onSelectAllRows={(checked) =>
-                    table.onSelectAllRows(
-                      checked,
-                      dataFiltered.map((row) => row.id)
-                    )
-                  }
-                />
-
-                <TableBody>
-                  {dataFiltered
-                    .slice(
-                      table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
-                    )
-                    .map((row) => (
-                      <OrderTableRow
-                        key={row.id}
-                        row={row}
-                        selected={table.selected.includes(row.id)}
-                        onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                        onViewRow={() => handleViewRow(row.id)}
-                      />
-                    ))}
-
-                  <TableEmptyRows
-                    height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
-                  />
-
-                  <TableNoData notFound={notFound} />
-                </TableBody>
-              </Table>
-            </Scrollbar>
-          </TableContainer>
-
-          <TablePaginationCustom
-            count={dataFiltered.length}
-            page={table.page}
-            rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
-            onRowsPerPageChange={table.onChangeRowsPerPage}
-            //
-            dense={table.dense}
-            onChangeDense={table.onChangeDense}
-          />
+        <Card sx={{ p: 3, textAlign: 'center' }}>
+          <CircularProgress />
         </Card>
       </Container>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    const isForbidden = error.status === 403 || error.isForbidden;
+    
+    return (
+      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+        <Alert severity={isForbidden ? "warning" : "error"} sx={{ mb: 3 }}>
+          <strong>
+            {isForbidden 
+              ? "Access Denied - Trying to load your orders instead..." 
+              : "Failed to load orders:"}
+          </strong> {error.message}
+          {error.response?.status && (
+            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+              Status: {error.response.status} {error.response.statusText}
+            </Box>
+          )}
+          {error.response?.data?.message && (
+            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+              Server: {error.response.data.message}
+            </Box>
+          )}
+          {isForbidden && (
+            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+              Note: You don't have admin access, so showing your personal orders instead.
+            </Box>
+          )}
+        </Alert>
+        <Button onClick={() => refetch()} variant="contained" sx={{ mr: 2 }}>
+          Retry
+        </Button>
+        <Button 
+          onClick={() => window.location.href = '/auth/jwt/login'} 
+          variant="outlined"
+        >
+          Go to Login
+        </Button>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <CustomBreadcrumbs
+        heading="Order List"
+        links={[
+          {
+            name: 'Dashboard',
+            href: paths.dashboard.root,
+          },
+          {
+            name: 'Order',
+          },
+        ]}
+        action={
+          <Button
+            component="a"
+            href={paths.dashboard.order.root}
+            variant="contained"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+          >
+            New Order
+          </Button>
+        }
+        sx={{
+          mb: {
+            xs: 3,
+            md: 5,
+          },
+        }}
+      />
+
+      <Card>
+        <Tabs
+          value={filters.status}
+          onChange={(event, newValue) => {
+            handleFilters('status', newValue);
+          }}
+          sx={{
+            px: 2.5,
+            boxShadow: (theme) => `inset 0 -2px 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+          }}
+        >
+          {STATUS_OPTIONS.map((tab) => (
+            <Tab key={tab.value} value={tab.value} label={tab.label} />
+          ))}
+        </Tabs>
+
+        <OrderTableToolbar
+          filters={filters}
+          onFilters={handleFilters}
+          statusOptions={ORDER_STATUS_OPTIONS}
+        />
+
+        {canReset && (
+          <OrderTableFiltersResult
+            filters={filters}
+            onFilters={handleFilters}
+            onResetFilters={handleResetFilters}
+            results={dataFiltered.length}
+            sx={{ p: 2.5, pt: 0 }}
+          />
+        )}
+
+        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableSelectedAction
+            dense={table.dense}
+            numSelected={table.selected.length}
+            rowCount={dataInPage.length}
+            onSelectAllRows={(checked) =>
+              table.onSelectAllRows(
+                checked,
+                dataInPage.map((row) => row.id)
+              )
+            }
+            action={
+              <Tooltip title="Delete">
+                <IconButton color="primary" onClick={confirm.onTrue}>
+                  <Iconify icon="solar:trash-bin-trash-bold" />
+                </IconButton>
+              </Tooltip>
+            }
+          />
+
+          <Scrollbar>
+            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+              <TableHeadCustom
+                order={table.order}
+                orderBy={table.orderBy}
+                headLabel={TABLE_HEAD}
+                rowCount={dataFiltered.length}
+                numSelected={table.selected.length}
+                onSort={table.onSort}
+                onSelectAllRows={(checked) =>
+                  table.onSelectAllRows(
+                    checked,
+                    dataFiltered.map((row) => row.id)
+                  )
+                }
+              />
+
+              <TableBody>
+                {dataInPage.map((row) => (
+                  <OrderTableRow
+                    key={row.id}
+                    row={row}
+                    selected={table.selected.includes(row.id)}
+                    onSelectRow={() => table.onSelectRow(row.id)}
+                    onDeleteRow={() => handleDeleteRow(row.id)}
+                    onViewRow={() => handleViewRow(row.id)}
+                  />
+                ))}
+
+                <TableEmptyRows
+                  height={denseHeight}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
+                />
+
+                <TableNoData notFound={notFound} />
+              </TableBody>
+            </Table>
+          </Scrollbar>
+        </TableContainer>
+
+        <TablePaginationCustom
+          count={dataFiltered.length}
+          page={table.page}
+          rowsPerPage={table.rowsPerPage}
+          onPageChange={table.onChangePage}
+          onRowsPerPageChange={table.onChangeRowsPerPage}
+          dense={table.dense}
+          onChangeDense={table.onChangeDense}
+        />
+      </Card>
 
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
-        content={
-          <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
-          </>
-        }
+        content="Are you sure want to delete?"
         action={
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              handleDeleteRows();
-              confirm.onFalse();
-            }}
-          >
+          <Button variant="contained" color="error" onClick={confirm.onFalse}>
             Delete
           </Button>
         }
       />
-    </>
+    </Container>
   );
 }
 
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { status, name, startDate, endDate } = filters;
+  const { name, status, startDate, endDate } = filters;
 
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  inputData = stabilizedThis.map((el) => el[0]);
+  let filtered = inputData;
 
   if (name) {
-    inputData = inputData.filter(
+    filtered = filtered.filter(
       (order) =>
         order.orderNumber.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        order.customer.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 
   if (status !== 'all') {
-    inputData = inputData.filter((order) => order.status === status);
+    filtered = filtered.filter((order) => order.status === status);
   }
 
-  if (!dateError) {
+  if (dateError) {
+    filtered = [];
+  } else {
     if (startDate && endDate) {
-      inputData = inputData.filter((order) => isBetween(order.createdAt, startDate, endDate));
+      filtered = filtered.filter(
+        (order) =>
+          isBetween(order.createdAt, startDate, endDate) ||
+          order.createdAt.getTime() === startDate.getTime() ||
+          order.createdAt.getTime() === endDate.getTime()
+      );
     }
   }
 
-  return inputData;
+  return filtered.sort(comparator);
 }

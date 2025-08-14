@@ -1,195 +1,103 @@
-import PropTypes from "prop-types";
-import { useState } from "react";
+import PropTypes from 'prop-types';
+import { Controller, useFormContext } from 'react-hook-form';
 
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Radio from "@mui/material/Radio";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import Paper from "@mui/material/Paper";
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
+import Paper from '@mui/material/Paper';
+import CardHeader from '@mui/material/CardHeader';
+import ListItemText from '@mui/material/ListItemText';
 
-import Iconify from "src/components/iconify";
-import { useCheckoutContext } from "./context/checkout-context";
-import { useGetAvailableShippingMethods } from "src/hooks/use-shipping";
+import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function CheckoutDelivery({ onBackStep, onNextStep }) {
-  const { checkout, onApplyShipping } = useCheckoutContext();
-
-  const [selectedMethod, setSelectedMethod] = useState(
-    checkout.shippingMethod?.id || ""
-  );
-
-  const {
-    data: methods = [],
-    isLoading,
-    error,
-  } = useGetAvailableShippingMethods({
-    country: checkout.billing?.country || "US",
-    orderAmount: checkout.total || 0,
-  });
-
-  const handleChangeMethod = (event) => {
-    const methodId = event.target.value;
-    const method = methods.find((m) => m._id === methodId);
-    setSelectedMethod(methodId);
-    if (method) {
-      onApplyShipping({
-        id: method._id,
-        name: method.name,
-        price: method.price,
-        estimatedDelivery: method.estimatedDelivery,
-      });
-    }
-  };
-
-  const handleNext = () => {
-    if (!selectedMethod) {
-      // Show error or alert that shipping method is required
-      return;
-    }
-    onNextStep();
-  };
-
-  const renderShippingMethods = () => {
-    if (isLoading) {
-      return (
-        <Box sx={{ textAlign: "center", py: 5 }}>
-          <CircularProgress />
-        </Box>
-      );
-    }
-
-    if (error) {
-      return (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error.message || "Failed to load shipping methods"}
-        </Alert>
-      );
-    }
-
-    if (!methods.length) {
-      return (
-        <Alert severity="info" sx={{ mb: 3 }}>
-          No shipping methods available for your location
-        </Alert>
-      );
-    }
-
-    return (
-      <RadioGroup value={selectedMethod} onChange={handleChangeMethod}>
-        <Box
-          gap={2}
-          display="grid"
-          gridTemplateColumns={{
-            xs: "repeat(1, 1fr)",
-            sm: "repeat(2, 1fr)",
-            md: "repeat(3, 1fr)",
-          }}>
-          {methods.map((method) => (
-            <OptionItem
-              key={method._id}
-              method={method}
-              selected={selectedMethod === method._id}
-            />
-          ))}
-        </Box>
-      </RadioGroup>
-    );
-  };
+export default function CheckoutDelivery({ options, onApplyShipping, ...other }) {
+  const { control } = useFormContext();
 
   return (
-    <>
-      <Typography variant="h5" sx={{ mb: 5 }}>
-        Shipping Method
-      </Typography>
+    <Card {...other}>
+      <CardHeader title="Delivery" />
 
-      {renderShippingMethods()}
-
-      <Stack
-        spacing={2}
-        direction={{ xs: "column", sm: "row" }}
-        justifyContent="space-between"
-        sx={{ mt: 3 }}>
-        <Button
-          color="inherit"
-          onClick={onBackStep}
-          startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}>
-          Back
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleNext}
-          endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-          disabled={!selectedMethod}>
-          Next
-        </Button>
-      </Stack>
-    </>
+      <Controller
+        name="delivery"
+        control={control}
+        render={({ field }) => (
+          <Box
+            columnGap={2}
+            rowGap={2.5}
+            display="grid"
+            gridTemplateColumns={{
+              xs: 'repeat(1, 1fr)',
+              sm: 'repeat(2, 1fr)',
+            }}
+            sx={{ p: 3 }}
+          >
+            {options.map((option) => (
+              <OptionItem
+                key={option.label}
+                option={option}
+                selected={field.value === option.id}
+                onClick={() => {
+                  field.onChange(option.id);
+                  onApplyShipping(option.value);
+                }}
+              />
+            ))}
+          </Box>
+        )}
+      />
+    </Card>
   );
 }
 
 CheckoutDelivery.propTypes = {
-  onBackStep: PropTypes.func,
-  onNextStep: PropTypes.func,
+  onApplyShipping: PropTypes.func,
+  options: PropTypes.array,
 };
 
 // ----------------------------------------------------------------------
 
-function OptionItem({ method, selected }) {
-  const { name, price, estimatedDelivery } = method;
+function OptionItem({ option, selected, ...other }) {
+  const { value, label, description } = option;
 
   return (
     <Paper
       variant="outlined"
+      key={value}
       sx={{
         p: 2.5,
-        cursor: "pointer",
-        borderRadius: 1,
-        position: "relative",
+        cursor: 'pointer',
+        display: 'flex',
         ...(selected && {
-          boxShadow: (theme) => `0 0 0 2px ${theme.palette.primary.main}`,
+          boxShadow: (theme) => `0 0 0 2px ${theme.palette.text.primary}`,
         }),
-      }}>
-      <FormControlLabel
-        value={method._id}
-        control={<Radio sx={{ display: "none" }} />}
-        label={
-          <Stack spacing={0.5}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between">
-              <Typography variant="subtitle2">{name}</Typography>
-              <Typography variant="subtitle2">${price}</Typography>
-            </Stack>
+      }}
+      {...other}
+    >
+      {label === 'Free' && <Iconify icon="carbon:bicycle" width={32} />}
+      {label === 'Standard' && <Iconify icon="carbon:delivery" width={32} />}
+      {label === 'Express' && <Iconify icon="carbon:rocket" width={32} />}
 
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              {estimatedDelivery
-                ? `${estimatedDelivery.min}-${estimatedDelivery.max} business days`
-                : "Delivery time not available"}
-            </Typography>
+      <ListItemText
+        sx={{ ml: 2 }}
+        primary={
+          <Stack direction="row" alignItems="center">
+            <Box component="span" sx={{ flexGrow: 1 }}>
+              {label}
+            </Box>
+            <Box component="span" sx={{ typography: 'h6' }}>{`$${value}`}</Box>
           </Stack>
         }
-        sx={{
-          m: 0,
-          width: 1,
-          "& .MuiFormControlLabel-label": {
-            width: 1,
-          },
-        }}
+        secondary={description}
+        primaryTypographyProps={{ typography: 'subtitle1', mb: 0.5 }}
+        secondaryTypographyProps={{ typography: 'body2' }}
       />
     </Paper>
   );
 }
 
 OptionItem.propTypes = {
-  method: PropTypes.object,
+  option: PropTypes.object,
   selected: PropTypes.bool,
 };

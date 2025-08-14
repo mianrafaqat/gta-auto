@@ -19,7 +19,7 @@ import { paths } from "src/routes/paths";
 import { useBoolean } from "src/hooks/use-boolean";
 import { useDebounce } from "src/hooks/use-debounce";
 
-import { useGetProducts, useSearchProducts } from "src/api/product";
+import ProductService from "src/services/products/products.service";
 import {
   PRODUCT_SORT_OPTIONS,
   PRODUCT_COLOR_OPTIONS,
@@ -82,6 +82,15 @@ export default function ProductShopView() {
 
   const checkout = useCheckoutContext();
 
+  // Safety check for settings context
+  if (!settings) {
+    return (
+      <Container maxWidth="lg">
+        <div>Loading settings...</div>
+      </Container>
+    );
+  }
+
   const openFilters = useBoolean(true);
 
   const [sortBy, setSortBy] = useState("featured");
@@ -89,8 +98,34 @@ export default function ProductShopView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [reset, setReset] = useState(false);
 
-  // Use the same API endpoint as product list view
-  const { products: allCars, productsLoading: loading } = useGetProducts();
+  // State for products and loading
+  const [allCars, setAllCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch products using ProductService
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await ProductService.getAll();
+      
+      if (response && response.products) {
+        setAllCars(response.products);
+      } else if (response && response.data) {
+        setAllCars(response.data);
+      } else {
+        setAllCars([]);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setAllCars([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   // Debug log to see the mapped data
   useEffect(() => {

@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { useGetProduct } from 'src/api/product';
+import ProductService from 'src/services/products/products.service';
 import { PRODUCT_PUBLISH_OPTIONS } from 'src/_mock';
 
 import Iconify from 'src/components/iconify';
@@ -41,7 +41,7 @@ const SUMMARY = [
   {
     title: '10 Day Replacement',
     description: 'Marshmallow biscuit donut dragée fruitcake wafer.',
-    icon: 'solar:clock-circle-bold',
+    icon: 'solar:shield-check-bold',
   },
   {
     title: 'Year Warranty',
@@ -53,7 +53,9 @@ const SUMMARY = [
 // ----------------------------------------------------------------------
 
 export default function ProductDetailsView({ id }) {
-  const { product, productLoading, productError } = useGetProduct(id);
+  const [product, setProduct] = useState(null);
+  const [productLoading, setProductLoading] = useState(true);
+  const [productError, setProductError] = useState(null);
 
   const settings = useSettingsContext();
 
@@ -61,9 +63,46 @@ export default function ProductDetailsView({ id }) {
 
   const [publish, setPublish] = useState('');
 
+  // Safety check for settings context
+  if (!settings) {
+    return (
+      <Container maxWidth="lg">
+        <div>Loading settings...</div>
+      </Container>
+    );
+  }
+
+  // Fetch product data using ProductService
+  const fetchProduct = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      setProductLoading(true);
+      setProductError(null);
+      
+      const response = await ProductService.getById(id);
+      
+      if (response && response.data) {
+        setProduct(response.data);
+        setPublish(response.data.status || 'draft');
+      } else {
+        setProductError(new Error('Product not found'));
+      }
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      setProductError(error);
+    } finally {
+      setProductLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
+
   useEffect(() => {
     if (product) {
-      setPublish(product?.publish);
+      setPublish(product?.status || product?.publish || 'draft');
     }
   }, [product]);
 
