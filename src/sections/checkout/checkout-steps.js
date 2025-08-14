@@ -1,13 +1,5 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-=======
-import PropTypes from 'prop-types';
->>>>>>> Stashed changes
-=======
-import PropTypes from 'prop-types';
->>>>>>> Stashed changes
 
 import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
@@ -17,8 +9,6 @@ import { styled } from '@mui/material/styles';
 import StepLabel, { stepLabelClasses } from '@mui/material/StepLabel';
 import MuiStepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import { useCheckoutContext } from "./context/checkout-context";
 import CheckoutCart from "./checkout-cart";
 import CheckoutBilling from "./checkout-billing";
@@ -128,122 +118,6 @@ export default function CheckoutSteps() {
     console.log("Default case, showing cart step");
     return <CheckoutCart onNextStep={handleNextStep} />;
   };
-=======
-import Iconify from 'src/components/iconify';
-=======
-import Iconify from 'src/components/iconify';
-
-// ----------------------------------------------------------------------
-
-const StepConnector = styled(MuiStepConnector)(({ theme }) => ({
-  top: 10,
-  left: 'calc(-50% + 20px)',
-  right: 'calc(50% + 20px)',
-  [`& .${stepConnectorClasses.line}`]: {
-    borderTopWidth: 2,
-    borderColor: theme.palette.divider,
-  },
-  [`&.${stepConnectorClasses.active}, &.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: theme.palette.primary.main,
-    },
-  },
-}));
-
-// ----------------------------------------------------------------------
-
-export default function CheckoutSteps({ steps, activeStep, sx, ...other }) {
-  return (
-    <Stepper
-      alternativeLabel
-      activeStep={activeStep}
-      connector={<StepConnector />}
-      sx={{
-        color: 'white !important',
-        mb: { xs: 3, md: 5 },
-        ...sx,
-      }}
-      {...other}
-    >
-      {steps.map((label) => (
-        <Step key={label}>
-          <StepLabel
-            color='white !important'
-            StepIconComponent={StepIcon}
-            sx={{
-              [`& .${stepLabelClasses.label}`]: {
-                color: 'white !important',
-                fontWeight: 'fontWeightSemiBold',
-              },
-            }}
-          >
-            {label}
-          </StepLabel>
-        </Step>
-      ))}
-    </Stepper>
-  );
-}
->>>>>>> Stashed changes
-
-CheckoutSteps.propTypes = {
-  activeStep: PropTypes.number,
-  steps: PropTypes.arrayOf(PropTypes.string),
-  sx: PropTypes.object,
-};
-
-// ----------------------------------------------------------------------
-
-<<<<<<< Updated upstream
-const StepConnector = styled(MuiStepConnector)(({ theme }) => ({
-  top: 10,
-  left: 'calc(-50% + 20px)',
-  right: 'calc(50% + 20px)',
-  [`& .${stepConnectorClasses.line}`]: {
-    borderTopWidth: 2,
-    borderColor: theme.palette.divider,
-  },
-  [`&.${stepConnectorClasses.active}, &.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: theme.palette.primary.main,
-    },
-  },
-}));
-
-// ----------------------------------------------------------------------
->>>>>>> Stashed changes
-
-export default function CheckoutSteps({ steps, activeStep, sx, ...other }) {
-  return (
-    <Stepper
-      alternativeLabel
-      activeStep={activeStep}
-      connector={<StepConnector />}
-      sx={{
-        color: 'white !important',
-        mb: { xs: 3, md: 5 },
-        ...sx,
-      }}
-      {...other}
-    >
-      {steps.map((label) => (
-        <Step key={label}>
-          <StepLabel
-            color='white !important'
-            StepIconComponent={StepIcon}
-            sx={{
-              [`& .${stepLabelClasses.label}`]: {
-                color: 'white !important',
-                fontWeight: 'fontWeightSemiBold',
-              },
-            }}
-          >
-            {label}
-          </StepLabel>
-        </Step>
-      ))}
-    </Stepper>
-  );
 }
 
 CheckoutSteps.propTypes = {
@@ -254,8 +128,6 @@ CheckoutSteps.propTypes = {
 
 // ----------------------------------------------------------------------
 
-=======
->>>>>>> Stashed changes
 function StepIcon({ active, completed }) {
   return (
     <Stack
