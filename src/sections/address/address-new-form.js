@@ -148,6 +148,19 @@ export default function AddressNewForm({ open, onClose, onCreate, isEdit = false
                 sm: 'repeat(2, 1fr)',
               }}
             >
+              <RHFTextField name="name" label="Full Name" />
+              <RHFTextField name="email" label="Email Address" />
+            </Box>
+
+            <Box
+              rowGap={3}
+              columnGap={2}
+              display="grid"
+              gridTemplateColumns={{
+                xs: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+              }}
+            >
               <RHFTextField name="company" label="Company (Optional)" />
               <RHFTextField name="phoneNumber" label="Phone Number" />
             </Box>
