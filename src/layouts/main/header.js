@@ -94,13 +94,15 @@ export default function Header() {
           sx={{ height: 1, display: "flex", alignItems: "center" }}>
           <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
             {/* <Logo />  */}
-            <img
-              src="/assets/logo.webp"
-              alt="logo"
-              width="190px"
-              height="29px"
-              style={{ marginRight: "24px" }}
-            />
+            <Link href="/">
+              <img
+                src="/assets/logo.webp"
+                alt="logo"
+                width="190px"
+                height="29px"
+                style={{ marginRight: "24px" }}
+              />
+            </Link>
             {mdUp && <NavDesktop data={navConfig} />}
           </Stack>
 

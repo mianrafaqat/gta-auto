@@ -14,6 +14,8 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Card,
+  CardContent,
 } from "@mui/material";
 import Iconify from "../iconify";
 import { useRouter } from "next/navigation";
@@ -25,6 +27,8 @@ import BrowseVideosSection from "./browse-videos";
 import Hero from "./Hero";
 import { useGetCarBodyList } from "src/hooks/use-cars";
 import SearchByModels from "./search-by-models";
+import LatestProductsSection from "./latest-products";
+import { WhatsApp } from "@mui/icons-material";
 
 export default function CarsFiltersPage() {
   const { data: carBodyList = [], isLoading: carBodyLoading } =
@@ -73,7 +77,7 @@ export default function CarsFiltersPage() {
       {/* Browse Brands Section */}
 
       {/* Latest Products Section */}
-      {/* <LatestProductsSection /> */}
+      <LatestProductsSection />
 
       {/* <BrowseBrandsSection /> */}
 

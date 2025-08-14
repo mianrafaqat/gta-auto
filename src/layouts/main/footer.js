@@ -38,9 +38,19 @@ const CUSTOMER_SERVICES = [
 
 const SOCIAL_LINKS = [
   // { name: "Facebook", icon: "mdi:facebook", href: "https://m.facebook.com/GarageTunedAutos/", color: "#1877F2" },
-  { name: "Instagram", icon: "mdi:instagram", href: "https://www.instagram.com/garagetunedautos?igsh=MTl0d3cyZWZ1OWRjag==", color: "#E4405F" },
+  {
+    name: "Instagram",
+    icon: "mdi:instagram",
+    href: "https://www.instagram.com/garagetunedautos?igsh=MTl0d3cyZWZ1OWRjag==",
+    color: "#E4405F",
+  },
   // { name: "LinkedIn", icon: "mdi:linkedin", href: "#", color: "#0077B5" },
-  { name: "YouTube", icon: "mdi:youtube", href: "https://youtube.com/@garagetunedautos?si=qI3aK4AOdCpDp7ap", color: "#FF0000" },
+  {
+    name: "YouTube",
+    icon: "mdi:youtube",
+    href: "https://youtube.com/@garagetunedautos?si=qI3aK4AOdCpDp7ap",
+    color: "#FF0000",
+  },
 ];
 
 // ----------------------------------------------------------------------
@@ -171,7 +181,7 @@ export default function Footer() {
                 WhatsApp
               </Typography>
               <Link
-                href="https://wa.me/+923263333456"
+                href="https://wa.me/+923263332888"
                 target="_blank"
                 rel="noopener"
                 sx={{
@@ -193,7 +203,7 @@ export default function Footer() {
                     color: "#ffffff",
                     fontSize: { xs: "12px", md: "14px" },
                   }}>
-                  +923263333456
+                  +923263332888
                 </Typography>
               </Link>
             </Stack>
@@ -214,7 +224,7 @@ export default function Footer() {
                 Call Us
               </Typography>
               <Link
-                href="tel:+923263333456"
+                href="tel:+923263332888"
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -234,7 +244,7 @@ export default function Footer() {
                     color: "#ffffff",
                     fontSize: { xs: "12px", md: "14px" },
                   }}>
-                  +923263333456
+                  +923263332888
                 </Typography>
               </Link>
             </Stack>

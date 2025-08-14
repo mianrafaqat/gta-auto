@@ -32,6 +32,11 @@ export const paths = {
   zoneUI: "https://mui.com/store/items/zone-landing-page/",
   minimalUI: "https://mui.com/store/items/minimal-dashboard/",
   freeUI: "https://mui.com/store/items/minimal-dashboard-free/",
+  support: "/support",
+  privacyPolicy: "/privacy-policy",
+  termsAndConditions: "/terms-and-conditions",
+  shippingPolicy: "/shipping-policy",
+  cancellationRefundPolicy: "/cancellation-refund-policy",
   figma:
     "https://www.figma.com/file/hjxMnGUJCjY7pX8lQbS7kn/%5BPreview%5D-Steel-Web.v5.4.0?type=design&node-id=0-1&mode=design&t=2fxnS70DuiTLGzND-0",
   product: {
@@ -181,7 +186,7 @@ export const paths = {
         edit: `${ROOTS.DASHBOARD}/post/${paramCase(_postTitles[2])}/edit`,
       },
     },
-   
+
     order: {
       root: `${ROOTS.DASHBOARD}/order`,
       details: (id) => `${ROOTS.DASHBOARD}/order/${id}`,
