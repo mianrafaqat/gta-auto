@@ -93,7 +93,9 @@ export default function ProductItem({
   const productSalePrice = salePrice || 0;
 
   // Get the product category, handling both old and new API structures
-  const productCategory = category || (categories && categories.length > 0 ? categories[0].name : "sale");
+  const productCategory =
+    category ||
+    (categories && categories.length > 0 ? categories[0].name : "sale");
 
   // Get the product location, handling both old and new API structures
   const productLocation = location || "";
@@ -201,10 +203,10 @@ export default function ProductItem({
       // Clear cart first, then add the product to cart
       // onClearCart();
       // onAddToCart(newProduct);
-      
+
       // Set the active step to 0 (cart step)
       // onGotoStep(0);
-      
+
       // console.log("Buy now:", newProduct);
       // Small delay to ensure cart state is updated, then navigate to checkout
       setTimeout(() => {
@@ -315,15 +317,16 @@ export default function ProductItem({
   };
 
   const renderContent = (
-    <Stack spacing={2} sx={{ p: 2 }}>
+    <Stack gap={{ xs: 1, md: 2 }} sx={{ p: { xs: 1, md: 2 } }}>
       {/* Product Title */}
       <Typography
         variant="h6"
         sx={{
+          fontSize: { xs: "14px", md: "16px" },
           fontWeight: "bold",
           color: "#333333",
-          fontSize: "16px",
           lineHeight: 1.2,
+          whiteSpace: "nowrap",
         }}>
         {carDetails?.yearOfManufacture
           ? `${carDetails.yearOfManufacture} - `
@@ -354,7 +357,11 @@ export default function ProductItem({
       </Stack>
 
       {/* Action Buttons */}
-      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+      <Stack
+        direction="row"
+        flexWrap={{ xs: "wrap", md: "nowrap" }}
+        gap={1}
+        sx={{ mt: 1 }}>
         <Button
           fullWidth
           variant="outlined"

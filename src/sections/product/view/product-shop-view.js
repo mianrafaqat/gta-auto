@@ -484,7 +484,7 @@ export default function ProductShopView() {
             </Grid>
 
             {/* Render ProductList */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ padding: "0 !important" }}>
               <ProductList products={dataFiltered} loading={loading} />
             </Grid>
           </Grid>

@@ -9,9 +9,62 @@ import {
   Stack,
   Button,
 } from "@mui/material";
-import ProductList from "src/sections/product/product-list";
+import ProductItem from "src/sections/product/product-item";
+import { ProductItemSkeleton } from "src/sections/product/product-skeleton";
 import ProductService from "src/services/products/products.service";
 import { WhatsApp } from "@mui/icons-material";
+
+// Custom ProductList for Latest Products with horizontal slide view
+const LatestProductsList = ({ products, loading }) => {
+  const renderSkeleton = (
+    <>
+      {[...Array(4)].map((_, index) => (
+        <Box
+          key={index}
+          sx={{
+            flexShrink: 0,
+            width: { xs: "280px", sm: "320px" },
+            scrollSnapAlign: "start",
+          }}>
+          <ProductItemSkeleton />
+        </Box>
+      ))}
+    </>
+  );
+
+  const renderList = (
+    <>
+      {products.map((product) => (
+        <Box
+          key={product._id}
+          sx={{
+            flexShrink: 0,
+            width: { xs: "280px", sm: "320px" },
+            scrollSnapAlign: "start",
+          }}>
+          <ProductItem product={product} />
+        </Box>
+      ))}
+    </>
+  );
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        gap: 3,
+        overflowX: "auto",
+        overflowY: "hidden",
+        scrollSnapType: "x mandatory",
+        scrollbarWidth: "none",
+        "&::-webkit-scrollbar": { display: "none" },
+        pb: 2,
+      }}>
+      {loading ? renderSkeleton : renderList}
+    </Box>
+  );
+};
 
 export default function LatestProductsSection() {
   const [latestProducts, setLatestProducts] = useState([]);
@@ -78,11 +131,7 @@ export default function LatestProductsSection() {
         </Typography>
 
         <Grid item xs={12}>
-          <ProductList
-            products={latestProducts}
-            loading={loading}
-            itemsPerPage={4}
-          />
+          <LatestProductsList products={latestProducts} loading={loading} />
         </Grid>
         <Box
           sx={{
