@@ -19,26 +19,6 @@ import ProductDetailsCarousel from "src/sections/product/product-details-carouse
 import ProductDetailsDescription from "src/sections/product/product-details-description";
 import ProductDetailsSummary from "src/sections/product/product-details-summary";
 import { CarsService } from "src/services";
-import ProductDescription from "./product-description";
-import { List, ListItem, ListItemText } from "@mui/material";
-
-const SUMMARY = [
-  {
-    title: "Enter Your Car Information",
-    description: "",
-    icon: "solar:verified-check-bold",
-  },
-  {
-    title: "Upload Photos ",
-    description: "",
-    icon: "solar:clock-circle-bold",
-  },
-  {
-    title: "Enter Your Selling Price",
-    description: "",
-    icon: "solar:shield-check-bold",
-  },
-];
 
 export default function CarsDetailPage() {
   const params = useSearchParams();
@@ -87,7 +67,15 @@ export default function CarsDetailPage() {
         sx={{ mt: 10 }}
         maxWidth={settings.themeStretch ? false : "lg"}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={8}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            order={{ xs: 1, md: 2 }}
+            sx={{ mb: { xs: 2, md: 0 } }}>
+            <ProductDetailsSummary disabledActions product={carDetails} />
+          </Grid>
+          <Grid item xs={12} md={8} order={{ xs: 2, md: 1 }}>
             <ProductDetailsCarousel product={carDetails} />
             <Features data={features} />
             <Overview data={carDetails} />
@@ -95,10 +83,6 @@ export default function CarsDetailPage() {
             <AdditionalFeatures
               features={carDetails?.carDetails?.features || []}
             />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <ProductDetailsSummary disabledActions product={carDetails} />
           </Grid>
         </Grid>
 
