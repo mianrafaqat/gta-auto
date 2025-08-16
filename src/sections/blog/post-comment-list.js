@@ -1,18 +1,28 @@
-import PropTypes from 'prop-types';
+"use client";
 
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
+import PropTypes from "prop-types";
 
-import PostCommentItem from './post-comment-item';
+import Box from "@mui/material/Box";
+import Pagination from "@mui/material/Pagination";
+
+import PostCommentItem from "./post-comment-item";
 
 // ----------------------------------------------------------------------
 
-export default function PostCommentList({ comments }) {
+export default function PostCommentList({ comments = [] }) {
   return (
     <>
       <>
         {comments.map((comment) => {
-          const { id, replyComment, name, users, message, avatarUrl, postedAt } = comment;
+          const {
+            id,
+            replyComment,
+            name,
+            users,
+            message,
+            avatarUrl,
+            postedAt,
+          } = comment;
 
           const hasReply = !!replyComment.length;
 
@@ -26,15 +36,17 @@ export default function PostCommentList({ comments }) {
               />
               {hasReply &&
                 replyComment.map((reply) => {
-                  const userReply = users.find((user) => user.id === reply.userId);
+                  const userReply = users.find(
+                    (user) => user.id === reply.userId
+                  );
 
                   return (
                     <PostCommentItem
                       key={reply.id}
-                      name={userReply?.name || ''}
+                      name={userReply?.name || ""}
                       message={reply.message}
                       postedAt={reply.postedAt}
-                      avatarUrl={userReply?.avatarUrl || ''}
+                      avatarUrl={userReply?.avatarUrl || ""}
                       tagUser={reply.tagUser}
                       hasReply
                     />
@@ -45,7 +57,7 @@ export default function PostCommentList({ comments }) {
         })}
       </>
 
-      <Pagination count={8} sx={{ my: 5, mx: 'auto' }} />
+      <Pagination count={8} sx={{ my: 5, mx: "auto" }} />
     </>
   );
 }

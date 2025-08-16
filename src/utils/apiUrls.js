@@ -92,12 +92,12 @@ export const API_URLS = {
   },
   blog: {
     // Public Routes
-    getAll: "/api/blog/getAll",
-
+    getAll: "/api/blogs/getAll",
+    getById: (id) => `/api/blogs/get/${id}`, // Matches: router.get("/get/:id", ...)
     // Admin Routes
-    add: "/api/blog/add",
-    update: "/api/blog/update",
-    delete: "/api/blog/delete",
+    add: "/api/blogs/add",
+    update: "/api/blogs/update",
+    delete: "/api/blogs/delete",
   },
   video: {
     // Public Routes

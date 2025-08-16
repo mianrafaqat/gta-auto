@@ -149,7 +149,11 @@ export default function Header() {
             {mdUp && !Object.keys(user).length > 0 && <LoginButton />}
             {mdUp && Object.keys(user).length > 0 && (
               <MoveTo
-                sx={{ color: "white", borderColor: "black" }}
+                sx={{
+                  color: "white",
+                  borderColor: "black",
+                  whiteSpace: "nowrap",
+                }}
                 title="Move to Dashboard"
                 path={paths.dashboard.root}
               />

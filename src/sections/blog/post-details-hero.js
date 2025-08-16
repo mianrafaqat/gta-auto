@@ -1,55 +1,60 @@
-import PropTypes from 'prop-types';
+"use client";
 
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
-import Container from '@mui/material/Container';
-import SpeedDial from '@mui/material/SpeedDial';
-import Typography from '@mui/material/Typography';
-import ListItemText from '@mui/material/ListItemText';
-import { alpha, useTheme } from '@mui/material/styles';
-import SpeedDialAction from '@mui/material/SpeedDialAction';
+import PropTypes from "prop-types";
 
-import { useResponsive } from 'src/hooks/use-responsive';
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
+import Container from "@mui/material/Container";
+import SpeedDial from "@mui/material/SpeedDial";
+import Typography from "@mui/material/Typography";
+import ListItemText from "@mui/material/ListItemText";
+import { alpha, useTheme } from "@mui/material/styles";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
 
-import { fDate } from 'src/utils/format-time';
+import { useResponsive } from "src/hooks/use-responsive";
 
-import { _socials } from 'src/_mock';
-import { bgGradient } from 'src/theme/css';
+import { fDate } from "src/utils/format-time";
 
-import Iconify from 'src/components/iconify';
+import { _socials } from "src/_mock";
+import { bgGradient } from "src/theme/css";
+
+import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
-export default function PostDetailsHero({ title, author, coverUrl, createdAt }) {
+export default function PostDetailsHero({
+  title,
+  author,
+  coverUrl,
+  createdAt,
+}) {
   const theme = useTheme();
 
-  const smUp = useResponsive('up', 'sm');
+  const smUp = useResponsive("up", "sm");
 
   return (
     <Box
       sx={{
         height: 480,
-        overflow: 'hidden',
+        overflow: "hidden",
         ...bgGradient({
           imgUrl: coverUrl,
           startColor: `${alpha(theme.palette.grey[900], 0.64)} 0%`,
           endColor: `${alpha(theme.palette.grey[900], 0.64)} 100%`,
         }),
-      }}
-    >
-      <Container sx={{ height: 1, position: 'relative' }}>
+      }}>
+      <Container sx={{ height: 1, position: "relative" }}>
         <Typography
           variant="h3"
           component="h1"
           sx={{
             zIndex: 9,
-            color: 'common.white',
-            position: 'absolute',
+            color: "common.white",
+            position: "absolute",
             maxWidth: 480,
             pt: { xs: 2, md: 8 },
-          }}
-        >
+          }}>
           {title}
         </Typography>
 
@@ -58,9 +63,8 @@ export default function PostDetailsHero({ title, author, coverUrl, createdAt }) 
             left: 0,
             width: 1,
             bottom: 0,
-            position: 'absolute',
-          }}
-        >
+            position: "absolute",
+          }}>
           {author && createdAt && (
             <Stack
               direction="row"
@@ -68,8 +72,7 @@ export default function PostDetailsHero({ title, author, coverUrl, createdAt }) 
               sx={{
                 px: { xs: 2, md: 3 },
                 pb: { xs: 3, md: 8 },
-              }}
-            >
+              }}>
               <Avatar
                 alt={author.name}
                 src={author.avatarUrl}
@@ -77,12 +80,12 @@ export default function PostDetailsHero({ title, author, coverUrl, createdAt }) 
               />
 
               <ListItemText
-                sx={{ color: 'common.white' }}
+                sx={{ color: "common.white" }}
                 primary={author.name}
                 secondary={fDate(createdAt)}
-                primaryTypographyProps={{ typography: 'subtitle1', mb: 0.5 }}
+                primaryTypographyProps={{ typography: "subtitle1", mb: 0.5 }}
                 secondaryTypographyProps={{
-                  color: 'inherit',
+                  color: "inherit",
                   sx: { opacity: 0.64 },
                 }}
               />
@@ -90,23 +93,31 @@ export default function PostDetailsHero({ title, author, coverUrl, createdAt }) 
           )}
 
           <SpeedDial
-            direction={smUp ? 'left' : 'up'}
+            direction={smUp ? "left" : "up"}
             ariaLabel="Share post"
             icon={<Iconify icon="solar:share-bold" />}
-            FabProps={{ size: 'medium' }}
+            FabProps={{ size: "medium" }}
             sx={{
-              position: 'absolute',
+              position: "absolute",
               bottom: { xs: 32, md: 64 },
               right: { xs: 16, md: 24 },
-            }}
-          >
+            }}>
             {_socials.map((action) => (
               <SpeedDialAction
                 key={action.name}
-                icon={<Iconify icon={action.icon} sx={{ color: action.color }} />}
+                name={action.name}
+                icon={action.icon}
                 tooltipTitle={action.name}
                 tooltipPlacement="top"
-                FabProps={{ color: 'default' }}
+                FabProps={{
+                  sx: {
+                    bgcolor: action.color,
+                    color: "common.white",
+                    "&:hover": {
+                      bgcolor: action.color,
+                    },
+                  },
+                }}
               />
             ))}
           </SpeedDial>
@@ -119,6 +130,9 @@ export default function PostDetailsHero({ title, author, coverUrl, createdAt }) 
 PostDetailsHero.propTypes = {
   author: PropTypes.object,
   coverUrl: PropTypes.string,
-  createdAt: PropTypes.string,
+  createdAt: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(Date),
+  ]),
   title: PropTypes.string,
 };

@@ -1,5 +1,6 @@
-import { useScroll } from 'framer-motion';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+"use client";
+import { useScroll } from "framer-motion";
+import { useMemo, useState, useEffect, useCallback } from "react";
 
 // ----------------------------------------------------------------------
 
@@ -9,7 +10,7 @@ export function useOffSetTop(top = 0, options) {
   const [value, setValue] = useState(false);
 
   const onOffSetTop = useCallback(() => {
-    scrollY.on('change', (scrollHeight) => {
+    scrollY.on("change", (scrollHeight) => {
       if (scrollHeight > top) {
         setValue(true);
       } else {

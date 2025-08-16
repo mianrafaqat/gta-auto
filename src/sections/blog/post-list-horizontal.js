@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import Box from '@mui/material/Box';
-import Pagination, { paginationClasses } from '@mui/material/Pagination';
+import Box from "@mui/material/Box";
+import Pagination, { paginationClasses } from "@mui/material/Pagination";
 
-import { PostItemSkeleton } from './post-skeleton';
-import PostItemHorizontal from './post-item-horizontal';
+import { PostItemSkeleton } from "./post-skeleton";
+import PostItemHorizontal from "./post-item-horizontal";
 
 // ----------------------------------------------------------------------
 
-export default function PostListHorizontal({ posts, loading }) {
+export default function PostListHorizontal({ posts, loading, onDeletePost }) {
   const renderSkeleton = (
     <>
       {[...Array(16)].map((_, index) => (
@@ -20,7 +20,11 @@ export default function PostListHorizontal({ posts, loading }) {
   const renderList = (
     <>
       {posts.map((post) => (
-        <PostItemHorizontal key={post.id} post={post} />
+        <PostItemHorizontal
+          key={post.id}
+          post={post}
+          onDeletePost={onDeletePost}
+        />
       ))}
     </>
   );
@@ -31,10 +35,9 @@ export default function PostListHorizontal({ posts, loading }) {
         gap={3}
         display="grid"
         gridTemplateColumns={{
-          xs: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
-        }}
-      >
+          xs: "repeat(1, 1fr)",
+          md: "repeat(2, 1fr)",
+        }}>
         {loading ? renderSkeleton : renderList}
       </Box>
 
@@ -44,7 +47,7 @@ export default function PostListHorizontal({ posts, loading }) {
           sx={{
             mt: 8,
             [`& .${paginationClasses.ul}`]: {
-              justifyContent: 'center',
+              justifyContent: "center",
             },
           }}
         />
@@ -56,4 +59,5 @@ export default function PostListHorizontal({ posts, loading }) {
 PostListHorizontal.propTypes = {
   loading: PropTypes.bool,
   posts: PropTypes.array,
+  onDeletePost: PropTypes.func,
 };

@@ -31,9 +31,5 @@ export { dynamic };
  * [2] Static exports
  * https://nextjs.org/docs/app/building-your-application/deploying/static-exports
  */
-export async function generateStaticParams() {
-  // if (CONFIG.isStaticExport) {
-  //   return _orders.map((order) => ({ id: order.id }));
-  // }
-  return [];
-}
+
+
