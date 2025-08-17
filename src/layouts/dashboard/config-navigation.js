@@ -243,6 +243,20 @@ export function useNavData() {
               { title: "Edit", path: paths.dashboard.post.demo.edit },
             ],
           },
+          // Forum section
+          {
+            roles: [ROLES.ADMIN],
+            title: "Forum",
+            path: paths.dashboard.forum.root,
+            icon: ICONS.blog,
+            children: [
+              {
+                title: "Categories",
+                path: paths.dashboard.admin.forum.categories,
+                roles: [ROLES.ADMIN],
+              },
+            ],
+          },
         ],
       },
     ],

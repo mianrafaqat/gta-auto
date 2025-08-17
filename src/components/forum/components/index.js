@@ -1,0 +1,9 @@
+export { default as ForumHeader } from "./forum-header";
+export { default as ForumSearch } from "./forum-search";
+export { default as ForumCategories } from "./forum-categories";
+export { default as ForumTopics } from "./forum-topics";
+export { default as ForumSidebar } from "./forum-sidebar";
+export { default as ForumStats } from "./forum-stats";
+export { default as ForumCreateButton } from "./forum-create-button";
+export { default as ForumCreateModal } from "./forum-create-modal";
+export { default as ForumTopicDetail } from "./forum-topic-detail";
