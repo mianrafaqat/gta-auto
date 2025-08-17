@@ -55,6 +55,10 @@ export const paths = {
       details: `/post/${paramCase(_postTitles[2])}`,
     },
   },
+  blog: {
+    root: `/blog`,
+    details: (title) => `/blog/${paramCase(title)}`,
+  },
   // AUTH
   auth: {
     amplify: {

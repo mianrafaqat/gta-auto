@@ -47,9 +47,15 @@ export default function PostDetailsView({ post }) {
     error: blogsError,
   } = useGetBlogs();
 
-  // Find the blog with matching title if searching by title
+  // Find the blog with matching title if searching by title (try multiple matching strategies)
   const foundBlog = isTitleSearch
-    ? allBlogs?.find((blog) => blog.title === post)
+    ? allBlogs?.find((blog) => blog.title === post) ||
+      allBlogs?.find(
+        (blog) => blog.title.toLowerCase() === post.toLowerCase()
+      ) ||
+      allBlogs?.find((blog) => blog.title === post.replace(/-/g, " ")) ||
+      allBlogs?.find((blog) => blog.title.replace(/\s+/g, "-") === post) ||
+      allBlogs?.find((blog) => blog.title.replace(/-/g, " ") === post)
     : null;
 
   // Use the found blog's ID or the direct post ID
