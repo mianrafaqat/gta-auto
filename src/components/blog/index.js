@@ -69,7 +69,7 @@ const Blog = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <Container maxWidth="xl" sx={{ py: 8 }}>
       <BlogHeader />
 
       <BlogGrid posts={posts} onViewDetails={handleViewDetails} />

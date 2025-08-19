@@ -19,7 +19,7 @@ import StyledMarkdown from "./styles";
 
 // ----------------------------------------------------------------------
 
-export default function Markdown({ sx, ...other }) {
+export default function Markdown({ sx, color, ...other }) {
   return (
     <StyledMarkdown sx={sx}>
       <ReactMarkdown

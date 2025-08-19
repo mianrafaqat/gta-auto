@@ -30,6 +30,9 @@ import { useAuthContext } from "src/auth/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { useAddOrRemoveFavoriteCar } from "src/hooks/use-cars";
 import ProductService from "src/services/products/products.service";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 // ----------------------------------------------------------------------
 
@@ -105,17 +108,6 @@ export default function ProductItem({
 
   // Get the product availability, handling both old and new API structures
   const productAvailable = available !== undefined ? available : true;
-
-  // Debug log to help identify the issue
-  console.log("Product data:", {
-    productId,
-    imageArray,
-    firstImage,
-    productName,
-    hasImages: !!images,
-    hasImage: !!image,
-    hasCoverUrl: !!coverUrl,
-  });
 
   const { user = {} } = useAuthContext()?.user || {};
 
@@ -301,29 +293,45 @@ export default function ProductItem({
 
   const RenderImg = () => {
     return (
-      <Box sx={{ position: "relative" }}>
+      <Stack direction="row" sx={{ position: "relative" }}>
         <Image
           alt={name}
           src={firstImage}
           ratio="4/3"
           sx={{
             borderRadius: "12px 12px 0 0",
-            width: "100%",
-            height: "auto",
+            height: "278px",
           }}
         />
-      </Box>
+        <Box
+          sx={{
+            bgcolor: "#4CAF50",
+            height: "73px",
+            borderBottomLeftRadius: "12px",
+            minWidth: "70px",
+            position: "absolute",
+            right: "0",
+          }}>
+          <Typography
+            fontSize="14px"
+            color="#fff"
+            textAlign="center"
+            sx={{ pt: "20px" }}>
+            56% OFF
+          </Typography>
+        </Box>
+      </Stack>
     );
   };
 
   const renderContent = (
-    <Stack gap={{ xs: 1, md: 2 }} sx={{ p: { xs: 1, md: 2 } }}>
+    <Stack gap={{ xs: 1, md: 2 }} sx={{ p: { xs: 1, md: 2 }, bgcolor: "#fff" }}>
       {/* Product Title */}
       <Typography
         variant="h6"
         sx={{
           fontSize: { xs: "14px", md: "16px" },
-          fontWeight: "bold",
+          fontWeight: "400",
           color: "#333333",
           lineHeight: 1.2,
           whiteSpace: "nowrap",
@@ -335,7 +343,22 @@ export default function ProductItem({
       </Typography>
 
       {/* Price Section */}
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack
+        direction="row"
+        gap={1}
+        justifyContent="space-between"
+        alignItems="center"
+        pb="12px"
+        borderBottom="1px solid #E0E0E0">
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: "500",
+            color: "#333333",
+            fontSize: "16px",
+          }}>
+          PKR {Number(productSalePrice)?.toLocaleString()}
+        </Typography>
         <Typography
           variant="body2"
           sx={{
@@ -345,15 +368,6 @@ export default function ProductItem({
           }}>
           PKR {Number(productRegularPrice)?.toLocaleString()}
         </Typography>
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            color: "#333333",
-            fontSize: "16px",
-          }}>
-          PKR {Number(productSalePrice)?.toLocaleString()}
-        </Typography>
       </Stack>
 
       {/* Action Buttons */}
@@ -361,7 +375,28 @@ export default function ProductItem({
         direction="row"
         flexWrap={{ xs: "wrap", md: "nowrap" }}
         gap={1}
-        sx={{ mt: 1 }}>
+        sx={{ mt: 1, height: "58px", borderRadius: "3px" }}>
+        <LoadingButton
+          fullWidth
+          variant="contained"
+          size="medium"
+          loading={isBuyNowLoading}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleBuyNow();
+          }}
+          sx={{
+            backgroundColor: "#4caf50",
+            textTransform: "none",
+            fontSize: "14px",
+            fontWeight: 500,
+            minWidth: "140px",
+            "&:hover": {
+              backgroundColor: "#45a049",
+            },
+          }}>
+          Buy Now
+        </LoadingButton>
         <Button
           fullWidth
           variant="outlined"
@@ -382,29 +417,30 @@ export default function ProductItem({
               backgroundColor: "rgba(76, 175, 80, 0.04)",
             },
           }}>
-          Add to Cart
+          <ShoppingCartOutlinedIcon />
         </Button>
-
-        <LoadingButton
+        <Button
           fullWidth
-          variant="contained"
+          variant="outlined"
           size="medium"
-          loading={isBuyNowLoading}
           onClick={(e) => {
             e.stopPropagation();
-            handleBuyNow();
+            handleAddOrRemoveFav();
           }}
           sx={{
-            backgroundColor: "#4caf50",
+            borderColor: "#4caf50",
+            color: "#4caf50",
+            backgroundColor: "#ffffff",
             textTransform: "none",
             fontSize: "14px",
             fontWeight: 500,
             "&:hover": {
-              backgroundColor: "#45a049",
+              borderColor: "#45a049",
+              backgroundColor: "rgba(76, 175, 80, 0.04)",
             },
           }}>
-          Buy Now
-        </LoadingButton>
+          <FavoriteBorderOutlinedIcon />
+        </Button>
       </Stack>
     </Stack>
   );
@@ -414,7 +450,7 @@ export default function ProductItem({
       sx={{
         width: "100%",
         borderRadius: "12px",
-        background: "#ffffff",
+        background: "#F5F5F5",
         border: "1px solid #e0e0e0",
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
         transition: "all 0.3s ease",

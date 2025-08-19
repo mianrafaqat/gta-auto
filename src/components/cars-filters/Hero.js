@@ -45,7 +45,6 @@ const Hero = () => {
         alignItems: "flex-end",
         minHeight: 630,
         position: "relative",
-        // overflow: 'hidden',
       }}
       maxWidth="xl">
       <Box
@@ -88,23 +87,15 @@ const Hero = () => {
       <Box
         sx={{
           position: "absolute",
-          top: "45%",
+          top: "25%",
           left: "50%",
           transform: "translate(-50%, -50%)",
           zIndex: 1,
           textAlign: "center",
-          // width: '100%'
         }}>
-        <Box
-          component="img"
-          src="/assets/logo.webp"
-          alt="Logo"
-          sx={{
-            width: { xs: "200px", sm: "250px", md: "300px" },
-            height: "auto",
-            marginBottom: 3,
-          }}
-        />
+        <Typography color="white" variant="h3" fontWeight={400}>
+          The <span style={{ fontWeight: 600 }}>MOST WANTED</span> platform
+        </Typography>
         <Typography
           variant="h2"
           sx={{
@@ -140,8 +131,9 @@ const Hero = () => {
             "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
           position: "relative",
           zIndex: 1,
-          mb: "-50px",
           display: { xs: "none", md: "block" },
+          height: "210px",
+          mb: "50px",
         }}>
         <Box mt={2}>
           <SearchByModels />

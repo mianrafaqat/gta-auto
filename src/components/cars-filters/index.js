@@ -29,6 +29,8 @@ import { useGetCarBodyList } from "src/hooks/use-cars";
 import SearchByModels from "./search-by-models";
 import LatestProductsSection from "./latest-products";
 import { WhatsApp } from "@mui/icons-material";
+import HeroBottom from "../heroBottom";
+import CategoryOffers from "src/sections/categoryOffers";
 
 export default function CarsFiltersPage() {
   const { data: carBodyList = [], isLoading: carBodyLoading } =
@@ -64,6 +66,7 @@ export default function CarsFiltersPage() {
   return (
     <>
       <Hero />
+      <HeroBottom />
 
       {/* Car Body Types Section */}
       {/* <CarBodyTypesSection  /> */}
@@ -71,13 +74,15 @@ export default function CarsFiltersPage() {
       {/* Services Section */}
       <ServicesSection />
 
+      {/* Latest Products Section */}
+      <LatestProductsSection />
+
+      <CategoryOffers />
+
       {/* Featured Cars Section */}
       <FeaturedCarsSection />
 
       {/* Browse Brands Section */}
-
-      {/* Latest Products Section */}
-      <LatestProductsSection />
 
       {/* <BrowseBrandsSection /> */}
 

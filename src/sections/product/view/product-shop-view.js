@@ -57,6 +57,7 @@ import { SplashScreen } from "src/components/loading-screen";
 import { Icon } from "@iconify/react";
 import { WhatsApp } from "@mui/icons-material";
 import Image from "next/image";
+import CategoryOffers from "src/sections/categoryOffers";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -471,6 +472,8 @@ export default function ProductShopView() {
 
               {/* {canReset && renderResults} */}
             </Stack>
+
+            <CategoryOffers />
 
             {/* Render NotFound component if no results */}
             <Grid item xs={12}>

@@ -109,7 +109,7 @@ export default function LatestProductsSection() {
 
   return (
     <Container
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         py: 8,
         px: { xs: 2, sm: 3, md: 4 },
@@ -118,17 +118,25 @@ export default function LatestProductsSection() {
       }}>
       <Box sx={{ position: "relative", zIndex: 2 }}>
         {/* Section Title */}
-        <Typography
-          variant="h3"
+        <Box
           sx={{
-            color: "#4caf50",
-            fontWeight: "bold",
-            fontSize: { xs: "24px", md: "32px" },
+            borderBottom: "2px solid #4CAF50",
+            pb: "36px",
+            width: "max-content",
             mb: 6,
-            textTransform: "uppercase",
           }}>
-          Latest Products
-        </Typography>
+          <Typography
+            variant="h3"
+            sx={{
+              color: "#4caf50",
+              fontWeight: "bold",
+              fontSize: { xs: "28px", md: "36px" },
+
+              textTransform: "uppercase",
+            }}>
+            Latest Products
+          </Typography>
+        </Box>
 
         <Grid item xs={12}>
           <LatestProductsList products={latestProducts} loading={loading} />

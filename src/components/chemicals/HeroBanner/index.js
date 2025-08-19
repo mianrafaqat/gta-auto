@@ -7,23 +7,27 @@ const HeroBanner = () => {
     <Box
       sx={{
         position: "relative",
-        minHeight: "calc(100vh - 70px)",
+        height: "calc(100vh - 80px)",
         overflow: "hidden",
       }}>
       {/* Background Car Image */}
-      <Box
+      {/* <Box
         sx={{
           position: "absolute",
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: "url(/assets/chemical-bg.jpg)",
+          backgroundImage: "url(/assets/chemical-bg.png)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 1,
         }}
-      />
+      /> */}
+
+      <Box sx={{ height: "100%", objectFit: "cover" }}>
+        <img src="/assets/chemical-bg.png" alt="chemical-bg" />
+      </Box>
 
       {/* Main Content */}
       <Container
@@ -31,7 +35,7 @@ const HeroBanner = () => {
         sx={{
           position: "relative",
           zIndex: 3,
-          height: "calc(100vh - 80px)",
+          // height: "calc(100vh - 80px)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
