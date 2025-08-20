@@ -58,6 +58,7 @@ import { Icon } from "@iconify/react";
 import { WhatsApp } from "@mui/icons-material";
 import Image from "next/image";
 import CategoryOffers from "src/sections/categoryOffers";
+import ProductFiltersNew from "src/components/product-filters-new";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -67,13 +68,17 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
 export default function ProductShopView() {
   const defaultFilters = {
-    priceRange: [0, 20000000],
-    category: "all",
+    priceRange: [0, 50000],
+    category: "",
     searchByTitle: "",
     year: [1940, new Date().getFullYear()],
     fuelType: "",
     mileage: [0, 200000000],
     makeType: "",
+    availableItems: [],
+    priceRangeOption: "",
+    popularTags: [],
+    activeFilter: "",
   };
 
   useEffect(() => {
@@ -217,58 +222,25 @@ export default function ProductShopView() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* Sidebar for ProductFilters */}
-      {/* {lgUp ? (
+      {/* Desktop Sidebar for ProductFilters */}
+      {/* {lgUp && (
         <Box
           sx={{
-            width: "20%",
-            border: "1px solid #ccd1d1",
-            height: "fit-content",
-            borderRadius: "6px",
-            mt: "34px",
+            width: "300px",
+            minHeight: "100vh",
+            backgroundColor: "#000",
+            borderRight: "1px solid #333",
+            position: "sticky",
+            top: 0,
+            left: 0,
+            zIndex: 1000,
           }}>
-          <ProductFilters
-            open={openFilters.value}
-            onOpen={openFilters.onTrue}
-            onClose={openFilters.onFalse}
+          <ProductFiltersNew
             filters={filters}
             onFilters={handleFilters}
-            canReset={canReset}
             onResetFilters={handleResetFilters}
-            colorOptions={PRODUCT_COLOR_OPTIONS}
-            ratingOptions={PRODUCT_RATING_OPTIONS}
-            genderOptions={PRODUCT_GENDER_OPTIONS}
-            fuelOptions={[...FUEL_TYPES_LIST]}
-            reset={reset}
           />
-       
         </Box>
-      ) : (
-        <Drawer
-          open={toggle}
-          onClose={onClose}
-          PaperProps={{
-            sx: {
-              width: "75%",
-            },
-          }}>
-          <Box>
-            <ProductFilters
-              open={openFilters.value}
-              onOpen={openFilters.onTrue}
-              onClose={openFilters.onFalse}
-              filters={filters}
-              onFilters={handleFilters}
-              canReset={canReset}
-              onResetFilters={handleResetFilters}
-              colorOptions={PRODUCT_COLOR_OPTIONS}
-              ratingOptions={PRODUCT_RATING_OPTIONS}
-              genderOptions={PRODUCT_GENDER_OPTIONS}
-              fuelOptions={[...FUEL_TYPES_LIST]}
-              reset={reset}
-            />
-          </Box>
-        </Drawer>
       )} */}
 
       <Drawer
@@ -277,24 +249,15 @@ export default function ProductShopView() {
         PaperProps={{
           sx: {
             width: { md: "30%", xs: "75%" },
+            backgroundColor: "#000",
           },
         }}>
         <Box>
-          {/* <ProductFilters
-            open={openFilters.value}
-            onOpen={openFilters.onTrue}
-            onClose={openFilters.onFalse}
+          <ProductFiltersNew
             filters={filters}
             onFilters={handleFilters}
-            canReset={canReset}
             onResetFilters={handleResetFilters}
-            colorOptions={PRODUCT_COLOR_OPTIONS}
-            ratingOptions={PRODUCT_RATING_OPTIONS}
-            genderOptions={PRODUCT_GENDER_OPTIONS}
-            fuelOptions={[...FUEL_TYPES_LIST]}
-            categoryOptions={PRODUCT_CATEGORY_GROUP_OPTIONS}
-            reset={reset}
-          /> */}
+          />
         </Box>
       </Drawer>
 
@@ -511,6 +474,10 @@ function applyFilter({ inputData, filters, sortBy }) {
     fuelType,
     mileage,
     makeType,
+    availableItems,
+    priceRangeOption,
+    popularTags,
+    activeFilter,
   } = filters;
 
   const min = priceRange[0];
@@ -518,21 +485,116 @@ function applyFilter({ inputData, filters, sortBy }) {
 
   // FILTERS
 
-  if (category !== "all") {
-    inputData = inputData.filter(
-      (product) => product?.category?.toUpperCase() === category?.toUpperCase()
+  // Category filter
+  if (category && category !== "" && category !== "all") {
+    inputData = inputData.filter((product) =>
+      product?.categories?.some(
+        (cat) => cat?.name?.toUpperCase() === category?.toUpperCase()
+      )
     );
   }
 
-  inputData = inputData.filter(
-    (product) => Number(product.price) >= min && Number(product.price) <= max
-  );
+  // Price range filter
+  console.log("Price range filter - min:", min, "max:", max); // Debug log
+  inputData = inputData.filter((product) => {
+    const productPrice = Number(product.price) || 0;
+    const isInRange = productPrice >= min && productPrice <= max;
+    console.log(
+      `Product: ${product.name}, Price: ${productPrice}, In Range: ${isInRange}`
+    ); // Debug log
+    return isInRange;
+  });
 
+  // Price range option filter (radio button selections)
+  if (priceRangeOption && priceRangeOption !== "") {
+    console.log("Price range option filter:", priceRangeOption); // Debug log
+    inputData = inputData.filter((product) => {
+      const productPrice = Number(product.price) || 0;
+
+      let isInRange = false;
+      switch (priceRangeOption) {
+        case "Under Pkr.500":
+          isInRange = productPrice < 500;
+          break;
+        case "Pkr.501 to Pkr.1,000":
+          isInRange = productPrice >= 501 && productPrice <= 1000;
+          break;
+        case "Pkr.1,001 to Pkr.2,000":
+          isInRange = productPrice >= 1001 && productPrice <= 2000;
+          break;
+        case "Pkr.2,001 to Pkr.5,000":
+          isInRange = productPrice >= 2001 && productPrice <= 5000;
+          break;
+        case "Pkr.5,001 to Pkr.10,000":
+          isInRange = productPrice >= 5001 && productPrice <= 10000;
+          break;
+        case "Above Pkr.10,000":
+          isInRange = productPrice > 10000;
+          break;
+        case "All Price":
+        default:
+          isInRange = true;
+          break;
+      }
+      console.log(
+        `Product: ${product.name}, Price: ${productPrice}, Range Option: ${priceRangeOption}, In Range: ${isInRange}`
+      ); // Debug log
+      return isInRange;
+    });
+  }
+
+  // Search filter
   if (searchByTitle) {
     inputData = inputData.filter(
       (product) =>
-        product.title?.toLowerCase().includes(searchByTitle?.toLowerCase()) ||
-        product.name?.toLowerCase().includes(searchByTitle?.toLowerCase())
+        product.name?.toLowerCase().includes(searchByTitle?.toLowerCase()) ||
+        product.description
+          ?.toLowerCase()
+          .includes(searchByTitle?.toLowerCase())
+    );
+  }
+
+  // Available items filter
+  if (availableItems && availableItems.length > 0) {
+    const checkedItems = availableItems
+      .filter((item) => item.checked)
+      .map((item) => item.name);
+    if (checkedItems.length > 0) {
+      inputData = inputData.filter((product) =>
+        checkedItems.some(
+          (item) =>
+            product.name?.toLowerCase().includes(item.toLowerCase()) ||
+            product.description?.toLowerCase().includes(item.toLowerCase())
+        )
+      );
+    }
+  }
+
+  // Popular tags filter
+  if (popularTags && popularTags.length > 0) {
+    inputData = inputData.filter((product) =>
+      popularTags.some(
+        (tag) =>
+          product.name?.toLowerCase().includes(tag.toLowerCase()) ||
+          product.description?.toLowerCase().includes(tag.toLowerCase()) ||
+          product.categories?.some((cat) =>
+            cat.name?.toLowerCase().includes(tag.toLowerCase())
+          )
+      )
+    );
+  }
+
+  // Active filter
+  if (activeFilter && activeFilter !== "") {
+    inputData = inputData.filter(
+      (product) =>
+        product.name?.toLowerCase().includes(activeFilter.toLowerCase()) ||
+        product.description
+          ?.toLowerCase()
+          .includes(activeFilter.toLowerCase()) ||
+        product.categories?.some((cat) =>
+          cat.name?.toLowerCase().includes(activeFilter.toLowerCase())
+        )
     );
   }
 

@@ -92,7 +92,15 @@ export default function ServicesSection() {
   };
 
   return (
-    <Box sx={{ bgcolor: "black", py: 8 }}>
+    <Box
+      sx={{
+        py: 8,
+        backgroundImage: "url(/assets/serviceBg.webp)",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}>
       <style>
         {`
           .slick-slide {

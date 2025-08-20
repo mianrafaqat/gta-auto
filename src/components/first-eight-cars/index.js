@@ -328,16 +328,32 @@ export default function LastestEightCars() {
   return (
     <Box sx={{ bgcolor: "black", py: 6 }}>
       <Container maxWidth="xl">
+        <Box sx={{ pb: "28px" }}>
+          <Typography
+            variant="h3"
+            sx={{
+              color: "#4CAF50",
+              fontWeight: "bold",
+              fontSize: { xs: "28px", md: "36px" },
+              mb: 1,
+              width: "max-content",
+            }}>
+            Explore All Vehicles
+          </Typography>
+        </Box>
         {/* Tabs Navigation */}
-        <Box sx={{ mb: 4, borderBottom: "1px solid #fff" }}>
+        <Box
+          sx={{ mb: 4, borderBottom: "1px solid #fff", position: "relative" }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
             sx={{
               "& .MuiTabs-indicator": {
                 bgcolor: "#4CAF50",
-                height: 2,
+                height: 4,
                 borderRadius: "1px",
+                zIndex: 10,
+                bottom: "-1px",
               },
               "& .MuiTab-root": {
                 color: "rgba(255,255,255,0.7)",
@@ -346,6 +362,7 @@ export default function LastestEightCars() {
                 textTransform: "none",
                 minWidth: 100,
                 padding: "16px 24px",
+                position: "relative",
                 "&.Mui-selected": {
                   color: "#4CAF50",
                   fontWeight: 600,
