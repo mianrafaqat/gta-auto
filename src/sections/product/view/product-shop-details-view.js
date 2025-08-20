@@ -202,11 +202,11 @@ export default function ProductShopDetailsView({ id }) {
       />
 
       <Grid container spacing={{ xs: 3, md: 5, lg: 8 }}>
-        <Grid xs={12} md={7} lg={8}>
+        <Grid xs={12} md={6} lg={6}>
           <ProductDetailsCarousel product={product} />
         </Grid>
 
-        <Grid xs={12} md={5} lg={4}>
+        <Grid xs={12} md={6} lg={6}>
           <ProductDetailsSummary
             product={product}
             items={checkout.items}

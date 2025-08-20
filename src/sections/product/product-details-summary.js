@@ -24,6 +24,7 @@ import FormProvider, { RHFSelect } from "src/components/hook-form";
 
 import IncrementerButton from "./common/incrementer-button";
 import CheckAvailabiltyForm from "./check-availabilty-form";
+import { Chip } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
@@ -52,7 +53,7 @@ export default function ProductDetailsSummary({
     newLabel = {},
     available,
     saleLabel = {},
-    totalRatings,
+    ratingCount,
     totalReviews,
     inventoryType,
     stockStatus, // Add stockStatus for new API structure
@@ -75,7 +76,9 @@ export default function ProductDetailsSummary({
   const firstImage = productImages[0] || coverUrl || "/assets/placeholder.svg";
 
   // Get the product category, handling both old and new API structures
-  const productCategory = category || (categories && categories.length > 0 ? categories[0].name : "sale");
+  const productCategory =
+    category ||
+    (categories && categories.length > 0 ? categories[0].name : "sale");
 
   // Get the product stock status, handling both old and new API structures
   const productStockStatus = stockStatus || inventoryType || "in stock";
@@ -88,8 +91,9 @@ export default function ProductDetailsSummary({
 
   const isMaxQuantity =
     !!items?.length &&
-    items.filter((item) => item.id === productId).map((item) => item.quantity)[0] >=
-      available;
+    items
+      .filter((item) => item.id === productId)
+      .map((item) => item.quantity)[0] >= available;
 
   // useEffect(() => {
   //   if (product) {
@@ -107,7 +111,7 @@ export default function ProductDetailsSummary({
           gap: "5px",
           color: color,
           justifyContent: "end",
-          color: "#000",
+          color: "#4CAF50",
         }}>
         <Iconify icon={icon} />
         {title}
@@ -181,46 +185,121 @@ export default function ProductDetailsSummary({
     <>
       <Box
         sx={{
-          background: "#fff",
-          border: "1px solid #c3cdd5",
-          boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-          borderRadius: ".5rem",
           width: "100%",
-          padding: ".75rem 1rem",
         }}>
-        <Typography fontWeight={700} variant="h5" color="#000">
+        <Typography fontWeight={500} variant="h5" color="#4CAF50">
           {productName}
         </Typography>
-        <Box gap="5px" sx={{ display: "flex" }} alignItems="start">
-          <Iconify
-            icon="subway:location-1"
-            sx={{ transform: "translateY(3px)" }}
+        <Stack direction="row" alignItems="center" gap="5px">
+          <Rating
+            size="small"
+            value={ratingCount}
+            precision={0.1}
+            readOnly
+            sx={{
+              mr: 1,
+              "& .MuiRating-iconFilled": { color: "#4CAF50" },
+              "& .MuiRating-iconHover": { color: "#4CAF50" },
+              "& .MuiRating-iconEmpty": { color: "#e0e0e0" },
+            }}
           />
-          <Typography variant="body1" color="#000">
-            {product.location || "N/A"}
+          <Typography variant="body1" color="#fff">
+            {ratingCount} star rating
           </Typography>
-        </Box>
+          <Typography variant="body1" color="#828282">
+            (21,671 User feedback)
+          </Typography>
+        </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          width="100%"
+          mt="16px">
+          {/* Left Column */}
+          <Stack gap={2} sx={{ flex: 1 }}>
+            <Typography color="#828282" fontSize="14px">
+              <span style={{ fontWeight: "500" }}>Sku:</span> {product.sku}
+            </Typography>
+            <Typography color="#828282" fontSize="14px">
+              <span style={{ fontWeight: "500" }}>Brand:</span> Garage Tuned
+              Autos
+            </Typography>
+          </Stack>
 
-        <Box sx={{ display: "flex" }} justifyContent="space-between">
+          {/* Right Column */}
+          <Stack gap={2} sx={{ flex: 1, alignItems: "flex-end" }}>
+            <Typography color="#4CAF50" fontSize="14px">
+              <span style={{ fontWeight: "500", color: "#828282" }}>
+                Availability:
+              </span>{" "}
+              {product.stock > 0 ? "In Stock" : "Out of Stock"}
+            </Typography>
+            <Typography color="#828282" fontSize="14px">
+              <span style={{ fontWeight: "500" }}>Category:</span>{" "}
+              {product.categories?.[0]?.name || "Car Care"}
+            </Typography>
+          </Stack>
+        </Stack>
+
+        <Stack
+          direction="row"
+          gap="6px"
+          alignItems="center"
+          width="100%"
+          mt="16px">
           <Typography
-            mt={1}
             sx={{ display: "flex" }}
             alignItems="center"
-            variant="h4"
-            color="#000">
+            variant="h5"
+            color="#4CAF50">
             PKR{price ? Number(price)?.toLocaleString() : 0}
           </Typography>
           <Typography
-            color="error"
-            mt={2}
-            sx={{ display: "flex" }}
-            alignItems="center"
-            variant="body1"
-            gap={"5px"}
-            fontWeight={600}>
-            {dealStatus}
+            color="#828282"
+            fontSize="14px"
+            variant="h5"
+            sx={{
+              textDecoration: "line-through",
+              ml: 1,
+              alignSelf: "center",
+            }}>
+            {product.regularPrice}
           </Typography>
-        </Box>
+
+          {(() => {
+            const regularPrice =
+              Number(product.regularPrice) || Number(product.price);
+            const salePrice =
+              Number(product.salePrice) || Number(product.price);
+            const discountPercentage =
+              regularPrice > salePrice
+                ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
+                : 0;
+
+            return discountPercentage > 0 ? (
+              <Chip
+                label={`${discountPercentage}% OFF`}
+                sx={{
+                  bgcolor: "#FFD700", // Bright yellow background
+                  color: "#000", // Black text
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                  borderRadius: "8px",
+                  padding: "8px 12px",
+                  border: "none",
+                  boxShadow: "none",
+                  "& .MuiChip-label": {
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                    color: "#000",
+                  },
+                }}
+              />
+            ) : null;
+          })()}
+        </Stack>
+
+        <Divider sx={{ borderColor: "#fff", mt: "16px" }} />
       </Box>
     </>
   );
@@ -419,7 +498,7 @@ export default function ProductDetailsSummary({
       }}>
       <Rating
         size="small"
-        value={totalRatings}
+        value={ratingCount}
         precision={0.1}
         readOnly
         sx={{ mr: 1 }}
