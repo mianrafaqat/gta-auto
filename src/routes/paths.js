@@ -55,6 +55,10 @@ export const paths = {
       details: `/post/${paramCase(_postTitles[2])}`,
     },
   },
+  blog: {
+    root: `/blog`,
+    details: (title) => `/blog/${paramCase(title)}`,
+  },
   // AUTH
   auth: {
     amplify: {
@@ -247,6 +251,9 @@ export const paths = {
         view: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/view`,
         edit: (id) => `${ROOTS.DASHBOARD}/admin/video/${id}/edit`,
       },
+      forum: {
+        categories: `${ROOTS.DASHBOARD}/admin/forum/categories`,
+      },
     },
     category: {
       root: `${ROOTS.DASHBOARD}/admin/categories/list`,
@@ -277,6 +284,9 @@ export const paths = {
         view: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/view`,
         edit: (id) => `${ROOTS.DASHBOARD}/video/my/${id}/edit`,
       },
+    },
+    forum: {
+      root: `${ROOTS.DASHBOARD}/forum`,
     },
   },
   user: {

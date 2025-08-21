@@ -84,7 +84,10 @@ NavMobile.propTypes = {
 
 function MoveTo({ sx, title, path }) {
   return (
-    <Button href={path} variant="outlined" sx={{ mr: 1, ...sx }}>
+    <Button
+      href={path}
+      variant="outlined"
+      sx={{ mr: 1, ...sx, whiteSpace: "nowrap" }}>
       {title}
     </Button>
   );

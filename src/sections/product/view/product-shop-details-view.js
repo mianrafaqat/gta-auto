@@ -62,8 +62,19 @@ export default function ProductShopDetailsView({ id }) {
   const [productLoading, setProductLoading] = useState(true);
   const [productError, setProductError] = useState(null);
 
+  // Safety check for checkout context
+  if (!checkout) {
+    console.log("Checkout context is not available");
+    return (
+      <Container maxWidth="lg">
+        <div>Loading checkout...</div>
+      </Container>
+    );
+  }
+
   // Safety check for settings context
   if (!settings) {
+    console.log("Settings context is not available");
     return (
       <Container maxWidth="lg">
         <div>Loading settings...</div>
@@ -71,23 +82,51 @@ export default function ProductShopDetailsView({ id }) {
     );
   }
 
+  console.log(
+    "Contexts loaded - checkout:",
+    !!checkout,
+    "settings:",
+    !!settings
+  );
+
   // Fetch product data using ProductService
   const fetchProduct = useCallback(async () => {
     if (!id) return;
-    
+
     try {
       setProductLoading(true);
       setProductError(null);
-      
+
       const response = await ProductService.getById(id);
-      
-      if (response && response.data) {
-        setProduct(response.data);
+
+      console.log("API Response:", response);
+      console.log("Response type:", typeof response);
+      console.log(
+        "Response keys:",
+        response ? Object.keys(response) : "No response"
+      );
+
+      if (response) {
+        // Check different possible response structures
+        if (response.product) {
+          console.log("Using response.product structure");
+          setProduct(response.product);
+        } else if (response.data && response.data.product) {
+          console.log("Using response.data.product structure");
+          setProduct(response.data.product);
+        } else if (response.data) {
+          console.log("Using response.data structure");
+          setProduct(response.data);
+        } else {
+          console.log("No product data found in response");
+          setProductError(new Error("Product not found"));
+        }
       } else {
-        setProductError(new Error('Product not found'));
+        console.log("No response received");
+        setProductError(new Error("Product not found"));
       }
     } catch (error) {
-      console.error('Error fetching product:', error);
+      console.error("Error fetching product:", error);
       setProductError(error);
     } finally {
       setProductLoading(false);
@@ -104,6 +143,24 @@ export default function ProductShopDetailsView({ id }) {
     product,
     productLoading,
     productError,
+  });
+
+  // Debug log for API response structure
+  useEffect(() => {
+    if (product) {
+      console.log("Product data structure:", product);
+    }
+  }, [product]);
+
+  // Additional debugging for rendering conditions
+  console.log("Rendering conditions:", {
+    productLoading,
+    productError,
+    hasProduct: !!product,
+    productName: product?.name,
+    productId: product?._id,
+    productType: typeof product,
+    productKeys: product ? Object.keys(product) : null,
   });
 
   const handleChangeTab = useCallback((event, newValue) => {
@@ -131,6 +188,7 @@ export default function ProductShopDetailsView({ id }) {
 
   const renderProduct = product && (
     <>
+      {console.log("Rendering product:", product.name)}
       <CustomBreadcrumbs
         links={[
           { name: "Home", href: "/" },
@@ -144,11 +202,11 @@ export default function ProductShopDetailsView({ id }) {
       />
 
       <Grid container spacing={{ xs: 3, md: 5, lg: 8 }}>
-        <Grid xs={12} md={6} lg={7}>
+        <Grid xs={12} md={6} lg={6}>
           <ProductDetailsCarousel product={product} />
         </Grid>
 
-        <Grid xs={12} md={6} lg={5}>
+        <Grid xs={12} md={6} lg={6}>
           <ProductDetailsSummary
             product={product}
             items={checkout.items}
@@ -234,6 +292,17 @@ export default function ProductShopDetailsView({ id }) {
         mb: 15,
       }}>
       {/* <CartIcon totalItems={checkout.totalItems} /> */}
+
+      {console.log(
+        "Final render - productLoading:",
+        productLoading,
+        "productError:",
+        productError,
+        "product:",
+        !!product,
+        "productData:",
+        product
+      )}
 
       {productLoading && renderSkeleton}
 

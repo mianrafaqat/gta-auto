@@ -1,17 +1,19 @@
-import PropTypes from 'prop-types';
+"use client";
 
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import LoadingButton from '@mui/lab/LoadingButton';
+import PropTypes from "prop-types";
 
-import { RouterLink } from 'src/routes/components';
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { RouterLink } from "src/routes/components";
+
+import Iconify from "src/components/iconify";
+import CustomPopover, { usePopover } from "src/components/custom-popover";
 
 // ----------------------------------------------------------------------
 
@@ -36,19 +38,17 @@ export default function PostDetailsToolbar({
           mb: { xs: 3, md: 5 },
           ...sx,
         }}
-        {...other}
-      >
+        {...other}>
         <Button
           component={RouterLink}
           href={backLink}
-          startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
-        >
+          startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}>
           Back
         </Button>
 
         <Box sx={{ flexGrow: 1 }} />
 
-        {publish === 'published' && (
+        {publish === "published" && (
           <Tooltip title="Go Live">
             <IconButton component={RouterLink} href={liveLink}>
               <Iconify icon="eva:external-link-fill" />
@@ -69,8 +69,7 @@ export default function PostDetailsToolbar({
           loadingIndicator="Loading…"
           endIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
           onClick={popover.onOpen}
-          sx={{ textTransform: 'capitalize' }}
-        >
+          sx={{ textTransform: "capitalize" }}>
           {publish}
         </LoadingButton>
       </Stack>
@@ -79,8 +78,7 @@ export default function PostDetailsToolbar({
         open={popover.open}
         onClose={popover.onClose}
         arrow="top-right"
-        sx={{ width: 140 }}
-      >
+        sx={{ width: 140 }}>
         {publishOptions.map((option) => (
           <MenuItem
             key={option.value}
@@ -88,10 +86,13 @@ export default function PostDetailsToolbar({
             onClick={() => {
               popover.onClose();
               onChangePublish(option.value);
-            }}
-          >
-            {option.value === 'published' && <Iconify icon="eva:cloud-upload-fill" />}
-            {option.value === 'draft' && <Iconify icon="solar:file-text-bold" />}
+            }}>
+            {option.value === "published" && (
+              <Iconify icon="eva:cloud-upload-fill" />
+            )}
+            {option.value === "draft" && (
+              <Iconify icon="solar:file-text-bold" />
+            )}
             {option.label}
           </MenuItem>
         ))}

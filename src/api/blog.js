@@ -1,89 +1,95 @@
-import useSWR from 'swr';
-import { useMemo } from 'react';
-
-import { fetcher, endpoints } from 'src/utils/axios';
+import {
+  useGetBlogs,
+  useGetBlogById,
+  useCreateBlog,
+  useUpdateBlog,
+  useDeleteBlog,
+  useSearchBlogs,
+  useGetLatestBlogs,
+} from "src/hooks/use-blogs";
 
 // ----------------------------------------------------------------------
 
 export function useGetPosts() {
-  const URL = endpoints.post.list;
+  const {
+    data: posts,
+    isLoading: postsLoading,
+    error: postsError,
+    isFetching: postsValidating,
+  } = useGetBlogs();
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
-
-  const memoizedValue = useMemo(
-    () => ({
-      posts: data?.posts || [],
-      postsLoading: isLoading,
-      postsError: error,
-      postsValidating: isValidating,
-      postsEmpty: !isLoading && !data?.posts.length,
-    }),
-    [data?.posts, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
+  return {
+    posts: Array.isArray(posts) ? posts : [],
+    postsLoading,
+    postsError,
+    postsValidating,
+    postsEmpty: !postsLoading && (!posts || posts.length === 0),
+  };
 }
 
 // ----------------------------------------------------------------------
 
 export function useGetPost(title) {
-  const URL = title ? [endpoints.post.details, { params: { title } }] : '';
+  const {
+    data: post,
+    isLoading: postLoading,
+    error: postError,
+    isFetching: postValidating,
+  } = useGetBlogById(title);
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
-
-  const memoizedValue = useMemo(
-    () => ({
-      post: data?.post,
-      postLoading: isLoading,
-      postError: error,
-      postValidating: isValidating,
-    }),
-    [data?.post, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
+  return {
+    post,
+    postLoading,
+    postError,
+    postValidating,
+  };
 }
 
 // ----------------------------------------------------------------------
 
 export function useGetLatestPosts(title) {
-  const URL = title ? [endpoints.post.latest, { params: { title } }] : '';
+  const {
+    data: latestPosts,
+    isLoading: latestPostsLoading,
+    error: latestPostsError,
+    isFetching: latestPostsValidating,
+  } = useGetLatestBlogs(5);
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
-
-  const memoizedValue = useMemo(
-    () => ({
-      latestPosts: data?.latestPosts || [],
-      latestPostsLoading: isLoading,
-      latestPostsError: error,
-      latestPostsValidating: isValidating,
-      latestPostsEmpty: !isLoading && !data?.latestPosts.length,
-    }),
-    [data?.latestPosts, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
+  return {
+    latestPosts: Array.isArray(latestPosts) ? latestPosts : [],
+    latestPostsLoading,
+    latestPostsError,
+    latestPostsValidating,
+    latestPostsEmpty:
+      !latestPostsLoading && (!latestPosts || latestPosts.length === 0),
+  };
 }
 
 // ----------------------------------------------------------------------
 
 export function useSearchPosts(query) {
-  const URL = query ? [endpoints.post.search, { params: { query } }] : '';
+  const {
+    data: searchResults,
+    isLoading: searchLoading,
+    error: searchError,
+    isFetching: searchValidating,
+  } = useSearchBlogs(query);
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {
-    keepPreviousData: true,
-  });
-
-  const memoizedValue = useMemo(
-    () => ({
-      searchResults: data?.results || [],
-      searchLoading: isLoading,
-      searchError: error,
-      searchValidating: isValidating,
-      searchEmpty: !isLoading && !data?.results.length,
-    }),
-    [data?.results, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
+  return {
+    searchResults: Array.isArray(searchResults) ? searchResults : [],
+    searchLoading,
+    searchError,
+    searchValidating,
+    searchEmpty:
+      !searchLoading && (!searchResults || searchResults.length === 0),
+  };
 }
+
+// ----------------------------------------------------------------------
+
+// Export the mutation hooks for creating, updating, and deleting posts
+export {
+  useCreateBlog as useCreatePost,
+  useUpdateBlog as useUpdatePost,
+  useDeleteBlog as useDeletePost,
+};

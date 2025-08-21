@@ -92,12 +92,55 @@ export const API_URLS = {
   },
   blog: {
     // Public Routes
-    getAll: "/api/blog/getAll",
-
+    getAll: "/api/blogs/getAll",
+    getById: (id) => `/api/blogs/get/${id}`, // Matches: router.get("/get/:id", ...)
     // Admin Routes
-    add: "/api/blog/add",
-    update: "/api/blog/update",
-    delete: "/api/blog/delete",
+    add: "/api/blogs/add",
+    update: "/api/blogs/update",
+    delete: "/api/blogs/delete",
+  },
+  forum: {
+    // Forum Categories Routes
+    categories: {
+      getAll: "/api/forum/categories",
+      create: "/api/forum/categories",
+      update: (id) => `/api/forum/categories/${id}`,
+      delete: (id) => `/api/forum/categories/${id}`,
+    },
+
+    // Forum Topics Routes
+    topics: {
+      getAll: "/api/forum/topics",
+      getById: (id) => `/api/forum/topics/${id}`,
+      create: "/api/forum/topics",
+      update: (id) => `/api/forum/topics/${id}`,
+      delete: (id) => `/api/forum/topics/${id}`,
+      toggleLike: (id) => `/api/forum/topics/${id}/like`,
+      togglePin: (id) => `/api/forum/topics/${id}/pin`,
+      toggleLock: (id) => `/api/forum/topics/${id}/lock`,
+    },
+
+    // Forum Comments Routes
+    comments: {
+      getByTopic: (topicId) => `/api/forum/topics/${topicId}/comments`,
+      create: (topicId) => `/api/forum/topics/${topicId}/comments`,
+      update: (id) => `/api/forum/comments/${id}`,
+      delete: (id) => `/api/forum/comments/${id}`,
+      toggleLike: (id) => `/api/forum/comments/${id}/like`,
+    },
+
+    // Forum Replies Routes
+    replies: {
+      getByComment: (commentId) => `/api/forum/comments/${commentId}/replies`,
+      create: (commentId) => `/api/forum/comments/${commentId}/replies`,
+      update: (id) => `/api/forum/replies/${id}`,
+      delete: (id) => `/api/forum/replies/${id}`,
+      toggleLike: (id) => `/api/forum/replies/${id}/like`,
+    },
+
+    // Forum Search and Statistics Routes
+    search: "/api/forum/search",
+    stats: "/api/forum/stats",
   },
   video: {
     // Public Routes

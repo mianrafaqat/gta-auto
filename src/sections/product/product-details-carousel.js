@@ -1,45 +1,48 @@
-import { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect } from "react";
+import PropTypes from "prop-types";
 
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import { alpha, styled, useTheme } from '@mui/material/styles';
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 
-import { bgGradient } from 'src/theme/css';
+import { bgGradient } from "src/theme/css";
 
-import Image from 'src/components/image';
-import Lightbox, { useLightBox } from 'src/components/lightbox';
-import Carousel, { useCarousel, CarouselArrowIndex } from 'src/components/carousel';
+import Image from "src/components/image";
+import Lightbox, { useLightBox } from "src/components/lightbox";
+import Carousel, {
+  useCarousel,
+  CarouselArrowIndex,
+} from "src/components/carousel";
 
 // ----------------------------------------------------------------------
 
 const THUMB_SIZE = 84;
 
-const StyledThumbnailsContainer = styled('div')(({ length, theme }) => ({
-  position: 'relative',
-  margin: theme.spacing(0, 'auto'),
-  '& .slick-slide': {
+const StyledThumbnailsContainer = styled("div")(({ length, theme }) => ({
+  position: "relative",
+  margin: theme.spacing(0, "auto"),
+  "& .slick-slide": {
     lineHeight: 0,
   },
 
   ...(length === 1 && {
-    maxWidth: '100%',
+    maxWidth: "100%",
   }),
 
   ...(length === 2 && {
-    maxWidth: '100%',
+    maxWidth: "100%",
   }),
 
   ...((length === 3 || length === 4) && {
-    maxWidth:'100%',
+    maxWidth: "100%",
   }),
 
   ...(length >= 5 && {
-    maxWidth: '100%',
+    maxWidth: "100%",
   }),
 
   ...(length > 3 && {
-    '&:before, &:after': {
+    "&:before, &:after": {
       // ...bgGradient({
       //   direction: 'to left',
       //   startColor: `${alpha(theme.palette.background.default, 0)} 0%`,
@@ -48,13 +51,13 @@ const StyledThumbnailsContainer = styled('div')(({ length, theme }) => ({
       top: 0,
       zIndex: 9,
       content: "''",
-      height: '100%',
-      position: 'absolute',
+      height: "100%",
+      position: "absolute",
       width: (THUMB_SIZE * 2) / 3,
     },
-    '&:after': {
+    "&:after": {
       right: 0,
-      transform: 'scaleX(-1)',
+      transform: "scaleX(-1)",
     },
   }),
 }));
@@ -65,15 +68,15 @@ export default function ProductDetailsCarousel({ product }) {
   const theme = useTheme();
 
   // Handle both old and new API structures for images
-  const slides = product?.images 
+  const slides = product?.images
     ? product.images.map((img) => ({
         src: img,
       }))
-    : product?.image 
-    ? product.image.map((img) => ({
-        src: img,
-      }))
-    : [];
+    : product?.image
+      ? product.image.map((img) => ({
+          src: img,
+        }))
+      : [];
 
   const lightbox = useLightBox(slides);
 
@@ -89,7 +92,7 @@ export default function ProductDetailsCarousel({ product }) {
     swipeToSlide: true,
     focusOnSelect: true,
     variableWidth: true,
-    centerPadding: '0px',
+    centerPadding: "0px",
     slidesToShow: slides?.length > 3 ? 3 : slides?.length,
   });
 
@@ -109,25 +112,33 @@ export default function ProductDetailsCarousel({ product }) {
       sx={{
         mb: 3,
         borderRadius: 2,
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
+        overflow: "hidden",
+        position: "relative",
+        backgroundColor: "#f8f9fa",
+        padding: 2,
+        border: "1px solid #e0e0e0",
+      }}>
       <Carousel
         {...carouselLarge.carouselSettings}
         asNavFor={carouselThumb.nav}
         ref={carouselLarge.carouselRef}
-        arrows={true}
-      >
+        arrows={true}>
         {slides &&
           slides.map((slide) => (
             <Image
               key={slide.src}
               alt={slide.src}
               src={slide.src}
-              ratio="16/9"
+              ratio="4/3"
               onClick={() => lightbox.onOpen(slide.src)}
-              sx={{ cursor: 'zoom-in' }}
+              sx={{
+                cursor: "zoom-in",
+                minHeight: "400px",
+                "& img": {
+                  objectFit: "contain",
+                  backgroundColor: "#f5f5f5",
+                },
+              }}
             />
           ))}
       </Carousel>
@@ -146,8 +157,7 @@ export default function ProductDetailsCarousel({ product }) {
       <Carousel
         {...carouselThumb.carouselSettings}
         asNavFor={carouselLarge.nav}
-        ref={carouselThumb.carouselRef}
-      >
+        ref={carouselThumb.carouselRef}>
         {slides.map((item, index) => (
           <Box key={item.src} sx={{ px: 0.5 }}>
             <Avatar
@@ -159,7 +169,7 @@ export default function ProductDetailsCarousel({ product }) {
                 width: THUMB_SIZE,
                 height: THUMB_SIZE,
                 opacity: 0.48,
-                cursor: 'pointer',
+                cursor: "pointer",
                 ...(carouselLarge.currentIndex === index && {
                   opacity: 1,
                   border: `solid 2.5px ${theme.palette.primary.main}`,
@@ -175,11 +185,10 @@ export default function ProductDetailsCarousel({ product }) {
   return (
     <Box
       sx={{
-        '& .slick-slide': {
-          float: theme.direction === 'rtl' ? 'right' : 'left',
+        "& .slick-slide": {
+          float: theme.direction === "rtl" ? "right" : "left",
         },
-      }}
-    >
+      }}>
       {renderLargeImg}
 
       {renderThumbnails}

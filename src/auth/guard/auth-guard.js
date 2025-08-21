@@ -1,12 +1,14 @@
-import PropTypes from 'prop-types';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+"use client";
 
-import { paths } from 'src/routes/paths';
-import { useRouter, usePathname } from 'src/routes/hooks';
+import PropTypes from "prop-types";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { SplashScreen } from 'src/components/loading-screen';
+import { paths } from "src/routes/paths";
+import { useRouter, usePathname } from "src/routes/hooks";
 
-import { useAuthContext } from '../hooks';
+import { SplashScreen } from "src/components/loading-screen";
+
+import { useAuthContext } from "../hooks";
 
 // ----------------------------------------------------------------------
 
