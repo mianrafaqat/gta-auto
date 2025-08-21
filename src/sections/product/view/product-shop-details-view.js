@@ -12,6 +12,7 @@ import { alpha } from "@mui/material/styles";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
@@ -30,6 +31,20 @@ import { ProductDetailsSkeleton } from "../product-skeleton";
 import ProductDetailsSummary from "../product-details-summary";
 import ProductDetailsCarousel from "../product-details-carousel";
 import ProductDetailsDescription from "../product-details-description";
+import ShopDetailSummary from "../shop-detail-summary";
+import HeroBottom from "src/components/heroBottom";
+import {
+  HeadphonesOutlined,
+  LocalShippingOutlined,
+  MonetizationOnOutlined,
+  WalletOutlined,
+  WorkspacePremium,
+} from "@mui/icons-material";
+import Discounted from "src/components/discounted";
+import CategoryOffers from "src/sections/categoryOffers";
+import RecentlyPurchased from "src/components/recently-purchased";
+import BrowseVideosSection from "src/components/cars-filters/browse-videos";
+import CTA from "src/components/cta";
 
 // ----------------------------------------------------------------------
 
@@ -152,17 +167,6 @@ export default function ProductShopDetailsView({ id }) {
     }
   }, [product]);
 
-  // Additional debugging for rendering conditions
-  console.log("Rendering conditions:", {
-    productLoading,
-    productError,
-    hasProduct: !!product,
-    productName: product?.name,
-    productId: product?._id,
-    productType: typeof product,
-    productKeys: product ? Object.keys(product) : null,
-  });
-
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
   }, []);
@@ -207,7 +211,7 @@ export default function ProductShopDetailsView({ id }) {
         </Grid>
 
         <Grid xs={12} md={6} lg={6}>
-          <ProductDetailsSummary
+          <ShopDetailSummary
             product={product}
             items={checkout.items}
             onAddCart={checkout.onAddToCart}
@@ -215,6 +219,10 @@ export default function ProductShopDetailsView({ id }) {
           />
         </Grid>
       </Grid>
+
+      <Box sx={{ mt: 5 }}>
+        <HeroBottom />
+      </Box>
 
       <Box
         gap={5}
@@ -245,41 +253,218 @@ export default function ProductShopDetailsView({ id }) {
         ))}
       </Box>
 
-      <Card>
+      <Card
+        sx={{
+          backgroundColor: "#000",
+          border: "1px solid #fff",
+          borderRadius: "8px",
+          overflow: "hidden",
+          pt: "47px",
+        }}>
         <Tabs
           value={currentTab}
           onChange={handleChangeTab}
           sx={{
-            px: 3,
-            boxShadow: (theme) =>
-              `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+            backgroundColor: "#000",
+            borderBottom: "1px solid #fff",
+            justifyContent: "center",
+            "& .MuiTabs-indicator": {
+              backgroundColor: "#4CAF50",
+              height: "3px",
+            },
+            "& .MuiTabs-flexContainer": {
+              justifyContent: "center",
+            },
           }}>
           {[
             {
               value: "description",
-              label: "Description",
+              label: "DESCRIPTION",
+            },
+            {
+              value: "additional",
+              label: "ADDITIONAL INFORMATION",
+            },
+            {
+              value: "specification",
+              label: "SPECIFICATION",
             },
             {
               value: "reviews",
-              label: `Reviews (${product.reviews?.length || 0})`,
+              label: "REVIEW",
             },
           ].map((tab) => (
-            <Tab key={tab.value} value={tab.value} label={tab.label} />
+            <Tab
+              key={tab.value}
+              value={tab.value}
+              label={tab.label}
+              sx={{
+                color: currentTab === tab.value ? "#000" : "#828282",
+                backgroundColor:
+                  currentTab === tab.value ? "#fff" : "transparent",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                fontSize: "14px",
+                padding: "16px 24px",
+                "&.Mui-selected": {
+                  color: "#000",
+                  backgroundColor: "#fff",
+                },
+                "&:hover": {
+                  backgroundColor:
+                    currentTab === tab.value ? "#fff" : "rgba(255,255,255,0.1)",
+                },
+              }}
+            />
           ))}
         </Tabs>
 
-        {currentTab === "description" && (
-          <ProductDetailsDescription description={product?.description} />
-        )}
+        <Box sx={{ p: "40px" }}>
+          {currentTab === "description" && (
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={4}>
+                <Box sx={{ pr: 2 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: "#4CAF50",
+                      fontWeight: "bold",
+                      mb: 2,
+                      fontSize: "18px",
+                    }}>
+                    Description
+                  </Typography>
+                  <ProductDetailsDescription
+                    description={product?.description}
+                  />
+                </Box>
+              </Grid>
 
-        {currentTab === "reviews" && product && (
-          <ProductDetailsReview
-            ratings={product.ratings || []}
-            reviews={product.reviews || []}
-            totalRatings={product.totalRatings || 0}
-            totalReviews={product.totalReviews || 0}
-          />
-        )}
+              <Grid item xs={12} md={4}>
+                <Box sx={{ borderRight: "1px solid #333", pr: 2 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: "#4CAF50",
+                      fontWeight: "bold",
+                      mb: 2,
+                      fontSize: "18px",
+                    }}>
+                    Feature
+                  </Typography>
+                  <Stack spacing={1}>
+                    {[
+                      {
+                        icon: <WorkspacePremium sx={{ color: "#4CAF50" }} />,
+                        text: "Free 1 Year Warranty",
+                      },
+                      {
+                        icon: (
+                          <LocalShippingOutlined sx={{ color: "#4CAF50" }} />
+                        ),
+                        text: "Free Shipping & Fast Delivery",
+                      },
+                      {
+                        icon: (
+                          <MonetizationOnOutlined sx={{ color: "#4CAF50" }} />
+                        ),
+                        text: "100% Money-back guarantee",
+                      },
+                      {
+                        icon: <HeadphonesOutlined sx={{ color: "#4CAF50" }} />,
+                        text: "24/7 Customer support",
+                      },
+                      {
+                        icon: <WalletOutlined sx={{ color: "#4CAF50" }} />,
+                        text: "Secure payment method",
+                      },
+                    ].map((feature, index) => (
+                      <Box
+                        key={index}
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        {feature.icon}
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#4CAF50",
+                            fontSize: "14px",
+                          }}>
+                          {feature.text}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Stack>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <Box>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: "#4CAF50",
+                      fontWeight: "bold",
+                      mb: 2,
+                      fontSize: "18px",
+                    }}>
+                    Shipping Information
+                  </Typography>
+                  <Stack spacing={2}>
+                    {[
+                      "Courier: 2-4 days, free shipping",
+                      "Local Shipping: up to one week, $19.00",
+                      "UPS Ground Shipping: 4-6 days, $29.00",
+                      "Unishop Global Export: 3-4 days, $39.00",
+                    ].map((shipping, index) => (
+                      <Typography
+                        key={index}
+                        variant="body2"
+                        sx={{
+                          color: "#fff",
+                          fontSize: "14px",
+                        }}>
+                        {shipping}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </Box>
+              </Grid>
+            </Grid>
+          )}
+
+          {currentTab === "additional" && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#fff",
+                textAlign: "center",
+                py: 4,
+              }}>
+              Additional information will be displayed here.
+            </Typography>
+          )}
+
+          {currentTab === "specification" && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#fff",
+                textAlign: "center",
+                py: 4,
+              }}>
+              Product specifications will be displayed here.
+            </Typography>
+          )}
+
+          {currentTab === "reviews" && product && (
+            <ProductDetailsReview
+              ratings={product.ratings || []}
+              reviews={product.reviews || []}
+              totalRatings={product.totalRatings || 0}
+              totalReviews={product.totalReviews || 0}
+            />
+          )}
+        </Box>
       </Card>
     </>
   );
@@ -326,6 +511,11 @@ export default function ProductShopDetailsView({ id }) {
       )}
 
       {product && renderProduct}
+      <Discounted />
+      <CategoryOffers />
+      <RecentlyPurchased />
+      <BrowseVideosSection />
+      <CTA />
     </Container>
   );
 }

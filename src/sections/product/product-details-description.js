@@ -22,9 +22,11 @@ export default function ProductDetailsDescription({ description }) {
     <Markdown
       children={description}
       sx={{
-        p: 3,
+        // p: 3,
+
         "& p, li, ol": {
           typography: "body2",
+          color: "#fff",
         },
         "& ol": {
           p: 0,

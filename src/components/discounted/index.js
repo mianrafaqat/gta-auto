@@ -61,7 +61,6 @@ const Discounted = () => {
       sx={{
         backgroundColor: "#000",
         py: 8,
-        px: { xs: 2, sm: 3, md: 4 },
       }}>
       <Container maxWidth="xl">
         {/* Section Header */}
@@ -127,11 +126,6 @@ const Discounted = () => {
                 {/* Product Icon with Green Border */}
                 <Box
                   sx={{
-                    // width: "100%",
-                    // height: "200px",
-                    // backgroundColor: "#ffffff",
-                    // borderRadius: "12px",
-                    // border: "1px solid #4caf50",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -144,7 +138,7 @@ const Discounted = () => {
                       width: "120px",
                       height: "120px",
                       borderRadius: "50%",
-                      backgroundColor: item.color,
+                      backgroundColor: "#4caf50",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
