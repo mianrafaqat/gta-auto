@@ -116,32 +116,7 @@ export default function LatestProductsSection() {
         backgroundColor: "black",
         minHeight: "600px",
       }}>
-      <Box sx={{ position: "relative", zIndex: 2 }}>
-        {/* Section Title */}
-        <Box
-          sx={{
-            borderBottom: "2px solid #4CAF50",
-            pb: "36px",
-            width: "max-content",
-            mb: 6,
-          }}>
-          <Typography
-            variant="h3"
-            sx={{
-              color: "#4caf50",
-              fontWeight: "bold",
-              fontSize: { xs: "28px", md: "36px" },
-
-              textTransform: "uppercase",
-            }}>
-            Latest Products
-          </Typography>
-        </Box>
-
-        <Grid item xs={12}>
-          <LatestProductsList products={latestProducts} loading={loading} />
-        </Grid>
-        <Box
+           <Box
           sx={{
             width: "100%",
             mt: "32px",
@@ -247,6 +222,28 @@ export default function LatestProductsSection() {
             </CardContent>
           </Card>
         </Box>
+      <Box sx={{ position: "relative", zIndex: 2 }}>
+        {/* Section Title */}
+        <Typography
+          variant="h3"
+          sx={{
+            color: "#4caf50",
+            fontWeight: "bold",
+            fontSize: { xs: "24px", md: "32px" },
+            mb: 6,
+            textTransform: "uppercase",
+          }}>
+          Latest Products
+        </Typography>
+
+        <Grid item xs={12}>
+          <ProductList
+            products={latestProducts}
+            loading={loading}
+            itemsPerPage={4}
+          />
+        </Grid>
+     
       </Box>
     </Container>
   );
