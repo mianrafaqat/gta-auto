@@ -32,6 +32,20 @@ const numberToStringTransform = (value, originalValue) => {
   return value;
 };
 
+// Custom validation for images that can handle both URLs and files
+const validateImages = (value) => {
+  if (!value || !Array.isArray(value)) {
+    return false;
+  }
+  
+  // Check if each item is either a string (URL) or File object
+  const isValid = value.every(item => 
+    typeof item === 'string' || item instanceof String || item instanceof File
+  );
+  
+  return isValid;
+};
+
 const schema = yup.object().shape({
   price: yup.string().required("Price is required."),
   description: yup.string().required("Description is required."),
@@ -39,7 +53,8 @@ const schema = yup.object().shape({
     .array()
     .min(3, "Minimum of 3 images required")
     .max(9, "Maximum of 9 images allowed")
-    .required("At least one image is required."),
+    .required("At least one image is required.")
+    .test('valid-image-format', 'Images must be URLs or files', validateImages),
   carDetails: yup.object().shape({
     make: yup.string().required("Make is required."),
     yearOfManufacture: yup
@@ -135,7 +150,54 @@ export default function AddNewCarForm({ isEditMode = false }) {
 
   // Mutation for updating car
   const updateCarMutation = useMutation({
-    mutationFn: (data) => CarsService.update(data),
+    mutationFn: async (data) => {
+      console.log('Starting car update with data:', data);
+      
+      // Separate existing image URLs from new file uploads
+      const existingImageUrls = [];
+      const newImageFiles = [];
+      
+      if (data.image && Array.isArray(data.image)) {
+        data.image.forEach(item => {
+          if (typeof item === 'string' || item instanceof String) {
+            // This is an existing image URL
+            existingImageUrls.push(item);
+          } else if (item instanceof File) {
+            // This is a new file that needs to be uploaded
+            newImageFiles.push(item);
+          }
+        });
+      }
+      
+      console.log('Existing image URLs:', existingImageUrls);
+      console.log('New image files to upload:', newImageFiles);
+      
+      let finalImageUrls = [...existingImageUrls];
+      
+      // Upload new images if any
+      if (newImageFiles.length > 0) {
+        console.log('Uploading new images...');
+        const imageRes = await CarsService.uploadCarImages(newImageFiles);
+        console.log('New images upload response:', imageRes);
+        
+        if (imageRes?.data?.success === true && Array.isArray(imageRes.data.urls)) {
+          finalImageUrls = [...existingImageUrls, ...imageRes.data.urls];
+          console.log('Final image URLs after upload:', finalImageUrls);
+        } else {
+          console.error('Failed to upload new images:', imageRes?.data);
+          throw new Error(imageRes?.data?.message || 'Failed to upload new images');
+        }
+      }
+      
+      // Prepare final update data with image URLs
+      const updateData = {
+        ...data,
+        image: finalImageUrls,
+      };
+      
+      console.log('Sending update request with data:', updateData);
+      return CarsService.update(updateData);
+    },
     onSuccess: (res) => {
       if (res?.status === 200) {
         enqueueSnackbar(res?.data, { variant: "success" });
@@ -198,18 +260,43 @@ export default function AddNewCarForm({ isEditMode = false }) {
   useEffect(() => {
     if (isEditMode && carData) {
       console.log('Setting form data:', carData);
-      reset(carData);
+      console.log('Image data structure:', {
+        hasImage: !!carData.image,
+        imageType: typeof carData.image,
+        isArray: Array.isArray(carData.image),
+        imageLength: carData.image?.length,
+        imageSample: carData.image?.[0],
+        imageSampleType: typeof carData.image?.[0]
+      });
+      
+      // Use setTimeout to ensure the form is ready before setting values
+      setTimeout(() => {
+        reset(carData);
+        console.log('Form reset completed with car data');
+      }, 100);
     }
   }, [isEditMode, carData, reset]);
 
   const onSubmit = handleSubmit((values) => {
+    console.log('Form submitted with values:', values);
+    console.log('Image field details:', {
+      hasImage: !!values.image,
+      imageType: typeof values.image,
+      isArray: Array.isArray(values.image),
+      imageLength: values.image?.length,
+      imageSample: values.image?.[0],
+      imageSampleType: typeof values.image?.[0]
+    });
+    
     if (isEditMode) {
+      console.log('Submitting in edit mode');
       updateCarMutation.mutate({
         ...values,
         carID,
         ownerID: user?._id,
       });
     } else {
+      console.log('Submitting in create mode');
       addCarMutation.mutate(values);
     }
   });

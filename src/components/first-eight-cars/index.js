@@ -67,7 +67,110 @@ export default function LastestEightCars() {
   }
 
   return (
-    <Container maxWidth="lg">
+
+    <Container maxWidth="lg" sx={{ mt: -8 }}>
+        <Box sx={{ width: "100%", display: { md: "block", xs: "none" } }}>
+        <Card
+          sx={{
+            background: "#25D366",
+            borderRadius: 3,
+            mb: 4,
+            height: "100%",
+            overflow: "hidden",
+            position: "relative",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            },
+          }}>
+          <CardContent
+            sx={{
+              p: { xs: 4, md: "32px" },
+              textAlign: "center",
+              position: "relative",
+              zIndex: 2,
+            }}>
+            <Stack direction="row" gap={2} alignItems="center">
+              <Box>
+                <img
+                  src="/assets/convertable.png"
+                  alt="Comic"
+                  // width={450}
+                  // height={150}
+                />
+              </Box>
+
+              <Box>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    color: "#000",
+                    fontWeight: 700,
+                    mt: -3,
+                    mb: 2,
+                    fontSize: { xs: "2rem", md: "34px !important" },
+                    lineHeight: 1.2,
+                    whiteSpace: "nowrap",
+                  }}>
+                  Import Your Dream Car
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "#ffffff",
+                    fontSize: "16px !important",
+                    mb: 4,
+                    fontWeight: 400,
+                    opacity: 0.9,
+                    maxWidth: 800,
+                    mx: "auto",
+                    lineHeight: 1.2,
+                    textAlign: "center",
+                  }}>
+                  From luxury brands to your everyday ride, we make importing
+                  your dream car a reality. Expert guidance, competitive
+                  pricing, and seamless process.
+                </Typography>
+              </Box>
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={3}
+                justifyContent="center"
+                alignItems="center">
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
+                  onClick={() => {
+                    const message =
+                      "Hi! I'm interested in importing car parts. Can you help me find the parts I need?";
+                    const whatsappUrl = `https://wa.me/923263333456?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, "_blank");
+                  }}
+                  sx={{
+                    backgroundColor: "transparent",
+                    border: "1px solid #fff",
+                    color: "#000",
+                    px: 4,
+                    py: 2,
+                    fontSize: "16px !important",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    borderRadius: "50px",
+                    minWidth: 250,
+                    whiteSpace: "nowrap",
+                  }}>
+                  Chat on WhatsApp
+                </Button>
+              </Stack>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -149,107 +252,7 @@ export default function LastestEightCars() {
         </Box>
       )}
 
-      <Box sx={{ width: "100%", display: { md: "block", xs: "none" } }}>
-        <Card
-          sx={{
-            background: "#25D366",
-            borderRadius: 3,
-            mb: 4,
-            height: "100%",
-            overflow: "hidden",
-            position: "relative",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            },
-          }}>
-          <CardContent
-            sx={{
-              p: { xs: 4, md: "32px" },
-              textAlign: "center",
-              position: "relative",
-              zIndex: 2,
-            }}>
-            <Stack direction="row" gap={2} alignItems="center">
-              <Box>
-                <img
-                  src="/assets/convertable.png"
-                  alt="Comic"
-                  // width={450}
-                  // height={150}
-                />
-              </Box>
-
-              <Box>
-                <Typography
-                  variant="h2"
-                  sx={{
-                    color: "#000",
-                    fontWeight: 700,
-                    mb: 2,
-                    fontSize: { xs: "2rem", md: "34px !important" },
-                    lineHeight: 1.2,
-                    whiteSpace: "nowrap",
-                  }}>
-                  Import Your Dream Car
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    color: "#ffffff",
-                    fontSize: "16px !important",
-                    mb: 4,
-                    fontWeight: 400,
-                    opacity: 0.9,
-                    maxWidth: 800,
-                    mx: "auto",
-                    lineHeight: 1.2,
-                    textAlign: "center",
-                  }}>
-                  From luxury brands to your everyday ride, we make importing
-                  your dream car a reality. Expert guidance, competitive
-                  pricing, and seamless process.
-                </Typography>
-              </Box>
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={3}
-                justifyContent="center"
-                alignItems="center">
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
-                  onClick={() => {
-                    const message =
-                      "Hi! I'm interested in importing car parts. Can you help me find the parts I need?";
-                    const whatsappUrl = `https://wa.me/923263333456?text=${encodeURIComponent(message)}`;
-                    window.open(whatsappUrl, "_blank");
-                  }}
-                  sx={{
-                    backgroundColor: "transparent",
-                    border: "1px solid #fff",
-                    color: "#000",
-                    px: 4,
-                    py: 2,
-                    fontSize: "16px !important",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    borderRadius: "50px",
-                    minWidth: 250,
-                    whiteSpace: "nowrap",
-                  }}>
-                  Chat on WhatsApp
-                </Button>
-              </Stack>
-            </Stack>
-          </CardContent>
-        </Card>
-      </Box>
+    
     </Container>
   );
 }
