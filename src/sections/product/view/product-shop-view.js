@@ -59,6 +59,12 @@ import { WhatsApp } from "@mui/icons-material";
 import Image from "next/image";
 import CategoryOffers from "src/sections/categoryOffers";
 import ProductFiltersNew from "src/components/product-filters-new";
+import BrowseVideosSection from "src/components/cars-filters/browse-videos";
+import CTA from "src/components/cta";
+import Discounted from "src/components/discounted";
+import ShopProductList from "../Shop-product-list";
+import ShopHero from "../shop-hero";
+import HeroBottom from "src/components/heroBottom";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -221,27 +227,9 @@ export default function ProductShopView() {
   const onClose = () => setToggle(false);
 
   return (
-    <Box sx={{ display: "flex" }}>
-      {/* Desktop Sidebar for ProductFilters */}
-      {/* {lgUp && (
-        <Box
-          sx={{
-            width: "300px",
-            minHeight: "100vh",
-            backgroundColor: "#000",
-            borderRight: "1px solid #333",
-            position: "sticky",
-            top: 0,
-            left: 0,
-            zIndex: 1000,
-          }}>
-          <ProductFiltersNew
-            filters={filters}
-            onFilters={handleFilters}
-            onResetFilters={handleResetFilters}
-          />
-        </Box>
-      )} */}
+    <Box sx={{ display: "" }}>
+      <ShopHero />
+      <HeroBottom />
 
       <Drawer
         open={toggle}
@@ -437,6 +425,34 @@ export default function ProductShopView() {
             </Stack>
 
             <CategoryOffers />
+            <Box width="100%">
+              <Box
+                sx={{
+                  borderBottom: "1px solid #4caf50",
+                  pb: "36px",
+                  width: "max-content",
+                  mb: "34px",
+                }}>
+                <Typography
+                  variant="h3"
+                  sx={{
+                    color: "#4caf50",
+                    fontWeight: "bold",
+                    fontSize: { xs: "24px", md: "32px" },
+                    mb: 1,
+                  }}>
+                  Shop Now
+                </Typography>
+              </Box>
+              <ProductList
+                products={dataFiltered}
+                loading={loading}
+                itemsPerPage={4}
+              />
+            </Box>
+            <Box width="100%">
+              <Discounted />
+            </Box>
 
             {/* Render NotFound component if no results */}
             <Grid item xs={12}>
@@ -450,11 +466,24 @@ export default function ProductShopView() {
             </Grid>
 
             {/* Render ProductList */}
-            <Grid item xs={12} sx={{ padding: "0 !important" }}>
-              <ProductList products={dataFiltered} loading={loading} />
+
+            <Grid container gap="0px">
+              <Grid item xs={12} md={2}>
+                <ProductFiltersNew
+                  filters={filters}
+                  onFilters={handleFilters}
+                  onResetFilters={handleResetFilters}
+                />
+              </Grid>
+              <Grid item xs={12} md={10} display={{ xs: "none", md: "block" }}>
+                {/* <ProductList products={dataFiltered} loading={loading} /> */}
+                <ShopProductList products={dataFiltered} loading={loading} />
+              </Grid>
             </Grid>
           </Grid>
         </Container>
+        <BrowseVideosSection />
+        <CTA />
       </Box>
     </Box>
   );

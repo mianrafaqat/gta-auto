@@ -124,7 +124,7 @@ const ProductFiltersNew = ({ filters, onFilters, onResetFilters }) => {
         width: "100%",
         backgroundColor: "#000",
         color: "#fff",
-        p: 3,
+        pr: "24px",
         // borderRadius: 2,
         // minHeight: "100vh",
       }}>

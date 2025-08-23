@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { ProductShopView } from "src/sections/product/view";
 
 // ----------------------------------------------------------------------
@@ -9,8 +9,8 @@ export const metadata = {
 
 export default function ShopPage() {
   return (
-    <Container maxWidth="xl" >
+    <Box>
       <ProductShopView />
-    </Container>
+    </Box>
   );
 }

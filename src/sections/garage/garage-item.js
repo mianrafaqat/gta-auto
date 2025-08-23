@@ -204,6 +204,8 @@ export default function GarageItem({
             alt={name}
             src={image[0]}
             ratio="4/3"
+            width="100%"
+            height="248px"
             sx={{
               borderRadius: 2,
             }}
@@ -301,19 +303,21 @@ export default function GarageItem({
               <Box
                 component="p"
                 sx={{
-                  maxWidth: "230px",
+                  maxWidth: "150px",
                   whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
                   overflow: "hidden",
+                  textOverflow: "ellipsis",
                   margin: 0,
                   color: "white",
+                  display: "block",
                   ...(onHome
                     ? {
                         fontSize: "14px",
                         maxWidth: { md: "230px", xs: "330px", sm: "330px" },
                       }
                     : {}),
-                }}>
+                }}
+                title={title}>
                 {title}
               </Box>
             </Link>

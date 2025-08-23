@@ -4,7 +4,7 @@ import React from "react";
 
 const CTA = () => {
   return (
-    <Container maxWidth="lg" sx={{ mb: 5 }}>
+    <Container maxWidth="xl" sx={{ mb: 5 }}>
       <Box
         sx={{
           mt: 10,
