@@ -28,7 +28,7 @@ import { useCheckoutContext } from "../checkout/context";
 import SimpleDialog from "../_examples/mui/dialog-view/simple-dialog";
 import { useAuthContext } from "src/auth/hooks";
 import { useEffect, useMemo, useState } from "react";
-import { useAddOrRemoveFavoriteCar } from "src/hooks/use-cars";
+import { UserService } from "src/services";
 import ProductService from "src/services/products/products.service";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -56,6 +56,7 @@ export default function ShopProductCard({
   const router = useRouter();
   const { onAddToCart, onGotoStep, update, onClearCart } = useCheckoutContext();
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const {
     price,
@@ -113,38 +114,109 @@ export default function ShopProductCard({
 
   const { updateUserData = () => {} } = useAuthContext() || {};
 
-  // Debug: Log the entire auth context
-  console.log("Auth context user:", useAuthContext()?.user);
-  console.log("Extracted user object:", user);
+  // Check if product is in favorites when component mounts or when user/product changes
+  useEffect(() => {
+    let isMounted = true;
 
-  // React Query mutation for favorite functionality
-  const addOrRemoveFavoriteMutation = useAddOrRemoveFavoriteCar();
+    const checkFavoriteStatus = async () => {
+      try {
+        const actualUser = user?.user || user;
+        if (!actualUser?._id) return;
 
-  const handleAddOrRemoveFav = async () => {
+        const userId = actualUser._id;
+
+        const result = await UserService.getUserFavoriteProducts({
+          userId: userId,
+        });
+
+        // Only update state if component is still mounted
+        if (isMounted && result?.status === 200 && result?.data?.data) {
+          const favorites = result.data.data;
+          const productToCheck = product?._id || product?.id;
+          const isProductFavorite = favorites.some(
+            (fav) =>
+              fav._id === productToCheck ||
+              fav._id.toString() === productToCheck?.toString()
+          );
+          setIsFavorite(isProductFavorite);
+        }
+      } catch (err) {
+        console.error("Error checking favorite status:", err);
+      }
+    };
+
+    checkFavoriteStatus();
+
+    // Cleanup function to prevent state updates on unmounted component
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.user?._id, product?._id, product?.id]);
+
+  const handleAddOrRemoveFav = async (e) => {
     try {
+      e.preventDefault();
+      e.stopPropagation();
+
       // Get the actual user data from the nested structure
       const actualUser = user?.user || user;
-      console.log("Current user object:", actualUser); // Debug: Log the entire user object
-      console.log("User ID being sent:", actualUser?._id); // Debug: Log the specific user ID
+      if (!actualUser?._id) {
+        console.error("User not logged in");
+        return;
+      }
+
+      const userId = actualUser._id;
+      const productId = product?._id || product?.id;
+
+      console.log("Debug - IDs before validation:", {
+        userId,
+        productId,
+        actualUser,
+        product,
+      });
+
+      if (!productId) {
+        console.error("Invalid product ID");
+        return;
+      }
+
+      if (!userId) {
+        console.error("Invalid user ID");
+        return;
+      }
 
       const data = {
-        userID: actualUser?._id, // Fixed: Access user ID from the correct user object
-        carID: product?._id, // Changed from carID to match backend expectation
+        userID: userId, // Changed to match backend expectation (userID)
+        productID: productId, // Changed to match backend expectation (productID)
       };
 
-      console.log("Sending favorite data:", data); // Debug log
+      console.log("Debug - Request payload:", data);
 
-      const result = await addOrRemoveFavoriteMutation.mutateAsync(data);
+      console.log("Sending favorite request with data:", data); // Debug log
 
-      console.log("Favorite result:", result); // Debug log
+      // Optimistically update UI
+      setIsFavorite((prev) => !prev);
 
-      if (result?.status === 200) {
+      const result = await UserService.addOrRemoveFavoriteProduct(data);
+
+      if (result?.status === 200 && result?.data?.success) {
         // Update user data with the new favorite list
-        updateUserData(result?.data);
-        onAddOrRemoveFav();
+        updateUserData(result.data);
+
+        // Notify parent component
+        if (onAddOrRemoveFav) {
+          onAddOrRemoveFav();
+        }
+        console.log("Favorite updated:", result.data);
+      } else {
+        // Revert UI if request failed
+        setIsFavorite((prev) => !prev);
+        console.error("Failed to update favorite:", result?.data?.message);
       }
     } catch (err) {
-      console.error("Error adding/removing favorite: ", err);
+      // Revert UI on error
+      setIsFavorite((prev) => !prev);
+      console.error("Error adding/removing favorite:", err);
     }
   };
 
@@ -408,10 +480,7 @@ export default function ShopProductCard({
           fullWidth
           variant="outlined"
           size="medium"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAddOrRemoveFav();
-          }}
+          onClick={(e) => handleAddOrRemoveFav(e)}
           sx={{
             borderColor: "#4caf50",
             color: "#4caf50",
@@ -424,7 +493,7 @@ export default function ShopProductCard({
               backgroundColor: "rgba(76, 175, 80, 0.04)",
             },
           }}>
-          <FavoriteBorderOutlinedIcon />
+          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
         </Button>
       </Stack>
     </Stack>

@@ -10,6 +10,7 @@ export default function ShopProductList({
   products,
   loading,
   itemsPerPage = 8,
+  onAddOrRemoveFav = () => {},
   ...other
 }) {
   const [page, setPage] = useState(1);
@@ -33,7 +34,11 @@ export default function ShopProductList({
   const renderList = (
     <>
       {products.slice(startIndex, endIndex).map((product) => (
-        <ShopProductCard key={product._id} product={product} />
+        <ShopProductCard
+          key={product._id}
+          product={product}
+          onAddOrRemoveFav={onAddOrRemoveFav}
+        />
       ))}
     </>
   );

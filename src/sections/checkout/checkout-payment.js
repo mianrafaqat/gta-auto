@@ -1,44 +1,46 @@
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Unstable_Grid2';
-import LoadingButton from '@mui/lab/LoadingButton';
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Unstable_Grid2";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-import Iconify from 'src/components/iconify';
-import FormProvider from 'src/components/hook-form';
-import { useSnackbar } from 'src/components/snackbar';
+import Iconify from "src/components/iconify";
+import FormProvider from "src/components/hook-form";
+import { useSnackbar } from "src/components/snackbar";
 
-import { useCheckoutContext } from './context';
-import CheckoutSummary from './checkout-summary';
-import CheckoutDelivery from './checkout-delivery';
-import CheckoutBillingInfo from './checkout-billing-info';
-import CheckoutPaymentMethods from './checkout-payment-methods';
-import { useCreateOrder } from 'src/hooks/use-orders';
-import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
+import { useCheckoutContext } from "./context";
+import CheckoutSummary from "./checkout-summary";
+import CheckoutDelivery from "./checkout-delivery";
+import CheckoutBillingInfo from "./checkout-billing-info";
+import CheckoutPaymentMethods from "./checkout-payment-methods";
+import { useCreateOrder } from "src/hooks/use-orders";
+import { useRouter } from "src/routes/hooks";
+import { paths } from "src/routes/paths";
+import OrderSuccess from "./order-success";
+import { useState } from "react";
 
 // ----------------------------------------------------------------------
 
 const DELIVERY_OPTIONS = [
   {
-    id: '689d373f5099e06126e689ca',
+    id: "689d373f5099e06126e689ca",
     value: 1800,
-    label: 'Standard Delivery',
-    description: '3-5 Business Days',
+    label: "Standard Delivery",
+    description: "3-5 Business Days",
   },
   {
-    id: '689d373f5099e06126e689cd',
+    id: "689d373f5099e06126e689cd",
     value: 3600,
-    label: 'Express Delivery',
-    description: '1-2 Business Days',
+    label: "Express Delivery",
+    description: "1-2 Business Days",
   },
   {
-    id: '689d373f5099e06126e689d0',
+    id: "689d373f5099e06126e689d0",
     value: 7200,
-    label: 'Premium Delivery',
-    description: 'Same Day (Limited Areas)',
+    label: "Premium Delivery",
+    description: "Same Day (Limited Areas)",
   },
 ];
 
@@ -54,16 +56,16 @@ const PAYMENT_OPTIONS = [
   //   description: 'We support Mastercard, Visa, Discover and Stripe.',
   // },
   {
-    value: 'cash',
-    label: 'Cash',
-    description: 'Pay with cash when your order is delivered.',
+    value: "cash",
+    label: "Cash",
+    description: "Pay with cash when your order is delivered.",
   },
 ];
 
 const CARDS_OPTIONS = [
-  { value: 'ViSa1', label: '**** **** **** 1212 - Jimmy Holland' },
-  { value: 'ViSa2', label: '**** **** **** 2424 - Shawn Stokes' },
-  { value: 'MasterCard', label: '**** **** **** 4545 - Cole Armstrong' },
+  { value: "ViSa1", label: "**** **** **** 1212 - Jimmy Holland" },
+  { value: "ViSa2", label: "**** **** **** 2424 - Shawn Stokes" },
+  { value: "MasterCard", label: "**** **** **** 4545 - Cole Armstrong" },
 ];
 
 export default function CheckoutPayment() {
@@ -71,14 +73,14 @@ export default function CheckoutPayment() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const createOrderMutation = useCreateOrder();
-
+  const [order, setOrder] = useState(null);
   const PaymentSchema = Yup.object().shape({
-    payment: Yup.string().required('Payment is required'),
+    payment: Yup.string().required("Payment is required"),
   });
 
   const defaultValues = {
     delivery: checkout.shipping,
-    payment: '',
+    payment: "",
   };
 
   const methods = useForm({
@@ -95,76 +97,99 @@ export default function CheckoutPayment() {
     try {
       // Validate required data
       if (!checkout.items || checkout.items.length === 0) {
-        enqueueSnackbar('No items in cart', { variant: 'error' });
+        enqueueSnackbar("No items in cart", { variant: "error" });
         return;
       }
 
       if (!checkout.billing) {
-        enqueueSnackbar('Please provide billing information', { variant: 'error' });
+        enqueueSnackbar("Please provide billing information", {
+          variant: "error",
+        });
         return;
       }
       // Prepare order data according to API specification
       const orderData = {
-        items: checkout.items.map(item => ({
+        items: checkout.items.map((item) => ({
           product: item.id,
           variation: item.colors?.[0] || null, // Assuming first color as variation
-          quantity: item.quantity
+          quantity: item.quantity,
         })),
         shippingAddress: {
-          firstName: checkout.billing?.firstName || checkout.billing?.name?.split(' ')[0] || '',
-          lastName: checkout.billing?.lastName || checkout.billing?.name?.split(' ').slice(1).join(' ') || '',
-          address1: checkout.billing?.fullAddress || '',
-          city: checkout.billing?.city || '',
-          state: checkout.billing?.state || '',
-          postcode: checkout.billing?.postcode || '',
-          country: checkout.billing?.country || '',
-          email: checkout.billing?.email || '',
-          phone: checkout.billing?.phoneNumber || ''
+          firstName:
+            checkout.billing?.firstName ||
+            checkout.billing?.name?.split(" ")[0] ||
+            "",
+          lastName:
+            checkout.billing?.lastName ||
+            checkout.billing?.name?.split(" ").slice(1).join(" ") ||
+            "",
+          address1: checkout.billing?.fullAddress || "",
+          city: checkout.billing?.city || "",
+          state: checkout.billing?.state || "",
+          postcode: checkout.billing?.postcode || "",
+          country: checkout.billing?.country || "",
+          email: checkout.billing?.email || "",
+          phone: checkout.billing?.phoneNumber || "",
         },
         billingAddress: {
-          firstName: checkout.billing?.firstName || checkout.billing?.name?.split(' ')[0] || '',
-          lastName: checkout.billing?.lastName || checkout.billing?.name?.split(' ').slice(1).join(' ') || '',
-          address1: checkout.billing?.fullAddress || '',
-          city: checkout.billing?.city || '',
-          state: checkout.billing?.state || '',
-          postcode: checkout.billing?.postcode || '',
-          country: checkout.billing?.country || '',
-          email: checkout.billing?.email || '',
-          phone: checkout.billing?.phoneNumber || ''
+          firstName:
+            checkout.billing?.firstName ||
+            checkout.billing?.name?.split(" ")[0] ||
+            "",
+          lastName:
+            checkout.billing?.lastName ||
+            checkout.billing?.name?.split(" ").slice(1).join(" ") ||
+            "",
+          address1: checkout.billing?.fullAddress || "",
+          city: checkout.billing?.city || "",
+          state: checkout.billing?.state || "",
+          postcode: checkout.billing?.postcode || "",
+          country: checkout.billing?.country || "",
+          email: checkout.billing?.email || "",
+          phone: checkout.billing?.phoneNumber || "",
         },
-        shippingMethod: data.delivery || '689d373f5099e06126e689ca',
-        paymentMethod: data.payment || 'cash',
-        couponCode: checkout.discount > 0 ? 'DISCOUNT10' : undefined
+        shippingMethod: data.delivery || "689d373f5099e06126e689ca",
+        paymentMethod: data.payment || "cash",
+        couponCode: checkout.discount > 0 ? "DISCOUNT10" : undefined,
       };
-//       console.log("data", data);
-//       console.log(orderData);
-//  return;
+      //       console.log("data", data);
+      //       console.log(orderData);
+      //  return;
       // Create the order
       const order = await createOrderMutation.mutateAsync(orderData);
-      
-      enqueueSnackbar('Order created successfully!', { variant: 'success' });
-      
-      // Navigate to order confirmation or orders list
-      router.push(paths.dashboard.orders.root);
-      
+      setOrder(order);
+      enqueueSnackbar("Order created successfully!", { variant: "success" });
+
+      // Navigate to order success page with order data
+      router.push({
+        pathname: paths.product.orderSuccess,
+        query: { orderId: order._id || order.id },
+      });
+
       // Reset checkout and move to next step
       checkout.onNextStep();
       checkout.onReset();
-      
     } catch (error) {
-      console.error('Order creation failed:', error);
-      
+      console.error("Order creation failed:", error);
+
       // Handle specific error cases
       if (error.response?.status === 400) {
-        enqueueSnackbar('Invalid order data. Please check your information.', { variant: 'error' });
+        enqueueSnackbar("Invalid order data. Please check your information.", {
+          variant: "error",
+        });
       } else if (error.response?.status === 401) {
-        enqueueSnackbar('Please login to create an order.', { variant: 'error' });
+        enqueueSnackbar("Please login to create an order.", {
+          variant: "error",
+        });
       } else if (error.response?.status === 422) {
-        enqueueSnackbar('Order validation failed. Please check your information.', { variant: 'error' });
+        enqueueSnackbar(
+          "Order validation failed. Please check your information.",
+          { variant: "error" }
+        );
       } else {
         enqueueSnackbar(
-          error.message || 'Failed to create order. Please try again.',
-          { variant: 'error' }
+          error.message || "Failed to create order. Please try again.",
+          { variant: "error" }
         );
       }
     }
@@ -174,7 +199,10 @@ export default function CheckoutPayment() {
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         <Grid xs={12} md={8}>
-          <CheckoutDelivery onApplyShipping={checkout.onApplyShipping} options={DELIVERY_OPTIONS} />
+          <CheckoutDelivery
+            onApplyShipping={checkout.onApplyShipping}
+            options={DELIVERY_OPTIONS}
+          />
 
           <CheckoutPaymentMethods
             cardOptions={CARDS_OPTIONS}
@@ -185,16 +213,18 @@ export default function CheckoutPayment() {
           <Button
             size="small"
             color="inherit"
-            sx={{ color: 'white' }}
+            sx={{ color: "white" }}
             onClick={checkout.onBackStep}
-            startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}
-          >
+            startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}>
             Back
           </Button>
         </Grid>
 
         <Grid xs={12} md={4}>
-          <CheckoutBillingInfo billing={checkout.billing} onBackStep={checkout.onBackStep} />
+          <CheckoutBillingInfo
+            billing={checkout.billing}
+            onBackStep={checkout.onBackStep}
+          />
 
           <CheckoutSummary
             total={checkout.total}
@@ -210,9 +240,10 @@ export default function CheckoutPayment() {
             type="submit"
             variant="contained"
             loading={isSubmitting || createOrderMutation.isPending}
-            disabled={isSubmitting || createOrderMutation.isPending}
-          >
-            {createOrderMutation.isPending ? 'Creating Order...' : 'Complete Order'}
+            disabled={isSubmitting || createOrderMutation.isPending}>
+            {createOrderMutation.isPending
+              ? "Creating Order..."
+              : "Complete Order"}
           </LoadingButton>
         </Grid>
       </Grid>

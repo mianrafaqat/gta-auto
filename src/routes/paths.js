@@ -48,6 +48,8 @@ export const paths = {
       details: `/product/${_id[1]}`,
     },
   },
+  trackOrder: "/track-order",
+  orderDetail: "/track-order/order-detail",
   post: {
     root: `/post`,
     details: (title) => `/post/${paramCase(title)}`,

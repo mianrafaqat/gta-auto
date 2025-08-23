@@ -477,7 +477,14 @@ export default function ProductShopView() {
               </Grid>
               <Grid item xs={12} md={10} display={{ xs: "none", md: "block" }}>
                 {/* <ProductList products={dataFiltered} loading={loading} /> */}
-                <ShopProductList products={dataFiltered} loading={loading} />
+                <ShopProductList
+                  products={dataFiltered}
+                  loading={loading}
+                  onAddOrRemoveFav={() => {
+                    // Refetch products to get updated favorite status
+                    fetchProducts();
+                  }}
+                />
               </Grid>
             </Grid>
           </Grid>

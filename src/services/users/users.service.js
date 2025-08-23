@@ -1,5 +1,5 @@
-import { API_URLS } from 'src/utils/apiUrls';
-import gtaAutosInstance from 'src/utils/requestInterceptor';
+import { API_URLS } from "src/utils/apiUrls";
+import gtaAutosInstance from "src/utils/requestInterceptor";
 
 class UserService {
   // Public Routes
@@ -32,7 +32,10 @@ class UserService {
 
   forgotPassword = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.auth.forgotPassword, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.auth.forgotPassword,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -45,7 +48,10 @@ class UserService {
         userId: data.userId,
         token: data.token,
       };
-      const res = await gtaAutosInstance.post(API_URLS.auth.updatePassword(params), data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.auth.updatePassword(params),
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -73,7 +79,10 @@ class UserService {
 
   addOrRemoveFavorite = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.user.addOrRemoveFavorite, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.user.addOrRemoveFavorite,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;
@@ -82,7 +91,43 @@ class UserService {
 
   getUserFavorites = async (data) => {
     try {
-      const res = await gtaAutosInstance.post(API_URLS.user.getUserFavorites, data);
+      const res = await gtaAutosInstance.post(
+        API_URLS.user.getUserFavorites,
+        data
+      );
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+  addOrRemoveFavoriteProduct = async (data) => {
+    try {
+      // Validate required fields
+      if (!data.userID || !data.productID) {
+        throw new Error("Product ID and User ID are required");
+      }
+
+      const res = await gtaAutosInstance.post(
+        API_URLS.user.addOrRemoveFavoriteProduct,
+        data
+      );
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
+  getUserFavoriteProducts = async (data) => {
+    try {
+      // Validate required fields
+      if (!data.userId) {
+        throw new Error("User ID is required");
+      }
+
+      const res = await gtaAutosInstance.post(
+        API_URLS.user.getUserFavoriteProducts,
+        data
+      );
       return res;
     } catch (ex) {
       throw ex;

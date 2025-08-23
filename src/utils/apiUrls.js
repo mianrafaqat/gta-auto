@@ -17,6 +17,8 @@ export const API_URLS = {
     update: "/api/user/update",
     addOrRemoveFavorite: "/api/user/addOrRemoveFavourite",
     getUserFavorites: "/api/user/getUserFavouriteCars",
+    addOrRemoveFavoriteProduct: "/api/user/addOrRemoveFavouriteProduct",
+    getUserFavoriteProducts: "/api/user/getUserFavouriteProducts",
 
     // Admin Routes
     registerUser: "/api/user/register", // Admin token required
