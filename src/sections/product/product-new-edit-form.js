@@ -72,7 +72,11 @@ const PRODUCT_TYPE_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function ProductNewEditForm({ currentProduct }) {
+export default function ProductNewEditForm({
+  isEdit,
+  currentProduct,
+  onSubmit: externalSubmit,
+}) {
   const router = useRouter();
   const mdUp = useResponsive("up", "md");
   const { enqueueSnackbar } = useSnackbar();
@@ -102,8 +106,12 @@ export default function ProductNewEditForm({ currentProduct }) {
   const [generatingVariations, setGeneratingVariations] = useState(false);
 
   // State for additional product properties
-  const [stockQuantity, setStockQuantity] = useState(currentProduct?.stockQuantity || 0);
-  const [stockStatus, setStockStatus] = useState(currentProduct?.stockStatus || "instock");
+  const [stockQuantity, setStockQuantity] = useState(
+    currentProduct?.stockQuantity || 0
+  );
+  const [stockStatus, setStockStatus] = useState(
+    currentProduct?.stockStatus || "instock"
+  );
   const [sku, setSku] = useState(currentProduct?.sku || "");
   const [weight, setWeight] = useState(currentProduct?.weight || 0);
   const [dimensions, setDimensions] = useState({
@@ -112,8 +120,10 @@ export default function ProductNewEditForm({ currentProduct }) {
     height: currentProduct?.dimensions?.height || 0,
   });
   const [metaTitle, setMetaTitle] = useState(currentProduct?.metaTitle || "");
-  const [metaDescription, setMetaDescription] = useState(currentProduct?.metaDescription || "");
-  
+  const [metaDescription, setMetaDescription] = useState(
+    currentProduct?.metaDescription || ""
+  );
+
   // State for product images
   const [images, setImages] = useState(currentProduct?.images || []);
   const [uploadingImages, setUploadingImages] = useState(false);
@@ -133,7 +143,7 @@ export default function ProductNewEditForm({ currentProduct }) {
         }
       })
       .catch((error) => {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
         setCategories([]);
       })
       .finally(() => setCategoriesLoading(false));
@@ -153,7 +163,7 @@ export default function ProductNewEditForm({ currentProduct }) {
         }
       })
       .catch((error) => {
-        console.error('Error fetching attributes:', error);
+        console.error("Error fetching attributes:", error);
         setAttributes([]);
       })
       .finally(() => setAttributesLoading(false));
@@ -184,40 +194,69 @@ export default function ProductNewEditForm({ currentProduct }) {
     salePrice: Yup.number().nullable(),
     category: Yup.string().required("Category is required"),
     sku: Yup.string().nullable(),
-    stockQuantity: Yup.number().min(0, "Stock quantity cannot be negative").nullable(),
+    stockQuantity: Yup.number()
+      .min(0, "Stock quantity cannot be negative")
+      .nullable(),
     weight: Yup.number().min(0, "Weight cannot be negative").nullable(),
     dimensions: Yup.object().shape({
       length: Yup.number().min(0, "Length cannot be negative").nullable(),
       width: Yup.number().min(0, "Width cannot be negative").nullable(),
       height: Yup.number().min(0, "Height cannot be negative").nullable(),
     }),
-      metaTitle: Yup.string().max(60, "Meta title should be 60 characters or less").nullable(),
-  metaDescription: Yup.string().max(160, "Meta description should be 160 characters or less").nullable(),
+    metaTitle: Yup.string()
+      .max(60, "Meta title should be 60 characters or less")
+      .nullable(),
+    metaDescription: Yup.string()
+      .max(160, "Meta description should be 160 characters or less")
+      .nullable(),
   });
 
-  const defaultValues = useMemo(
-    () => ({
-      name: currentProduct?.name || "",
-      slug: currentProduct?.slug || "",
-      description: currentProduct?.description || "",
-      productType: currentProduct?.type || "simple",
-      price: currentProduct?.price || 0,
-      regularPrice: currentProduct?.regularPrice || 0,
-      salePrice: currentProduct?.salePrice || 0,
-      category: currentProduct?.categories?.[0] || "",
-      sku: currentProduct?.sku || "",
-      stockQuantity: currentProduct?.stockQuantity || 0,
-      weight: currentProduct?.weight || 0,
+  const defaultValues = useMemo(() => {
+    if (!currentProduct) {
+      return {
+        name: "",
+        slug: "",
+        description: "",
+        productType: "simple",
+        price: 0,
+        regularPrice: 0,
+        salePrice: 0,
+        category: "",
+        sku: "",
+        stockQuantity: 0,
+        weight: 0,
+        dimensions: {
+          length: 0,
+          width: 0,
+          height: 0,
+        },
+        metaTitle: "",
+        metaDescription: "",
+      };
+    }
+
+    // If we have currentProduct, use its values
+    return {
+      name: currentProduct.name,
+      slug: currentProduct.slug,
+      description: currentProduct.description,
+      productType: currentProduct.type || "simple",
+      price: currentProduct.price || 0,
+      regularPrice: currentProduct.regularPrice || 0,
+      salePrice: currentProduct.salePrice || 0,
+      category: currentProduct.categories?.[0] || "",
+      sku: currentProduct.sku || "",
+      stockQuantity: currentProduct.stockQuantity || 0,
+      weight: currentProduct.weight || 0,
       dimensions: {
-        length: currentProduct?.dimensions?.length || 0,
-        width: currentProduct?.dimensions?.width || 0,
-        height: currentProduct?.dimensions?.height || 0,
+        length: currentProduct.dimensions?.length || 0,
+        width: currentProduct.dimensions?.width || 0,
+        height: currentProduct.dimensions?.height || 0,
       },
-      metaTitle: currentProduct?.metaTitle || "",
-      metaDescription: currentProduct?.metaDescription || "",
-    }),
-    [currentProduct]
-  );
+      metaTitle: currentProduct.metaTitle || "",
+      metaDescription: currentProduct.metaDescription || "",
+    };
+  }, [currentProduct]);
 
   const methods = useForm({
     resolver: yupResolver(NewProductSchema),
@@ -243,10 +282,30 @@ export default function ProductNewEditForm({ currentProduct }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.name]);
 
-
-
   useEffect(() => {
     if (currentProduct) {
+      console.log("Setting form values from currentProduct:", currentProduct);
+      console.log("Default values:", defaultValues);
+
+      // Set all form values explicitly
+      setValue("name", currentProduct.name || "");
+      setValue("slug", currentProduct.slug || "");
+      setValue("description", currentProduct.description || "");
+      setValue("productType", currentProduct.type || "simple");
+      setValue("price", currentProduct.price || 0);
+      setValue("regularPrice", currentProduct.regularPrice || 0);
+      setValue("salePrice", currentProduct.salePrice || 0);
+      setValue("category", currentProduct.categories?.[0] || "");
+      setValue("sku", currentProduct.sku || "");
+      setValue("stockQuantity", currentProduct.stockQuantity || 0);
+      setValue("weight", currentProduct.weight || 0);
+      setValue("dimensions.length", currentProduct.dimensions?.length || 0);
+      setValue("dimensions.width", currentProduct.dimensions?.width || 0);
+      setValue("dimensions.height", currentProduct.dimensions?.height || 0);
+      setValue("metaTitle", currentProduct.metaTitle || "");
+      setValue("metaDescription", currentProduct.metaDescription || "");
+
+      // Reset form with default values as backup
       reset(defaultValues);
       setSlug(currentProduct?.slug || "");
       setProductType(currentProduct?.type || "simple");
@@ -273,7 +332,7 @@ export default function ProductNewEditForm({ currentProduct }) {
       });
       setMetaTitle(currentProduct?.metaTitle || "");
       setMetaDescription(currentProduct?.metaDescription || "");
-      
+
       // Set images from current product
       if (currentProduct?.images) {
         setImages(currentProduct.images);
@@ -286,16 +345,16 @@ export default function ProductNewEditForm({ currentProduct }) {
   // Handle product type change
   const handleProductTypeChange = (event) => {
     if (!event || !event.target) {
-      console.error('Invalid event:', event);
+      console.error("Invalid event:", event);
       return;
     }
-    
+
     const newType = event.target.value;
     if (!newType) {
-      console.error('Invalid product type:', newType);
+      console.error("Invalid product type:", newType);
       return;
     }
-    
+
     setProductType(newType);
     setValue("productType", newType);
 
@@ -304,24 +363,27 @@ export default function ProductNewEditForm({ currentProduct }) {
       setValue("price", 0);
       setValue("regularPrice", 0);
       setValue("salePrice", 0);
-      
+
       // Clear existing variations when switching to variable
       setVariations([]);
       setSelectedAttributes([]);
-      
-      enqueueSnackbar("Switched to variable product. Please select attributes and generate variations.", {
-        variant: "info",
-      });
+
+      enqueueSnackbar(
+        "Switched to variable product. Please select attributes and generate variations.",
+        {
+          variant: "info",
+        }
+      );
     }
   };
 
   // Handle attribute selection
   const handleAttributeSelect = (attribute) => {
     if (!attribute || !attribute._id) {
-      console.error('Invalid attribute:', attribute);
+      console.error("Invalid attribute:", attribute);
       return;
     }
-    
+
     const isSelected = selectedAttributes.find(
       (attr) => attr?._id === attribute._id
     );
@@ -333,10 +395,10 @@ export default function ProductNewEditForm({ currentProduct }) {
   // Handle attribute removal
   const handleAttributeRemove = (attributeId) => {
     if (!attributeId) {
-      console.error('Invalid attribute ID:', attributeId);
+      console.error("Invalid attribute ID:", attributeId);
       return;
     }
-    
+
     setSelectedAttributes(
       selectedAttributes.filter((attr) => attr?._id !== attributeId)
     );
@@ -349,15 +411,18 @@ export default function ProductNewEditForm({ currentProduct }) {
     // Check maximum image limit (10 images max)
     const maxImages = 10;
     if (images.length + files.length > maxImages) {
-      enqueueSnackbar(`Maximum ${maxImages} images allowed. You can upload ${maxImages - images.length} more image(s).`, { 
-        variant: "warning" 
-      });
+      enqueueSnackbar(
+        `Maximum ${maxImages} images allowed. You can upload ${maxImages - images.length} more image(s).`,
+        {
+          variant: "warning",
+        }
+      );
       return;
     }
 
     try {
       setUploadingImages(true);
-      
+
       // Create FormData for image upload
       const formData = new FormData();
       files.forEach((file) => {
@@ -368,7 +433,7 @@ export default function ProductNewEditForm({ currentProduct }) {
 
       // Upload images using ProductService
       const response = await ProductService.uploadImage(formData);
-      
+
       // Handle different possible response structures
       let imageUrls = [];
       if (response?.imageUrls && Array.isArray(response.imageUrls)) {
@@ -383,39 +448,47 @@ export default function ProductNewEditForm({ currentProduct }) {
       } else if (Array.isArray(response)) {
         imageUrls = response;
       } else {
-        throw new Error(response?.message || "Failed to upload images - no URLs returned");
+        throw new Error(
+          response?.message || "Failed to upload images - no URLs returned"
+        );
       }
-      
+
       if (imageUrls.length > 0) {
         // Filter out any duplicate URLs and add new image URLs to existing images
         const existingUrls = new Set(images);
-        const uniqueNewUrls = imageUrls.filter(url => !existingUrls.has(url));
-        
+        const uniqueNewUrls = imageUrls.filter((url) => !existingUrls.has(url));
+
         if (uniqueNewUrls.length > 0) {
           const newImages = [...images, ...uniqueNewUrls];
           setImages(newImages);
-          enqueueSnackbar(`Successfully uploaded ${uniqueNewUrls.length} new image(s)!`, { variant: "success" });
+          enqueueSnackbar(
+            `Successfully uploaded ${uniqueNewUrls.length} new image(s)!`,
+            { variant: "success" }
+          );
         } else {
-          enqueueSnackbar("All uploaded images already exist in the gallery.", { variant: "info" });
+          enqueueSnackbar("All uploaded images already exist in the gallery.", {
+            variant: "info",
+          });
         }
       } else {
         throw new Error("No image URLs returned from upload");
       }
     } catch (error) {
       console.error("Error uploading images:", error);
-      
+
       // Provide more specific error messages
       let errorMessage = "Failed to upload images. Please try again.";
       if (error?.response?.status === 413) {
         errorMessage = "File size too large. Please use images under 5MB.";
       } else if (error?.response?.status === 415) {
-        errorMessage = "Unsupported file type. Please use PNG, JPG, JPEG, or WebP.";
+        errorMessage =
+          "Unsupported file type. Please use PNG, JPG, JPEG, or WebP.";
       } else if (error?.response?.status === 401) {
         errorMessage = "Authentication required. Please log in again.";
       } else if (error?.message) {
         errorMessage = error.message;
       }
-      
+
       enqueueSnackbar(errorMessage, { variant: "error" });
     } finally {
       setUploadingImages(false);
@@ -436,7 +509,9 @@ export default function ProductNewEditForm({ currentProduct }) {
   // Validate image URLs
   const validateImageUrls = (urls) => {
     if (!Array.isArray(urls)) return false;
-    return urls.every(url => typeof url === 'string' && url.trim().length > 0);
+    return urls.every(
+      (url) => typeof url === "string" && url.trim().length > 0
+    );
   };
 
   // Set primary image
@@ -473,7 +548,7 @@ export default function ProductNewEditForm({ currentProduct }) {
 
         const attribute = attributes[index];
         if (!attribute || !attribute.values) {
-          console.error('Invalid attribute structure:', attribute);
+          console.error("Invalid attribute structure:", attribute);
           return [current];
         }
 
@@ -505,7 +580,7 @@ export default function ProductNewEditForm({ currentProduct }) {
       setVariations(newVariations);
       setVariationsDialogOpen(true);
     } catch (error) {
-      console.error('Error generating variations:', error);
+      console.error("Error generating variations:", error);
       enqueueSnackbar("Error generating variations. Please try again.", {
         variant: "error",
       });
@@ -531,21 +606,31 @@ export default function ProductNewEditForm({ currentProduct }) {
 
     // Validate variations - check for required fields
     const invalidVariations = variations.filter(
-      (v) => !v?.regularPrice || v.regularPrice <= 0 || !v?.stock || v.stock < 0 || !v?.sku
+      (v) =>
+        !v?.regularPrice ||
+        v.regularPrice <= 0 ||
+        !v?.stock ||
+        v.stock < 0 ||
+        !v?.sku
     );
-    
+
     if (invalidVariations.length > 0) {
       const invalidCount = invalidVariations.length;
-      const missingPrice = invalidVariations.filter(v => !v.regularPrice || v.regularPrice <= 0).length;
-      const missingStock = invalidVariations.filter(v => !v.stock || v.stock < 0).length;
-      const missingSku = invalidVariations.filter(v => !v.sku).length;
-      
+      const missingPrice = invalidVariations.filter(
+        (v) => !v.regularPrice || v.regularPrice <= 0
+      ).length;
+      const missingStock = invalidVariations.filter(
+        (v) => !v.stock || v.stock < 0
+      ).length;
+      const missingSku = invalidVariations.filter((v) => !v.sku).length;
+
       let message = `${invalidCount} variation(s) have issues: `;
-      if (missingPrice > 0) message += `${missingPrice} missing valid pricing, `;
+      if (missingPrice > 0)
+        message += `${missingPrice} missing valid pricing, `;
       if (missingStock > 0) message += `${missingStock} missing valid stock, `;
       if (missingSku > 0) message += `${missingSku} missing SKU, `;
       message = message.slice(0, -2); // Remove trailing comma and space
-      
+
       enqueueSnackbar(message, { variant: "error" });
       return;
     }
@@ -575,9 +660,9 @@ export default function ProductNewEditForm({ currentProduct }) {
     if (!selectedAttributes || selectedAttributes.length === 0) {
       return [];
     }
-    
+
     return selectedAttributes
-      .filter(attr => attr && attr.name && attr.values)
+      .filter((attr) => attr && attr.name && attr.values)
       .map((attr) => ({
         name: attr.name,
         values: attr.values,
@@ -590,14 +675,17 @@ export default function ProductNewEditForm({ currentProduct }) {
     if (productType !== "variable" || !variations || variations.length === 0) {
       return null;
     }
-    
+
     try {
       const prices = variations
-        .map(v => v?.regularPrice || 0)
-        .filter(p => p > 0);
-      
-      const totalStock = variations.reduce((sum, v) => sum + (v?.stock || 0), 0);
-      
+        .map((v) => v?.regularPrice || 0)
+        .filter((p) => p > 0);
+
+      const totalStock = variations.reduce(
+        (sum, v) => sum + (v?.stock || 0),
+        0
+      );
+
       return {
         totalVariations: variations.length,
         minPrice: prices.length > 0 ? Math.min(...prices) : 0,
@@ -605,7 +693,7 @@ export default function ProductNewEditForm({ currentProduct }) {
         totalStock,
       };
     } catch (error) {
-      console.error('Error calculating product summary:', error);
+      console.error("Error calculating product summary:", error);
       return {
         totalVariations: variations.length,
         minPrice: 0,
@@ -616,19 +704,31 @@ export default function ProductNewEditForm({ currentProduct }) {
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    if (isEdit && externalSubmit) {
+      await externalSubmit(data);
+      return;
+    }
     try {
       // For variable products, ensure variations exist and have valid pricing
       if (data.productType === "variable") {
         if (!variations || variations.length === 0) {
-          enqueueSnackbar("Variable products must have variations. Please generate variations first.", {
-            variant: "warning",
-          });
+          enqueueSnackbar(
+            "Variable products must have variations. Please generate variations first.",
+            {
+              variant: "warning",
+            }
+          );
           return;
         }
-        
+
         // Check if all variations have valid pricing, stock, and SKU
         const invalidVariations = variations.filter(
-          (v) => !v.regularPrice || v.regularPrice <= 0 || !v.stock || v.stock < 0 || !v.sku
+          (v) =>
+            !v.regularPrice ||
+            v.regularPrice <= 0 ||
+            !v.stock ||
+            v.stock < 0 ||
+            !v.sku
         );
         if (invalidVariations.length > 0) {
           enqueueSnackbar(
@@ -679,7 +779,11 @@ export default function ProductNewEditForm({ currentProduct }) {
       if (data.weight > 0) {
         body.weight = Number(data.weight);
       }
-      if (data.dimensions.length > 0 || data.dimensions.width > 0 || data.dimensions.height > 0) {
+      if (
+        data.dimensions.length > 0 ||
+        data.dimensions.width > 0 ||
+        data.dimensions.height > 0
+      ) {
         body.dimensions = {
           length: Number(data.dimensions.length) || 0,
           width: Number(data.dimensions.width) || 0,
@@ -717,19 +821,21 @@ export default function ProductNewEditForm({ currentProduct }) {
         // For variable products, we need to handle this differently
         // The API expects either base pricing OR variations with individual pricing
         if (selectedAttributes.length > 0) {
-          body.attributes = selectedAttributes.map(attr => ({
+          body.attributes = selectedAttributes.map((attr) => ({
             name: attr.name,
-            values: attr.values.map(val => val.name),
-            isVariationAttribute: true
+            values: attr.values.map((val) => val.name),
+            isVariationAttribute: true,
           }));
         }
-        
+
         // For variable products, we'll set a base price that represents the starting price
         // This will be overridden by individual variation prices
         if (variations && variations.length > 0) {
           // Calculate base price from variations (minimum price)
           try {
-            const prices = variations.map(v => v?.regularPrice || 0).filter(p => p > 0);
+            const prices = variations
+              .map((v) => v?.regularPrice || 0)
+              .filter((p) => p > 0);
             if (prices.length > 0) {
               const minPrice = Math.min(...prices);
               body.price = minPrice;
@@ -739,7 +845,10 @@ export default function ProductNewEditForm({ currentProduct }) {
               body.regularPrice = 0;
             }
           } catch (error) {
-            console.error('Error calculating base price from variations:', error);
+            console.error(
+              "Error calculating base price from variations:",
+              error
+            );
             body.price = 0;
             body.regularPrice = 0;
           }
@@ -754,7 +863,7 @@ export default function ProductNewEditForm({ currentProduct }) {
         // Create product using ProductService
         console.log("Creating product with payload:", body);
         const response = await ProductService.create(body);
-        
+
         // Debug: Log the complete response structure
         console.log("Product creation response:", response);
         console.log("Response type:", typeof response);
@@ -785,49 +894,65 @@ export default function ProductNewEditForm({ currentProduct }) {
 
         // If it's a variable product and we have variations, create them
         if (data.productType === "variable" && variations.length > 0) {
-            console.log("Creating variations for product:", productId);
-            
-            for (const variation of variations) {
-              const variationPayload = {
-                sku: variation?.sku || `VAR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                price: calculateEffectivePrice(variation?.regularPrice || 0, variation?.salePrice || 0),
-                regularPrice: variation?.regularPrice || 0,
-                salePrice: variation?.salePrice > 0 ? variation.salePrice : 0,
-                stock: variation?.stock || 0,
-                attributeValues: variation?.attributes ? Object.entries(variation.attributes).map(([name, value]) => ({
-                  name,
-                  value
-                })) : []
-              };
-              
-              console.log("Creating variation with payload:", variationPayload);
-              await ProductService.createVariation(productId, variationPayload);
-            }
-          }
+          console.log("Creating variations for product:", productId);
 
-          reset();
-          enqueueSnackbar("Product created successfully!", { variant: "success" });
-          router.push(paths.dashboard.product.root);
+          for (const variation of variations) {
+            const variationPayload = {
+              sku:
+                variation?.sku ||
+                `VAR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              price: calculateEffectivePrice(
+                variation?.regularPrice || 0,
+                variation?.salePrice || 0
+              ),
+              regularPrice: variation?.regularPrice || 0,
+              salePrice: variation?.salePrice > 0 ? variation.salePrice : 0,
+              stock: variation?.stock || 0,
+              attributeValues: variation?.attributes
+                ? Object.entries(variation.attributes).map(([name, value]) => ({
+                    name,
+                    value,
+                  }))
+                : [],
+            };
+
+            console.log("Creating variation with payload:", variationPayload);
+            await ProductService.createVariation(productId, variationPayload);
+          }
+        }
+
+        reset();
+        enqueueSnackbar("Product created successfully!", {
+          variant: "success",
+        });
+        router.push(paths.dashboard.product.root);
       } else {
         // Update existing product
         const productId = currentProduct.id || currentProduct._id;
         console.log("Updating product with payload:", body);
-        
+
         await ProductService.update(productId, body);
-        
+
         // If it's a variable product, update variations
         if (data.productType === "variable" && variations.length > 0) {
           // Note: For updates, you might want to delete existing variations and recreate them
           // or implement a more sophisticated update logic
-          console.log("Product updated. Variations would need to be updated separately.");
+          console.log(
+            "Product updated. Variations would need to be updated separately."
+          );
         }
-        
-        enqueueSnackbar("Product updated successfully!", { variant: "success" });
+
+        enqueueSnackbar("Product updated successfully!", {
+          variant: "success",
+        });
         router.push(paths.dashboard.product.root);
       }
     } catch (error) {
       console.error("Error submitting product:", error);
-      const errorMessage = error.response?.data?.message || error.message || "Something went wrong!";
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong!";
       enqueueSnackbar(errorMessage, { variant: "error" });
     }
   });
@@ -907,10 +1032,10 @@ export default function ProductNewEditForm({ currentProduct }) {
                 Product Images ({images.length}/10)
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Upload product images. You can upload multiple images to create a product gallery. 
-                Maximum 10 images allowed.
+                Upload product images. You can upload multiple images to create
+                a product gallery. Maximum 10 images allowed.
               </Typography>
-              
+
               <Upload
                 multiple
                 thumbnail
@@ -920,35 +1045,38 @@ export default function ProductNewEditForm({ currentProduct }) {
                 onRemoveAll={handleRemoveAllImages}
                 disabled={uploadingImages || images.length >= 10}
                 accept={{
-                  'image/*': ['.png', '.jpg', '.jpeg', '.webp']
+                  "image/*": [".png", ".jpg", ".jpeg", ".webp"],
                 }}
                 maxSize={5242880} // 5MB
                 helperText={
                   <Typography variant="caption" color="text.secondary">
-                    Supported formats: PNG, JPG, JPEG, WebP. Max size: 5MB per image.
+                    Supported formats: PNG, JPG, JPEG, WebP. Max size: 5MB per
+                    image.
                   </Typography>
                 }
               />
-              
+
               {uploadingImages && (
                 <Alert severity="info" sx={{ mt: 2 }}>
                   Uploading images... Please wait.
                 </Alert>
               )}
-              
+
               {images.length >= 10 && (
                 <Alert severity="warning" sx={{ mt: 2 }}>
-                  Maximum number of images (10) reached. Remove some images before uploading more.
+                  Maximum number of images (10) reached. Remove some images
+                  before uploading more.
                 </Alert>
               )}
-              
+
               {images.length > 0 && (
                 <Box sx={{ mt: 2 }}>
                   <Typography variant="subtitle2" sx={{ mb: 1 }}>
                     Image Gallery ({images.length} images)
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    First image will be the primary product image. Drag to reorder or click to set as primary.
+                    First image will be the primary product image. Drag to
+                    reorder or click to set as primary.
                   </Typography>
                 </Box>
               )}
@@ -1063,14 +1191,24 @@ export default function ProductNewEditForm({ currentProduct }) {
 
                 {productType === "variable" && variations.length === 0 && (
                   <Alert severity="warning" sx={{ mt: 2 }}>
-                    Variable products must have variations before they can be created. 
-                    Please select attributes and generate variations first.
+                    Variable products must have variations before they can be
+                    created. Please select attributes and generate variations
+                    first.
                   </Alert>
                 )}
 
                 {productType === "variable" && variations.length > 0 && (
-                  <Box sx={{ mt: 2, p: 2, bgcolor: 'success.lighter', borderRadius: 1 }}>
-                    <Typography variant="subtitle2" color="success.dark" sx={{ mb: 1 }}>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      p: 2,
+                      bgcolor: "success.lighter",
+                      borderRadius: 1,
+                    }}>
+                    <Typography
+                      variant="subtitle2"
+                      color="success.dark"
+                      sx={{ mb: 1 }}>
                       Product Summary
                     </Typography>
                     <Grid container spacing={2}>
@@ -1087,7 +1225,8 @@ export default function ProductNewEditForm({ currentProduct }) {
                           Price Range
                         </Typography>
                         <Typography variant="body2">
-                          R.S {getProductSummary()?.minPrice || 0} - R.S {getProductSummary()?.maxPrice || 0}
+                          R.S {getProductSummary()?.minPrice || 0} - R.S{" "}
+                          {getProductSummary()?.maxPrice || 0}
                         </Typography>
                       </Grid>
                       <Grid xs={6}>
@@ -1121,7 +1260,9 @@ export default function ProductNewEditForm({ currentProduct }) {
                 {categoriesLoading ? "Loading..." : "Select category"}
               </MenuItem>
               {categories.map((category) => (
-                <MenuItem key={category.id || category._id} value={category.id || category._id}>
+                <MenuItem
+                  key={category.id || category._id}
+                  value={category.id || category._id}>
                   {category.name}
                 </MenuItem>
               ))}
@@ -1205,8 +1346,8 @@ export default function ProductNewEditForm({ currentProduct }) {
               </>
             ) : (
               <Alert severity="info">
-                For variable products, pricing is set per variation. 
-                The base price will be automatically calculated from your variations.
+                For variable products, pricing is set per variation. The base
+                price will be automatically calculated from your variations.
               </Alert>
             )}
           </Stack>
@@ -1247,11 +1388,14 @@ export default function ProductNewEditForm({ currentProduct }) {
                     variant="outlined"
                     size="small"
                     onClick={() => {
-                      const generatedSKU = generateSKU(values.name, values.productType);
+                      const generatedSKU = generateSKU(
+                        values.name,
+                        values.productType
+                      );
                       setValue("sku", generatedSKU);
                       setSku(generatedSKU);
                     }}
-                    sx={{ minWidth: 'auto', px: 1 }}
+                    sx={{ minWidth: "auto", px: 1 }}
                     title="Generate new SKU">
                     <Iconify icon="mdi:refresh" width={16} />
                   </Button>
@@ -1393,10 +1537,14 @@ export default function ProductNewEditForm({ currentProduct }) {
           disabled={productType === "variable" && variations.length === 0}>
           {!currentProduct ? "Create Product" : "Save Changes"}
         </LoadingButton>
-        
+
         {productType === "variable" && variations.length === 0 && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-            Variable products require variations before they can be created. Please generate variations first.
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ mt: 1, display: "block" }}>
+            Variable products require variations before they can be created.
+            Please generate variations first.
           </Typography>
         )}
       </Grid>
@@ -1426,7 +1574,8 @@ export default function ProductNewEditForm({ currentProduct }) {
         <DialogTitle>Edit Variations</DialogTitle>
         <DialogContent>
           <Alert severity="info" sx={{ mb: 2 }}>
-            Set pricing and stock information for each variation. Regular Price is required for all variations.
+            Set pricing and stock information for each variation. Regular Price
+            is required for all variations.
           </Alert>
           <Stack spacing={2} sx={{ mt: 1 }}>
             {variations.map((variation, index) => (
@@ -1434,7 +1583,9 @@ export default function ProductNewEditForm({ currentProduct }) {
                 <Stack spacing={2}>
                   <Typography variant="subtitle2">
                     Variation {index + 1}:{" "}
-                    {variation?.attributes ? Object.values(variation.attributes).join(" - ") : "No attributes"}
+                    {variation?.attributes
+                      ? Object.values(variation.attributes).join(" - ")
+                      : "No attributes"}
                   </Typography>
 
                   <Grid container spacing={2}>
@@ -1451,8 +1602,14 @@ export default function ProductNewEditForm({ currentProduct }) {
                           );
                           setVariations(newVariations);
                         }}
-                        error={!variation.regularPrice || variation.regularPrice <= 0}
-                        helperText={!variation.regularPrice || variation.regularPrice <= 0 ? "Required" : ""}
+                        error={
+                          !variation.regularPrice || variation.regularPrice <= 0
+                        }
+                        helperText={
+                          !variation.regularPrice || variation.regularPrice <= 0
+                            ? "Required"
+                            : ""
+                        }
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -1504,7 +1661,11 @@ export default function ProductNewEditForm({ currentProduct }) {
                           setVariations(newVariations);
                         }}
                         error={!variation.stock || variation.stock < 0}
-                        helperText={!variation.stock || variation.stock < 0 ? "Required (min: 0)" : ""}
+                        helperText={
+                          !variation.stock || variation.stock < 0
+                            ? "Required (min: 0)"
+                            : ""
+                        }
                       />
                     </Grid>
                     <Grid xs={12} sm={6}>
@@ -1525,10 +1686,10 @@ export default function ProductNewEditForm({ currentProduct }) {
                 </Stack>
               </Card>
             ))}
-            
+
             <Divider sx={{ my: 2 }} />
-            
-            <Box sx={{ p: 2, bgcolor: 'background.neutral', borderRadius: 1 }}>
+
+            <Box sx={{ p: 2, bgcolor: "background.neutral", borderRadius: 1 }}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 Summary
               </Typography>
@@ -1536,18 +1697,18 @@ export default function ProductNewEditForm({ currentProduct }) {
                 Total Variations: {variations.length}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Price Range: R.S {
-                  variations.length > 0 
-                    ? Math.min(...variations.map(v => v?.regularPrice || 0))
-                    : 0
-                } - R.S {
-                  variations.length > 0 
-                    ? Math.max(...variations.map(v => v?.regularPrice || 0))
-                    : 0
-                }
+                Price Range: R.S{" "}
+                {variations.length > 0
+                  ? Math.min(...variations.map((v) => v?.regularPrice || 0))
+                  : 0}{" "}
+                - R.S{" "}
+                {variations.length > 0
+                  ? Math.max(...variations.map((v) => v?.regularPrice || 0))
+                  : 0}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Total Stock: {variations.reduce((sum, v) => sum + (v?.stock || 0), 0)}
+                Total Stock:{" "}
+                {variations.reduce((sum, v) => sum + (v?.stock || 0), 0)}
               </Typography>
             </Box>
           </Stack>
@@ -1564,5 +1725,7 @@ export default function ProductNewEditForm({ currentProduct }) {
 }
 
 ProductNewEditForm.propTypes = {
+  isEdit: PropTypes.bool,
   currentProduct: PropTypes.object,
+  onSubmit: PropTypes.func,
 };

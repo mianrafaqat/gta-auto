@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
 import { ProductItemSkeleton } from "./product-skeleton";
 import { paths } from "src/routes/paths";
-import ShopProductCard from "./Shop-product-card";
+import ShopProductCard from "./shop-product-card";
 
 export default function ShopProductList({
   products,

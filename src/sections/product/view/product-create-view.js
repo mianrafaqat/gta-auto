@@ -11,7 +11,11 @@ import ProductNewEditForm from "../product-new-edit-form";
 
 // ----------------------------------------------------------------------
 
-export default function ProductCreateView() {
+export default function ProductCreateView({
+  isEdit,
+  currentProduct,
+  onSubmit,
+}) {
   const settings = useSettingsContext();
 
   // Safety check for settings context
@@ -26,7 +30,7 @@ export default function ProductCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : "lg"}>
       <CustomBreadcrumbs
-        heading="Create a new product"
+        heading={isEdit ? "Edit product" : "Create a new product"}
         links={[
           {
             name: "Dashboard",
@@ -36,14 +40,18 @@ export default function ProductCreateView() {
             name: "Product",
             href: paths.dashboard.product.root,
           },
-          { name: "New product" },
+          { name: isEdit ? "Edit product" : "New product" },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
 
-      <ProductNewEditForm />
+      <ProductNewEditForm
+        isEdit={isEdit}
+        currentProduct={currentProduct}
+        onSubmit={onSubmit}
+      />
     </Container>
   );
 }

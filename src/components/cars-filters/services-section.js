@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
+import Link from "next/link";
 
 // Custom styles for the slider
 const customSliderStyles = {
@@ -230,14 +231,16 @@ export default function ServicesSection() {
                       left: 20,
                       right: 20,
                     }}>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      sx={{
-                        bgcolor: "rgba(0, 0, 0, 0.8)",
+                    <Link
+                      href="https://wa.me/92363330222"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        textDecoration: "none",
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
                         color: "white",
                         borderRadius: "12px",
-                        py: 1.5,
+                        padding: "10px 20px",
                         fontWeight: 600,
                         backdropFilter: "blur(10px)",
                         width: "max-content",
@@ -246,7 +249,7 @@ export default function ServicesSection() {
                         },
                       }}>
                       {service.title}
-                    </Button>
+                    </Link>
                   </Box>
                 </Box>
               </Box>

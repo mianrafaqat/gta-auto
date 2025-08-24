@@ -10,7 +10,7 @@ import Iconify from "../iconify";
 import { Stack } from "@mui/system";
 import GarageList from "src/sections/garage/garage-list";
 import GarageItem from "src/sections/garage/garage-item";
-import ShopProductCard from "src/sections/product/Shop-product-card";
+import ShopProductCard from "src/sections/product/shop-product-card";
 import UserService from "src/services/users/users.service";
 
 export default function FavouritesCarPage() {

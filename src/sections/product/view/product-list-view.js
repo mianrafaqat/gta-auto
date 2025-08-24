@@ -94,7 +94,7 @@ export default function ProductListView() {
     page: 1,
     limit: 10,
     total: 0,
-    pages: 0
+    pages: 0,
   });
   const [filters, setFilters] = useState({
     page: 1,
@@ -105,7 +105,7 @@ export default function ProductListView() {
     maxPrice: "",
     type: "",
     stockStatus: "",
-    sort: "-createdAt"
+    sort: "-createdAt",
   });
   const [error, setError] = useState(null);
 
@@ -120,13 +120,12 @@ export default function ProductListView() {
           <Typography variant="body2" sx={{ mb: 2 }}>
             {error.message || "An unexpected error occurred"}
           </Typography>
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             onClick={() => {
               setError(null);
               fetchProducts();
-            }}
-          >
+            }}>
             Try Again
           </Button>
         </Card>
@@ -135,97 +134,106 @@ export default function ProductListView() {
   }
 
   // Fetch products with filters and pagination
-  const fetchProducts = useCallback(async (newFilters = filters) => {
-    try {
-      setProductsLoading(true);
-      
-      // Build pagination parameters
-      const params = buildPaginationParams({
-        page: newFilters.page,
-        limit: newFilters.limit
-      });
-      
-      // Add filter parameters
-      if (newFilters.search) params.search = newFilters.search;
-      if (newFilters.category) params.category = newFilters.category;
-      if (newFilters.minPrice) params.minPrice = newFilters.minPrice;
-      if (newFilters.maxPrice) params.maxPrice = newFilters.maxPrice;
-      if (newFilters.type) params.type = newFilters.type;
-      if (newFilters.stockStatus) params.stockStatus = newFilters.stockStatus;
-      if (newFilters.sort) params.sort = newFilters.sort;
-      
-      const response = await ProductService.getAll(params);
-      
-      console.log('API Response:', response);
-      console.log('Response products:', response?.products);
-      console.log('Response data:', response?.data);
-      
-      // Handle response format according to API docs
-      if (response && response.products) {
-        console.log('Setting products from response.products');
-        setProducts(response.products);
-        // Extract pagination with fallback values
-        const extractedPagination = extractPagination(response);
-        console.log('Extracted pagination:', extractedPagination);
-        setPagination({
-          page: extractedPagination.page || 1,
-          limit: extractedPagination.limit || 10,
-          total: extractedPagination.total || 0,
-          pages: extractedPagination.pages || 0
+  const fetchProducts = useCallback(
+    async (newFilters = filters) => {
+      try {
+        setProductsLoading(true);
+
+        // Build pagination parameters
+        const params = buildPaginationParams({
+          page: newFilters.page,
+          limit: newFilters.limit,
         });
-      } else if (response && response.data) {
-        console.log('Setting products from response.data');
-        setProducts(response.data);
-        setPagination({
-          page: 1,
-          limit: 10,
-          total: response.data.length || 0,
-          pages: 1
+
+        // Add filter parameters
+        if (newFilters.search) params.search = newFilters.search;
+        if (newFilters.category) params.category = newFilters.category;
+        if (newFilters.minPrice) params.minPrice = newFilters.minPrice;
+        if (newFilters.maxPrice) params.maxPrice = newFilters.maxPrice;
+        if (newFilters.type) params.type = newFilters.type;
+        if (newFilters.stockStatus) params.stockStatus = newFilters.stockStatus;
+        if (newFilters.sort) params.sort = newFilters.sort;
+
+        const response = await ProductService.getAll(params);
+
+        console.log("API Response:", response);
+        console.log("Response products:", response?.products);
+        console.log("Response data:", response?.data);
+
+        // Handle response format according to API docs
+        if (response && response.products) {
+          console.log("Setting products from response.products");
+          setProducts(response.products);
+          // Extract pagination with fallback values
+          const extractedPagination = extractPagination(response);
+          console.log("Extracted pagination:", extractedPagination);
+          setPagination({
+            page: extractedPagination.page || 1,
+            limit: extractedPagination.limit || 10,
+            total: extractedPagination.total || 0,
+            pages: extractedPagination.pages || 0,
+          });
+        } else if (response && response.data) {
+          console.log("Setting products from response.data");
+          setProducts(response.data);
+          setPagination({
+            page: 1,
+            limit: 10,
+            total: response.data.length || 0,
+            pages: 1,
+          });
+        } else {
+          console.log("No products found in response, setting empty array");
+          setProducts([]);
+          setPagination({
+            page: 1,
+            limit: 10,
+            total: 0,
+            pages: 0,
+          });
+        }
+      } catch (error) {
+        const formattedError = handleApiError(error, {
+          onUnauthorized: () => {
+            enqueueSnackbar("Please login to view products", {
+              variant: "error",
+            });
+          },
+          onForbidden: () => {
+            enqueueSnackbar("You don't have permission to view products", {
+              variant: "error",
+            });
+          },
+          onNotFound: () => {
+            enqueueSnackbar("Products not found", { variant: "error" });
+          },
+          onServerError: () => {
+            enqueueSnackbar("Server error occurred", { variant: "error" });
+          },
         });
-      } else {
-        console.log('No products found in response, setting empty array');
+
+        // Set error state for critical errors
+        if (error.response?.status >= 500) {
+          setError(
+            new Error(formattedError.message || "Server error occurred")
+          );
+        } else {
+          enqueueSnackbar(formattedError.message, { variant: "error" });
+        }
+
         setProducts([]);
         setPagination({
           page: 1,
           limit: 10,
           total: 0,
-          pages: 0
+          pages: 0,
         });
+      } finally {
+        setProductsLoading(false);
       }
-    } catch (error) {
-      const formattedError = handleApiError(error, {
-        onUnauthorized: () => {
-          enqueueSnackbar("Please login to view products", { variant: "error" });
-        },
-        onForbidden: () => {
-          enqueueSnackbar("You don't have permission to view products", { variant: "error" });
-        },
-        onNotFound: () => {
-          enqueueSnackbar("Products not found", { variant: "error" });
-        },
-        onServerError: () => {
-          enqueueSnackbar("Server error occurred", { variant: "error" });
-        }
-      });
-      
-      // Set error state for critical errors
-      if (error.response?.status >= 500) {
-        setError(new Error(formattedError.message || "Server error occurred"));
-      } else {
-        enqueueSnackbar(formattedError.message, { variant: "error" });
-      }
-      
-      setProducts([]);
-      setPagination({
-        page: 1,
-        limit: 10,
-        total: 0,
-        pages: 0
-      });
-    } finally {
-      setProductsLoading(false);
-    }
-  }, [filters, enqueueSnackbar]);
+    },
+    [filters, enqueueSnackbar]
+  );
 
   // Initial fetch
   useEffect(() => {
@@ -283,40 +291,53 @@ export default function ProductListView() {
   );
 
   // Handle delete
-  const handleDeleteRow = useCallback(async (id) => {
-    try {
-      await ProductService.delete(id);
-      enqueueSnackbar("Product deleted successfully");
-      fetchProducts(); // Refresh the list
-    } catch (error) {
-      const formattedError = handleApiError(error, {
-        onUnauthorized: () => {
-          enqueueSnackbar("Please login to delete products", { variant: "error" });
-        },
-        onForbidden: () => {
-          enqueueSnackbar("You don't have permission to delete products", { variant: "error" });
-        },
-        onNotFound: () => {
-          enqueueSnackbar("Product not found", { variant: "error" });
-        },
-        onServerError: () => {
-          enqueueSnackbar("Server error occurred", { variant: "error" });
-        }
-      });
-      
-      enqueueSnackbar(formattedError.message, { variant: "error" });
-    }
-  }, [fetchProducts, enqueueSnackbar]);
+  const handleDeleteRow = useCallback(
+    async (id) => {
+      try {
+        await ProductService.delete(id);
+        enqueueSnackbar("Product deleted successfully");
+        fetchProducts(); // Refresh the list
+      } catch (error) {
+        const formattedError = handleApiError(error, {
+          onUnauthorized: () => {
+            enqueueSnackbar("Please login to delete products", {
+              variant: "error",
+            });
+          },
+          onForbidden: () => {
+            enqueueSnackbar("You don't have permission to delete products", {
+              variant: "error",
+            });
+          },
+          onNotFound: () => {
+            enqueueSnackbar("Product not found", { variant: "error" });
+          },
+          onServerError: () => {
+            enqueueSnackbar("Server error occurred", { variant: "error" });
+          },
+        });
+
+        enqueueSnackbar(formattedError.message, { variant: "error" });
+      }
+    },
+    [fetchProducts, enqueueSnackbar]
+  );
 
   // Handle edit
-  const handleEditRow = useCallback((id) => {
-    router.push(paths.dashboard.product.edit(id));
-  }, [router]);
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.product.edit(id));
+    },
+    [router]
+  );
 
   // Handle view
-  const handleViewRow = useCallback((id) => {
-    router.push(paths.dashboard.product.details(id));
-  }, [router]);
+  const handleViewRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.product.details(id));
+    },
+    [router]
+  );
 
   // Handle create new
   const handleCreateNew = useCallback(() => {
@@ -343,11 +364,11 @@ export default function ProductListView() {
   }));
 
   // Debug logging after variables are defined
-  console.log('Products state:', products);
-  console.log('Products loading:', productsLoading);
-  console.log('DataGrid rows:', dataGridRows);
-  console.log('Pagination:', pagination);
-  
+  console.log("Products state:", products);
+  console.log("Products loading:", productsLoading);
+  console.log("DataGrid rows:", dataGridRows);
+  console.log("Pagination:", pagination);
+
   // Loading state
   if (productsLoading) {
     return (
@@ -365,8 +386,7 @@ export default function ProductListView() {
           justifyContent="space-between"
           sx={{
             mb: { xs: 3, md: 5 },
-          }}
-        >
+          }}>
           <Stack spacing={1} direction="row" alignItems="center">
             <Typography variant="h4">Products</Typography>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
@@ -416,8 +436,8 @@ export default function ProductListView() {
       headerName: "Stock",
       width: 100,
       renderCell: (params) => (
-        <RenderCellStock 
-          stockStatus={params.row?.stockStatus || "instock"} 
+        <RenderCellStock
+          stockStatus={params.row?.stockStatus || "instock"}
           stockQuantity={params.row?.stockQuantity || 0}
         />
       ),
@@ -427,7 +447,7 @@ export default function ProductListView() {
       headerName: "Type",
       width: 100,
       renderCell: (params) => (
-        <span style={{ textTransform: 'capitalize' }}>
+        <span style={{ textTransform: "capitalize" }}>
           {params.row?.type || "simple"}
         </span>
       ),
@@ -445,7 +465,9 @@ export default function ProductListView() {
       headerName: "Created",
       width: 120,
       renderCell: (params) => (
-        <RenderCellCreatedAt value={params.row?.createdAt || new Date().toISOString()} />
+        <RenderCellCreatedAt
+          value={params.row?.createdAt || new Date().toISOString()}
+        />
       ),
     },
     {
@@ -464,7 +486,14 @@ export default function ProductListView() {
           key="edit"
           icon={<Iconify icon="solar:pen-bold" />}
           label="Edit"
-          onClick={() => handleEditRow(params.row.id)}
+          onClick={() => {
+            const productId = params.row.id || params.row._id;
+            if (productId) {
+              router.push(paths.dashboard.product.edit(productId));
+            } else {
+              enqueueSnackbar("Invalid product ID", { variant: "error" });
+            }
+          }}
         />,
         <GridActionsCellItem
           key="delete"
@@ -476,8 +505,6 @@ export default function ProductListView() {
       ],
     },
   ];
-
-  
 
   return (
     <>
@@ -495,8 +522,7 @@ export default function ProductListView() {
           justifyContent="space-between"
           sx={{
             mb: { xs: 3, md: 5 },
-          }}
-        >
+          }}>
           <Stack spacing={1} direction="row" alignItems="center">
             <Typography variant="h4">Products</Typography>
             {pagination.total > 0 && (
@@ -516,8 +542,7 @@ export default function ProductListView() {
             href={paths.dashboard.product.new}
             variant="contained"
             startIcon={<Iconify icon="mingcute:add-line" />}
-            onClick={handleCreateNew}
-          >
+            onClick={handleCreateNew}>
             New Product
           </Button>
         </Stack>
@@ -532,12 +557,13 @@ export default function ProductListView() {
           ) : (
             <>
               {/* Debug info */}
-              <Box sx={{ p: 2, bgcolor: 'grey.100' }}>
+              <Box sx={{ p: 2, bgcolor: "grey.100" }}>
                 <Typography variant="caption">
-                  Debug: {products.length} products, Loading: {productsLoading.toString()}
+                  Debug: {products.length} products, Loading:{" "}
+                  {productsLoading.toString()}
                 </Typography>
               </Box>
-              
+
               <DataGrid
                 rows={dataGridRows || []}
                 columns={dataGridColumns}
@@ -554,9 +580,12 @@ export default function ProductListView() {
                     // Convert 0-based back to 1-based for API
                     const newPage = model.page + 1;
                     const newLimit = model.pageSize;
-                    
+
                     // Only update if values actually changed
-                    if (newPage !== filters.page || newLimit !== filters.limit) {
+                    if (
+                      newPage !== filters.page ||
+                      newLimit !== filters.limit
+                    ) {
                       if (newPage !== filters.page) {
                         handlePageChange(newPage);
                       }
@@ -566,7 +595,9 @@ export default function ProductListView() {
                     }
                   } catch (error) {
                     console.error("Error handling pagination change:", error);
-                    enqueueSnackbar("Error updating pagination", { variant: "error" });
+                    enqueueSnackbar("Error updating pagination", {
+                      variant: "error",
+                    });
                   }
                 }}
                 loading={productsLoading}
@@ -600,7 +631,9 @@ export default function ProductListView() {
                           handleSearch(event.target.value);
                         } catch (error) {
                           console.error("Error handling search:", error);
-                          enqueueSnackbar("Error performing search", { variant: "error" });
+                          enqueueSnackbar("Error performing search", {
+                            variant: "error",
+                          });
                         }
                       },
                     },
@@ -628,7 +661,10 @@ export default function ProductListView() {
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={confirmRows.onFalse}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={confirmRows.onFalse}>
             Delete
           </Button>
         }

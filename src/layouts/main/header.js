@@ -34,6 +34,7 @@ import { useAuthContext } from "src/auth/hooks";
 import { useCheckoutContext } from "src/sections/checkout/context";
 import { Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
+import SubHeader from "./sub-header";
 
 // ----------------------------------------------------------------------
 
@@ -62,122 +63,123 @@ export default function Header() {
   };
 
   return (
-    <AppBar
-      sx={{
-        backgroundImage: `url('/assets/webnavigation.png')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}>
-      <Toolbar
-        disableGutters
-        sx={{
-          // boxShadow: "rgba(0, 0, 0, 0.09) 0px 25px 20px -20px",
-          height: {
-            xs: HEADER.H_MOBILE,
-            md: HEADER.H_DESKTOP,
-          },
-          transition: theme.transitions.create(["height"], {
-            easing: theme.transitions.easing.easeInOut,
-            duration: theme.transitions.duration.shorter,
-          }),
-          ...(offsetTop && {
-            // ...bgBlur({
-            //   color: theme.palette.background.default,
-            // }),
+    <>
+      <AppBar sx={{}}>
+        <SubHeader />
+        <Toolbar
+          disableGutters
+          sx={{
+            // boxShadow: "rgba(0, 0, 0, 0.09) 0px 25px 20px -20px",
+            backgroundImage: `url('/assets/webnavigation.png')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
             height: {
-              md: HEADER.H_DESKTOP_OFFSET,
+              xs: HEADER.H_MOBILE,
+              md: HEADER.H_DESKTOP,
             },
-          }),
-        }}>
-        <Container
-          maxWidth="xl"
-          sx={{ height: 1, display: "flex", alignItems: "center" }}>
-          <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
-            {/* <Logo />  */}
-            <Link href="/">
-              <img
-                src="/assets/logo.webp"
-                alt="logo"
-                width="190px"
-                height="29px"
-                style={{ marginRight: "24px" }}
-              />
-            </Link>
-            {mdUp && <NavDesktop data={navConfig} />}
-          </Stack>
+            transition: theme.transitions.create(["height"], {
+              easing: theme.transitions.easing.easeInOut,
+              duration: theme.transitions.duration.shorter,
+            }),
+            ...(offsetTop && {
+              // ...bgBlur({
+              //   color: theme.palette.background.default,
+              // }),
+              height: {
+                md: HEADER.H_DESKTOP_OFFSET,
+              },
+            }),
+          }}>
+          <Container
+            maxWidth="xl"
+            sx={{ height: 1, display: "flex", alignItems: "center" }}>
+            <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
+              {/* <Logo />  */}
+              <Link href="/">
+                <img
+                  src="/assets/logo.webp"
+                  alt="logo"
+                  width="190px"
+                  height="29px"
+                  style={{ marginRight: "24px" }}
+                />
+              </Link>
+              {mdUp && <NavDesktop data={navConfig} />}
+            </Stack>
 
-          <Stack alignItems="center" direction="row" spacing={2}>
-            {/* Shopping Cart */}
-            <Badge
-              badgeContent={cartItems}
-              showZero
-              color="error"
-              sx={{
-                [`& .${badgeClasses.badge}`]: {
-                  backgroundColor: "#4caf50",
-                  color: "#ffffff",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                  minWidth: "20px",
-                  height: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                },
-              }}>
-              <IconButton
-                onClick={handleOpenCartDrawer}
+            <Stack alignItems="center" direction="row" spacing={2}>
+              {/* Shopping Cart */}
+              <Badge
+                badgeContent={cartItems}
+                showZero
+                color="error"
                 sx={{
-                  color: "#000000",
-                  backgroundColor: "#ffffff",
-                  borderRadius: "8px",
-                  width: "40px",
-                  height: "40px",
-                  border: "1px solid #e0e0e0",
-                  "&:hover": {
-                    backgroundColor: "#f5f5f5",
-                    transform: "scale(1.05)",
+                  [`& .${badgeClasses.badge}`]: {
+                    backgroundColor: "#4caf50",
+                    color: "#ffffff",
+                    fontWeight: "bold",
+                    fontSize: "12px",
+                    minWidth: "20px",
+                    height: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   },
                 }}>
-                <Iconify
-                  icon="eva:shopping-cart-fill"
-                  sx={{ fontSize: "20px" }}
+                <IconButton
+                  onClick={handleOpenCartDrawer}
+                  sx={{
+                    color: "#000000",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "8px",
+                    width: "40px",
+                    height: "40px",
+                    border: "1px solid #e0e0e0",
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5",
+                      transform: "scale(1.05)",
+                    },
+                  }}>
+                  <Iconify
+                    icon="eva:shopping-cart-fill"
+                    sx={{ fontSize: "20px" }}
+                  />
+                </IconButton>
+              </Badge>
+
+              {mdUp && !Object.keys(user).length > 0 && <LoginButton />}
+              {mdUp && Object.keys(user).length > 0 && (
+                <MoveTo
+                  sx={{
+                    color: "white",
+                    borderColor: "black",
+                    whiteSpace: "nowrap",
+                  }}
+                  title="Move to Dashboard"
+                  path={paths.dashboard.root}
                 />
-              </IconButton>
-            </Badge>
+              )}
+              {mdUp && Object.keys(user).length > 0 && (
+                <MoveTo
+                  title="Favourite"
+                  path={paths.user.favourites}
+                  sx={{ color: "white", borderColor: "black" }}
+                />
+              )}
 
-            {mdUp && !Object.keys(user).length > 0 && <LoginButton />}
-            {mdUp && Object.keys(user).length > 0 && (
-              <MoveTo
-                sx={{
-                  color: "white",
-                  borderColor: "black",
-                  whiteSpace: "nowrap",
-                }}
-                title="Move to Dashboard"
-                path={paths.dashboard.root}
-              />
-            )}
-            {mdUp && Object.keys(user).length > 0 && (
-              <MoveTo
-                title="Favourite"
-                path={paths.user.favourites}
-                sx={{ color: "white", borderColor: "black" }}
-              />
-            )}
+              {!mdUp && <NavMobile data={navConfig} />}
+            </Stack>
+          </Container>
+        </Toolbar>
 
-            {!mdUp && <NavMobile data={navConfig} />}
-          </Stack>
-        </Container>
-      </Toolbar>
-
-      {/* Cart Drawer */}
-      <CartDrawer
-        open={openCartDrawer}
-        onClose={handleCloseCartDrawer}
-        checkout={checkout}
-      />
-    </AppBar>
+        {/* Cart Drawer */}
+        <CartDrawer
+          open={openCartDrawer}
+          onClose={handleCloseCartDrawer}
+          checkout={checkout}
+        />
+      </AppBar>
+    </>
   );
 }
 
@@ -286,12 +288,19 @@ function CartDrawer({ open, onClose, checkout }) {
         {checkout?.items?.length > 0 && (
           <Box
             sx={{
-              p: 2,
+              position: "fixed",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              p: 3,
               borderTop: "1px solid",
               borderColor: "divider",
               backgroundColor: "background.paper",
+              boxShadow: "0px -4px 8px rgba(0, 0, 0, 0.1)",
+              zIndex: 1400,
+              width: { xs: "100%", sm: 400 },
             }}>
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 3 }}>
               <Box
                 sx={{
                   display: "flex",
@@ -305,20 +314,21 @@ function CartDrawer({ open, onClose, checkout }) {
               </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="body2">Total:</Typography>
-                <Typography variant="h6" fontWeight="bold" color="primary">
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  sx={{ color: "#4caf50" }}>
                   PKR {checkout?.total?.toLocaleString() || 0}
                 </Typography>
               </Box>
             </Box>
-
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={2}>
               <Button
                 fullWidth
                 variant="outlined"
                 size="large"
                 onClick={() => {
                   onClose();
-                  // Small delay to ensure smooth transition
                   setTimeout(() => {
                     router.push(paths.product.checkout);
                   }, 100);
@@ -326,6 +336,7 @@ function CartDrawer({ open, onClose, checkout }) {
                 sx={{
                   borderColor: "#4caf50",
                   color: "#4caf50",
+                  height: 48,
                   "&:hover": {
                     borderColor: "#45a049",
                     backgroundColor: "rgba(76, 175, 80, 0.04)",
@@ -338,14 +349,20 @@ function CartDrawer({ open, onClose, checkout }) {
                 fullWidth
                 variant="contained"
                 size="large"
-                onClick={handleBuyNow}
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => {
+                    router.push(paths.product.checkout);
+                  }, 100);
+                }}
                 sx={{
                   backgroundColor: "#4caf50",
+                  height: 48,
                   "&:hover": {
                     backgroundColor: "#45a049",
                   },
                 }}>
-                Buy Now
+                Checkout
               </Button>
             </Stack>
           </Box>
@@ -365,64 +382,109 @@ function CartItem({ item, onDelete, onIncreaseQuantity, onDecreaseQuantity }) {
         border: "1px solid",
         borderColor: "divider",
         borderRadius: 1,
-        display: "flex",
-        gap: 2,
       }}>
-      <Box
-        component="img"
-        src={item.coverUrl || item.image?.[0]}
-        alt={item.name}
-        sx={{
-          width: 60,
-          height: 60,
-          borderRadius: 1,
-          objectFit: "cover",
-        }}
-      />
+      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <Box
+          component="img"
+          src={item.coverUrl || item.image?.[0]}
+          alt={item.name}
+          sx={{
+            width: 60,
+            height: 60,
+            borderRadius: 1,
+            objectFit: "cover",
+          }}
+        />
 
-      <Box sx={{ flex: 1 }}>
-        <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-          {item.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          PKR {item.price?.toLocaleString()}
-        </Typography>
-
-        {/* Show car details if available */}
-        {item.carDetails && (
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ mb: 1, display: "block" }}>
-            {item.carDetails.make} {item.carDetails.model} •{" "}
-            {item.carDetails.yearOfManufacture}
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+            {item.name}
           </Typography>
-        )}
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <IconButton
-            size="small"
-            onClick={() => onDecreaseQuantity(item.id)}
-            disabled={item.quantity <= 1}>
-            <Iconify icon="eva:minus-fill" />
-          </IconButton>
-          <Typography
-            variant="body2"
-            sx={{ minWidth: 30, textAlign: "center" }}>
-            {item.quantity}
+          <Typography variant="body2" color="text.secondary">
+            PKR {item.price?.toLocaleString()}
           </Typography>
-          <IconButton size="small" onClick={() => onIncreaseQuantity(item.id)}>
-            <Iconify icon="eva:plus-fill" />
-          </IconButton>
+
+          {/* Show car details if available */}
+          {item.carDetails && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mt: 0.5 }}>
+              {item.carDetails.make} {item.carDetails.model} •{" "}
+              {item.carDetails.yearOfManufacture}
+            </Typography>
+          )}
         </Box>
+
+        <IconButton
+          size="small"
+          onClick={() => onDelete(item.id)}
+          sx={{
+            color: "error.main",
+            border: "1px solid",
+            borderColor: "error.main",
+            width: 32,
+            height: 32,
+            "&:hover": {
+              bgcolor: "error.lighter",
+            },
+          }}>
+          <Iconify icon="eva:trash-2-fill" width={16} height={16} />
+        </IconButton>
       </Box>
 
-      <IconButton
-        size="small"
-        onClick={() => onDelete(item.id)}
-        sx={{ color: "error.main" }}>
-        <Iconify icon="eva:trash-2-fill" />
-      </IconButton>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          p: 1,
+          bgcolor: "grey.50",
+          borderRadius: 1,
+        }}>
+        <IconButton
+          size="small"
+          onClick={() => onDecreaseQuantity(item.id)}
+          disabled={item.quantity <= 1}
+          sx={{
+            border: "1px solid",
+            borderColor: "divider",
+            width: 32,
+            height: 32,
+            "&:hover": { bgcolor: "rgba(76, 175, 80, 0.08)" },
+          }}>
+          <Iconify
+            icon="eva:minus-fill"
+            sx={{ color: "#4CAF50", width: 16, height: 16 }}
+          />
+        </IconButton>
+
+        <Typography
+          variant="body2"
+          sx={{
+            minWidth: 40,
+            textAlign: "center",
+            fontWeight: 600,
+          }}>
+          {item.quantity}
+        </Typography>
+
+        <IconButton
+          size="small"
+          onClick={() => onIncreaseQuantity(item.id)}
+          sx={{
+            border: "1px solid",
+            borderColor: "divider",
+            width: 32,
+            height: 32,
+            "&:hover": { bgcolor: "rgba(76, 175, 80, 0.08)" },
+          }}>
+          <Iconify
+            icon="eva:plus-fill"
+            sx={{ color: "#4CAF50", width: 16, height: 16 }}
+          />
+        </IconButton>
+      </Box>
     </Box>
   );
 }

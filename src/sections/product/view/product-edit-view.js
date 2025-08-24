@@ -1,101 +1,79 @@
-'use client';
+"use client";
 
-import PropTypes from 'prop-types';
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import Container from '@mui/material/Container';
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import { Typography } from "@mui/material";
 
-import { paths } from 'src/routes/paths';
-
-import ProductService from 'src/services/products/products.service';
-
-import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
-import ProductNewEditForm from '../product-new-edit-form';
+import { paths } from "src/routes/paths";
+import { useSnackbar } from "src/components/snackbar";
+import productsService from "src/services/products/products.service";
+import ProductCreateView from "./product-create-view";
 
 // ----------------------------------------------------------------------
 
-export default function ProductEditView({ id }) {
-  const settings = useSettingsContext();
-  const [currentProduct, setCurrentProduct] = useState(null);
+export default function ProductEditView({ productId }) {
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Safety check for settings context
-  if (!settings) {
-    return (
-      <Container maxWidth="lg">
-        <div>Loading settings...</div>
-      </Container>
-    );
-  }
-
-  // Fetch product data using ProductService
-  const fetchProduct = useCallback(async () => {
-    if (!id) return;
-    
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await ProductService.getById(id);
-      
-      if (response && response.data) {
-        setCurrentProduct(response.data);
-      } else {
-        setError(new Error('Product not found'));
-      }
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
 
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await productsService.getById(productId);
+        console.log("Fetched product data:", data);
+        setProduct(data);
+        console.log("Set product state:", data);
+      } catch (error) {
+        enqueueSnackbar("Failed to fetch product", { variant: "error" });
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProduct();
-  }, [fetchProduct]);
+  }, [productId, enqueueSnackbar]);
+
+  const handleUpdate = async (formData) => {
+    try {
+      await productsService.update(productId, formData);
+      enqueueSnackbar("Product updated successfully");
+      router.push(paths.dashboard.product.root);
+    } catch (error) {
+      enqueueSnackbar("Failed to update product", { variant: "error" });
+      console.error(error);
+    }
+  };
 
   if (loading) {
     return (
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        <div>Loading...</div>
+      <Container>
+        <Box sx={{ py: 5, textAlign: "center" }}>
+          <Typography>Loading...</Typography>
+        </Box>
       </Container>
     );
   }
 
-  if (error) {
+  if (!product) {
     return (
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        <div>Error: {error.message}</div>
+      <Container>
+        <Box sx={{ py: 5, textAlign: "center" }}>
+          <Typography>Product not found</Typography>
+        </Box>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-      <CustomBreadcrumbs
-        heading="Edit"
-        links={[
-          { name: 'Dashboard', href: paths.dashboard.root },
-          {
-            name: 'Product',
-            href: paths.dashboard.product.root,
-          },
-          { name: currentProduct?.name || 'Product' },
-        ]}
-        sx={{
-          mb: { xs: 3, md: 5 },
-        }}
-      />
-
-      <ProductNewEditForm currentProduct={currentProduct} />
-    </Container>
+    <ProductCreateView
+      isEdit
+      currentProduct={product}
+      onSubmit={handleUpdate}
+    />
   );
 }
-
-ProductEditView.propTypes = {
-  id: PropTypes.string,
-};
