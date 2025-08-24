@@ -261,6 +261,29 @@ export default function ProductNewEditForm({
   const methods = useForm({
     resolver: yupResolver(NewProductSchema),
     defaultValues,
+    mode: "onBlur",
+    values: currentProduct
+      ? {
+          name: currentProduct.name,
+          slug: currentProduct.slug,
+          description: currentProduct.description,
+          productType: currentProduct.type || "simple",
+          price: currentProduct.price || 0,
+          regularPrice: currentProduct.regularPrice || 0,
+          salePrice: currentProduct.salePrice || 0,
+          category: currentProduct.categories?.[0] || "",
+          sku: currentProduct.sku || "",
+          stockQuantity: currentProduct.stockQuantity || 0,
+          weight: currentProduct.weight || 0,
+          dimensions: {
+            length: currentProduct.dimensions?.length || 0,
+            width: currentProduct.dimensions?.width || 0,
+            height: currentProduct.dimensions?.height || 0,
+          },
+          metaTitle: currentProduct.metaTitle || "",
+          metaDescription: currentProduct.metaDescription || "",
+        }
+      : defaultValues,
   });
 
   const {
@@ -285,28 +308,31 @@ export default function ProductNewEditForm({
   useEffect(() => {
     if (currentProduct) {
       console.log("Setting form values from currentProduct:", currentProduct);
-      console.log("Default values:", defaultValues);
 
-      // Set all form values explicitly
-      setValue("name", currentProduct.name || "");
-      setValue("slug", currentProduct.slug || "");
-      setValue("description", currentProduct.description || "");
-      setValue("productType", currentProduct.type || "simple");
-      setValue("price", currentProduct.price || 0);
-      setValue("regularPrice", currentProduct.regularPrice || 0);
-      setValue("salePrice", currentProduct.salePrice || 0);
-      setValue("category", currentProduct.categories?.[0] || "");
-      setValue("sku", currentProduct.sku || "");
-      setValue("stockQuantity", currentProduct.stockQuantity || 0);
-      setValue("weight", currentProduct.weight || 0);
-      setValue("dimensions.length", currentProduct.dimensions?.length || 0);
-      setValue("dimensions.width", currentProduct.dimensions?.width || 0);
-      setValue("dimensions.height", currentProduct.dimensions?.height || 0);
-      setValue("metaTitle", currentProduct.metaTitle || "");
-      setValue("metaDescription", currentProduct.metaDescription || "");
-
-      // Reset form with default values as backup
+      // First reset the form with default values
       reset(defaultValues);
+
+      // Then set each field explicitly to ensure they're populated
+      methods.reset({
+        name: currentProduct.name,
+        slug: currentProduct.slug,
+        description: currentProduct.description,
+        productType: currentProduct.type || "simple",
+        price: currentProduct.price || 0,
+        regularPrice: currentProduct.regularPrice || 0,
+        salePrice: currentProduct.salePrice || 0,
+        category: currentProduct.categories?.[0] || "",
+        sku: currentProduct.sku || "",
+        stockQuantity: currentProduct.stockQuantity || 0,
+        weight: currentProduct.weight || 0,
+        dimensions: {
+          length: currentProduct.dimensions?.length || 0,
+          width: currentProduct.dimensions?.width || 0,
+          height: currentProduct.dimensions?.height || 0,
+        },
+        metaTitle: currentProduct.metaTitle || "",
+        metaDescription: currentProduct.metaDescription || "",
+      });
       setSlug(currentProduct?.slug || "");
       setProductType(currentProduct?.type || "simple");
 
@@ -703,12 +729,29 @@ export default function ProductNewEditForm({
     }
   };
 
-  const onSubmit = handleSubmit(async (data) => {
-    if (isEdit && externalSubmit) {
-      await externalSubmit(data);
-      return;
-    }
+  const onSubmit = async (data) => {
     try {
+      console.log("Form submitted with data:", data);
+
+      if (isEdit && externalSubmit) {
+        console.log("Submitting edit form with data:", data);
+        await externalSubmit({
+          ...data,
+          type: data.productType,
+          categories: data.category ? [data.category] : [],
+          price: Number(data.price) || 0,
+          regularPrice: Number(data.regularPrice) || 0,
+          salePrice: Number(data.salePrice) || 0,
+          stockQuantity: Number(data.stockQuantity) || 0,
+          weight: Number(data.weight) || 0,
+          dimensions: {
+            length: Number(data.dimensions?.length) || 0,
+            width: Number(data.dimensions?.width) || 0,
+            height: Number(data.dimensions?.height) || 0,
+          },
+        });
+        return;
+      }
       // For variable products, ensure variations exist and have valid pricing
       if (data.productType === "variable") {
         if (!variations || variations.length === 0) {
@@ -952,10 +995,10 @@ export default function ProductNewEditForm({
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "Something went wrong!";
+        "Something went wrong";
       enqueueSnackbar(errorMessage, { variant: "error" });
     }
-  });
+  };
 
   const renderDetails = (
     <>
@@ -1534,7 +1577,13 @@ export default function ProductNewEditForm({
           variant="contained"
           size="large"
           loading={isSubmitting}
-          disabled={productType === "variable" && variations.length === 0}>
+          disabled={productType === "variable" && variations.length === 0}
+          sx={{
+            bgcolor: "#4CAF50",
+            "&:hover": {
+              bgcolor: "#45a049",
+            },
+          }}>
           {!currentProduct ? "Create Product" : "Save Changes"}
         </LoadingButton>
 
@@ -1553,7 +1602,7 @@ export default function ProductNewEditForm({
 
   return (
     <>
-      <FormProvider methods={methods} onSubmit={onSubmit}>
+      <FormProvider methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           {renderDetails}
           {renderImages}

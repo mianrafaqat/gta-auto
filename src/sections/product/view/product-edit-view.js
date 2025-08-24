@@ -25,8 +25,23 @@ export default function ProductEditView({ productId }) {
       try {
         const data = await productsService.getById(productId);
         console.log("Fetched product data:", data);
-        setProduct(data);
-        console.log("Set product state:", data);
+
+        // If data is nested in a 'product' field, extract it
+        const productData = data.product || data;
+        console.log("Processed product data:", productData);
+
+        // Ensure we have the required fields
+        if (!productData.name) {
+          console.error(
+            "Missing required fields in product data:",
+            productData
+          );
+          enqueueSnackbar("Product data is incomplete", { variant: "error" });
+          return;
+        }
+
+        setProduct(productData);
+        console.log("Set product state:", productData);
       } catch (error) {
         enqueueSnackbar("Failed to fetch product", { variant: "error" });
         console.error(error);
@@ -40,12 +55,47 @@ export default function ProductEditView({ productId }) {
 
   const handleUpdate = async (formData) => {
     try {
-      await productsService.update(productId, formData);
-      enqueueSnackbar("Product updated successfully");
+      console.log("Updating product with ID:", productId);
+      console.log("Update payload:", formData);
+
+      // Ensure we have the product ID
+      if (!productId) {
+        throw new Error("Product ID is missing");
+      }
+
+      // Prepare the update data
+      const updateData = {
+        ...formData,
+        // Ensure these fields are properly formatted
+        price: Number(formData.price) || 0,
+        regularPrice: Number(formData.regularPrice) || 0,
+        salePrice: Number(formData.salePrice) || 0,
+        stockQuantity: Number(formData.stockQuantity) || 0,
+        weight: Number(formData.weight) || 0,
+        dimensions: {
+          length: Number(formData.dimensions?.length) || 0,
+          width: Number(formData.dimensions?.width) || 0,
+          height: Number(formData.dimensions?.height) || 0,
+        },
+        // Convert categories to array if it's a single value
+        categories: formData.category ? [formData.category] : [],
+      };
+
+      console.log("Formatted update payload:", updateData);
+
+      // Call the update endpoint
+      const response = await productsService.update(productId, updateData);
+      console.log("Update response:", response);
+
+      enqueueSnackbar("Product updated successfully", { variant: "success" });
       router.push(paths.dashboard.product.root);
     } catch (error) {
-      enqueueSnackbar("Failed to update product", { variant: "error" });
-      console.error(error);
+      console.error("Error updating product:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to update product";
+      enqueueSnackbar(errorMessage, { variant: "error" });
     }
   };
 
