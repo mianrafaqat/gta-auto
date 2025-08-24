@@ -21,6 +21,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
 import { paths } from "src/routes/paths";
+import GarageItem from "src/sections/garage/garage-item";
 
 export default function LastestEightCars() {
   const { data: allCarsData, isLoading, error } = useGetAllCars();
@@ -103,196 +104,6 @@ export default function LastestEightCars() {
       sliderRef.current.slickGoTo(0);
     }
   }, [activeTab, filteredCars.length]);
-
-  // Car Card Component
-  const CarCard = ({ car }) => {
-    const getBadgeType = () => {
-      if (car.deal === "great") return { type: "Great Deal", color: "#4CAF50" };
-      if (car.deal === "fair") return { type: "Fair Deal", color: "#2196F3" };
-      if (car.deal === "good") return { type: "Good Deal", color: "#FF9800" };
-      return null;
-    };
-
-    const badge = getBadgeType();
-
-    return (
-      <Card
-        sx={{
-          bgcolor: "white",
-          borderRadius: "12px",
-          overflow: "hidden",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "400px",
-          "&:hover": {
-            transform: "translateY(-4px)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-            transition: "all 0.3s ease",
-          },
-        }}>
-        {/* Car Image */}
-        <Box sx={{ position: "relative", height: 248 }}>
-          <img
-            src={
-              car.image?.[0] || car.coverUrl || "/assets/placeholder-car.jpg"
-            }
-            alt={car.title || car.name}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-
-          {/* Badge */}
-          {badge && (
-            <Box
-              sx={{
-                position: "absolute",
-                top: 12,
-                left: 12,
-                bgcolor: badge.color,
-                color: "white",
-                px: 1.5,
-                py: 0.5,
-                borderRadius: "12px",
-                fontSize: "0.75rem",
-                fontWeight: 600,
-              }}>
-              {badge.type}
-            </Box>
-          )}
-
-          {/* Favorite Icon */}
-          <IconButton
-            sx={{
-              position: "absolute",
-              top: 12,
-              right: 12,
-              bgcolor: "white",
-              width: 32,
-              height: 32,
-              "&:hover": {
-                bgcolor: "grey.100",
-              },
-            }}>
-            <Iconify icon="eva:heart-outline" sx={{ fontSize: 16 }} />
-          </IconButton>
-        </Box>
-
-        {/* Car Details */}
-        <CardContent
-          sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
-          {/* Title */}
-          <Typography
-            variant="h6"
-            noWrap
-            sx={{
-              fontWeight: 500,
-              color: "black",
-              mb: "0px",
-              fontSize: "1.1rem",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}>
-            {car.title || car.name}
-          </Typography>
-
-          {/* Description */}
-          <Typography
-            variant="body2"
-            sx={{
-              color: "grey.600",
-              mb: "12px",
-              fontSize: "0.875rem",
-            }}>
-            {car.title || car.name}
-          </Typography>
-
-          {/* Specifications */}
-          <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Iconify
-                icon="eva:car-outline"
-                sx={{ fontSize: 16, color: "grey.500" }}
-              />
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "grey.600",
-                  fontSize: "0.8rem",
-                  whiteSpace: "nowrap",
-                }}>
-                {car.carDetails?.mileage || "N/A"} mi
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Iconify
-                icon="eva:droplet-outline"
-                sx={{ fontSize: 16, color: "grey.500" }}
-              />
-              <Typography
-                variant="body2"
-                sx={{ color: "grey.600", fontSize: "0.8rem" }}>
-                {car.carDetails?.fuelType || "N/A"}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Iconify
-                icon="eva:settings-outline"
-                sx={{ fontSize: 16, color: "grey.500" }}
-              />
-              <Typography
-                variant="body2"
-                sx={{ color: "grey.600", fontSize: "0.8rem" }}>
-                {car.carDetails?.transmission || "N/A"}
-              </Typography>
-            </Box>
-          </Stack>
-
-          {/* Price and View Details */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mt: "auto",
-            }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                color: "black",
-                fontSize: "1rem !important",
-              }}>
-              PKR {Number(car.price)?.toLocaleString() || "N/A"}
-            </Typography>
-            <Button
-              variant="text"
-              endIcon={<Iconify icon="eva:arrow-forward-fill" />}
-              sx={{
-                color: "#405FF2",
-                fontWeight: 500,
-                fontSize: "0.875rem",
-                textTransform: "none",
-                "&:hover": {
-                  bgcolor: "rgba(33, 150, 243, 0.1)",
-                },
-              }}
-              onClick={() =>
-                router.push(paths.dashboard.cars.details(car?._id))
-              }>
-              View Details
-            </Button>
-          </Box>
-        </CardContent>
-      </Card>
-    );
-  };
 
   if (isLoading) {
     return (
@@ -394,7 +205,7 @@ export default function LastestEightCars() {
                   alignItems: "center",
                 }}>
                 <Box sx={{ maxWidth: "350px", width: "100%" }}>
-                  <CarCard car={filteredCars[0]} />
+                  <GarageItem product={filteredCars[0]} />
                 </Box>
               </Box>
             ) : (
@@ -406,7 +217,7 @@ export default function LastestEightCars() {
                 style={{ width: "100%", display: "flex !important" }}>
                 {filteredCars.slice(0, 10).map((car) => (
                   <Box key={car._id} sx={{ px: 1, display: "flex !important" }}>
-                    <CarCard car={car} />
+                    <GarageItem product={car} />
                   </Box>
                 ))}
               </Slider>
