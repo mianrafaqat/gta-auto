@@ -20,6 +20,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
+import { paths } from "src/routes/paths";
 
 export default function LastestEightCars() {
   const { data: allCarsData, isLoading, error } = useGetAllCars();
@@ -133,7 +134,7 @@ export default function LastestEightCars() {
           },
         }}>
         {/* Car Image */}
-        <Box sx={{ position: "relative", height: 200 }}>
+        <Box sx={{ position: "relative", height: 248 }}>
           <img
             src={
               car.image?.[0] || car.coverUrl || "/assets/placeholder-car.jpg"
@@ -282,7 +283,9 @@ export default function LastestEightCars() {
                   bgcolor: "rgba(33, 150, 243, 0.1)",
                 },
               }}
-              onClick={() => router.push(`/cars/${car._id}`)}>
+              onClick={() =>
+                router.push(paths.dashboard.cars.details(car?._id))
+              }>
               View Details
             </Button>
           </Box>
