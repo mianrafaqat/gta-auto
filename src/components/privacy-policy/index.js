@@ -14,6 +14,7 @@ export default function PrivacyPolicyPage() {
       sx={{
         py: { xs: 2, md: 5 },
         textAlign: { xs: "center", md: "unset" },
+        mt: "50px",
       }}>
       <Typography mb={2} variant="h3" color="#fff">
         Privacy Policy

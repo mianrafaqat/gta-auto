@@ -92,8 +92,13 @@ export default function Header() {
           }}>
           <Container
             maxWidth="xl"
-            sx={{ height: 1, display: "flex", alignItems: "center" }}>
-            <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
+            sx={{
+              height: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+            <Stack direction="row" alignItems="center">
               {/* <Logo />  */}
               <Link href="/">
                 <img
@@ -104,8 +109,8 @@ export default function Header() {
                   style={{ marginRight: "24px" }}
                 />
               </Link>
-              {mdUp && <NavDesktop data={navConfig} />}
             </Stack>
+            {mdUp && <NavDesktop data={navConfig} />}
 
             <Stack alignItems="center" direction="row" spacing={2}>
               {/* Shopping Cart */}

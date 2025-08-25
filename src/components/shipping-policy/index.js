@@ -152,7 +152,7 @@ const ShippingPolicy = () => {
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, mt: "50px" }}>
       {/* Header Section */}
       <Box textAlign="center" mb={6}>
         <Typography

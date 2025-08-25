@@ -556,14 +556,6 @@ export default function ProductListView() {
             />
           ) : (
             <>
-              {/* Debug info */}
-              <Box sx={{ p: 2, bgcolor: "grey.100" }}>
-                <Typography variant="caption">
-                  Debug: {products.length} products, Loading:{" "}
-                  {productsLoading.toString()}
-                </Typography>
-              </Box>
-
               <DataGrid
                 rows={dataGridRows || []}
                 columns={dataGridColumns}

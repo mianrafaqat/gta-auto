@@ -7,6 +7,7 @@ const ShopHero = () => {
       sx={{
         background: "#E2D0C0",
         width: "100%",
+        mt: "50px",
       }}>
       <Container maxWidth="xl">
         <Stack

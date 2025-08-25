@@ -203,7 +203,7 @@ export default function ProductDetailsSummary({
               "& .MuiRating-iconEmpty": { color: "#e0e0e0" },
             }}
           />
-          <Typography variant="body1" color="#fff">
+          <Typography variant="body1" color="#fff" whiteSpace="nowrap">
             {ratingCount} star rating
           </Typography>
           <Typography variant="body1" color="#828282">

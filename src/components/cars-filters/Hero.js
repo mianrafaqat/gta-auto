@@ -45,6 +45,7 @@ const Hero = () => {
         alignItems: "flex-end",
         minHeight: 630,
         position: "relative",
+        mt: "85px",
       }}
       maxWidth="xl">
       <Box

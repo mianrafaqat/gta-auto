@@ -70,12 +70,12 @@ export default function CarsDetailPage() {
           <Grid
             item
             xs={12}
-            md={4}
+            md={5}
             order={{ xs: 1, md: 2 }}
             sx={{ mb: { xs: 2, md: 0 } }}>
             <ProductDetailsSummary disabledActions product={carDetails} />
           </Grid>
-          <Grid item xs={12} md={8} order={{ xs: 2, md: 1 }}>
+          <Grid item xs={12} md={7} order={{ xs: 2, md: 1 }}>
             <ProductDetailsCarousel product={carDetails} />
             <Features data={features} />
             <Overview data={carDetails} />

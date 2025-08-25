@@ -198,7 +198,7 @@ export default function GarageView() {
   const onClose = () => setToggle(false);
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", mt: "85px" }}>
       {/* Sidebar for ProductFilters */}
       {lgUp ? (
         <Box
