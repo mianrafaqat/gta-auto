@@ -1,5 +1,8 @@
 "use client";
 import { Box, Typography, Card, Stack, Grid, Divider } from "@mui/material";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
 import React from "react";
 import Iconify from "src/components/iconify";
 
@@ -61,36 +64,58 @@ const OrderDetail = () => {
     },
   ];
 
-  const progressSteps = [
+  // Custom Step Icon Component
+  const CustomStepIcon = ({ active, completed, icon, stepNumber }) => {
+    return (
+      <Box
+        sx={{
+          width: 24,
+          height: 24,
+          borderRadius: "50%",
+          backgroundColor: completed ? "#4CAF50" : "#FFFFFF",
+          border: "2px solid",
+          borderColor: completed ? "#4CAF50" : "#E0E0E0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mb: 2,
+          position: "relative",
+          zIndex: 2,
+        }}>
+        {completed && stepNumber === 1 && (
+          <Iconify
+            icon="eva:checkmark-fill"
+            sx={{ color: "#FFFFFF", width: 16, height: 16 }}
+          />
+        )}
+      </Box>
+    );
+  };
+
+  const steps = [
     {
-      id: 1,
-      title: "Order Placed",
+      label: "Order Placed",
       icon: "eva:file-text-fill",
       completed: true,
-      active: false,
     },
     {
-      id: 2,
-      title: "Packaging",
+      label: "Packaging",
       icon: "eva:package-fill",
       completed: true,
-      active: false,
     },
     {
-      id: 3,
-      title: "On The Road",
+      label: "On The Road",
       icon: "eva:car-fill",
       completed: false,
-      active: false,
     },
     {
-      id: 4,
-      title: "Delivered",
+      label: "Delivered",
       icon: "eva:shake-fill",
       completed: false,
-      active: false,
     },
   ];
+
+  const activeStep = 1; // Packaging step is active
 
   return (
     <Box
@@ -162,88 +187,79 @@ const OrderDetail = () => {
 
           {/* Progress Tracker */}
           <Box sx={{ mb: 4, mt: 4, px: 4 }}>
-            <Box
+            <Stepper
+              activeStep={activeStep}
+              alternativeLabel
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                position: "relative",
-                width: "100%",
+                "& .MuiStepConnector-line": {
+                  borderTopWidth: 3,
+                  borderColor: "#E0E0E0",
+                  marginLeft: 0,
+                  marginRight: 0,
+                },
+                "& .MuiStepConnector-root.Mui-completed .MuiStepConnector-line":
+                  {
+                    borderColor: "#4CAF50",
+                  },
+                "& .MuiStepConnector-root.Mui-active .MuiStepConnector-line": {
+                  borderColor: "#4CAF50",
+                },
+                "& .MuiStepConnector-root": {
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                  top: 12,
+                },
+                "& .MuiStepConnector-line": {
+                  minWidth: "auto",
+                },
+                "& .MuiStepLabel-root": {
+                  flexDirection: "column",
+                },
+                "& .MuiStepLabel-label": {
+                  color: "#000000",
+                  fontWeight: 500,
+                  fontSize: "14px",
+                  mt: 1,
+                },
+                "& .MuiStepLabel-label.Mui-disabled": {
+                  color: "#999999",
+                },
               }}>
-              {/* Progress Line */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 12,
-                  left: 0,
-                  right: 0,
-                  height: 2,
-                  backgroundColor: "#E0E0E0",
-                  zIndex: 1,
-                }}
-              />
-
-              {/* Completed Progress Line */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 12,
-                  left: 0,
-                  width: "50%",
-                  height: 2,
-                  backgroundColor: "#4CAF50",
-                  zIndex: 2,
-                }}
-              />
-
-              {progressSteps.map((step, index) => (
-                <Box
-                  key={step.id}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    position: "relative",
-                    zIndex: 3,
-                    flex: 1,
-                  }}>
-                  {/* Circle with Checkmark */}
-                  <Box
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: "50%",
-                      backgroundColor: step.completed ? "#4CAF50" : "#FFFFFF",
-                      border: "2px solid",
-                      borderColor: step.completed ? "#4CAF50" : "#E0E0E0",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      mb: 2,
-                    }}>
-                    {step.completed && (
-                      <Iconify
-                        icon="eva:checkmark-fill"
-                        sx={{ color: "#FFFFFF", width: 16, height: 16 }}
+              {steps.map((step, index) => (
+                <Step key={step.label}>
+                  <StepLabel
+                    StepIconComponent={(props) => (
+                      <CustomStepIcon
+                        {...props}
+                        stepNumber={index + 1}
+                        icon={step.icon}
                       />
                     )}
-                  </Box>
-
-                  {/* Text */}
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: step.completed ? "#000000" : "#999999",
-                      fontWeight: 500,
-                      textAlign: "center",
-                      fontSize: "14px",
-                      mt: 1,
+                    StepIconProps={{
+                      icon: index + 1,
                     }}>
-                    {step.title}
-                  </Typography>
-                </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}>
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        {step.label}
+                      </Typography>
+                      <Iconify
+                        icon={step.icon}
+                        sx={{
+                          color: step.completed ? "#4CAF50" : "#999999",
+                          width: 20,
+                          height: 20,
+                        }}
+                      />
+                    </Box>
+                  </StepLabel>
+                </Step>
               ))}
-            </Box>
+            </Stepper>
           </Box>
 
           <Divider sx={{ mb: 3 }} />
