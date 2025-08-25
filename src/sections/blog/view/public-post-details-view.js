@@ -1,6 +1,6 @@
 "use client";
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
@@ -20,15 +20,37 @@ import Markdown from "src/components/markdown";
 import EmptyContent from "src/components/empty-content";
 
 import PostDetailsHero from "../post-details-hero";
-import PostCommentList from "../post-comment-list";
+import BlogCommentList from "../blog-comment-list";
 import PostCommentForm from "../post-comment-form";
 import { PostDetailsSkeleton } from "../post-skeleton";
 
 import { useGetBlogById, useGetBlogs } from "src/hooks/use-blogs";
+import { UserService } from "src/services";
 
 // ----------------------------------------------------------------------
 
 export default function PublicPostDetailsView({ post }) {
+  const commentListRef = useRef(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+
+  // Fetch current user
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await UserService.getCurrentUser();
+        const userData = response?.data || response;
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+        setCurrentUser(null);
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
   // Determine if we need to search by title or use direct ID
   const isTitleSearch = typeof post === "string";
 
@@ -182,9 +204,25 @@ export default function PublicPostDetailsView({ post }) {
               Comments
             </Typography>
 
-            {/* <PostCommentList postId={postData._id} /> */}
+            <BlogCommentList
+              ref={commentListRef}
+              postId={postData._id}
+              currentUser={currentUser}
+              isLoading={userLoading}
+            />
 
-            <PostCommentForm postId={postData._id} />
+            {!userLoading && (
+              <PostCommentForm
+                postId={postData._id}
+                currentUser={currentUser}
+                onCommentPosted={() => {
+                  // Refresh comments when a new comment is posted
+                  if (commentListRef.current?.fetchComments) {
+                    commentListRef.current.fetchComments();
+                  }
+                }}
+              />
+            )}
           </Stack>
         )}
       </Stack>

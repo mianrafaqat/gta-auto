@@ -101,6 +101,21 @@ export const API_URLS = {
     update: "/api/blogs/update",
     delete: "/api/blogs/delete",
   },
+  blogComment: {
+    // Public Routes
+    getByBlog: (blogId) => `/api/blog-comments/blog/${blogId}`,
+    getById: (commentId) => `/api/blog-comments/${commentId}`,
+    getAll: "/api/blog-comments",
+
+    // Protected Routes
+    create: "/api/blog-comments",
+    update: (commentId) => `/api/blog-comments/${commentId}`,
+    delete: (commentId) => `/api/blog-comments/${commentId}`,
+    getAdminAll: "/api/blog-comments/admin/all",
+    getAdminStats: "/api/blog-comments/admin/stats",
+    moderate: (commentId) => `/api/blog-comments/admin/${commentId}/moderate`,
+    bulkModerate: "/api/blog-comments/admin/bulk-moderate",
+  },
   forum: {
     // Forum Categories Routes
     categories: {

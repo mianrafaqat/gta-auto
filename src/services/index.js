@@ -11,7 +11,8 @@ import CategoryService from "./category/category.service";
 import AttributeService from "./attribute/attribute.service";
 import TaxService from "./tax/tax.service";
 import CouponService from "./coupons/coupons.service";
-import AddressBookService from './address-book/address-book.service';
+import AddressBookService from "./address-book/address-book.service";
+import BlogCommentService from "./blog-comment/blog-comment.service";
 
 export {
   UserService,
@@ -28,4 +29,5 @@ export {
   TaxService,
   CouponService,
   AddressBookService,
+  BlogCommentService,
 };
