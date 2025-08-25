@@ -61,15 +61,21 @@ export default function PublicPostDetailsView({ post }) {
     error: blogsError,
   } = useGetBlogs();
 
-  // Find the blog with matching title if searching by title (try multiple matching strategies)
+  // Helper function to create URL-friendly slug
+  const createSlug = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  };
+
+  // Find the blog with matching title/slug
   const foundBlog = isTitleSearch
-    ? allBlogs?.find((blog) => blog.title === post) ||
-      allBlogs?.find(
-        (blog) => blog.title.toLowerCase() === post.toLowerCase()
-      ) ||
-      allBlogs?.find((blog) => blog.title === post.replace(/-/g, " ")) ||
-      allBlogs?.find((blog) => blog.title.replace(/\s+/g, "-") === post) ||
-      allBlogs?.find((blog) => blog.title.replace(/-/g, " ") === post)
+    ? allBlogs?.find((blog) => {
+        const blogSlug = createSlug(blog.title);
+        const searchSlug = post.toLowerCase();
+        return blogSlug === searchSlug;
+      })
     : null;
 
   // Use the found blog's ID or the direct post ID
@@ -120,7 +126,7 @@ export default function PublicPostDetailsView({ post }) {
   const renderPost = (
     <>
       {/* Breadcrumbs */}
-      <Container maxWidth="lg" sx={{ mb: 3 }}>
+      <Container maxWidth="lg" sx={{ mb: 3, mt: "80px" }}>
         <Breadcrumbs
           aria-label="breadcrumb"
           sx={{ py: 2, color: "#fff", mt: "42px" }}>

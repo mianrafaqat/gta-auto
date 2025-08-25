@@ -195,14 +195,15 @@ export default function ProductShopDetailsView({ id }) {
       {console.log("Rendering product:", product.name)}
       <CustomBreadcrumbs
         links={[
-          { name: "Home", href: "/" },
+          { name: "Home", href: "/", color: "#fff" },
           {
             name: "Products",
             href: paths.product.root,
+            color: "#fff",
           },
           { name: product?.name || "Product Details" },
         ]}
-        sx={{ mb: 5 }}
+        sx={{ mb: 5, color: "#fff" }}
       />
 
       <Grid container spacing={{ xs: 3, md: 5, lg: 8 }}>
@@ -472,10 +473,7 @@ export default function ProductShopDetailsView({ id }) {
   return (
     <Container
       maxWidth={settings.themeStretch ? false : "lg"}
-      sx={{
-        mt: 5,
-        mb: 15,
-      }}>
+      sx={{ mt: "80px", mb: "150px" }}>
       {/* <CartIcon totalItems={checkout.totalItems} /> */}
 
       {console.log(

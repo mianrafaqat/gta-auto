@@ -1,8 +1,9 @@
-import React from "react";
+"use client";
+
 import OrderSuccess from "src/sections/checkout/order-success";
 
-const SuccessPage = () => {
-  return <OrderSuccess />;
-};
+// ----------------------------------------------------------------------
 
-export default SuccessPage;
+export default function CheckoutOrderSuccessPage() {
+  return <OrderSuccess />;
+}

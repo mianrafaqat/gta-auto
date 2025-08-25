@@ -273,6 +273,7 @@ export default function ShopProductCard({
 
       // console.log("Buy now:", newProduct);
       // Small delay to ensure cart state is updated, then navigate to checkout
+      handleAddCart();
       setTimeout(() => {
         router.push(paths.product.checkout);
       }, 100);

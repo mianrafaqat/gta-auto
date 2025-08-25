@@ -221,7 +221,9 @@ export default function ProductDetailsView({ id }) {
   );
 
   return (
-    <Container maxWidth={settings.themeStretch ? false : "lg"}>
+    <Container
+      maxWidth={settings.themeStretch ? false : "lg"}
+      sx={{ mt: "80px" }}>
       {productLoading && renderSkeleton}
 
       {productError && renderError}

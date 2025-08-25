@@ -60,53 +60,60 @@ export default function CategoryListView() {
   const { enqueueSnackbar } = useSnackbar();
 
   // Fetch all categories with pagination
-  const getAllCategories = useCallback(async (page = 1, limit = 10) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const params = buildPaginationParams({ page, limit });
-      const response = await CategoryService.getAll(params);
-      
-      if (response?.status === 200) {
-        setTableData(response.data || []);
-        setPagination(extractPagination(response));
-      } else {
+  const getAllCategories = useCallback(
+    async (page = 1, limit = 10) => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const params = buildPaginationParams({ page, limit });
+        const response = await CategoryService.getAll(params);
+
+        if (response?.status === 200) {
+          setTableData(response.data || []);
+          setPagination(extractPagination(response));
+        } else {
+          setTableData([]);
+          setPagination({});
+        }
+      } catch (error) {
+        const formattedError = handleApiError(error, {
+          onUnauthorized: () => {
+            enqueueSnackbar("Please login to view categories", {
+              variant: "error",
+            });
+          },
+          onForbidden: () => {
+            enqueueSnackbar("You don't have permission to view categories", {
+              variant: "error",
+            });
+          },
+          onNotFound: () => {
+            enqueueSnackbar("Categories not found", { variant: "error" });
+          },
+          onServerError: () => {
+            enqueueSnackbar("Server error occurred", { variant: "error" });
+          },
+        });
+
+        setError(formattedError);
         setTableData([]);
         setPagination({});
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      const formattedError = handleApiError(error, {
-        onUnauthorized: () => {
-          enqueueSnackbar("Please login to view categories", { variant: "error" });
-        },
-        onForbidden: () => {
-          enqueueSnackbar("You don't have permission to view categories", { variant: "error" });
-        },
-        onNotFound: () => {
-          enqueueSnackbar("Categories not found", { variant: "error" });
-        },
-        onServerError: () => {
-          enqueueSnackbar("Server error occurred", { variant: "error" });
-        }
-      });
-      
-      setError(formattedError);
-      setTableData([]);
-      setPagination({});
-    } finally {
-      setLoading(false);
-    }
-  }, [enqueueSnackbar]);
+    },
+    [enqueueSnackbar]
+  );
 
   // Fetch category tree
   const getCategoryTree = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await CategoryService.getTree();
-      
+
       if (response?.status === 200) {
         setTreeData(response.data || []);
       } else {
@@ -115,19 +122,23 @@ export default function CategoryListView() {
     } catch (error) {
       const formattedError = handleApiError(error, {
         onUnauthorized: () => {
-          enqueueSnackbar("Please login to view category tree", { variant: "error" });
+          enqueueSnackbar("Please login to view category tree", {
+            variant: "error",
+          });
         },
         onForbidden: () => {
-          enqueueSnackbar("You don't have permission to view category tree", { variant: "error" });
+          enqueueSnackbar("You don't have permission to view category tree", {
+            variant: "error",
+          });
         },
         onNotFound: () => {
           enqueueSnackbar("Category tree not found", { variant: "error" });
         },
         onServerError: () => {
           enqueueSnackbar("Server error occurred", { variant: "error" });
-        }
+        },
       });
-      
+
       setError(formattedError);
       setTreeData([]);
     } finally {
@@ -150,52 +161,75 @@ export default function CategoryListView() {
   };
 
   // Handle pagination changes
-  const handlePageChange = useCallback((newPage) => {
-    getAllCategories(newPage + 1, pagination.limit || 10);
-  }, [getAllCategories, pagination.limit]);
+  const handlePageChange = useCallback(
+    (newPage) => {
+      getAllCategories(newPage + 1, pagination.limit || 10);
+    },
+    [getAllCategories, pagination.limit]
+  );
 
   // Handle limit changes
-  const handleLimitChange = useCallback((newLimit) => {
-    getAllCategories(1, newLimit);
-  }, [getAllCategories]);
+  const handleLimitChange = useCallback(
+    (newLimit) => {
+      getAllCategories(1, newLimit);
+    },
+    [getAllCategories]
+  );
 
   // Handle delete
-  const handleDeleteRow = useCallback(async (id) => {
-    try {
-      const response = await CategoryService.delete(id);
-      if (response?.status === 200) {
-        enqueueSnackbar("Category deleted successfully");
-        // Refresh based on current view mode
-        if (viewMode === 0) {
-          getAllCategories(pagination.page || 1, pagination.limit || 10);
-        } else {
-          getCategoryTree();
+  const handleDeleteRow = useCallback(
+    async (id) => {
+      try {
+        const response = await CategoryService.delete(id);
+        if (response?.status === 200) {
+          enqueueSnackbar("Category deleted successfully");
+          // Refresh based on current view mode
+          if (viewMode === 0) {
+            getAllCategories(pagination.page || 1, pagination.limit || 10);
+          } else {
+            getCategoryTree();
+          }
         }
+      } catch (error) {
+        const formattedError = handleApiError(error, {
+          onUnauthorized: () => {
+            enqueueSnackbar("Please login to delete categories", {
+              variant: "error",
+            });
+          },
+          onForbidden: () => {
+            enqueueSnackbar("You don't have permission to delete categories", {
+              variant: "error",
+            });
+          },
+          onNotFound: () => {
+            enqueueSnackbar("Category not found", { variant: "error" });
+          },
+          onServerError: () => {
+            enqueueSnackbar("Server error occurred", { variant: "error" });
+          },
+        });
+
+        enqueueSnackbar(formattedError.message, { variant: "error" });
       }
-    } catch (error) {
-      const formattedError = handleApiError(error, {
-        onUnauthorized: () => {
-          enqueueSnackbar("Please login to delete categories", { variant: "error" });
-        },
-        onForbidden: () => {
-          enqueueSnackbar("You don't have permission to delete categories", { variant: "error" });
-        },
-        onNotFound: () => {
-          enqueueSnackbar("Category not found", { variant: "error" });
-        },
-        onServerError: () => {
-          enqueueSnackbar("Server error occurred", { variant: "error" });
-        }
-      });
-      
-      enqueueSnackbar(formattedError.message, { variant: "error" });
-    }
-  }, [enqueueSnackbar, viewMode, pagination.page, pagination.limit, getAllCategories, getCategoryTree]);
+    },
+    [
+      enqueueSnackbar,
+      viewMode,
+      pagination.page,
+      pagination.limit,
+      getAllCategories,
+      getCategoryTree,
+    ]
+  );
 
   // Handle edit
-  const handleEditRow = useCallback((id) => {
-    router.push(paths.dashboard.category.edit(id));
-  }, [router]);
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.category.edit(id));
+    },
+    [router]
+  );
 
   // Handle create new
   const handleCreateNew = useCallback(() => {
@@ -218,11 +252,12 @@ export default function CategoryListView() {
         <Alert severity="error" sx={{ mb: 3 }}>
           {error.message || "Failed to load categories"}
         </Alert>
-        <Button 
-          variant="contained" 
-          onClick={() => viewMode === 0 ? getAllCategories() : getCategoryTree()}
-          startIcon={<Iconify icon="solar:refresh-bold" />}
-        >
+        <Button
+          variant="contained"
+          onClick={() =>
+            viewMode === 0 ? getAllCategories() : getCategoryTree()
+          }
+          startIcon={<Iconify icon="solar:refresh-bold" />}>
           Retry
         </Button>
       </Container>
@@ -234,31 +269,32 @@ export default function CategoryListView() {
     const renderCategoryNode = (category, level = 0) => (
       <Box key={category.id || category._id} sx={{ pl: level * 3 }}>
         <Stack direction="row" alignItems="center" spacing={2} sx={{ py: 1 }}>
-          <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+          <Typography variant="body2" sx={{ fontWeight: "medium" }}>
             {category.name}
           </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          <Typography variant="caption" sx={{ color: "text.secondary" }}>
             {category.description}
           </Typography>
           <Stack direction="row" spacing={1}>
             <Button
               size="small"
               variant="outlined"
-              onClick={() => handleEditRow(category.id || category._id)}
-            >
+              onClick={() => handleEditRow(category.id || category._id)}>
               Edit
             </Button>
             <Button
               size="small"
               variant="outlined"
               color="error"
-              onClick={() => handleDeleteRow(category.id || category._id)}
-            >
+              onClick={() => handleDeleteRow(category.id || category._id)}>
               Delete
             </Button>
           </Stack>
         </Stack>
-        {category.children && category.children.map(child => renderCategoryNode(child, level + 1))}
+        {category.children &&
+          category.children.map((child) =>
+            renderCategoryNode(child, level + 1)
+          )}
       </Box>
     );
 
@@ -269,9 +305,9 @@ export default function CategoryListView() {
             Category Tree Structure
           </Typography>
           {treeData.length > 0 ? (
-            treeData.map(category => renderCategoryNode(category))
+            treeData.map((category) => renderCategoryNode(category))
           ) : (
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
               No categories found
             </Typography>
           )}
@@ -293,7 +329,9 @@ export default function CategoryListView() {
       <Card>
         <TableContainer sx={{ position: "relative", overflow: "unset" }}>
           <Scrollbar>
-            <Table size={table.dense ? "small" : "medium"} sx={{ minWidth: 800 }}>
+            <Table
+              size={table.dense ? "small" : "medium"}
+              sx={{ minWidth: 800 }}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
@@ -323,7 +361,11 @@ export default function CategoryListView() {
 
                 <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                  emptyRows={emptyRows(
+                    table.page,
+                    table.rowsPerPage,
+                    tableData.length
+                  )}
                 />
 
                 <TableNoData notFound={notFound} />
@@ -337,7 +379,9 @@ export default function CategoryListView() {
           page={pagination.page - 1} // Table uses 0-based pagination
           rowsPerPage={pagination.limit || 10}
           onPageChange={(event, newPage) => handlePageChange(newPage)}
-          onRowsPerPageChange={(event) => handleLimitChange(parseInt(event.target.value, 10))}
+          onRowsPerPageChange={(event) =>
+            handleLimitChange(parseInt(event.target.value, 10))
+          }
           rowsPerPageOptions={[10, 25, 50, 100]}
         />
       </Card>
@@ -359,8 +403,7 @@ export default function CategoryListView() {
         justifyContent="space-between"
         sx={{
           mb: { xs: 3, md: 5 },
-        }}
-      >
+        }}>
         <Stack spacing={1} direction="row" alignItems="center">
           <Typography variant="h4">Categories</Typography>
           {viewMode === 0 && pagination.total > 0 && (
@@ -373,13 +416,12 @@ export default function CategoryListView() {
         <Button
           variant="contained"
           startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={handleCreateNew}
-        >
+          onClick={handleCreateNew}>
           New Category
         </Button>
       </Stack>
 
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
         <Tabs value={viewMode} onChange={handleViewModeChange}>
           <Tab label="List View" />
           <Tab label="Tree View" />

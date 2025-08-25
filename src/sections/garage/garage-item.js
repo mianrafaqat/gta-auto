@@ -205,7 +205,7 @@ export default function GarageItem({
             src={image[0]}
             ratio="4/3"
             width="100%"
-            height="248px"
+            height="288px"
           />
         </Link>
         {actualUser &&

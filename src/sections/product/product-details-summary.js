@@ -217,9 +217,12 @@ export default function ProductDetailsSummary({
           mt="16px">
           {/* Left Column */}
           <Stack gap={2} sx={{ flex: 1 }}>
-            <Typography color="#828282" fontSize="14px">
-              <span style={{ fontWeight: "500" }}>Sku:</span> {product.sku}
-            </Typography>
+            {product.sku && (
+              <Typography color="#828282" fontSize="14px">
+                <span style={{ fontWeight: "500" }}>Sku:</span> {product.sku}
+              </Typography>
+            )}
+
             <Typography color="#828282" fontSize="14px">
               <span style={{ fontWeight: "500" }}>Brand:</span> Garage Tuned
               Autos

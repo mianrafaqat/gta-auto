@@ -35,7 +35,7 @@ export default function OrderSuccess({ order: propOrder }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        py: 8,
+        py: 12,
       }}>
       <Container maxWidth="lg">
         <Box

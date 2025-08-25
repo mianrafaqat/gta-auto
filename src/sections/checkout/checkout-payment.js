@@ -160,15 +160,22 @@ export default function CheckoutPayment() {
       setOrder(order);
       enqueueSnackbar("Order created successfully!", { variant: "success" });
 
-      // Navigate to order success page with order data
-      router.push({
-        pathname: paths.product.orderSuccess,
-        query: { orderId: order._id || order.id },
-      });
+      try {
+        // Reset checkout first
+        // checkout.onNextStep();
+        // checkout.onReset();
 
-      // Reset checkout and move to next step
-      checkout.onNextStep();
-      checkout.onReset();
+        router.push(paths.product.orderSuccess);
+      } catch (navigationError) {
+        console.error("Navigation error:", navigationError);
+        // Even if navigation fails, the order was still created successfully
+        enqueueSnackbar(
+          "Order placed successfully, but there was an error navigating to the success page",
+          {
+            variant: "warning",
+          }
+        );
+      }
     } catch (error) {
       console.error("Order creation failed:", error);
 
