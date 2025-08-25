@@ -173,6 +173,7 @@ export const API_URLS = {
   },
   category: {
     getAll: "/api/categories", // Updated to match API docs
+    getById: (id) => `/api/categories/${id}`,
     getTree: "/api/categories/tree", // Added tree endpoint
     add: "/api/categories",
     delete: (id) => `/api/categories/${id}`,

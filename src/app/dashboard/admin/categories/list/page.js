@@ -5,7 +5,7 @@ import CustomBreadcrumbs from "src/components/custom-breadcrumbs";
 import { paths } from "src/routes/paths";
 import Container from "@mui/material/Container";
 import { useSettingsContext } from "src/components/settings";
-import { CategoryListView } from "src/sections/admin/categories/view";
+import { CategoriesListView } from "src/sections/admin/categories/view";
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ export default function AdminCategoryListPage() {
           }}
         />
 
-        <CategoryListView />
+        <CategoriesListView />
       </Container>
     </RoleBasedGuard>
   );

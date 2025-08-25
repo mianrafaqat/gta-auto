@@ -261,6 +261,7 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/admin/categories/list`,
       list: path(ROOTS.DASHBOARD, "/admin/categories/list"),
       add: path(ROOTS.DASHBOARD, "/admin/categories/add"),
+      edit: (id) => path(ROOTS.DASHBOARD, `/admin/categories/${id}/edit`),
     },
     attribute: {
       root: `${ROOTS.DASHBOARD}/admin/attribute/list`,

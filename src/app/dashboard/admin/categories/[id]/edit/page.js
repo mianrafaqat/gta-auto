@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
-import AddCategoriesListView from "src/sections/categories/add/add-categories-list-view";
+import { CategoryEditView } from "src/sections/admin/categories/view";
 
-export default function VideoEditPage({ params }) {
-  return <AddCategoriesListView isEdit videoId={params.id} />;
+// ----------------------------------------------------------------------
+
+export default function CategoryEditPage({ params }) {
+  return <CategoryEditView categoryId={params.id} />;
 }

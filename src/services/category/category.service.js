@@ -12,6 +12,15 @@ class CategoryService {
     }
   };
 
+  getById = async (id) => {
+    try {
+      const res = await gtaAutosInstance.get(API_URLS.category.getById(id));
+      return res;
+    } catch (ex) {
+      throw ex;
+    }
+  };
+
   // Get category tree structure
   getTree = async () => {
     try {

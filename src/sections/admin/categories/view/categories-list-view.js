@@ -29,7 +29,7 @@ import Iconify from "src/components/iconify";
 import { extractErrorMessage, handleApiError } from "src/utils/apiErrorHandler";
 import { buildPaginationParams, extractPagination } from "src/utils/pagination";
 
-import CategoryService from "src/services/category/category.service";
+import { CategoryService } from "src/services";
 import CategoriesTableRow from "./categories-table-row";
 
 // ----------------------------------------------------------------------
@@ -226,9 +226,13 @@ export default function CategoryListView() {
   // Handle edit
   const handleEditRow = useCallback(
     (id) => {
+      if (!id) {
+        enqueueSnackbar("Category ID is required", { variant: "error" });
+        return;
+      }
       router.push(paths.dashboard.category.edit(id));
     },
-    [router]
+    [router, enqueueSnackbar]
   );
 
   // Handle create new
