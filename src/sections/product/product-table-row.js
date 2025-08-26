@@ -15,11 +15,21 @@ import Label from "src/components/label";
 // ----------------------------------------------------------------------
 
 export function RenderCellPrice({ price, regularPrice, salePrice }) {
-  const displayPrice = salePrice > 0 ? salePrice : price;
-  const hasSale = salePrice > 0 && salePrice < regularPrice;
-
   const safePrice = price || 0;
   const safeRegularPrice = regularPrice || safePrice;
+  const safeSalePrice = salePrice || 0;
+
+  const hasSale = safeSalePrice > 0 && safeSalePrice < safeRegularPrice;
+  const displayPrice = hasSale ? safeSalePrice : safePrice;
+
+  // Debug logging
+  console.log("RenderCellPrice Debug:", {
+    price: safePrice,
+    regularPrice: safeRegularPrice,
+    salePrice: safeSalePrice,
+    hasSale,
+    displayPrice,
+  });
 
   // Custom PKR formatting
   const formatPKR = (value) => {
@@ -39,13 +49,17 @@ export function RenderCellPrice({ price, regularPrice, salePrice }) {
             textDecoration: "line-through",
             color: "text.disabled",
             mr: 1,
+            fontSize: "0.875rem",
           }}>
           {formatPKR(safeRegularPrice)}
         </Box>
       )}
       <Box
         component="span"
-        sx={{ color: hasSale ? "error.main" : "text.primary" }}>
+        sx={{
+          color: hasSale ? "error.main" : "text.primary",
+          fontWeight: hasSale ? "bold" : "normal",
+        }}>
         {formatPKR(displayPrice)}
       </Box>
     </Box>

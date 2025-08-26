@@ -153,6 +153,7 @@ export default function ProductListView() {
         if (newFilters.type) params.type = newFilters.type;
         if (newFilters.stockStatus) params.stockStatus = newFilters.stockStatus;
         if (newFilters.sort) params.sort = newFilters.sort;
+        if (newFilters.salePrice) params.salePrice = newFilters.salePrice;
 
         const response = await ProductService.getAll(params);
 
@@ -354,13 +355,13 @@ export default function ProductListView() {
     salePrice: product?.salePrice || 0,
     images: product?.images || [],
     categories: product?.categories || [],
-    stockStatus: product?.stockStatus || "instock",
+    stockStatus: product?.stockStatus > 0 ? "instock" : "out of stock",
     type: product?.type || "simple",
     slug: product?.slug || "",
     createdAt: product?.createdAt || new Date().toISOString(),
     updatedAt: product?.updatedAt || new Date().toISOString(),
     status: product?.status || "draft",
-    stockQuantity: product?.stockQuantity || product?.quantity || 0,
+    stockQuantity: product?.stock || product?.stock || 0,
   }));
 
   // Debug logging after variables are defined
@@ -422,7 +423,7 @@ export default function ProductListView() {
     {
       field: "price",
       headerName: "Price",
-      width: 120,
+      width: 180,
       renderCell: (params) => (
         <RenderCellPrice
           price={params.row?.price || 0}
@@ -442,16 +443,7 @@ export default function ProductListView() {
         />
       ),
     },
-    {
-      field: "type",
-      headerName: "Type",
-      width: 100,
-      renderCell: (params) => (
-        <span style={{ textTransform: "capitalize" }}>
-          {params.row?.type || "simple"}
-        </span>
-      ),
-    },
+
     {
       field: "status",
       headerName: "Status",
@@ -463,7 +455,7 @@ export default function ProductListView() {
     {
       field: "createdAt",
       headerName: "Created",
-      width: 120,
+      width: 180,
       renderCell: (params) => (
         <RenderCellCreatedAt
           value={params.row?.createdAt || new Date().toISOString()}
