@@ -1,5 +1,6 @@
+"use client";
 import PropTypes from "prop-types";
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import Box from "@mui/material/Box";
@@ -21,11 +22,18 @@ import Label from "src/components/label";
 import Iconify from "src/components/iconify";
 import { ColorPicker } from "src/components/color-utils";
 import FormProvider, { RHFSelect } from "src/components/hook-form";
+import SocialShare from "src/components/social-share";
 
 import IncrementerButton from "./common/incrementer-button";
 import CheckAvailabiltyForm from "./check-availabilty-form";
 import { Chip } from "@mui/material";
 import { ShoppingCartOutlined } from "@mui/icons-material";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useAuthContext } from "src/auth/hooks";
+import { UserService } from "src/services";
+import { useSnackbar } from "src/components/snackbar";
+import { ACCESS_TOKEN_KEY } from "src/utils/constants";
 
 // ----------------------------------------------------------------------
 
@@ -38,6 +46,7 @@ export default function ShopDetailSummary({
   ...other
 }) {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     id,
@@ -117,6 +126,184 @@ export default function ShopDetailSummary({
   } = methods;
 
   const values = watch();
+
+  // Favorite functionality
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { user = {} } = useAuthContext()?.user || {};
+  const { updateUserData = () => {} } = useAuthContext() || {};
+
+  // Test UserService availability
+  console.log("UserService available:", !!UserService);
+  console.log(
+    "UserService.addOrRemoveFavoriteProduct available:",
+    !!UserService?.addOrRemoveFavoriteProduct
+  );
+
+  // Debug user context
+  console.log("useAuthContext():", useAuthContext());
+  console.log("user from context:", user);
+
+  // Check if product is in favorites when component mounts or when user/product changes
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkFavoriteStatus = async () => {
+      try {
+        const actualUser = user?.user || user;
+        if (!actualUser?._id) return;
+
+        const userId = actualUser._id;
+
+        const result = await UserService.getUserFavoriteProducts({
+          userId: userId,
+        });
+
+        // Only update state if component is still mounted
+        if (isMounted && result?.status === 200 && result?.data?.data) {
+          const favorites = result.data.data;
+          const productToCheck = product?._id || product?.id;
+          const isProductFavorite = favorites.some(
+            (fav) =>
+              fav._id === productToCheck ||
+              fav._id.toString() === productToCheck?.toString()
+          );
+          setIsFavorite(isProductFavorite);
+        }
+      } catch (err) {
+        console.error("Error checking favorite status:", err);
+      }
+    };
+
+    checkFavoriteStatus();
+
+    // Cleanup function to prevent state updates on unmounted component
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.user?._id, product?._id, product?.id]);
+
+  const handleCopyUrl = async () => {
+    try {
+      const currentUrl = window.location.href;
+      await navigator.clipboard.writeText(currentUrl);
+      enqueueSnackbar("URL copied to clipboard!", { variant: "success" });
+    } catch (err) {
+      console.error("Failed to copy URL:", err);
+      // Fallback for older browsers
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = window.location.href;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        enqueueSnackbar("URL copied to clipboard!", { variant: "success" });
+      } catch (fallbackErr) {
+        console.error("Fallback copy failed:", fallbackErr);
+        enqueueSnackbar("Failed to copy URL", { variant: "error" });
+      }
+    }
+  };
+
+  const handleAddOrRemoveFav = async (e) => {
+    console.log("handleAddOrRemoveFav called"); // Debug log
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Get the actual user data from the nested structure
+      const actualUser = user?.user || user;
+      console.log("actualUser:", actualUser); // Debug log
+
+      if (!actualUser?._id) {
+        console.error("User not logged in - Please log in to add favorites");
+        enqueueSnackbar("Please log in to add favorites", {
+          variant: "warning",
+        });
+        return;
+      }
+
+      // Check if we have a valid token
+      const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+      if (!token) {
+        console.error("No access token found");
+        enqueueSnackbar("Authentication token missing. Please log in again.", {
+          variant: "warning",
+        });
+        return;
+      }
+
+      const userId = actualUser._id;
+      const productId = product?._id || product?.id;
+
+      console.log("userId:", userId, "productId:", productId); // Debug log
+
+      if (!productId) {
+        console.error("Invalid product ID");
+        enqueueSnackbar("Invalid product ID", { variant: "error" });
+        return;
+      }
+
+      if (!userId) {
+        console.error("Invalid user ID");
+        enqueueSnackbar("Invalid user ID", { variant: "error" });
+        return;
+      }
+
+      const data = {
+        userID: userId,
+        productID: productId,
+      };
+
+      console.log("Sending favorite request with data:", data); // Debug log
+
+      // Optimistically update UI
+      setIsFavorite((prev) => !prev);
+
+      // Add a timeout to prevent hanging requests
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Request timeout")), 10000)
+      );
+
+      const result = await Promise.race([
+        UserService.addOrRemoveFavoriteProduct(data),
+        timeoutPromise,
+      ]);
+      console.log("API result:", result); // Debug log
+
+      if (result?.status === 200 && result?.data?.success) {
+        // Update user data with the new favorite list
+        updateUserData(result.data);
+        console.log("Favorite updated:", result.data);
+        enqueueSnackbar(
+          isFavorite ? "Removed from favorites" : "Added to favorites",
+          { variant: "success" }
+        );
+      } else {
+        // Revert UI if request failed
+        setIsFavorite((prev) => !prev);
+        console.error("Failed to update favorite:", result?.data?.message);
+        enqueueSnackbar("Failed to update favorite", { variant: "error" });
+      }
+    } catch (err) {
+      // Revert UI on error
+      setIsFavorite((prev) => !prev);
+      console.error("Error adding/removing favorite:", err);
+
+      // Check if it's an authentication error
+      if (err?.response?.status === 401) {
+        enqueueSnackbar("Authentication error. Please log in again.", {
+          variant: "error",
+        });
+      } else if (err?.response?.status === 403) {
+        enqueueSnackbar("Access denied", { variant: "error" });
+      } else {
+        enqueueSnackbar("Failed to update favorite. Please try again.", {
+          variant: "error",
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (product) {
@@ -279,7 +466,7 @@ export default function ShopDetailSummary({
             alignItems="center"
             variant="h5"
             color="#4CAF50">
-            PKR{price ? Number(price)?.toLocaleString() : 0}
+            PKR{salePrice ? Number(salePrice)?.toLocaleString() : 0}
           </Typography>
           <Typography
             color="#828282"
@@ -376,6 +563,16 @@ export default function ShopDetailSummary({
     </>
   );
 
+  // Prepare share data for product details page
+  const shareData = {
+    title: productName,
+    url: typeof window !== "undefined" ? window.location.href : "",
+    description: `Check out this amazing ${productName} - Starting at PKR ${Number(price)?.toLocaleString()}`,
+    image: firstImage,
+    price: `PKR ${Number(price)?.toLocaleString()}`,
+    hashtags: [productCategory, "Cars", "Automotive", "CityAutos"],
+  };
+
   const renderShare = (
     <Stack direction="row" spacing={2} alignItems="center">
       <Typography
@@ -388,55 +585,16 @@ export default function ShopDetailSummary({
         Share product:
       </Typography>
 
-      <Iconify
-        icon="solar:copy-bold"
-        width={18}
-        sx={{
-          color: "#666",
-          cursor: "pointer",
-          "&:hover": { color: "#4CAF50" },
-        }}
-      />
-
-      <Box
-        sx={{
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
-          backgroundColor: "#4CAF50",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          "&:hover": { backgroundColor: "#45a049" },
-        }}>
-        <Iconify icon="ri:facebook-fill" width={16} sx={{ color: "#fff" }} />
-      </Box>
-
-      <Iconify
-        icon="ri:twitter-fill"
-        width={20}
-        sx={{
-          color: "#666",
-          cursor: "pointer",
-          "&:hover": { color: "#4CAF50" },
-        }}
-      />
-
-      <Iconify
-        icon="ri:pinterest-fill"
-        width={20}
-        sx={{
-          color: "#666",
-          cursor: "pointer",
-          "&:hover": { color: "#4CAF50" },
-        }}
-      />
+      <SocialShare {...shareData} size={32} sx={{ ml: 1 }} />
     </Stack>
   );
 
   const renderWishList = (
     <Box
+      onClick={(e) => {
+        console.log("Wishlist button clicked!"); // Debug log
+        handleAddOrRemoveFav(e);
+      }}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -449,23 +607,31 @@ export default function ShopDetailSummary({
           backgroundColor: "rgba(255, 255, 255, 0.05)",
         },
       }}>
-      <Iconify
-        icon="solar:heart-outline"
-        width={20}
-        sx={{
-          color: "#666",
-          "&:hover": { color: "#4CAF50" },
-        }}
-      />
+      {isFavorite ? (
+        <FavoriteIcon
+          sx={{
+            color: "#4CAF50",
+            fontSize: 20,
+          }}
+        />
+      ) : (
+        <FavoriteBorderOutlinedIcon
+          sx={{
+            color: "#666",
+            fontSize: 20,
+            "&:hover": { color: "#4CAF50" },
+          }}
+        />
+      )}
       <Typography
         variant="body2"
         sx={{
-          color: "#666",
+          color: isFavorite ? "#4CAF50" : "#666",
           fontWeight: "500",
           fontSize: "14px",
           "&:hover": { color: "#4CAF50" },
         }}>
-        Add to Wishlist
+        {isFavorite ? "Remove from Wishlist" : "Add to Wishlist"}
       </Typography>
     </Box>
   );

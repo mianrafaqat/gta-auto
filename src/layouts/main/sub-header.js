@@ -41,7 +41,7 @@ const SubHeader = () => {
               <Typography
                 variant="body2"
                 fontWeight={500}
-                sx={{ color: "#4CAF50" }}>
+                sx={{ color: "#4CAF50", display: { xs: "none", sm: "block" } }}>
                 Deliver to{" "}
                 <Box component="span" sx={{ fontWeight: 600 }}>
                   Location
@@ -60,7 +60,12 @@ const SubHeader = () => {
                   icon="eva:car-fill"
                   sx={{ color: "#4CAF50", width: 20, height: 20 }}
                 />
-                <Typography variant="body2" sx={{ color: "#4CAF50" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#4CAF50",
+                    display: { xs: "none", sm: "block" },
+                  }}>
                   Track your order
                 </Typography>
               </Stack>
@@ -77,7 +82,12 @@ const SubHeader = () => {
                   icon="eva:phone-fill"
                   sx={{ color: "#4CAF50", width: 20, height: 20 }}
                 />
-                <Typography variant="body2" sx={{ color: "#4CAF50" }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#4CAF50",
+                    display: { xs: "none", sm: "block" },
+                  }}>
                   Call A Mechanic in DHA Lahore
                 </Typography>
               </Stack>

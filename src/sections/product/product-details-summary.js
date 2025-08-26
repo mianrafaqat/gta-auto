@@ -190,7 +190,7 @@ export default function ProductDetailsSummary({
         <Typography fontWeight={500} variant="h5" color="#4CAF50">
           {productName}
         </Typography>
-        <Stack direction="row" alignItems="center" gap="5px">
+        {/* <Stack direction="row" alignItems="center" gap="5px">
           <Rating
             size="small"
             value={ratingCount}
@@ -209,7 +209,7 @@ export default function ProductDetailsSummary({
           <Typography variant="body1" color="#828282">
             (21,671 User feedback)
           </Typography>
-        </Stack>
+        </Stack> */}
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -230,7 +230,7 @@ export default function ProductDetailsSummary({
           </Stack>
 
           {/* Right Column */}
-          <Stack gap={2} sx={{ flex: 1, alignItems: "flex-end" }}>
+          {/* <Stack gap={2} sx={{ flex: 1, alignItems: "flex-end" }}>
             <Typography color="#4CAF50" fontSize="14px">
               <span style={{ fontWeight: "500", color: "#828282" }}>
                 Availability:
@@ -241,7 +241,7 @@ export default function ProductDetailsSummary({
               <span style={{ fontWeight: "500" }}>Category:</span>{" "}
               {product.categories?.[0]?.name || "Car Care"}
             </Typography>
-          </Stack>
+          </Stack> */}
         </Stack>
 
         <Stack

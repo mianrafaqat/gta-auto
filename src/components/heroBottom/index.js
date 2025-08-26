@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, useTheme } from "@mui/material";
 import React from "react";
 import Iconify from "src/components/iconify";
 
@@ -29,14 +29,16 @@ const HeroBottom = () => {
   ];
 
   return (
-    <Box sx={{ bgcolor: "black", py: 4 }}>
+    <Box sx={{ bgcolor: "black", py: { xs: 2, sm: 3, md: 4 } }}>
       <Container maxWidth="lg">
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: { xs: "flex-start", sm: "space-between" },
+            alignItems: { xs: "stretch", sm: "center" },
             position: "relative",
+            gap: { xs: 2, sm: 0 },
           }}>
           {services.map((service, index) => (
             <Box
@@ -45,17 +47,23 @@ const HeroBottom = () => {
                 display: "flex",
                 alignItems: "center",
                 flex: 1,
-                px: 2,
+                px: { xs: 0, sm: 2 },
+                py: { xs: 2, sm: 0 },
                 position: "relative",
                 "&:not(:last-child)::after": {
                   content: '""',
-                  position: "absolute",
+                  position: { xs: "static", sm: "absolute" },
                   right: 0,
                   top: "50%",
-                  transform: "translateY(-50%)",
-                  width: "1px",
-                  height: "90%",
+                  transform: { xs: "none", sm: "translateY(-50%)" },
+                  width: { xs: 0, sm: "1px" },
+                  height: { xs: 0, sm: "90%" },
                   bgcolor: "grey.600",
+                  display: { xs: "none", sm: "block" },
+                },
+                borderBottom: {
+                  xs: index !== services.length - 1 ? "1px solid #333" : "none",
+                  sm: "none",
                 },
               }}>
               {/* Icon */}
@@ -64,11 +72,20 @@ const HeroBottom = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 48,
-                  height: 48,
+                  width: { xs: 40, sm: 48 },
+                  height: { xs: 40, sm: 48 },
                   mr: 2,
+                  flexShrink: 0,
                 }}>
-                <img src={service.icon} alt={service.primaryText} />
+                <img
+                  src={service.icon}
+                  alt={service.primaryText}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
+                />
               </Box>
 
               {/* Text Content */}
@@ -78,7 +95,7 @@ const HeroBottom = () => {
                   sx={{
                     color: "#4CAF50",
                     fontWeight: 500,
-                    fontSize: "0.875rem",
+                    fontSize: { xs: "0.85rem", sm: "0.875rem" },
                     lineHeight: 1.2,
                     mb: 0.5,
                   }}>
@@ -88,7 +105,7 @@ const HeroBottom = () => {
                   variant="body2"
                   sx={{
                     color: "#fff",
-                    fontSize: "0.75rem",
+                    fontSize: { xs: "0.72rem", sm: "0.75rem" },
                     lineHeight: 1.2,
                     mt: "8px",
                   }}>

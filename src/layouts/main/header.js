@@ -49,7 +49,7 @@ export default function Header() {
 
   // Get cart data from checkout context
   const checkout = useCheckoutContext();
-  const cartItems = checkout?.items?.length || 0;
+  const cartItems = checkout?.totalItems || 0;
 
   // Cart drawer state
   const [openCartDrawer, setOpenCartDrawer] = useState(false);
@@ -262,7 +262,7 @@ function CartDrawer({ open, onClose, checkout }) {
         {/* Cart Content */}
         <Box sx={{ height: "calc(100vh - 140px)", overflow: "auto" }}>
           {checkout?.items?.length > 0 ? (
-            <Box sx={{ p: 2 }}>
+            <Box sx={{ p: 2, overflow: "auto", height: "100vh" }}>
               {checkout.items.map((item, index) => (
                 <CartItem
                   key={index}
@@ -406,7 +406,7 @@ function CartItem({ item, onDelete, onIncreaseQuantity, onDecreaseQuantity }) {
             {item.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            PKR {item.price?.toLocaleString()}
+            PKR {item.salePrice}
           </Typography>
 
           {/* Show car details if available */}

@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import uniq from 'lodash/uniq';
-import PropTypes from 'prop-types';
-import { useMemo, useEffect, useCallback } from 'react';
+import uniq from "lodash/uniq";
+import PropTypes from "prop-types";
+import { useMemo, useEffect, useCallback } from "react";
 
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
 
-import { getStorage, useLocalStorage } from 'src/hooks/use-local-storage';
+import { getStorage, useLocalStorage } from "src/hooks/use-local-storage";
 
-import { PRODUCT_CHECKOUT_STEPS } from 'src/_mock/_product';
+import { PRODUCT_CHECKOUT_STEPS } from "src/_mock/_product";
 
-import { CheckoutContext } from './checkout-context';
+import { CheckoutContext } from "./checkout-context";
 
 // ----------------------------------------------------------------------
 
-const STORAGE_KEY = 'checkout';
+const STORAGE_KEY = "checkout";
 
 const initialState = {
   activeStep: 0, // Start at cart step to show items first
@@ -35,34 +35,43 @@ export function CheckoutProvider({ children }) {
 
   const validateAndFixCheckoutState = useCallback(() => {
     // Ensure activeStep is within valid range
-    if (state.activeStep < 0 || state.activeStep >= PRODUCT_CHECKOUT_STEPS.length) {
-      update('activeStep', 0);
+    if (
+      state.activeStep < 0 ||
+      state.activeStep >= PRODUCT_CHECKOUT_STEPS.length
+    ) {
+      update("activeStep", 0);
     }
-    
+
     // If we're on step 2 or higher but have no billing address, go back to step 1
     if (state.activeStep >= 2 && !state.billing) {
-      update('activeStep', 1);
+      update("activeStep", 1);
     }
-    
+
     // If we have items but no activeStep, start from step 0
     if (state.items.length > 0 && state.activeStep === 0) {
-      update('activeStep', 1);
+      update("activeStep", 1);
     }
   }, [state.activeStep, state.billing, state.items.length, update]);
 
   const onGetCart = useCallback(() => {
-    const totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+    const totalItems = state.items.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
 
-    const subTotal = state.items.reduce((total, item) => total + item.quantity * item.price, 0);
+    const subTotal = state.items.reduce(
+      (total, item) => total + item.quantity * item.price,
+      0
+    );
 
-    update('subTotal', subTotal);
-    update('totalItems', totalItems);
+    update("subTotal", subTotal);
+    update("totalItems", totalItems);
     // Don't clear billing address on refresh - only clear it when explicitly going back to step 1
     // update('billing', state.activeStep === 1 ? null : state.billing);
-    update('discount', state.items.length ? state.discount : 0);
-    update('shipping', state.items.length ? state.shipping : 0);
-    update('total', state.subTotal - state.discount + state.shipping);
-    
+    update("discount", state.items.length ? state.discount : 0);
+    update("shipping", state.items.length ? state.shipping : 0);
+    update("total", state.subTotal - state.discount + state.shipping);
+
     // Validate and fix the checkout state after calculations
     validateAndFixCheckoutState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,16 +89,23 @@ export function CheckoutProvider({ children }) {
     const restored = getStorage(STORAGE_KEY);
 
     if (restored) {
-      console.log('Checkout state restored from storage:', restored);
+      console.log("Checkout state restored from storage:", restored);
       onGetCart();
     }
   }, [onGetCart]);
 
+  // Recalculate cart totals whenever items change
+  useEffect(() => {
+    if (state.items.length > 0) {
+      onGetCart();
+    }
+  }, [state.items, onGetCart]);
+
   // Debug function to log current checkout state
   const onDebugState = useCallback(() => {
-    console.log('Current checkout state:', state);
-    console.log('Storage key:', STORAGE_KEY);
-    console.log('Storage value:', getStorage(STORAGE_KEY));
+    console.log("Current checkout state:", state);
+    console.log("Storage key:", STORAGE_KEY);
+    console.log("Storage value:", getStorage(STORAGE_KEY));
   }, [state]);
 
   const onAddToCart = useCallback(
@@ -109,41 +125,45 @@ export function CheckoutProvider({ children }) {
         updatedItems.push(newItem);
       }
 
-      update('items', updatedItems);
+      update("items", updatedItems);
+      // Explicitly recalculate cart totals
+      setTimeout(() => onGetCart(), 0);
     },
-    [update, state.items]
+    [update, state.items, onGetCart]
   );
 
   const onDeleteCart = useCallback(
     (itemId) => {
       const updatedItems = state.items.filter((item) => item.id !== itemId);
 
-      update('items', updatedItems);
+      update("items", updatedItems);
+      // Explicitly recalculate cart totals
+      setTimeout(() => onGetCart(), 0);
     },
-    [update, state.items]
+    [update, state.items, onGetCart]
   );
 
   const onBackStep = useCallback(() => {
     const newStep = state.activeStep - 1;
-    update('activeStep', newStep);
-    
+    update("activeStep", newStep);
+
     // Clear billing address when going back to step 1 (address selection)
     if (newStep === 1) {
-      update('billing', null);
+      update("billing", null);
     }
   }, [update, state.activeStep]);
 
   const onNextStep = useCallback(() => {
-    update('activeStep', state.activeStep + 1);
+    update("activeStep", state.activeStep + 1);
   }, [update, state.activeStep]);
 
   const onGotoStep = useCallback(
     (step) => {
-      update('activeStep', step);
-      
+      update("activeStep", step);
+
       // Clear billing address when going back to step 1 (address selection)
       if (step === 1) {
-        update('billing', null);
+        update("billing", null);
       }
     },
     [update]
@@ -161,9 +181,11 @@ export function CheckoutProvider({ children }) {
         return item;
       });
 
-      update('items', updatedItems);
+      update("items", updatedItems);
+      // Explicitly recalculate cart totals
+      setTimeout(() => onGetCart(), 0);
     },
-    [update, state.items]
+    [update, state.items, onGetCart]
   );
 
   const onDecreaseQuantity = useCallback(
@@ -178,9 +200,11 @@ export function CheckoutProvider({ children }) {
         return item;
       });
 
-      update('items', updatedItems);
+      update("items", updatedItems);
+      // Explicitly recalculate cart totals
+      setTimeout(() => onGetCart(), 0);
     },
-    [update, state.items]
+    [update, state.items, onGetCart]
   );
 
   const onCreateBilling = useCallback(
@@ -191,8 +215,8 @@ export function CheckoutProvider({ children }) {
         // Ensure we have a proper ID field
         id: address._id || address.id,
       };
-      
-      update('billing', billingAddress);
+
+      update("billing", billingAddress);
       onNextStep();
     },
     [onNextStep, update]
@@ -200,14 +224,14 @@ export function CheckoutProvider({ children }) {
 
   const onApplyDiscount = useCallback(
     (discount) => {
-      update('discount', discount);
+      update("discount", discount);
     },
     [update]
   );
 
   const onApplyShipping = useCallback(
     (shipping) => {
-      update('shipping', shipping);
+      update("shipping", shipping);
     },
     [update]
   );
@@ -217,7 +241,7 @@ export function CheckoutProvider({ children }) {
     const restored = getStorage(STORAGE_KEY);
     if (restored) {
       // Restore the state and then validate it
-      Object.keys(restored).forEach(key => {
+      Object.keys(restored).forEach((key) => {
         if (restored[key] !== undefined) {
           update(key, restored[key]);
         }
@@ -230,7 +254,7 @@ export function CheckoutProvider({ children }) {
   // Clear checkout state completely
   const onClearState = useCallback(() => {
     reset();
-    console.log('Checkout state cleared');
+    console.log("Checkout state cleared");
   }, [reset]);
 
   const completed = state.activeStep === PRODUCT_CHECKOUT_STEPS.length;
@@ -287,7 +311,11 @@ export function CheckoutProvider({ children }) {
     ]
   );
 
-  return <CheckoutContext.Provider value={memoizedValue}>{children}</CheckoutContext.Provider>;
+  return (
+    <CheckoutContext.Provider value={memoizedValue}>
+      {children}
+    </CheckoutContext.Provider>
+  );
 }
 
 CheckoutProvider.propTypes = {

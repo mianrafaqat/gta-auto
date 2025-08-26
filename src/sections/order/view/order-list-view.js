@@ -1,40 +1,40 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import Card from '@mui/material/Card';
-import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import { alpha } from '@mui/material/styles';
-import Container from '@mui/material/Container';
-import TableBody from '@mui/material/TableBody';
-import IconButton from '@mui/material/IconButton';
-import TableContainer from '@mui/material/TableContainer';
-import CircularProgress from '@mui/material/CircularProgress';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import Card from "@mui/material/Card";
+import Table from "@mui/material/Table";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import { alpha } from "@mui/material/styles";
+import Container from "@mui/material/Container";
+import TableBody from "@mui/material/TableBody";
+import IconButton from "@mui/material/IconButton";
+import TableContainer from "@mui/material/TableContainer";
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
 
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
 
-import { useBoolean } from 'src/hooks/use-boolean';
-import { useGetAllOrders } from 'src/hooks/use-orders';
+import { useBoolean } from "src/hooks/use-boolean";
+import { useGetAllOrders } from "src/hooks/use-orders";
 
-import { isAfter, isBetween } from 'src/utils/format-time';
-import { transformApiOrdersToComponent } from 'src/utils/order-transformer';
+import { isAfter, isBetween } from "src/utils/format-time";
+import { transformApiOrdersToComponent } from "src/utils/order-transformer";
 
-import { ORDER_STATUS_OPTIONS } from 'src/_mock';
+import { ORDER_STATUS_OPTIONS } from "src/_mock";
 
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
-import { useSnackbar } from 'src/components/snackbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import Label from "src/components/label";
+import Iconify from "src/components/iconify";
+import Scrollbar from "src/components/scrollbar";
+import { useSnackbar } from "src/components/snackbar";
+import { ConfirmDialog } from "src/components/custom-dialog";
+import { useSettingsContext } from "src/components/settings";
+import CustomBreadcrumbs from "src/components/custom-breadcrumbs";
 import {
   useTable,
   emptyRows,
@@ -44,28 +44,33 @@ import {
   TableHeadCustom,
   TableSelectedAction,
   TablePaginationCustom,
-} from 'src/components/table';
+} from "src/components/table";
 
-import OrderTableRow from '../order-table-row';
-import OrderTableToolbar from '../order-table-toolbar';
-import OrderTableFiltersResult from '../order-table-filters-result';
+import OrderTableRow from "../order-table-row";
+import OrderTableToolbar from "../order-table-toolbar";
+import OrderTableFiltersResult from "../order-table-filters-result";
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS];
+const STATUS_OPTIONS = [
+  { value: "all", label: "All" },
+  ...ORDER_STATUS_OPTIONS,
+];
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', width: 116 },
-  { id: 'name', label: 'Customer' },
-  { id: 'createdAt', label: 'Date', width: 140 },
-  { id: 'totalQuantity', label: 'Items', width: 120, align: 'center' },
-  { id: 'totalAmount', label: 'Price', width: 140 },
-  { id: 'status', label: 'Status', width: 110 },
+  { id: "id", label: "", width: 116 },
+  { id: "orderNumber", label: "Order", width: 116 },
+  { id: "name", label: "Customer" },
+  { id: "createdAt", label: "Date", width: 140 },
+  { id: "totalQuantity", label: "Items", width: 120, align: "center" },
+  { id: "totalAmount", label: "Price", width: 140 },
+  { id: "status", label: "Status", width: 110 },
+  { id: "action", label: "Action", width: 110 },
 ];
 
 const defaultFilters = {
-  name: '',
-  status: 'all',
+  name: "",
+  status: "all",
   startDate: null,
   endDate: null,
 };
@@ -75,7 +80,7 @@ const defaultFilters = {
 export default function OrderListView() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const table = useTable({ defaultOrderBy: 'orderNumber' });
+  const table = useTable({ defaultOrderBy: "orderNumber" });
 
   const settings = useSettingsContext();
 
@@ -87,7 +92,10 @@ export default function OrderListView() {
   const { data: apiOrders, isLoading, error, refetch } = useGetAllOrders();
 
   // Transform API data to component format
-  const tableData = transformApiOrdersToComponent(apiOrders || []);
+  const tableData = transformApiOrdersToComponent(apiOrders?.orders || []);
+
+  // Get pagination info
+  const pagination = apiOrders?.pagination || { total: 0, page: 1, pages: 1 };
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -108,7 +116,9 @@ export default function OrderListView() {
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset =
-    !!filters.name || filters.status !== 'all' || (!!filters.startDate && !!filters.endDate);
+    !!filters.name ||
+    filters.status !== "all" ||
+    (!!filters.startDate && !!filters.endDate);
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
@@ -134,7 +144,7 @@ export default function OrderListView() {
 
       table.onUpdatePageDeleteRow(dataInPage.length);
 
-      enqueueSnackbar('Delete success!');
+      enqueueSnackbar("Delete success!");
     },
     [dataInPage.length, enqueueSnackbar, table, tableData]
   );
@@ -149,8 +159,8 @@ export default function OrderListView() {
   // Show loading state
   if (isLoading) {
     return (
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-        <Card sx={{ p: 3, textAlign: 'center' }}>
+      <Container maxWidth={settings.themeStretch ? false : "lg"}>
+        <Card sx={{ p: 3, textAlign: "center" }}>
           <CircularProgress />
         </Card>
       </Container>
@@ -160,38 +170,39 @@ export default function OrderListView() {
   // Show error state
   if (error) {
     const isForbidden = error.status === 403 || error.isForbidden;
-    
+
     return (
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <Container maxWidth={settings.themeStretch ? false : "lg"}>
         <Alert severity={isForbidden ? "warning" : "error"} sx={{ mb: 3 }}>
           <strong>
-            {isForbidden 
-              ? "Access Denied - Trying to load your orders instead..." 
+            {isForbidden
+              ? "Access Denied - Trying to load your orders instead..."
               : "Failed to load orders:"}
-          </strong> {error.message}
+          </strong>{" "}
+          {error.message}
           {error.response?.status && (
-            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+            <Box component="div" sx={{ mt: 1, fontSize: "0.875rem" }}>
               Status: {error.response.status} {error.response.statusText}
             </Box>
           )}
           {error.response?.data?.message && (
-            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
+            <Box component="div" sx={{ mt: 1, fontSize: "0.875rem" }}>
               Server: {error.response.data.message}
             </Box>
           )}
           {isForbidden && (
-            <Box component="div" sx={{ mt: 1, fontSize: '0.875rem' }}>
-              Note: You don't have admin access, so showing your personal orders instead.
+            <Box component="div" sx={{ mt: 1, fontSize: "0.875rem" }}>
+              Note: You don't have admin access, so showing your personal orders
+              instead.
             </Box>
           )}
         </Alert>
         <Button onClick={() => refetch()} variant="contained" sx={{ mr: 2 }}>
           Retry
         </Button>
-        <Button 
-          onClick={() => window.location.href = '/auth/jwt/login'} 
-          variant="outlined"
-        >
+        <Button
+          onClick={() => (window.location.href = "/auth/jwt/login")}
+          variant="outlined">
           Go to Login
         </Button>
       </Container>
@@ -199,16 +210,16 @@ export default function OrderListView() {
   }
 
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+    <Container maxWidth={settings.themeStretch ? false : "lg"}>
       <CustomBreadcrumbs
         heading="Order List"
         links={[
           {
-            name: 'Dashboard',
+            name: "Dashboard",
             href: paths.dashboard.root,
           },
           {
-            name: 'Order',
+            name: "Order",
           },
         ]}
         action={
@@ -216,8 +227,7 @@ export default function OrderListView() {
             component="a"
             href={paths.dashboard.order.root}
             variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-          >
+            startIcon={<Iconify icon="mingcute:add-line" />}>
             New Order
           </Button>
         }
@@ -233,13 +243,13 @@ export default function OrderListView() {
         <Tabs
           value={filters.status}
           onChange={(event, newValue) => {
-            handleFilters('status', newValue);
+            handleFilters("status", newValue);
           }}
           sx={{
             px: 2.5,
-            boxShadow: (theme) => `inset 0 -2px 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-          }}
-        >
+            boxShadow: (theme) =>
+              `inset 0 -2px 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+          }}>
           {STATUS_OPTIONS.map((tab) => (
             <Tab key={tab.value} value={tab.value} label={tab.label} />
           ))}
@@ -261,7 +271,7 @@ export default function OrderListView() {
           />
         )}
 
-        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+        <TableContainer sx={{ position: "relative", overflow: "unset" }}>
           <TableSelectedAction
             dense={table.dense}
             numSelected={table.selected.length}
@@ -282,7 +292,9 @@ export default function OrderListView() {
           />
 
           <Scrollbar>
-            <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+            <Table
+              size={table.dense ? "small" : "medium"}
+              sx={{ minWidth: 960 }}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
@@ -312,7 +324,11 @@ export default function OrderListView() {
 
                 <TableEmptyRows
                   height={denseHeight}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
+                  emptyRows={emptyRows(
+                    table.page,
+                    table.rowsPerPage,
+                    dataFiltered.length
+                  )}
                 />
 
                 <TableNoData notFound={notFound} />
@@ -322,10 +338,13 @@ export default function OrderListView() {
         </TableContainer>
 
         <TablePaginationCustom
-          count={dataFiltered.length}
-          page={table.page}
+          count={pagination.total}
+          page={pagination.page - 1} // Convert to 0-based index
           rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
+          onPageChange={(event, newPage) => {
+            // Handle pagination here - you might need to call API with new page
+            console.log("Page changed to:", newPage + 1);
+          }}
           onRowsPerPageChange={table.onChangeRowsPerPage}
           dense={table.dense}
           onChangeDense={table.onChangeDense}
@@ -362,7 +381,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
     );
   }
 
-  if (status !== 'all') {
+  if (status !== "all") {
     filtered = filtered.filter((order) => order.status === status);
   }
 
