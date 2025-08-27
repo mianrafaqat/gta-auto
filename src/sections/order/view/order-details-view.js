@@ -52,6 +52,8 @@ export default function OrderDetailsView({ id }) {
     setIsStatusDialogOpen(true);
   }, []);
 
+  console.log(currentOrder, "currentOrder");
+
   // Handle actual status update
   const handleStatusUpdate = useCallback(
     async (note) => {
@@ -199,7 +201,7 @@ export default function OrderDetailsView({ id }) {
                 discount={currentOrder.discount}
                 subTotal={currentOrder.subTotal}
                 totalAmount={
-                  currentOrder.finalTotal || currentOrder.totalAmount
+                  currentOrder.totalAmount || currentOrder.totalAmount
                 }
               />
 

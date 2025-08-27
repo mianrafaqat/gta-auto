@@ -30,9 +30,7 @@ export default function OrderDetailsItems({
       sx={{ my: 3, textAlign: "right", typography: "body2" }}>
       <Stack direction="row">
         <Box sx={{ color: "text.secondary" }}>Subtotal</Box>
-        <Box sx={{ width: 160, typography: "subtitle2" }}>
-          {fCurrency(subTotal) || "-"}
-        </Box>
+        <Box sx={{ width: 160, typography: "subtitle2" }}>PKR {subTotal}</Box>
       </Stack>
 
       <Stack direction="row">
@@ -40,9 +38,9 @@ export default function OrderDetailsItems({
         <Box
           sx={{
             width: 160,
-            ...(shipping && { color: "error.main" }),
+            ...(shipping && { color: "error.secondary" }),
           }}>
-          {shipping ? `- ${fCurrency(shipping)}` : "-"}
+          {shipping ? ` PKR ${shipping}` : "-"}
         </Box>
       </Stack>
 
@@ -53,18 +51,18 @@ export default function OrderDetailsItems({
             width: 160,
             ...(discount && { color: "error.main" }),
           }}>
-          {discount ? `- ${fCurrency(discount)}` : "-"}
+          {discount ? `PKR ${discount}` : "-"}
         </Box>
       </Stack>
 
       <Stack direction="row">
         <Box sx={{ color: "text.secondary" }}>Taxes</Box>
-        <Box sx={{ width: 160 }}>{taxes ? fCurrency(taxes) : "-"}</Box>
+        <Box sx={{ width: 160 }}>{taxes ? `PKR ${taxes}` : "-"}</Box>
       </Stack>
 
       <Stack direction="row" sx={{ typography: "subtitle1" }}>
         <Box>Total</Box>
-        <Box sx={{ width: 160 }}>{fCurrency(totalAmount) || "-"}</Box>
+        <Box sx={{ width: 160 }}>{`PKR ${totalAmount}` || "-"}</Box>
       </Stack>
     </Stack>
   );
@@ -123,7 +121,7 @@ export default function OrderDetailsItems({
                   textAlign: "right",
                   typography: "subtitle2",
                 }}>
-                {fCurrency(item.price)}
+                PKR {item.price}
               </Box>
             </Stack>
           ))}

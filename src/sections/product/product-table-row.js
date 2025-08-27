@@ -22,15 +22,6 @@ export function RenderCellPrice({ price, regularPrice, salePrice }) {
   const hasSale = safeSalePrice > 0 && safeSalePrice < safeRegularPrice;
   const displayPrice = hasSale ? safeSalePrice : safePrice;
 
-  // Debug logging
-  console.log("RenderCellPrice Debug:", {
-    price: safePrice,
-    regularPrice: safeRegularPrice,
-    salePrice: safeSalePrice,
-    hasSale,
-    displayPrice,
-  });
-
   // Custom PKR formatting
   const formatPKR = (value) => {
     const formattedValue = new Intl.NumberFormat("ur-PK", {

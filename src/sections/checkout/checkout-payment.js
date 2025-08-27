@@ -152,25 +152,24 @@ export default function CheckoutPayment() {
         paymentMethod: data.payment || "cash",
         couponCode: checkout.discount > 0 ? "DISCOUNT10" : undefined,
       };
-      //       console.log("data", data);
-      //       console.log(orderData);
-      //  return;
-      // Create the order
+
       const order = await createOrderMutation.mutateAsync(orderData);
       setOrder(order);
-      enqueueSnackbar("Order created successfully!", { variant: "success" });
+      enqueueSnackbar(
+        `Order #${order.orderNumber} created successfully! Check your email for confirmation.`,
+        { variant: "success" }
+      );
 
       try {
-        // Reset checkout first
-        // checkout.onNextStep();
-        // checkout.onReset();
+        // Clear checkout state completely to empty the cart
+        checkout.onClearState();
 
         router.push(paths.product.orderSuccess);
       } catch (navigationError) {
         console.error("Navigation error:", navigationError);
-        // Even if navigation fails, the order was still created successfully
+
         enqueueSnackbar(
-          "Order placed successfully, but there was an error navigating to the success page",
+          "Order placed successfully! Check your email for confirmation.",
           {
             variant: "warning",
           }

@@ -34,14 +34,15 @@ import { useAuthContext } from "src/auth/hooks";
 import { UserService } from "src/services";
 import { useSnackbar } from "src/components/snackbar";
 import { ACCESS_TOKEN_KEY } from "src/utils/constants";
+import { useCheckoutContext } from "../checkout/context";
 
 // ----------------------------------------------------------------------
 
 export default function ShopDetailSummary({
   items,
   product,
-  onAddCart,
-  onGotoStep,
+  //   onAddCart,
+  //   onGotoStep,
   disabledActions,
   ...other
 }) {
@@ -56,6 +57,7 @@ export default function ShopDetailSummary({
     sizes = [],
     price,
     regularPrice,
+    carDetails,
     salePrice,
     coverUrl,
     images, // Add images for new API structure
@@ -71,12 +73,16 @@ export default function ShopDetailSummary({
     categories, // Add categories for new API structure
     category, // Keep category for backward compatibility
     productStatus, // Renamed from status to avoid conflict
-    type, // Add type for new API structure
-    slug, // Add slug for new API structure
+
+    productAvailable,
+    postalCode,
+    location,
   } = product;
 
   // Get the product ID, handling both old and new API structures
   const productId = _id || id;
+
+  const { onAddToCart, onGotoStep, update, onClearCart } = useCheckoutContext();
 
   // Get the product name, handling both old and new API structures
   const productName = name || title || "Product";
@@ -131,6 +137,8 @@ export default function ShopDetailSummary({
   const [isFavorite, setIsFavorite] = useState(false);
   const { user = {} } = useAuthContext()?.user || {};
   const { updateUserData = () => {} } = useAuthContext() || {};
+
+  const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
   // Test UserService availability
   console.log("UserService available:", !!UserService);
@@ -331,6 +339,66 @@ export default function ShopDetailSummary({
         {title}
       </Typography>
     );
+  };
+
+  const handleAddCart = async () => {
+    const newProduct = {
+      id: productId,
+      name: productName,
+      coverUrl: firstImage,
+      available: productAvailable,
+      price: salePrice,
+      colors: colors && colors.length > 0 ? [colors[0]] : [],
+      size: sizes && sizes.length > 0 ? sizes[0] : "Default",
+      quantity: 1,
+      carDetails: carDetails || {},
+      category: categories,
+      location: location,
+      postalCode: postalCode,
+    };
+    try {
+      onAddToCart(newProduct);
+      console.log("Added to cart:", newProduct);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    setIsBuyNowLoading(true);
+    // const newProduct = {
+    //   id: productId,
+    //   name: productName,
+    //   coverUrl: firstImage,
+    //   available: productAvailable,
+    //   price: productPrice,
+    //   colors: colors && colors.length > 0 ? [colors[0]] : [],
+    //   size: sizes && sizes.length > 0 ? sizes[0] : "Default",
+    //   quantity: 1,
+    //   // Add car-specific properties if available
+    //   carDetails: carDetails || {},
+    //   category: productCategory,
+    //   location: productLocation,
+    //   postalCode: productPostalCode,
+    // };
+    try {
+      // Clear cart first, then add the product to cart
+      // onClearCart();
+      // onAddToCart(newProduct);
+
+      // Set the active step to 0 (cart step)
+      // onGotoStep(0);
+
+      // console.log("Buy now:", newProduct);
+      // Small delay to ensure cart state is updated, then navigate to checkout
+      handleAddCart();
+      setTimeout(() => {
+        router.push(paths.product.checkout);
+      }, 100);
+    } catch (error) {
+      console.error("Error with buy now:", error);
+      setIsBuyNowLoading(false);
+    }
   };
 
   const dealStatus = useMemo(() => {
@@ -770,7 +838,10 @@ export default function ShopDetailSummary({
             sx={{ color: "#fff" }}
           />
         }
-        onClick={() => onAddCart(product)}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleAddCart();
+        }}
         sx={{
           backgroundColor: "#4CAF50",
           color: "#fff",
@@ -793,9 +864,10 @@ export default function ShopDetailSummary({
         size="large"
         variant="outlined"
         disabled={disabledActions}
-        onClick={() => {
-          onAddCart(product);
-          onGotoStep(1);
+        loading={isBuyNowLoading}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleBuyNow();
         }}
         sx={{
           backgroundColor: "#000",
@@ -921,6 +993,6 @@ ShopDetailSummary.propTypes = {
   items: PropTypes.array,
   disabledActions: PropTypes.bool,
   onAddCart: PropTypes.func,
-  onGotoStep: PropTypes.func,
+  //   onGotoStep: PropTypes.func,
   product: PropTypes.object,
 };

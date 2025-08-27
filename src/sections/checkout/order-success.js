@@ -74,7 +74,7 @@ export default function OrderSuccess({ order: propOrder }) {
           {/* Descriptive Text */}
           <Typography
             sx={{
-              mb: 5,
+              mb: 3,
               color: "#828282",
               maxWidth: 500,
               fontSize: "14px",
@@ -82,6 +82,50 @@ export default function OrderSuccess({ order: propOrder }) {
             We are glad to serve you, our items will be packed soon and one of
             our team member will reach out to you soon for confirmation.
           </Typography>
+
+          {/* Email Notification Info */}
+          <Box
+            sx={{
+              mb: 5,
+              p: 2,
+              backgroundColor: "rgba(76, 175, 80, 0.1)",
+              borderRadius: 1,
+              border: "1px solid rgba(76, 175, 80, 0.2)",
+            }}>
+            <Typography
+              sx={{
+                color: "#4CAF50",
+                fontSize: "14px",
+                fontWeight: "500",
+                mb: 1,
+              }}>
+              📧 Email Notifications Sent:
+            </Typography>
+            <Typography
+              sx={{
+                color: "#828282",
+                fontSize: "12px",
+                mb: 0.5,
+              }}>
+              • Order confirmation sent to your email
+            </Typography>
+            <Typography
+              sx={{
+                color: "#828282",
+                fontSize: "12px",
+                mb: 0.5,
+              }}>
+              • Admin team notified of your order
+            </Typography>
+            <Typography
+              sx={{
+                color: "#828282",
+                fontSize: "12px",
+                fontStyle: "italic",
+              }}>
+              Please check your inbox and spam folder
+            </Typography>
+          </Box>
 
           {/* Action Buttons */}
           <Stack
