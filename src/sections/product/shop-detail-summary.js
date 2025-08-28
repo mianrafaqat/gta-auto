@@ -832,11 +832,13 @@ export default function ShopDetailSummary({
         size="large"
         variant="contained"
         endIcon={
-          <Iconify
-            icon="solar:cart-outline"
-            width={20}
-            sx={{ color: "#fff" }}
-          />
+          typeof window !== "undefined" && window.innerWidth <= 600 ? null : (
+            <Iconify
+              icon="solar:cart-outline"
+              width={20}
+              sx={{ color: "#fff" }}
+            />
+          )
         }
         onClick={(e) => {
           e.stopPropagation();
@@ -848,6 +850,7 @@ export default function ShopDetailSummary({
           fontWeight: "bold",
           textTransform: "uppercase",
           borderRadius: "8px",
+          whiteSpace: "nowrap",
           "&:hover": {
             backgroundColor: "#45a049",
           },
@@ -980,7 +983,12 @@ export default function ShopDetailSummary({
         {renderQuantity}
         {renderActions}
       </Stack>
-      <Stack direction="row" width="1005" justifyContent="space-between">
+      <Stack
+        direction="row"
+        width="100%"
+        gap={1}
+        justifyContent="space-between"
+        flexWrap={{ xs: "wrap", md: "nowrap" }}>
         {renderWishList}
         {renderShare}
       </Stack>

@@ -71,7 +71,7 @@ export default function RecentlyPurchased() {
         component={RouterLink}
         href={paths.product.root}
         sx={{
-          display: "flex",
+          display: { md: "flex", xs: "none" },
           alignItems: "center",
           gap: 1,
           color: "#999",
@@ -92,7 +92,10 @@ export default function RecentlyPurchased() {
   );
 
   const renderCategoryLabels = (
-    <Grid container spacing={2} sx={{ mb: 2 }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{ mb: 2, display: { xs: "none", md: "flex" } }}>
       {CATEGORIES.map((category, index) => (
         <Grid item xs={12} sm={6} md={2.4} key={index}>
           <Typography
@@ -170,6 +173,20 @@ export default function RecentlyPurchased() {
       {/* CAR CARE Column */}
       <Grid item xs={12} sm={6} md={2.4}>
         <Stack spacing={2}>
+          {/* Mobile Category Title */}
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#999",
+              textTransform: "uppercase",
+              fontWeight: "500",
+              fontSize: "12px",
+              textAlign: "center",
+              display: { xs: "block", md: "none" },
+              mb: 1,
+            }}>
+            {CATEGORIES[0]}
+          </Typography>
           {Array.from({ length: 3 }, (_, index) =>
             renderProductCard(PRODUCTS[0], index)
           )}
@@ -179,6 +196,20 @@ export default function RecentlyPurchased() {
       {/* INTERIOR Column */}
       <Grid item xs={12} sm={6} md={2.4}>
         <Stack spacing={2}>
+          {/* Mobile Category Title */}
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#999",
+              textTransform: "uppercase",
+              fontWeight: "500",
+              fontSize: "12px",
+              textAlign: "center",
+              display: { xs: "block", md: "none" },
+              mb: 1,
+            }}>
+            {CATEGORIES[1]}
+          </Typography>
           {Array.from({ length: 3 }, (_, index) =>
             renderProductCard(PRODUCTS[1], index)
           )}
@@ -189,6 +220,20 @@ export default function RecentlyPurchased() {
       {Array.from({ length: 3 }, (columnIndex) => (
         <Grid item xs={12} sm={6} md={2.4} key={columnIndex}>
           <Stack spacing={2}>
+            {/* Mobile Category Title */}
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#999",
+                textTransform: "uppercase",
+                fontWeight: "500",
+                fontSize: "12px",
+                textAlign: "center",
+                display: { xs: "block", md: "none" },
+                mb: 1,
+              }}>
+              {CATEGORIES[2 + columnIndex]}
+            </Typography>
             {Array.from({ length: 3 }, (_, index) =>
               renderProductCard(PRODUCTS[2], index)
             )}
