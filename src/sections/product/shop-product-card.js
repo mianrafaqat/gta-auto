@@ -433,7 +433,11 @@ export default function ShopProductCard({
         direction="row"
         flexWrap={{ xs: "wrap", md: "nowrap" }}
         gap={1}
-        sx={{ mt: 1, height: "41px", borderRadius: "3px" }}>
+        sx={{
+          mt: 1,
+          height: { md: "41px", xs: "unset" },
+          borderRadius: "3px",
+        }}>
         <LoadingButton
           fullWidth
           variant="contained"
@@ -455,47 +459,49 @@ export default function ShopProductCard({
           }}>
           Buy Now
         </LoadingButton>
-        <Button
-          fullWidth
-          variant="outlined"
-          size="medium"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAddCart();
-          }}
-          sx={{
-            borderColor: "#4caf50",
-            color: "#4caf50",
-            backgroundColor: "#ffffff",
-            textTransform: "none",
-            fontSize: "14px",
-            fontWeight: 500,
-            "&:hover": {
-              borderColor: "#45a049",
-              backgroundColor: "rgba(76, 175, 80, 0.04)",
-            },
-          }}>
-          <ShoppingCartOutlinedIcon />
-        </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          size="medium"
-          onClick={(e) => handleAddOrRemoveFav(e)}
-          sx={{
-            borderColor: "#4caf50",
-            color: "#4caf50",
-            backgroundColor: "#ffffff",
-            textTransform: "none",
-            fontSize: "14px",
-            fontWeight: 500,
-            "&:hover": {
-              borderColor: "#45a049",
-              backgroundColor: "rgba(76, 175, 80, 0.04)",
-            },
-          }}>
-          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
-        </Button>
+        <Stack direction="row" gap={1} flexWrap="nowrap" width="100%">
+          <Button
+            fullWidth
+            variant="outlined"
+            size="medium"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddCart();
+            }}
+            sx={{
+              borderColor: "#4caf50",
+              color: "#4caf50",
+              backgroundColor: "#ffffff",
+              textTransform: "none",
+              fontSize: "14px",
+              fontWeight: 500,
+              "&:hover": {
+                borderColor: "#45a049",
+                backgroundColor: "rgba(76, 175, 80, 0.04)",
+              },
+            }}>
+            <ShoppingCartOutlinedIcon />
+          </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            size="medium"
+            onClick={(e) => handleAddOrRemoveFav(e)}
+            sx={{
+              borderColor: "#4caf50",
+              color: "#4caf50",
+              backgroundColor: "#ffffff",
+              textTransform: "none",
+              fontSize: "14px",
+              fontWeight: 500,
+              "&:hover": {
+                borderColor: "#45a049",
+                backgroundColor: "rgba(76, 175, 80, 0.04)",
+              },
+            }}>
+            {isFavorite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );

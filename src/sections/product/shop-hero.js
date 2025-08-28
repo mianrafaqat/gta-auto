@@ -14,7 +14,7 @@ const ShopHero = () => {
           direction="row"
           gap={3}
           alignItems="flex-start"
-          justifyContent="space-between"
+          justifyContent={{ xs: "center", md: "space-between" }}
           width="100%"
           flexWrap={{ xs: "wrap", md: "nowrap" }}>
           {/* Left Section - Text Content */}

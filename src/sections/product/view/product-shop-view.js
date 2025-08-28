@@ -65,6 +65,7 @@ import Discounted from "src/components/discounted";
 import ShopProductList from "../Shop-product-list";
 import ShopHero from "../shop-hero";
 import HeroBottom from "src/components/heroBottom";
+import LatestProductsSection from "src/components/cars-filters/latest-products";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -279,11 +280,11 @@ export default function ProductShopView() {
           ml: isSmallScreen ? 0 : "auto",
         }}>
         <Container
-          maxWidth={settings.themeStretch ? false : "xl"}
+          maxWidth="xl"
           sx={{
             mb: 15,
           }}>
-          <Grid container spacing={2}>
+          <Grid container>
             {/* Cart icon (optional) */}
             {/* <Grid item xs={12}>
             <CartIcon totalItems={checkout.totalItems} />
@@ -444,11 +445,12 @@ export default function ProductShopView() {
                   Shop Now
                 </Typography>
               </Box>
-              <ProductList
+              {/* <ProductList
                 products={dataFiltered}
                 loading={loading}
                 itemsPerPage={4}
-              />
+              /> */}
+              <LatestProductsSection />
             </Box>
             <Box width="100%">
               <Discounted />
@@ -468,20 +470,18 @@ export default function ProductShopView() {
             {/* Render ProductList */}
 
             <Grid container gap="0px">
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} md={2} display={{ xs: "none", md: "block" }}>
                 <ProductFiltersNew
                   filters={filters}
                   onFilters={handleFilters}
                   onResetFilters={handleResetFilters}
                 />
               </Grid>
-              <Grid item xs={12} md={10} display={{ xs: "none", md: "block" }}>
-                {/* <ProductList products={dataFiltered} loading={loading} /> */}
+              <Grid item xs={12} md={10}>
                 <ShopProductList
                   products={dataFiltered}
                   loading={loading}
                   onAddOrRemoveFav={() => {
-                    // Refetch products to get updated favorite status
                     fetchProducts();
                   }}
                 />
