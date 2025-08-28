@@ -73,10 +73,10 @@ export default function ShopDetailSummary({
     categories, // Add categories for new API structure
     category, // Keep category for backward compatibility
     productStatus, // Renamed from status to avoid conflict
-
     productAvailable,
     postalCode,
     location,
+    stockQuantity,
   } = product;
 
   // Get the product ID, handling both old and new API structures
@@ -109,7 +109,7 @@ export default function ShopDetailSummary({
     !!items?.length &&
     items
       .filter((item) => item.id === productId)
-      .map((item) => item.quantity)[0] >= available;
+      .map((item) => item.quantity)[0] >= stockQuantity;
 
   // --- Add react-hook-form for quantity state ---
   const defaultValues = {
@@ -346,11 +346,11 @@ export default function ShopDetailSummary({
       id: productId,
       name: productName,
       coverUrl: firstImage,
-      available: productAvailable,
+      available: stockQuantity,
       price: salePrice,
       colors: colors && colors.length > 0 ? [colors[0]] : [],
       size: sizes && sizes.length > 0 ? sizes[0] : "Default",
-      quantity: 1,
+      quantity: values.quantity, // Use the selected quantity from the form
       carDetails: carDetails || {},
       category: categories,
       location: location,
@@ -366,31 +366,8 @@ export default function ShopDetailSummary({
 
   const handleBuyNow = async () => {
     setIsBuyNowLoading(true);
-    // const newProduct = {
-    //   id: productId,
-    //   name: productName,
-    //   coverUrl: firstImage,
-    //   available: productAvailable,
-    //   price: productPrice,
-    //   colors: colors && colors.length > 0 ? [colors[0]] : [],
-    //   size: sizes && sizes.length > 0 ? sizes[0] : "Default",
-    //   quantity: 1,
-    //   // Add car-specific properties if available
-    //   carDetails: carDetails || {},
-    //   category: productCategory,
-    //   location: productLocation,
-    //   postalCode: productPostalCode,
-    // };
     try {
-      // Clear cart first, then add the product to cart
-      // onClearCart();
-      // onAddToCart(newProduct);
-
-      // Set the active step to 0 (cart step)
-      // onGotoStep(0);
-
-      // console.log("Buy now:", newProduct);
-      // Small delay to ensure cart state is updated, then navigate to checkout
+      // Add the product to cart with selected quantity, then navigate to checkout
       handleAddCart();
       setTimeout(() => {
         router.push(paths.product.checkout);
@@ -514,7 +491,7 @@ export default function ShopDetailSummary({
               <span style={{ fontWeight: "500", color: "#828282" }}>
                 Availability:
               </span>{" "}
-              {product.stock > 0 ? "In Stock" : "Out of Stock"}
+              {stockQuantity > 0 ? "In Stock" : "Out of Stock"}
             </Typography>
             <Typography color="#828282" fontSize="14px">
               <span style={{ fontWeight: "500" }}>Category:</span>{" "}
@@ -580,6 +557,34 @@ export default function ShopDetailSummary({
             ) : null;
           })()}
         </Stack>
+
+        {/* Total Price Display */}
+        {values.quantity > 1 && (
+          <Stack
+            direction="row"
+            alignItems="center"
+            width="100%"
+            mt="8px"
+            sx={{
+              backgroundColor: "rgba(76, 175, 80, 0.1)",
+              padding: "8px 12px",
+              borderRadius: "6px",
+              border: "1px solid rgba(76, 175, 80, 0.3)",
+            }}>
+            <Typography variant="body2" color="#666" sx={{ fontWeight: "500" }}>
+              Total for {values.quantity} item{values.quantity > 1 ? "s" : ""}:
+            </Typography>
+            <Typography
+              variant="h6"
+              color="#4CAF50"
+              sx={{ fontWeight: "bold", ml: 1 }}>
+              PKR
+              {(
+                (salePrice ? Number(salePrice) : 0) * values.quantity
+              )?.toLocaleString()}
+            </Typography>
+          </Stack>
+        )}
 
         <Divider sx={{ borderColor: "#fff", mt: "16px" }} />
       </Box>
@@ -772,7 +777,9 @@ export default function ShopDetailSummary({
       <Box
         onClick={() => {
           if (values.quantity > 1) {
-            setValue("quantity", values.quantity - 1);
+            const newQuantity = values.quantity - 1;
+            setValue("quantity", newQuantity);
+            console.log("Quantity decreased to:", newQuantity);
           }
         }}
         sx={{
@@ -803,13 +810,15 @@ export default function ShopDetailSummary({
 
       <Box
         onClick={() => {
-          if (values.quantity < available) {
-            setValue("quantity", values.quantity + 1);
+          if (values.quantity < stockQuantity) {
+            const newQuantity = values.quantity + 1;
+            setValue("quantity", newQuantity);
+            console.log("Quantity increased to:", newQuantity);
           }
         }}
         sx={{
-          cursor: values.quantity < available ? "pointer" : "not-allowed",
-          opacity: values.quantity < available ? 1 : 0.5,
+          cursor: values.quantity < stockQuantity ? "pointer" : "not-allowed",
+          opacity: values.quantity < stockQuantity ? 1 : 0.5,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -942,20 +951,20 @@ export default function ShopDetailSummary({
   );
 
   return (
-    // <FormProvider methods={methods} onSubmit={onSubmit}>
-    <Stack spacing={3} {...other}>
-      <Stack spacing={2} alignItems="flex-start">
-        {renderLabels}
+    <FormProvider methods={methods}>
+      <Stack spacing={3} {...other}>
+        <Stack spacing={2} alignItems="flex-start">
+          {renderLabels}
 
-        {renderInventoryType}
+          {renderInventoryType}
 
-        {/* {renderRating} */}
+          {/* {renderRating} */}
 
-        {renderPrice}
-        {/* {renderContact} */}
-        {/* {form} */}
+          {renderPrice}
+          {/* {renderContact} */}
+          {/* {form} */}
 
-        {/* <Box
+          {/* <Box
           sx={{
             background: "#fff",
             border: "1px solid #c3cdd5",
@@ -972,28 +981,28 @@ export default function ShopDetailSummary({
           />
         </Box> */}
 
-        {renderSubDescription}
-      </Stack>
+          {renderSubDescription}
+        </Stack>
 
-      {/* {renderColorOptions} */}
+        {/* {renderColorOptions} */}
 
-      {/* {renderSizeOptions} */}
+        {/* {renderSizeOptions} */}
 
-      <Stack direction="row" gap={1} width="100%">
-        {renderQuantity}
-        {renderActions}
+        <Stack direction="row" gap={1} width="100%">
+          {renderQuantity}
+          {renderActions}
+        </Stack>
+        <Stack
+          direction="row"
+          width="100%"
+          gap={1}
+          justifyContent="space-between"
+          flexWrap={{ xs: "wrap", md: "nowrap" }}>
+          {renderWishList}
+          {renderShare}
+        </Stack>
       </Stack>
-      <Stack
-        direction="row"
-        width="100%"
-        gap={1}
-        justifyContent="space-between"
-        flexWrap={{ xs: "wrap", md: "nowrap" }}>
-        {renderWishList}
-        {renderShare}
-      </Stack>
-    </Stack>
-    // </FormProvider>
+    </FormProvider>
   );
 }
 

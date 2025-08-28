@@ -129,13 +129,25 @@ export function RenderCellStock({ stockStatus, stockQuantity }) {
     }
   };
 
-  const safeStockStatus = stockStatus || "unknown";
   const safeStockQuantity = stockQuantity || 0;
+
+  // Determine actual stock status based on quantity
+  const getActualStockStatus = () => {
+    if (safeStockQuantity <= 0) {
+      return "out of stock";
+    } else if (safeStockQuantity <= 5) {
+      return "low stock";
+    } else {
+      return "in stock";
+    }
+  };
+
+  const actualStockStatus = getActualStockStatus();
 
   return (
     <Box sx={{ color: "text.secondary", fontSize: "0.875rem" }}>
-      <Label variant="soft" color={getStockColor(safeStockStatus)}>
-        {safeStockStatus}
+      <Label variant="soft" color={getStockColor(actualStockStatus)}>
+        {actualStockStatus}
       </Label>
       {safeStockQuantity !== undefined && (
         <Box component="span" sx={{ ml: 1 }}>

@@ -361,14 +361,8 @@ export default function ProductListView() {
     createdAt: product?.createdAt || new Date().toISOString(),
     updatedAt: product?.updatedAt || new Date().toISOString(),
     status: product?.status || "draft",
-    stockQuantity: product?.stock || product?.stock || 0,
+    stockQuantity: product?.stockQuantity || product?.stockQuantity || 0,
   }));
-
-  // Debug logging after variables are defined
-  console.log("Products state:", products);
-  console.log("Products loading:", productsLoading);
-  console.log("DataGrid rows:", dataGridRows);
-  console.log("Pagination:", pagination);
 
   // Loading state
   if (productsLoading) {
@@ -435,7 +429,7 @@ export default function ProductListView() {
     {
       field: "stockStatus",
       headerName: "Stock",
-      width: 100,
+      width: 140,
       renderCell: (params) => (
         <RenderCellStock
           stockStatus={params.row?.stockStatus || "instock"}
