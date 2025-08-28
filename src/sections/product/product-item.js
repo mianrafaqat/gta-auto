@@ -374,30 +374,31 @@ export default function ProductItem({
       {/* Action Buttons */}
       <Stack
         direction="row"
-        flexWrap={{ xs: "wrap", md: "nowrap" }}
+        flexWrap={{ xs: "nowrap", md: "nowrap" }}
         gap={1}
         sx={{ mt: 1, height: "58px", borderRadius: "3px" }}>
         <LoadingButton
-          fullWidth
           variant="contained"
-          size="medium"
           loading={isBuyNowLoading}
           onClick={(e) => {
             e.stopPropagation();
             handleBuyNow();
           }}
           sx={{
+            width: { xs: "100%", md: "100%" },
             backgroundColor: "#4caf50",
             textTransform: "none",
             fontSize: "14px",
             fontWeight: 500,
-            minWidth: "140px",
+            whiteSpace: "nowrap",
+            minWidth: { md: "140px", xs: "unset" },
             "&:hover": {
               backgroundColor: "#45a049",
             },
           }}>
           Buy Now
         </LoadingButton>
+
         <Button
           fullWidth
           variant="outlined"

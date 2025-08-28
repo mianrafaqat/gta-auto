@@ -8,7 +8,7 @@ const CTA = () => {
       <Box
         sx={{
           mt: 10,
-          p: 6,
+          p: { xs: 2, md: 6 },
           backgroundColor: "rgba(0, 255, 136, 0.1)",
           border: "1px solid #4caf50",
           borderRadius: 4,

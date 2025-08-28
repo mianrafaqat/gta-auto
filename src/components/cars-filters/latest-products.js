@@ -240,11 +240,7 @@ export default function LatestProductsSection({
         </Typography>
 
         <Grid item xs={12}>
-          <ProductList
-            products={latestProducts}
-            loading={loading}
-            itemsPerPage={4}
-          />
+          <LatestProductsList products={latestProducts} loading={loading} />
         </Grid>
       </Box>
     </Container>

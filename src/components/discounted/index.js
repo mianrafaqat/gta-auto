@@ -84,7 +84,12 @@ const Discounted = () => {
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              flexDirection: "column",
+              gap: 0.5,
+            }}>
             <Typography
               component="a"
               href="/discounted"
@@ -112,7 +117,96 @@ const Discounted = () => {
         </Box>
 
         {/* Product Cards Grid */}
-        <Grid container spacing={3}>
+        {/* Responsive: Grid on desktop, horizontal scroll (slide) on mobile */}
+        <Box
+          sx={{
+            display: { xs: "block", md: "none" },
+            overflowX: "auto",
+            whiteSpace: "nowrap",
+            pb: 1,
+            mb: 2,
+            // Hide scrollbar for Webkit browsers
+            "&::-webkit-scrollbar": { display: "none" },
+            "-ms-overflow-style": "none",
+            "scrollbar-width": "none",
+          }}>
+          {discountedItems.map((item) => (
+            <Box
+              key={item.id}
+              sx={{
+                display: "inline-block",
+                verticalAlign: "top",
+                width: "180px",
+                mx: 1,
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                },
+              }}>
+              {/* Product Icon with Green Border */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mb: 2,
+                  position: "relative",
+                }}>
+                {/* Icon Container with Background Color */}
+                <Box
+                  sx={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "50%",
+                    backgroundColor: "#4caf50",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                  }}>
+                  <Iconify
+                    icon={item.icon}
+                    sx={{
+                      fontSize: "60px",
+                      color: "#ffffff",
+                      filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+                    }}
+                  />
+                </Box>
+              </Box>
+              {/* Product Details - Below Image */}
+              <Box sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "#ffffff",
+                    fontWeight: "500",
+                    fontSize: "12px !important",
+                    mb: 0.5,
+                    lineHeight: 1.3,
+                  }}>
+                  {item.category}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "#4caf50",
+                    fontWeight: "500",
+                    fontSize: "16px",
+                  }}>
+                  {item.discount}
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+
+        {/* Desktop grid view */}
+        <Grid
+          container
+          spacing={3}
+          sx={{ display: { xs: "none", md: "flex" } }}>
           {discountedItems.map((item) => (
             <Grid item xs={12} sm={6} md={4} lg={2} key={item.id}>
               <Box

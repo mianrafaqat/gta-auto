@@ -93,6 +93,7 @@ const Hero = () => {
           transform: "translate(-50%, -50%)",
           zIndex: 1,
           textAlign: "center",
+          width: "100%",
         }}>
         <Typography color="white" variant="h3" fontWeight={400}>
           The <span style={{ fontWeight: 600 }}>MOST WANTED</span> platform
