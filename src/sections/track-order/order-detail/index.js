@@ -5,8 +5,13 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import React from "react";
 import Iconify from "src/components/iconify";
+import { useGetOrderById } from "src/hooks/use-orders";
 
-const OrderDetail = () => {
+const OrderDetail = ({ id }) => {
+  const { data: apiOrder, isLoading, error, refetch } = useGetOrderById(id);
+
+  console.log(apiOrder, "apiOrder");
+
   const orderActivities = [
     {
       id: 1,
@@ -152,7 +157,7 @@ const OrderDetail = () => {
                 color: "#000000",
                 mb: 1,
               }}>
-              #96459761
+              {apiOrder?.orderNumber}
             </Typography>
             <Typography
               variant="body2"
@@ -160,7 +165,8 @@ const OrderDetail = () => {
                 color: "#666666",
                 fontSize: "14px",
               }}>
-              4 Products • Order Placed in 17 Jan, 2025 at 7:32 PM
+              {apiOrder?.items?.length} Products • Order Placed in{" "}
+              {apiOrder?.createdAt}
             </Typography>
           </Box>
           <Typography
@@ -169,7 +175,7 @@ const OrderDetail = () => {
               fontWeight: "bold",
               color: "#2196F3",
             }}>
-            Rs.25000
+            {apiOrder?.totalAmount}
           </Typography>
         </Box>
 

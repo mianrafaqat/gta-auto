@@ -49,7 +49,7 @@ export const paths = {
     },
   },
   trackOrder: "/track-order",
-  orderDetail: "/track-order/order-detail",
+  orderDetail: (id) => `/track-order/order-detail/${id}`,
   post: {
     root: `/post`,
     details: (title) => `/post/${paramCase(title)}`,

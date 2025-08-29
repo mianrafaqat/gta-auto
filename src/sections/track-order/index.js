@@ -34,7 +34,7 @@ const TrackOrder = () => {
     // Here you would typically make an API call to track the order
     console.log("Tracking order:", { orderId, billingEmail });
     enqueueSnackbar("Order tracking request submitted", { variant: "success" });
-    router.push(paths.orderDetail);
+    router.push(paths.orderDetail(orderId));
   };
 
   return (
