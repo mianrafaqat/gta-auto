@@ -1353,7 +1353,7 @@ export default function ProductNewEditForm({
                   }}
                 />
 
-                <RHFTextField
+                {/* <RHFTextField
                   name="price"
                   label="Current Price"
                   placeholder="0.00"
@@ -1368,7 +1368,7 @@ export default function ProductNewEditForm({
                       </InputAdornment>
                     ),
                   }}
-                />
+                /> */}
 
                 <RHFTextField
                   name="salePrice"
