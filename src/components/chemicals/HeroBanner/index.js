@@ -10,23 +10,12 @@ const HeroBanner = () => {
         height: "calc(100vh - 80px)",
         overflow: "hidden",
       }}>
-      {/* Background Car Image */}
-      {/* <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundImage: "url(/assets/chemical-bg.png)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          zIndex: 1,
-        }}
-      /> */}
-
-      <Box sx={{ height: "100%", objectFit: "cover" }}>
-        <img src="/assets/chemical-bg.png" alt="chemical-bg" />
+      <Box sx={{ height: "100%", objectFit: "cover", width: "100%" }}>
+        <img
+          src="/assets/chemical-bg.jpeg"
+          alt="chemical-bg"
+          style={{ width: "100%" }}
+        />
       </Box>
 
       {/* Main Content */}

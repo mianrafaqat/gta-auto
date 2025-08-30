@@ -10,8 +10,6 @@ import { useGetOrderById } from "src/hooks/use-orders";
 const OrderDetail = ({ id }) => {
   const { data: apiOrder, isLoading, error, refetch } = useGetOrderById(id);
 
-  console.log(apiOrder, "apiOrder");
-
   const orderActivities = [
     {
       id: 1,
