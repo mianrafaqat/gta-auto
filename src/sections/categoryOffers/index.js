@@ -1,20 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Container,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  Button,
-  Chip,
-  Stack,
-  Skeleton,
-  Alert,
-} from "@mui/material";
+import { Box, Container, Typography, Skeleton, Alert } from "@mui/material";
 import { useRouter } from "src/routes/hooks";
 import { paths } from "src/routes/paths";
 import Iconify from "src/components/iconify";
@@ -96,6 +83,84 @@ const CategoryOffers = () => {
     if (name.includes("auto")) return "eva:car-fill";
     if (name.includes("vehicle")) return "eva:car-fill";
     return "eva:folder-fill";
+  };
+
+  const getCategorySVG = (categoryName) => {
+    const name = categoryName?.toLowerCase() || "";
+
+    // Map category names to SVG files
+    if (name.includes("bike") || name.includes("motorcycle"))
+      return "bikes.svg";
+    if (name.includes("brake") || name.includes("braking")) return "brakes.svg";
+    if (name.includes("accessor")) return "car-accessories.svg";
+    if (
+      name.includes("care") ||
+      name.includes("wash") ||
+      name.includes("clean")
+    )
+      return "car-care.svg";
+    if (name.includes("key") || name.includes("remote") || name.includes("fob"))
+      return "car-keys-remotes.svg";
+    if (
+      name.includes("engine") ||
+      name.includes("mechanical") ||
+      name.includes("motor")
+    )
+      return "engine-mechanical.svg";
+    if (
+      name.includes("exterior") ||
+      name.includes("body") ||
+      name.includes("paint")
+    )
+      return "exterior.svg";
+    if (
+      name.includes("interior") ||
+      name.includes("seat") ||
+      name.includes("dashboard")
+    )
+      return "interior.svg";
+    if (
+      name.includes("light") ||
+      name.includes("led") ||
+      name.includes("electrical") ||
+      name.includes("bulb")
+    )
+      return "lights-LEDs-electrical.svg";
+    if (
+      name.includes("modification") ||
+      name.includes("tuning") ||
+      name.includes("upgrade")
+    )
+      return "modifications.svg";
+    if (
+      name.includes("oil") ||
+      name.includes("lubricant") ||
+      name.includes("fluid")
+    )
+      return "oils-lubricants.svg";
+    if (
+      name.includes("stereo") ||
+      name.includes("audio") ||
+      name.includes("sound") ||
+      name.includes("speaker")
+    )
+      return "stereo.svg";
+    if (
+      name.includes("tool") ||
+      name.includes("gadget") ||
+      name.includes("equipment")
+    )
+      return "tools-gadgets.svg";
+    if (
+      name.includes("tyre") ||
+      name.includes("tire") ||
+      name.includes("wheel") ||
+      name.includes("rim")
+    )
+      return "tyres-wheels.svg";
+
+    // Default fallback
+    return "car-accessories.svg";
   };
 
   if (loading) {
@@ -188,9 +253,16 @@ const CategoryOffers = () => {
             borderRadius: 2,
             bgcolor: "rgba(255,255,255,0.05)",
           }}>
-          <Iconify
-            icon="eva:car-outline"
-            sx={{ fontSize: 64, color: "grey.400", mb: 2 }}
+          <Box
+            component="img"
+            src="/assets/category/car-accessories.svg"
+            alt="No categories"
+            sx={{
+              width: 64,
+              height: 64,
+              filter: "brightness(0.4)",
+              mb: 2,
+            }}
           />
           <Typography variant="h6" sx={{ mb: 1, color: "grey.300" }}>
             No Categories Available
@@ -260,17 +332,7 @@ const CategoryOffers = () => {
             {/* Circular Category Element */}
             <Box
               sx={{
-                width: 80,
-                height: 80,
-                borderRadius: "50%",
-                bgcolor: "grey.300",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
                 mb: 2,
-
-                overflow: "hidden",
-                position: "relative",
               }}>
               {category.imageUrl ? (
                 <img
@@ -279,16 +341,17 @@ const CategoryOffers = () => {
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "50%",
                   }}
                 />
               ) : (
-                <Iconify
-                  icon={getCategoryIcon(category.name)}
+                <Box
+                  component="img"
+                  src={`/assets/category/${getCategorySVG(category.name)}`}
+                  alt={category.name}
                   sx={{
-                    fontSize: 32,
-                    color: "grey.600",
+                    width: 64,
+                    height: 64,
+                    objectFit: "contain",
                   }}
                 />
               )}
