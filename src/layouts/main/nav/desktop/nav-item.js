@@ -1,21 +1,24 @@
-import { m } from 'framer-motion';
-import PropTypes from 'prop-types';
-import { forwardRef } from 'react';
+import { m } from "framer-motion";
+import PropTypes from "prop-types";
+import { forwardRef } from "react";
 
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import { styled } from '@mui/material/styles';
-import CardActionArea from '@mui/material/CardActionArea';
-import ListItemButton from '@mui/material/ListItemButton';
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import { styled } from "@mui/material/styles";
+import CardActionArea from "@mui/material/CardActionArea";
+import ListItemButton from "@mui/material/ListItemButton";
 
-import { RouterLink } from 'src/routes/components';
+import { RouterLink } from "src/routes/components";
 
-import Iconify from 'src/components/iconify';
+import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
 export const NavItem = forwardRef(
-  ({ title, path, open, active, hasChild, externalLink, subItem, ...other }, ref) => {
+  (
+    { title, path, open, active, hasChild, externalLink, subItem, ...other },
+    ref
+  ) => {
     const renderContent = (
       <StyledNavItem
         disableRipple
@@ -24,11 +27,16 @@ export const NavItem = forwardRef(
         open={open}
         active={active}
         subItem={subItem}
-        {...other}
-      >
+        {...other}>
         {title}
 
-        {hasChild && <Iconify width={16} icon="eva:arrow-ios-downward-fill" sx={{ ml: 1 }} />}
+        {hasChild && (
+          <Iconify
+            width={16}
+            icon="eva:arrow-ios-downward-fill"
+            sx={{ ml: 1 }}
+          />
+        )}
       </StyledNavItem>
     );
 
@@ -38,7 +46,12 @@ export const NavItem = forwardRef(
 
     if (externalLink) {
       return (
-        <Link href={path} target="_blank" rel="noopener" color="inherit" underline="none">
+        <Link
+          href={path}
+          target="_blank"
+          rel="noopener"
+          color="inherit"
+          underline="none">
           {renderContent}
         </Link>
       );
@@ -65,7 +78,7 @@ NavItem.propTypes = {
 // ----------------------------------------------------------------------
 
 const StyledNavItem = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'subItem',
+  shouldForwardProp: (prop) => prop !== "active" && prop !== "subItem",
 })(({ open, active, subItem, theme }) => {
   const opened = open && !active;
 
@@ -75,11 +88,11 @@ const StyledNavItem = styled(ListItemButton, {
     left: -12,
     opacity: 0.64,
     content: '""',
-    borderRadius: '50%',
-    position: 'absolute',
-    backgroundColor: 'white',
+    borderRadius: "50%",
+    position: "absolute",
+    backgroundColor: "white",
     ...(active && {
-      color: 'white',
+      color: "white",
     }),
   };
 
@@ -88,27 +101,24 @@ const StyledNavItem = styled(ListItemButton, {
     ...(!subItem && {
       ...theme.typography.body2,
       padding: 0,
-      height: '100%',
+      height: "100%",
       fontWeight: theme.typography.fontWeightMedium,
-      color: 'white',
-      transition: theme.transitions.create(['all'], {
-        duration: theme.transitions.duration.shorter,
+      color: "white",
+      transition: theme.transitions.create(["opacity"], {
+        duration: theme.transitions.duration.standard,
       }),
-      '&:hover': {
-        opacity: 0.64,
-        backgroundColor: 'transparent',
-        color: 'white',
-       
+      "&:hover": {
+        opacity: 0.8,
+        backgroundColor: "transparent",
+        color: "white",
       },
       ...(active && {
-        color: 'white',
+        color: "white",
         fontWeight: theme.typography.fontWeightSemiBold,
-       
       }),
       ...(opened && {
         opacity: 0.64,
-        color: 'white',
-        
+        color: "white",
       }),
     }),
 
@@ -119,18 +129,16 @@ const StyledNavItem = styled(ListItemButton, {
       fontSize: 13,
       color: theme.palette.text.secondary,
       fontWeight: theme.typography.fontWeightMedium,
-      transition: theme.transitions.create(['all'], {
-        duration: theme.transitions.duration.shorter,
+      transition: theme.transitions.create(["color"], {
+        duration: theme.transitions.duration.standard,
       }),
-      '&:hover': {
-        backgroundColor: 'transparent',
+      "&:hover": {
+        backgroundColor: "transparent",
         color: theme.palette.text.primary,
-        
       },
       ...(active && {
         color: theme.palette.text.primary,
         fontWeight: theme.typography.fontWeightSemiBold,
-       
       }),
     }),
   };
@@ -140,26 +148,28 @@ const StyledNavItem = styled(ListItemButton, {
 
 export function NavItemDashboard({ path, sx, ...other }) {
   return (
-    <Link component={RouterLink} href={path} sx={{ width: 1, height: 1 }} {...other}>
+    <Link
+      component={RouterLink}
+      href={path}
+      sx={{ width: 1, height: 1 }}
+      {...other}>
       <CardActionArea
         sx={{
           height: 1,
           minHeight: 320,
           borderRadius: 1.5,
-          color: 'text.disabled',
-          bgcolor: 'background.neutral',
+          color: "text.disabled",
+          bgcolor: "background.neutral",
           px: { md: 3, lg: 10 },
           ...sx,
-        }}
-      >
+        }}>
         <m.div
           whileTap="tap"
           whileHover="hover"
           variants={{
             hover: { scale: 1.02 },
             tap: { scale: 0.98 },
-          }}
-        >
+          }}>
           <Box
             component="img"
             alt="illustration_dashboard"

@@ -1,10 +1,8 @@
 import PropTypes from "prop-types";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
-import Fade from "@mui/material/Fade";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Portal from "@mui/material/Portal";
 import { useTheme } from "@mui/material/styles";
 import ListSubheader from "@mui/material/ListSubheader";
 
@@ -26,7 +24,7 @@ export default function NavList({ data }) {
   const active = useActiveLink(data.path, !!data.children);
 
   const [openMenu, setOpenMenu] = useState(false);
-  const [closeTimeout, setCloseTimeout] = useState(null);
+  const closeTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (openMenu) {
@@ -38,45 +36,56 @@ export default function NavList({ data }) {
   const handleOpenMenu = useCallback(() => {
     if (data.children) {
       // Clear any existing close timeout
-      if (closeTimeout) {
-        clearTimeout(closeTimeout);
-        setCloseTimeout(null);
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = null;
       }
       setOpenMenu(true);
     }
-  }, [data.children, closeTimeout]);
+  }, [data.children]);
 
   const handleCloseMenu = useCallback(() => {
-    // Add a small delay to prevent immediate closing when moving mouse
-    const timeout = setTimeout(() => {
+    closeTimeoutRef.current = setTimeout(() => {
       setOpenMenu(false);
-    }, 150); // 150ms delay
-    setCloseTimeout(timeout);
+    }, 150); // Slightly increased timeout for stability
   }, []);
 
   const handleMouseEnter = useCallback(() => {
     if (data.children) {
       // Clear any existing close timeout
-      if (closeTimeout) {
-        clearTimeout(closeTimeout);
-        setCloseTimeout(null);
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = null;
       }
       setOpenMenu(true);
     }
-  }, [data.children, closeTimeout]);
+  }, [data.children]);
 
   const handleMouseLeave = useCallback(() => {
+    handleCloseMenu();
+  }, [handleCloseMenu]);
+
+  // Separate handlers for the submenu to prevent conflicts
+  const handleSubmenuMouseEnter = useCallback(() => {
+    // Clear any existing close timeout when hovering over submenu
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  }, []);
+
+  const handleSubmenuMouseLeave = useCallback(() => {
     handleCloseMenu();
   }, [handleCloseMenu]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
-      if (closeTimeout) {
-        clearTimeout(closeTimeout);
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
       }
     };
-  }, [closeTimeout]);
+  }, []);
 
   return (
     <>
@@ -94,38 +103,36 @@ export default function NavList({ data }) {
         active={active}
       />
 
-      {!!data.children && openMenu && (
-        <Portal>
-          <Fade in={openMenu}>
-            <Paper
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              sx={{
-                ...paper({ theme }),
-                left: 0,
-                right: 0,
-                m: "auto",
-                display: "flex",
-                borderRadius: 2,
-                position: "fixed",
-                zIndex: theme.zIndex.modal,
-                p: theme.spacing(5, 1, 1, 3),
-                top: HEADER.H_DESKTOP_OFFSET,
-                maxWidth: theme.breakpoints.values.lg,
-                boxShadow: theme.customShadows.dropdown,
-                // Add a small margin-top to create a hover bridge
-                mt: -0.5,
-              }}>
-              {data.children.map((list) => (
-                <NavSubList
-                  key={list.subheader}
-                  subheader={list.subheader}
-                  data={list.items}
-                />
-              ))}
-            </Paper>
-          </Fade>
-        </Portal>
+      {!!data.children && (
+        <Paper
+          onMouseEnter={handleSubmenuMouseEnter}
+          onMouseLeave={handleSubmenuMouseLeave}
+          sx={{
+            ...paper({ theme }),
+            left: 0,
+            right: 0,
+            m: "auto",
+            display: openMenu ? "flex" : "none",
+            borderRadius: 2,
+            position: "fixed",
+            zIndex: theme.zIndex.modal,
+            p: theme.spacing(5, 1, 1, 3),
+            top: HEADER.H_DESKTOP_OFFSET,
+            maxWidth: theme.breakpoints.values.lg,
+            boxShadow: theme.customShadows.dropdown,
+            // Add a larger margin-top to create a better hover bridge
+            mt: -2,
+            // Add padding-top to compensate for the negative margin
+            pt: 2,
+          }}>
+          {data.children.map((list) => (
+            <NavSubList
+              key={list.subheader}
+              subheader={list.subheader}
+              data={list.items}
+            />
+          ))}
+        </Paper>
       )}
     </>
   );
