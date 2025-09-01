@@ -151,12 +151,7 @@ export default function LatestProductsSection({
             }}>
             <Stack direction="row" gap={2} alignItems="center">
               <Box>
-                <img
-                  src="/assets/convertable.png"
-                  alt="Comic"
-                  // width={450}
-                  // height={150}
-                />
+                <img src="/assets/convertable.png" alt="Comic" />
               </Box>
 
               <Box>

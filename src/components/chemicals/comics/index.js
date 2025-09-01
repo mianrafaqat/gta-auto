@@ -26,14 +26,14 @@ const Comics = () => {
           gap: "16px",
         }}>
         <Typography variant="h2" sx={{ color: "#4caf50", textAlign: "center" }}>
-          GTA COMICS
+          Garage Tuned Autos Comics
         </Typography>
         <Typography color="#fff" textAlign="center">
-          Dive into the world of GTA Comics! Explore a fun and imaginative
-          collection of stories, adventures, and characters brought to life by
-          our creative team. Whether you love action, humor, or just a good
-          story, our comics have something for everyone. Stay tuned for new
-          issues and exciting updates!
+          Dive into the world of Garage Tuned Autos Comics! Explore a fun and
+          imaginative collection of stories, adventures, and characters brought
+          to life by our creative team. Whether you love action, humor, or just
+          a good story, our comics have something for everyone. Stay tuned for
+          new issues and exciting updates!
         </Typography>
         <Button variant="contained" color="primary">
           View Here

@@ -1,9 +1,9 @@
-import { JwtLoginView } from 'src/sections/auth/jwt';
+import { JwtLoginView } from "src/sections/auth/jwt";
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'GTA Auto - Login',
+  title: "garage tuned autos - Login",
 };
 
 export default function LoginPage() {

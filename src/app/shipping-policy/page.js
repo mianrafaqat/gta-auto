@@ -3,7 +3,7 @@ import Loading from "src/app/loading";
 
 export const metadata = () => {
   return {
-    title: "gtaAutos: Shipping Policy",
+    title: "garage tuned autos: Shipping Policy",
   };
 };
 

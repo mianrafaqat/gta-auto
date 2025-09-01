@@ -1,9 +1,9 @@
-import ComingSoonView from 'src/sections/coming-soon/view';
+import ComingSoonView from "src/sections/coming-soon/view";
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'GTA Auto',
+  title: "garage tuned autos",
 };
 
 export default function ComingSoonPage() {

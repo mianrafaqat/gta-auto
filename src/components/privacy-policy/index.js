@@ -20,18 +20,18 @@ export default function PrivacyPolicyPage() {
         Privacy Policy
       </Typography>
       <Typography mb={2} color="#fff">
-        At GTA Auto, our top priority is keeping your information private. We
-        gather, use, and safeguard your personal information when you use our
-        mobile applications and website in accordance with this Privacy Policy.
-        By accessing or using GTA Auto, you consent to the practices described
-        in this Privacy Policy.
+        At Garage tuned autos Auto, our top priority is keeping your information
+        private. We gather, use, and safeguard your personal information when
+        you use our mobile applications and website in accordance with this
+        Privacy Policy. By accessing or using garage tuned autos Auto, you
+        consent to the practices described in this Privacy Policy.
       </Typography>
       <Typography mb={2} variant="h3" color="#fff">
         Information We Collect:
       </Typography>
       <Typography mb={1} color="#fff">
-        When you use GTA Auto, we may gather a variety of information,
-        including:
+        When you use garage tuned autos Auto, we may gather a variety of
+        information, including:
       </Typography>
       <List sx={{ pl: 5, listStyleType: "disc", color: "#fff" }}>
         <ListItem sx={{ display: "list-item" }}>
@@ -66,8 +66,8 @@ export default function PrivacyPolicyPage() {
           support.
         </ListItem>
         <ListItem sx={{ display: "list-item" }}>
-          Analyze usage trends and patterns to improve GTA Auto' operations and
-          efficiency.
+          Analyze usage trends and patterns to improve garage tuned autos Auto'
+          operations and efficiency.
         </ListItem>
         <ListItem sx={{ display: "list-item" }}>
           Comply with legal obligations and enforce our Terms and Conditions.
@@ -78,22 +78,23 @@ export default function PrivacyPolicyPage() {
         alteration, disclosure, and destruction of your personal information.
         However, no method of transmission over the internet or electronic
         storage is entirely secure, so we cannot guarantee absolute security.
-        Cookies and related tracking technologies are used by GTA Auto to
-        enhance your online experience, examine usage trends, and show you
-        relevant ads. Through the settings of your browser, you may control your
-        cookie preferences. Links to external websites or services that are not
-        run or governed by GTA Auto may be found on our platform. The content or
-        privacy policies of these third parties are not our responsibility. We
-        encourage you to review their privacy policies. GTA Auto does not
-        knowingly collect personal information from children under the age of
-        thirteen. Please get in touch with us right away if you are a parent or
-        guardian and think your kid may have given us personal information. We
-        keep your personal information for as long as it takes to fulfill the
-        purposes outlined in this Privacy Policy, unless a longer retention time
-        is required or authorized by law. We reserve the right to make changes
-        to this policy at any time. Any modifications will take effect as soon
-        as they are posted. You consent to the updated Privacy Policy if you use
-        GTA Auto going forward.
+        Cookies and related tracking technologies are used by garage tuned autos
+        Auto to enhance your online experience, examine usage trends, and show
+        you relevant ads. Through the settings of your browser, you may control
+        your cookie preferences. Links to external websites or services that are
+        not run or governed by garage tuned autos Auto may be found on our
+        platform. The content or privacy policies of these third parties are not
+        our responsibility. We encourage you to review their privacy policies.
+        garage tuned autos Auto does not knowingly collect personal information
+        from children under the age of thirteen. Please get in touch with us
+        right away if you are a parent or guardian and think your kid may have
+        given us personal information. We keep your personal information for as
+        long as it takes to fulfill the purposes outlined in this Privacy
+        Policy, unless a longer retention time is required or authorized by law.
+        We reserve the right to make changes to this policy at any time. Any
+        modifications will take effect as soon as they are posted. You consent
+        to the updated Privacy Policy if you use garage tuned autos Auto going
+        forward.
       </Typography>
       <Typography mb={1} color="#fff">
         If you have any questions or concerns about this Privacy Policy or our
@@ -103,9 +104,9 @@ export default function PrivacyPolicyPage() {
         </Link>
       </Typography>
       <Typography mb={2} color="#fff">
-        Thank you for trusting GTA Auto with your personal information. We're
-        committed to protecting your privacy and providing you with a safe and
-        secure experience on our platform.
+        Thank you for trusting garage tuned autos Auto with your personal
+        information. We're committed to protecting your privacy and providing
+        you with a safe and secure experience on our platform.
       </Typography>
     </Container>
   );

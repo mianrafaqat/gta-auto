@@ -313,13 +313,23 @@ export default function ProductItem({
             position: "absolute",
             right: "0",
           }}>
-          <Typography
-            fontSize="14px"
-            color="#fff"
-            textAlign="center"
-            sx={{ pt: "20px" }}>
-            56% OFF
-          </Typography>
+          {(() => {
+            const regularPrice = Number(productRegularPrice) || 0;
+            const salePrice = Number(productSalePrice) || 0;
+            const discountPercentage =
+              regularPrice > salePrice && regularPrice > 0
+                ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
+                : 0;
+            return discountPercentage > 0 ? (
+              <Typography
+                fontSize="14px"
+                color="#fff"
+                textAlign="center"
+                sx={{ pt: "20px" }}>
+                {discountPercentage}% OFF
+              </Typography>
+            ) : null;
+          })()}
         </Box>
       </Stack>
     );

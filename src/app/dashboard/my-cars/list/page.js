@@ -1,12 +1,12 @@
-import React from 'react';
-import dynamic from 'next/dynamic';
-import Loading from 'src/app/loading';
+import React from "react";
+import dynamic from "next/dynamic";
+import Loading from "src/app/loading";
 
 export const metadata = {
-  title: 'GTA Auto',
+  title: "garage tuned autos",
 };
 
-const MyCarsListPage = dynamic(() => import('src/components/my-cars/list'), {
+const MyCarsListPage = dynamic(() => import("src/components/my-cars/list"), {
   loading: () => <Loading />,
 });
 

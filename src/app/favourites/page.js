@@ -1,13 +1,13 @@
-import dynamic from 'next/dynamic';
-import Loading from 'src/app/loading';
+import dynamic from "next/dynamic";
+import Loading from "src/app/loading";
 
-const FavouritesCarPage = dynamic(() => import('src/components/favourites'), {
+const FavouritesCarPage = dynamic(() => import("src/components/favourites"), {
   loading: () => <Loading />,
 });
 
 export const metadata = {
-  title: 'GTA Auto - My Favourites'
-}
+  title: "garage tuned autos - My Favourites",
+};
 
 export default function Favourites() {
   return <FavouritesCarPage />;

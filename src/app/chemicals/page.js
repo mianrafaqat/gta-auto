@@ -4,12 +4,12 @@ import Chemicals from "src/components/chemicals";
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: "GTA Auto - Chemicals",
+  title: "garage tuned autos - Chemicals",
 };
 
 export default function ChemicalsPage() {
   return (
-    <Container maxWidth="xl" >
+    <Container maxWidth="xl">
       <Chemicals />
     </Container>
   );

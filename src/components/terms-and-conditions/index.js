@@ -47,8 +47,8 @@ export default function TermsAndConditions() {
           color="#fff"
           variant="subtitle1"
           sx={{ textAlign: "center" }}>
-          Welcome to <b>GTA Auto</b>! Please review our Terms & Conditions
-          before using our platform.
+          Welcome to <b> Garage Tuned Autos</b>! Please review our Terms &
+          Conditions before using our platform.
         </Typography>
         <Divider sx={{ mb: 3, bgcolor: "#4caf50" }} />
         <List sx={{ color: "#fff", pl: 3, mb: 3 }}>
@@ -59,9 +59,9 @@ export default function TermsAndConditions() {
                 Acceptance of Terms
               </Typography>
               <Typography variant="body2">
-                By accessing or using GTA Auto (<b>gtaAutos.co.uk</b>) or our
-                mobile apps, you agree to these Terms and Conditions. If you do
-                not agree, please do not use our services.
+                By accessing or using Garage Tuned Autos (<b>gtaAutos.co.uk</b>)
+                or our mobile apps, you agree to these Terms and Conditions. If
+                you do not agree, please do not use our services.
               </Typography>
             </Box>
           </ListItem>
@@ -72,9 +72,10 @@ export default function TermsAndConditions() {
                 Platform Integrity & Safety
               </Typography>
               <Typography variant="body2">
-                All vehicles listed on GTA Auto comply with current industry
-                regulations. Our apps are compatible with iOS and Android, so
-                you can buy and sell with confidence—anywhere, anytime.
+                All vehicles listed on Garage Tuned Autos comply with current
+                industry regulations. Our apps are compatible with iOS and
+                Android, so you can buy and sell with confidence—anywhere,
+                anytime.
               </Typography>
             </Box>
           </ListItem>
@@ -87,10 +88,10 @@ export default function TermsAndConditions() {
                 User Responsibilities
               </Typography>
               <Typography variant="body2">
-                Use GTA Auto responsibly and ethically. Provide accurate
-                information, follow all applicable laws, and respect other
-                users. Intellectual property (logos, trademarks, content) is
-                protected—do not use without written consent.
+                Use Garage Tuned Autos responsibly and ethically. Provide
+                accurate information, follow all applicable laws, and respect
+                other users. Intellectual property (logos, trademarks, content)
+                is protected—do not use without written consent.
               </Typography>
             </Box>
           </ListItem>
@@ -102,9 +103,9 @@ export default function TermsAndConditions() {
               </Typography>
               <Typography variant="body2">
                 We strive for a reliable platform, but cannot guarantee
-                uninterrupted service. GTA Auto is not liable for any losses or
-                damages from use. Terms may change at any time; continued use
-                means acceptance of updates.
+                uninterrupted service. Garage Tuned Autos is not liable for any
+                losses or damages from use. Terms may change at any time;
+                continued use means acceptance of updates.
               </Typography>
             </Box>
           </ListItem>
@@ -124,8 +125,8 @@ export default function TermsAndConditions() {
         </List>
         <Divider sx={{ mb: 3, bgcolor: "#4caf50" }} />
         <Typography color="#fff" sx={{ mb: 2, textAlign: "center" }}>
-          Thank you for choosing <b>GTA Auto</b> as your online vehicle
-          marketplace.
+          Thank you for choosing <b> Garage Tuned Autos</b> as your online
+          vehicle marketplace.
           <br />
           <Box
             component="span"

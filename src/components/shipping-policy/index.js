@@ -239,13 +239,13 @@ const ShippingPolicy = () => {
                 variant="h5"
                 gutterBottom
                 sx={{ fontWeight: "bold", color: "primary.main" }}>
-                GTA Auto – Shipping & Delivery Policy
+                Garage Tuned Autos Auto – Shipping & Delivery Policy
               </Typography>
               <Typography variant="body1" paragraph>
-                At GTA Auto, we understand that fast and reliable shipping is
-                crucial to your shopping experience. We partner with leading
-                courier services to ensure your orders reach you safely and on
-                time.
+                At Garage Tuned Autos Auto, we understand that fast and reliable
+                shipping is crucial to your shopping experience. We partner with
+                leading courier services to ensure your orders reach you safely
+                and on time.
               </Typography>
               <Alert severity="info" sx={{ mt: 2 }}>
                 <Typography variant="body2">

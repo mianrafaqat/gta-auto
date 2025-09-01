@@ -3,7 +3,7 @@ import Loading from "src/app/loading";
 
 export const metadata = () => {
   return {
-    title: "gtaAutos: Cancellation and Refund Policy",
+    title: "garage tuned autos: Cancellation and Refund Policy",
   };
 };
 

@@ -157,12 +157,12 @@ const RefundAndCancelation = () => {
                 variant="h5"
                 gutterBottom
                 sx={{ fontWeight: "bold", color: "primary.main" }}>
-                GTA Auto – Returns & Refunds Policy
+                Garage Tuned Autos – Returns & Refunds Policy
               </Typography>
               <Typography variant="body1" paragraph>
-                At GTA Auto , customer satisfaction is our top priority. To
-                ensure a smooth and transparent return experience, please review
-                the following updated policy:
+                At Garage Tuned Autos Auto , customer satisfaction is our top
+                priority. To ensure a smooth and transparent return experience,
+                please review the following updated policy:
               </Typography>
             </CardContent>
           </Card>
@@ -479,7 +479,7 @@ const RefundAndCancelation = () => {
           variant="h6"
           gutterBottom
           sx={{ fontWeight: "bold", color: "primary.main" }}>
-          Thank you for choosing GTA Auto! 🚗🔧
+          Thank you for choosing Garage Tuned Autos Auto! 🚗🔧
         </Typography>
         <Typography variant="body1" color="text.secondary">
           We appreciate your trust and look forward to serving you again.

@@ -4,7 +4,7 @@ import GarageView from "src/sections/garage/garage-view";
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: "GTA Auto - Cars",
+  title: "garage tuned autos - Cars",
 };
 
 export default function ShopPage() {
