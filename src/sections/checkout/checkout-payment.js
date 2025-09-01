@@ -154,9 +154,21 @@ export default function CheckoutPayment() {
       };
 
       const order = await createOrderMutation.mutateAsync(orderData);
+
+      // Debug: Log the order response to see its structure
+
       setOrder(order);
+
+      // Handle different possible order number field names
+      const orderNumber =
+        order.order?.orderNumber ||
+        order.order?.order_number ||
+        order.order?.id ||
+        order.order._id ||
+        "Unknown";
+
       enqueueSnackbar(
-        `Order #${order.orderNumber} created successfully! Check your email for confirmation.`,
+        `Order #${orderNumber} created successfully! Check your email for confirmation.`,
         { variant: "success" }
       );
 
