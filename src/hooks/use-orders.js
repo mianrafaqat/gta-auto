@@ -15,7 +15,7 @@ const checkAuthentication = () => {
 // Helper function to check admin role
 const checkAdminRole = () => {
   const token = checkAuthentication();
-  
+
   const userStr = localStorage.getItem(STORAGE_USER_KEY);
   if (!userStr) {
     throw new Error("User information not found");
@@ -61,10 +61,12 @@ export function useGetAllOrders() {
         return result;
       } catch (adminError) {
         // If admin check fails or we get a 403, fall back to user's own orders
-        if (adminError.message.includes("permission") || 
-            adminError.message.includes("admin") || 
-            adminError.status === 403 ||
-            adminError.isForbidden) {
+        if (
+          adminError.message.includes("permission") ||
+          adminError.message.includes("admin") ||
+          adminError.status === 403 ||
+          adminError.isForbidden
+        ) {
           try {
             const userOrders = await OrdersService.getMyOrders();
             return userOrders;
@@ -98,16 +100,19 @@ export function useGetOrderById(id) {
     queryFn: async () => {
       try {
         checkAuthentication();
-        
+
         // First try to get the order from user's orders list
         try {
-          console.log("🔄 [HOOK] Trying to get order from user's orders list first...");
+          console.log(
+            "🔄 [HOOK] Trying to get order from user's orders list first..."
+          );
           const userOrders = await OrdersService.getMyOrders();
-          
+
           // Find the specific order in the user's orders
-          const order = userOrders.orders?.find(order => order._id === id) || 
-                       userOrders.find(order => order._id === id);
-          
+          const order =
+            userOrders.orders?.find((order) => order.orderNumber === id) ||
+            userOrders.find((order) => order.orderNumber === id);
+
           if (order) {
             console.log("✅ [HOOK] Found order in user's orders list");
             // Transform the order to ensure it has the correct format
@@ -116,9 +121,11 @@ export function useGetOrderById(id) {
             return transformedOrder;
           }
         } catch (userOrdersError) {
-          console.log("⚠️ [HOOK] Couldn't get user orders, trying individual endpoint");
+          console.log(
+            "⚠️ [HOOK] Couldn't get user orders, trying individual endpoint"
+          );
         }
-        
+
         // If not found in user orders, try the individual endpoint
         console.log("🔄 [HOOK] Trying individual order endpoint...");
         const result = await OrdersService.getById(id);

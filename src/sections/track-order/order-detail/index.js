@@ -10,6 +10,8 @@ import { useGetOrderById } from "src/hooks/use-orders";
 const OrderDetail = ({ id }) => {
   const { data: apiOrder, isLoading, error, refetch } = useGetOrderById(id);
 
+  console.log("apiOrder", apiOrder);
+
   const orderActivities = [
     {
       id: 1,
@@ -164,7 +166,15 @@ const OrderDetail = ({ id }) => {
                 fontSize: "14px",
               }}>
               {apiOrder?.items?.length} Products • Order Placed in{" "}
-              {apiOrder?.createdAt}
+              {apiOrder?.createdAt
+                ? new Date(apiOrder.createdAt).toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : ""}
             </Typography>
           </Box>
           <Typography
@@ -173,7 +183,7 @@ const OrderDetail = ({ id }) => {
               fontWeight: "bold",
               color: "#2196F3",
             }}>
-            {apiOrder?.totalAmount}
+            PKR {apiOrder?.totalAmount}
           </Typography>
         </Box>
 
