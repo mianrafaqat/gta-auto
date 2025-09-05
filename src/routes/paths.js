@@ -129,14 +129,14 @@ export const paths = {
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
     },
-    shipping: {
-      root: `${ROOTS.DASHBOARD}/shipping`,
-      methods: {
-        list: path(ROOTS.DASHBOARD, "/shipping/methods"),
-        add: path(ROOTS.DASHBOARD, "/shipping/methods/add"),
-      },
-      settings: `${ROOTS.DASHBOARD}/shipping/settings`,
-    },
+    // shipping: {
+    //   root: `${ROOTS.DASHBOARD}/shipping/`,
+    //   methods: {
+    //     list: path(ROOTS.DASHBOARD, "/shipping/methods"),
+    //     add: path(ROOTS.DASHBOARD, "/shipping/methods/add"),
+    //   },
+    //   settings: `${ROOTS.DASHBOARD}/shipping/settings`,
+    // },
 
     user: {
       root: `${ROOTS.DASHBOARD}/user`,

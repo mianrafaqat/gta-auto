@@ -79,6 +79,8 @@ export default function ProductEditView({ productId }) {
         },
         // Convert categories to array if it's a single value
         categories: formData.category ? [formData.category] : [],
+        // Ensure images is an array
+        images: Array.isArray(formData.images) ? formData.images : (formData.images ? [formData.images] : []),
       };
 
       console.log("Formatted update payload:", updateData);

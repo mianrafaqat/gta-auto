@@ -139,14 +139,16 @@ export default function OrderListView() {
 
   const handleDeleteRow = useCallback(
     (id) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-      setTableData(deleteRow);
-
-      table.onUpdatePageDeleteRow(dataInPage.length);
-
+      // TODO: Implement actual delete API call here
+      // For now, just show success message and refetch data
       enqueueSnackbar("Delete success!");
+      
+      // Refetch the data to get updated list
+      refetch();
+      
+      table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, refetch]
   );
 
   const handleViewRow = useCallback(

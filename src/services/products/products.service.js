@@ -83,9 +83,37 @@ class ProductService {
    */
   update = async (id, data) => {
     try {
+      // Format the update data to match the new API structure
+      const formattedData = {
+        ...data,
+        // Ensure images is an array
+        images: Array.isArray(data.images) ? data.images : (data.images ? [data.images] : []),
+        // Ensure categories is an array of IDs
+        categories: Array.isArray(data.categories) ? data.categories : (data.categories ? [data.categories] : []),
+        // Ensure numeric fields are properly formatted
+        price: data.price ? Number(data.price) : undefined,
+        regularPrice: data.regularPrice ? Number(data.regularPrice) : undefined,
+        salePrice: data.salePrice ? Number(data.salePrice) : undefined,
+        stockQuantity: data.stockQuantity ? Number(data.stockQuantity) : undefined,
+        weight: data.weight ? Number(data.weight) : undefined,
+        // Ensure dimensions object is properly formatted
+        dimensions: data.dimensions ? {
+          length: data.dimensions.length ? Number(data.dimensions.length) : undefined,
+          width: data.dimensions.width ? Number(data.dimensions.width) : undefined,
+          height: data.dimensions.height ? Number(data.dimensions.height) : undefined,
+        } : undefined,
+      };
+
+      // Remove undefined values to keep the payload clean
+      Object.keys(formattedData).forEach(key => {
+        if (formattedData[key] === undefined) {
+          delete formattedData[key];
+        }
+      });
+
       const res = await gtaAutosInstance.put(
         API_URLS.products.update(id),
-        data
+        formattedData
       );
       return res.data;
     } catch (ex) {

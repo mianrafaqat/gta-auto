@@ -152,21 +152,21 @@ export function useNavData() {
                   { title: t("list"), path: paths.dashboard.order.list },
                 ],
               },
-              {
-                title: t("shipping"),
-                path: paths.dashboard.shipping.root,
-                icon: <LocalShippingIcon />,
-                children: [
-                  {
-                    title: t("methods"),
-                    path: paths.dashboard.shipping.methods.root,
-                  },
-                  {
-                    title: t("settings"),
-                    path: paths.dashboard.shipping.settings,
-                  },
-                ],
-              },
+              // {
+              //   title: t("shipping"),
+              //   path: paths.dashboard.shipping.root,
+              //   icon: <LocalShippingIcon />,
+              //   children: [
+              //     {
+              //       title: t("methods"),
+              //       path: paths.dashboard.shipping.methods.root,
+              //     },
+              //     {
+              //       title: t("settings"),
+              //       path: paths.dashboard.shipping.settings,
+              //     },
+              //   ],
+              // },
             ],
           },
           // Cars section

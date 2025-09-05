@@ -37,6 +37,7 @@ class OrderService {
       const res = await gtaAutosInstance.get(API_URLS.orders.getAll, {
         params,
       });
+      console.log("✅ [SERVICE] getAll success:", res.status, res.data);
       return res.data;
     } catch (ex) {
       throw ex;
@@ -50,18 +51,14 @@ class OrderService {
    */
   async getMyOrders(params = {}) {
     try {
-      console.log("🔄 [SERVICE] OrdersService.getMyOrders: Starting...");
-      console.log("🔄 [SERVICE] URL:", API_URLS.orders.getMyOrders);
-      console.log("🔄 [SERVICE] Params:", params);
+    
       
       const res = await gtaAutosInstance.get(API_URLS.orders.getMyOrders, {
         params,
       });
       
-      console.log("✅ [SERVICE] getMyOrders success:", res.status, res.data);
       return res.data;
     } catch (ex) {
-      console.log("❌ [SERVICE] getMyOrders error:", ex);
       throw ex;
     }
   }
@@ -73,16 +70,12 @@ class OrderService {
    */
   async getById(id) {
     try {
-      console.log("🔄 [SERVICE] OrdersService.getById: Starting...");
-      console.log("🔄 [SERVICE] Order ID:", id);
-      console.log("🔄 [SERVICE] URL:", API_URLS.orders.getById(id));
+    
       
       const res = await gtaAutosInstance.get(API_URLS.orders.getById(id));
       
-      console.log("✅ [SERVICE] getById success:", res.status, res.data);
       return res.data;
     } catch (ex) {
-      console.log("❌ [SERVICE] getById error:", ex);
       throw ex;
     }
   }

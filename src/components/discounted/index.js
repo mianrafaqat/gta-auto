@@ -168,7 +168,7 @@ const Discounted = () => {
                   <Iconify
                     icon={item.icon}
                     sx={{
-                      fontSize: "60px",
+                      fontSize: "100px",
                       color: "#ffffff",
                       filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
                     }}
@@ -229,9 +229,9 @@ const Discounted = () => {
                   {/* Icon Container with Background Color */}
                   <Box
                     sx={{
-                      width: "120px",
-                      height: "120px",
-                      borderRadius: "50%",
+                      width: "260px",
+                      height: "280px",
+                      borderRadius: "16px",
                       backgroundColor: "#4caf50",
                       display: "flex",
                       alignItems: "center",
@@ -240,8 +240,11 @@ const Discounted = () => {
                     }}>
                     <Iconify
                       icon={item.icon}
+                      // fontSize="100px"
+                      width="90px"
+                      height="90px"
                       sx={{
-                        fontSize: "60px",
+                        fontSize: "100px",
                         color: "#ffffff",
                         filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
                       }}

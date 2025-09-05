@@ -50,19 +50,11 @@ gtaAutosInstance.interceptors.response.use(
     
     Object.assign(response.headers, rateLimitHeaders);
     
-    console.log("✅ [RESPONSE] Success:", response.config.url, response.status);
     return response;
   },
   async (error) => {
-    console.log("❌ [RESPONSE] Error:", error.config?.url, error.response?.status, error.message);
     
-    if (error.response) {
-      console.log("❌ [RESPONSE] Error details:", {
-        status: error.response.status,
-        statusText: error.response.statusText,
-        data: error.response.data
-      });
-    }
+ 
     
     const originalRequest = error.config;
 

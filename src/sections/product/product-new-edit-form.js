@@ -749,6 +749,8 @@ export default function ProductNewEditForm({
             width: Number(data.dimensions?.width) || 0,
             height: Number(data.dimensions?.height) || 0,
           },
+          // Ensure images is an array
+          images: Array.isArray(images) ? images : (images ? [images] : []),
         });
         return;
       }
@@ -804,6 +806,8 @@ export default function ProductNewEditForm({
       // Handle categories - API expects array of category IDs
       if (data.category) {
         body.categories = [data.category];
+      } else if (data.categories && Array.isArray(data.categories)) {
+        body.categories = data.categories;
       }
 
       // Add SKU if provided
@@ -849,6 +853,14 @@ export default function ProductNewEditForm({
           console.log("Adding images to product:", images);
         } else {
           console.warn("Invalid image URLs detected, skipping images");
+        }
+      } else if (data.images && Array.isArray(data.images)) {
+        // Handle images from form data
+        if (validateImageUrls(data.images)) {
+          body.images = data.images;
+          console.log("Adding images from form data:", data.images);
+        } else {
+          console.warn("Invalid image URLs detected in form data, skipping images");
         }
       }
 

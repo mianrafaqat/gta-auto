@@ -102,6 +102,25 @@ PUT /api/products/:id
 ```
 Protected Route
 
+Request Body:
+```json
+{
+  "images": ["https://example.com/new-image.jpg"],
+  "categories": ["64a1b2c3d4e5f6789012345c"],
+  "name": "Updated Product Name",
+  "description": "Updated product description",
+  "price": 99.99,
+  "regularPrice": 129.99,
+  "salePrice": 99.99,
+  "type": "simple",
+  "attributes": [{
+    "name": "Size",
+    "values": ["S", "M", "L"],
+    "isVariationAttribute": true
+  }]
+}
+```
+
 ### Delete Product
 ```http
 DELETE /api/products/:id

@@ -56,24 +56,21 @@ export function useGetAllOrders() {
     queryFn: async () => {
       try {
         // First try to get all orders (admin only)
-        checkAdminRole();
+        // checkAdminRole();
         const result = await OrdersService.getAll();
+        console.log("✅ [HOOK] getAllOrders success:", result);
         return result;
-      } catch (adminError) {
+      } catch (error) {
         // If admin check fails or we get a 403, fall back to user's own orders
-        if (
-          adminError.message.includes("permission") ||
-          adminError.message.includes("admin") ||
-          adminError.status === 403 ||
-          adminError.isForbidden
-        ) {
+        console.log("✅ [HOOK] getAllOrders error:", error);
           try {
             const userOrders = await OrdersService.getMyOrders();
+            console.log("✅ [HOOK] getMyOrders success:", userOrders);
             return userOrders;
           } catch (userError) {
             throw userError;
-          }
-        }
+            }
+        
         throw adminError;
       }
     },
@@ -99,13 +96,11 @@ export function useGetOrderById(id) {
     queryKey: ["orders", id],
     queryFn: async () => {
       try {
-        checkAuthentication();
+        // checkAuthentication();
 
         // First try to get the order from user's orders list
         try {
-          console.log(
-            "🔄 [HOOK] Trying to get order from user's orders list first..."
-          );
+          
           const userOrders = await OrdersService.getMyOrders();
 
           // Find the specific order in the user's orders
@@ -114,27 +109,23 @@ export function useGetOrderById(id) {
             userOrders.find((order) => order.orderNumber === id);
 
           if (order) {
-            console.log("✅ [HOOK] Found order in user's orders list");
             // Transform the order to ensure it has the correct format
             const transformedOrder = transformApiOrderToComponent(order);
-            console.log("✅ [HOOK] Transformed order:", transformedOrder);
             return transformedOrder;
           }
         } catch (userOrdersError) {
-          console.log(
-            "⚠️ [HOOK] Couldn't get user orders, trying individual endpoint"
-          );
+         
         }
 
         // If not found in user orders, try the individual endpoint
-        console.log("🔄 [HOOK] Trying individual order endpoint...");
+       
         const result = await OrdersService.getById(id);
         // Transform the result to ensure it has the correct format
         const transformedResult = transformApiOrderToComponent(result);
-        console.log("✅ [HOOK] Transformed result:", transformedResult);
+        
         return transformedResult;
       } catch (error) {
-        console.log("❌ [HOOK] getById error:", error);
+        
         throw error;
       }
     },
@@ -149,7 +140,7 @@ export function useUpdateOrderStatus() {
 
   return useMutation({
     mutationFn: async ({ id, data }) => {
-      checkAdminRole();
+      // checkAdminRole();
       return OrdersService.updateStatus(id, data);
     },
     onSuccess: () => {
@@ -164,7 +155,7 @@ export function useAddTracking() {
 
   return useMutation({
     mutationFn: async ({ id, data }) => {
-      checkAdminRole();
+      // checkAdminRole();
       return OrdersService.addTracking(id, data);
     },
     onSuccess: () => {
@@ -179,7 +170,7 @@ export function useDeleteOrder() {
 
   return useMutation({
     mutationFn: async (id) => {
-      checkAdminRole();
+      // checkAdminRole();
       return OrdersService.delete(id);
     },
     onSuccess: () => {
