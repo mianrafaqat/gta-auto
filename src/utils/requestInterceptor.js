@@ -23,7 +23,7 @@ gtaAutosInstance.interceptors.request.use((config) => {
   
   if (!rateLimiter.isAllowed(userKey, isAuthenticated)) {
     const error = new Error('Rate limit exceeded. Please try again later.');
-    error.response = { status: 429, data: { error: 'Rate limit exceeded' } };
+    // error.response = { status: 429, data: { error: 'Rate limit exceeded' } };
     return Promise.reject(error);
   }
 
@@ -32,8 +32,7 @@ gtaAutosInstance.interceptors.request.use((config) => {
     const authToken = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (authToken) {
       config.headers.Authorization = `Bearer ${authToken}`;
-      console.log("🔐 [REQUEST] Added token to request:", config.url);
-      console.log("🔐 [REQUEST] Token preview:", authToken.substring(0, 20) + "...");
+   
     }
   }
 
@@ -61,7 +60,7 @@ gtaAutosInstance.interceptors.response.use(
     // Handle rate limiting errors
     if (error?.response?.status === 429) {
       const retryAfter = error.response.headers['retry-after'] || 60;
-      console.warn(`Rate limited. Retry after ${retryAfter} seconds.`);
+      // console.warn(`Rate limited. Retry after ${retryAfter} seconds.`);
       return Promise.reject(error);
     }
 
@@ -70,13 +69,13 @@ gtaAutosInstance.interceptors.response.use(
       // Use the new error handler
       const formattedError = handleApiError(error, {
         onUnauthorized: (error) => {
-          console.warn('Unauthorized request:', error.message);
+          // console.warn('Unauthorized request:', error.message);
         },
         onForbidden: (error) => {
-          console.warn('Forbidden request:', error.message);
+          // console.warn('Forbidden request:', error.message);
         },
         onNotFound: (error) => {
-          console.warn('Resource not found:', error.message);
+          // console.warn('Resource not found:', error.message);
         },
         onServerError: (error) => {
           console.error('Server error:', error.message);

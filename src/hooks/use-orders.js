@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { OrdersService } from "src/services";
 import { ACCESS_TOKEN_KEY, STORAGE_USER_KEY } from "src/utils/constants";
 import { transformApiOrderToComponent } from "src/utils/order-transformer";
+import OrderEmailService from "src/services/orders/orderEmail.service";
 
 // Helper function to check if user is authenticated
 const checkAuthentication = () => {
@@ -13,26 +14,26 @@ const checkAuthentication = () => {
 };
 
 // Helper function to check admin role
-const checkAdminRole = () => {
-  const token = checkAuthentication();
+// const checkAdminRole = () => {
+//   const token = checkAuthentication();
 
-  const userStr = localStorage.getItem(STORAGE_USER_KEY);
-  if (!userStr) {
-    throw new Error("User information not found");
-  }
+//   const userStr = localStorage.getItem(STORAGE_USER_KEY);
+//   if (!userStr) {
+//     throw new Error("User information not found");
+//   }
 
-  try {
-    const userData = JSON.parse(userStr);
-    if (
-      !userData.role ||
-      (userData.role !== "admin" && userData.role !== "superadmin")
-    ) {
-      throw new Error("You do not have permission to access this resource");
-    }
-  } catch (parseError) {
-    throw new Error("Invalid user data");
-  }
-};
+//   try {
+//     const userData = JSON.parse(userStr);
+//     if (
+//       !userData.role ||
+//       (userData.role !== "admin" && userData.role !== "superadmin")
+//     ) {
+//       throw new Error("You do not have permission to access this resource");
+//     }
+//   } catch (parseError) {
+//     throw new Error("Invalid user data");
+//   }
+// };
 
 // Create order
 export function useCreateOrder() {
@@ -58,14 +59,14 @@ export function useGetAllOrders() {
         // First try to get all orders (admin only)
         // checkAdminRole();
         const result = await OrdersService.getAll();
-        console.log("✅ [HOOK] getAllOrders success:", result);
+        // console.log("✅ [HOOK] getAllOrders success:", result);
         return result;
       } catch (error) {
         // If admin check fails or we get a 403, fall back to user's own orders
-        console.log("✅ [HOOK] getAllOrders error:", error);
+        // console.log("✅ [HOOK] getAllOrders error:", error);
           try {
             const userOrders = await OrdersService.getMyOrders();
-            console.log("✅ [HOOK] getMyOrders success:", userOrders);
+            // console.log("✅ [HOOK] getMyOrders success:", userOrders);
             return userOrders;
           } catch (userError) {
             throw userError;
@@ -139,9 +140,27 @@ export function useUpdateOrderStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }) => {
+    mutationFn: async ({ id, data, sendEmail = true }) => {
       // checkAdminRole();
-      return OrdersService.updateStatus(id, data);
+      const result = await OrdersService.updateStatus(id, data);
+      
+      // Send status update email if requested
+      if (sendEmail && result) {
+        try {
+          // Get the updated order data
+          const order = result.order || result;
+          await OrderEmailService.sendOrderStatusUpdateEmail(
+            order, 
+            data.status, 
+            data.note || ''
+          );
+        } catch (emailError) {
+          console.error('Failed to send status update email:', emailError);
+          // Don't throw error - order update was successful
+        }
+      }
+      
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["orders"]);

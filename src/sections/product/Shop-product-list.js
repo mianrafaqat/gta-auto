@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
@@ -9,23 +9,35 @@ import ShopProductCard from "./shop-product-card";
 export default function ShopProductList({
   products,
   loading,
-  itemsPerPage = 8,
+  itemsPerPage = 12,
+  currentPage = 1,
+  totalPages = 1,
+  onPageChange = () => {},
   onAddOrRemoveFav = () => {},
+  serverPagination = false,
   ...other
 }) {
-  const [page, setPage] = useState(1);
-
+  // Handle pagination change
   const handlePageChange = (event, value) => {
-    setPage(value);
+    console.log(`Changing to page ${value}, total pages: ${totalPages || Math.ceil(products.length / itemsPerPage)}`);
+    
+    // Scroll to top of product list
+    window.scrollTo({
+      top: document.querySelector('.product-list-container')?.offsetTop || 0,
+      behavior: 'smooth',
+    });
+    
+    // Call the parent handler with the new page value
+    onPageChange(value);
   };
 
-  // Calculate the index range for the current page
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, products.length);
+  // For client-side pagination (fallback)
+  const startIndex = serverPagination ? 0 : (currentPage - 1) * itemsPerPage;
+  const endIndex = serverPagination ? products.length : Math.min(startIndex + itemsPerPage, products.length);
 
   const renderSkeleton = (
     <>
-      {[...Array(itemsPerPage)].map((_, index) => (
+      {[...Array(itemsPerPage || 10)].map((_, index) => (
         <ProductItemSkeleton key={index} />
       ))}
     </>
@@ -33,7 +45,7 @@ export default function ShopProductList({
 
   const renderList = (
     <>
-      {products.slice(startIndex, endIndex).map((product) => (
+      {(serverPagination ? products : products.slice(startIndex, endIndex)).map((product) => (
         <ShopProductCard
           key={product._id}
           product={product}
@@ -46,6 +58,7 @@ export default function ShopProductList({
   return (
     <>
       <Box
+        className="product-list-container"
         gap={{ xs: 2, md: 3 }}
         display="grid"
         gridTemplateColumns={{
@@ -58,16 +71,29 @@ export default function ShopProductList({
         {loading ? renderSkeleton : renderList}
       </Box>
 
-      {products.length > itemsPerPage && (
-        <Pagination
-          count={Math.ceil(products.length / itemsPerPage)}
-          page={page}
-          onChange={handlePageChange}
-          sx={{
-            mt: 8,
-            justifyContent: "center",
-          }}
-        />
+      {products && products.length > 0 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 5, mb: 5 }}>
+          <Pagination
+            count={serverPagination ? totalPages : Math.ceil(products.length / itemsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            size="large"
+            sx={{
+              '& .MuiPaginationItem-root': {
+                color: '#fff',
+                fontSize: '1.2rem',
+                '&.Mui-selected': {
+                  backgroundColor: '#4caf50',
+                  fontWeight: 'bold',
+                }
+              },
+              '& .MuiPaginationItem-page': {
+                border: '1px solid #4caf50',
+              }
+            }}
+          />
+        </Box>
       )}
     </>
   );
@@ -77,4 +103,9 @@ ShopProductList.propTypes = {
   loading: PropTypes.bool,
   products: PropTypes.array,
   itemsPerPage: PropTypes.number,
+  currentPage: PropTypes.number,
+  totalPages: PropTypes.number,
+  onPageChange: PropTypes.func,
+  onAddOrRemoveFav: PropTypes.func,
+  serverPagination: PropTypes.bool,
 };

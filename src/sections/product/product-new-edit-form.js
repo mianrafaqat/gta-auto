@@ -129,6 +129,16 @@ export default function ProductNewEditForm({
   const [uploadingImages, setUploadingImages] = useState(false);
   const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
 
+  // Helper function to extract category ID
+  const getCategoryId = (category) => {
+    if (!category) return "";
+    if (typeof category === "string") return category;
+    if (typeof category === "object") {
+      return category._id || category.id || "";
+    }
+    return "";
+  };
+
   // Fetch categories on mount
   useEffect(() => {
     setCategoriesLoading(true);
@@ -175,14 +185,7 @@ export default function ProductNewEditForm({
     slug: Yup.string().required("Slug is required"),
     description: Yup.string().required("Description is required"),
     productType: Yup.string().required("Product type is required"),
-    price: Yup.number().when("productType", {
-      is: (val) => val === "simple",
-      then: (schema) =>
-        schema
-          .moreThan(0, "Price should not be $0.00")
-          .required("Price is required"),
-      otherwise: (schema) => schema.nullable(),
-    }),
+   
     regularPrice: Yup.number().when("productType", {
       is: (val) => val === "simple",
       then: (schema) =>
@@ -197,18 +200,8 @@ export default function ProductNewEditForm({
     stockQuantity: Yup.number()
       .min(0, "Stock quantity cannot be negative")
       .nullable(),
-    weight: Yup.number().min(0, "Weight cannot be negative").nullable(),
-    dimensions: Yup.object().shape({
-      length: Yup.number().min(0, "Length cannot be negative").nullable(),
-      width: Yup.number().min(0, "Width cannot be negative").nullable(),
-      height: Yup.number().min(0, "Height cannot be negative").nullable(),
-    }),
-    metaTitle: Yup.string()
-      .max(60, "Meta title should be 60 characters or less")
-      .nullable(),
-    metaDescription: Yup.string()
-      .max(160, "Meta description should be 160 characters or less")
-      .nullable(),
+    
+  
   });
 
   const defaultValues = useMemo(() => {
@@ -244,7 +237,7 @@ export default function ProductNewEditForm({
       price: currentProduct.price || 0,
       regularPrice: currentProduct.regularPrice || 0,
       salePrice: currentProduct.salePrice || 0,
-      category: currentProduct.categories?.[0] || "",
+      category: getCategoryId(currentProduct.categories?.[0]) || "",
       sku: currentProduct.sku || "",
       stockQuantity: currentProduct.stockQuantity || 0,
       weight: currentProduct.weight || 0,
@@ -271,7 +264,7 @@ export default function ProductNewEditForm({
           price: currentProduct.price || 0,
           regularPrice: currentProduct.regularPrice || 0,
           salePrice: currentProduct.salePrice || 0,
-          category: currentProduct.categories?.[0] || "",
+          category: getCategoryId(currentProduct.categories?.[0]) || "",
           sku: currentProduct.sku || "",
           stockQuantity: currentProduct.stockQuantity || 0,
           weight: currentProduct.weight || 0,
@@ -321,7 +314,7 @@ export default function ProductNewEditForm({
         price: currentProduct.price || 0,
         regularPrice: currentProduct.regularPrice || 0,
         salePrice: currentProduct.salePrice || 0,
-        category: currentProduct.categories?.[0] || "",
+        category: getCategoryId(currentProduct.categories?.[0]) || "",
         sku: currentProduct.sku || "",
         stockQuantity: currentProduct.stockQuantity || 0,
         weight: currentProduct.weight || 0,

@@ -183,7 +183,6 @@ export default function GarageView() {
       console.log("error: ", err);
     } finally {
       // setLoading(false);
-      console.log("allCars: ", allCars);
     }
   };
 
@@ -536,7 +535,6 @@ function applyFilter({ inputData, filters, sortBy }) {
   //   });
   // }
 
-  console.log("inputData: ", inputData);
 
   return inputData;
 }

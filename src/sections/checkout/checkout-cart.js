@@ -24,31 +24,9 @@ export default function CheckoutCart() {
   const empty = !items.length;
 
   // Debug logging
-  console.log("CheckoutCart Debug:", {
-    checkout,
-    items,
-    itemsLength: items.length,
-    empty,
-    hasCheckout: !!checkout,
-    checkoutKeys: checkout ? Object.keys(checkout) : [],
-    itemsType: typeof items,
-    itemsIsArray: Array.isArray(items),
-  });
 
-  // Log each item in detail
-  if (items.length > 0) {
-    console.log(
-      "Cart Items Details:",
-      items.map((item, index) => ({
-        index,
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        coverUrl: item.coverUrl,
-      }))
-    );
-  }
+
+
 
   return (
     <Grid container spacing={3}>

@@ -71,11 +71,11 @@ export default function OrderDetailsItems({
     <Card>
       <CardHeader
         title="Details"
-        action={
-          <IconButton>
-            <Iconify icon="solar:pen-bold" />
-          </IconButton>
-        }
+        // action={
+        //   <IconButton>
+        //     <Iconify icon="solar:pen-bold" />
+        //   </IconButton>
+        // }
       />
 
       <Stack

@@ -89,7 +89,7 @@ export function CheckoutProvider({ children }) {
     const restored = getStorage(STORAGE_KEY);
 
     if (restored) {
-      console.log("Checkout state restored from storage:", restored);
+      // console.log("Checkout state restored from storage:", restored);
       onGetCart();
     }
   }, [onGetCart]);
@@ -103,7 +103,7 @@ export function CheckoutProvider({ children }) {
 
   // Debug function to log current checkout state
   const onDebugState = useCallback(() => {
-    console.log("Current checkout state:", state);
+    // console.log("Current checkout state:", state);
     console.log("Storage key:", STORAGE_KEY);
     console.log("Storage value:", getStorage(STORAGE_KEY));
   }, [state]);
@@ -254,7 +254,7 @@ export function CheckoutProvider({ children }) {
   // Clear checkout state completely
   const onClearState = useCallback(() => {
     reset();
-    console.log("Checkout state cleared");
+    //      console.log("Checkout state cleared");
   }, [reset]);
 
   const completed = state.activeStep === PRODUCT_CHECKOUT_STEPS.length;

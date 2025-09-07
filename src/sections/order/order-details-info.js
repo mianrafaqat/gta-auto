@@ -25,11 +25,11 @@ export default function OrderDetailsInfo({
     <>
       <CardHeader
         title="Customer Info"
-        action={
-          <IconButton>
-            <Iconify icon="solar:pen-bold" />
-          </IconButton>
-        }
+        // action={
+        //   <IconButton>
+        //     <Iconify icon="solar:pen-bold" />
+        //   </IconButton>
+        // }
       />
       <Stack direction="row" sx={{ p: 3 }}>
         <Avatar
@@ -50,20 +50,20 @@ export default function OrderDetailsInfo({
             {customer?.email || "No email"}
           </Box>
 
-          <Box>
+          {/* <Box>
             IP Address:
             <Box component="span" sx={{ color: "text.secondary", ml: 0.25 }}>
               {customer.ipAddress}
             </Box>
-          </Box>
+          </Box> */}
 
-          <Button
+          {/* <Button
             size="small"
             color="error"
             startIcon={<Iconify icon="mingcute:add-line" />}
             sx={{ mt: 1 }}>
             Add to Blacklist
-          </Button>
+          </Button> */}
         </Stack>
       </Stack>
     </>
@@ -73,11 +73,11 @@ export default function OrderDetailsInfo({
     <>
       <CardHeader
         title="Delivery"
-        action={
-          <IconButton>
-            <Iconify icon="solar:pen-bold" />
-          </IconButton>
-        }
+        // action={
+        //   <IconButton>
+        //     <Iconify icon="solar:pen-bold" />
+        //   </IconButton>
+        // }
       />
       <Stack spacing={1.5} sx={{ p: 3, typography: "body2" }}>
         <Stack direction="row" alignItems="center">
@@ -114,11 +114,11 @@ export default function OrderDetailsInfo({
     <>
       <CardHeader
         title="Shipping"
-        action={
-          <IconButton>
-            <Iconify icon="solar:pen-bold" />
-          </IconButton>
-        }
+        // action={
+        //   <IconButton>
+        //     <Iconify icon="solar:pen-bold" />
+        //   </IconButton>
+        // }
       />
       <Stack spacing={1.5} sx={{ p: 3, typography: "body2" }}>
         <Stack direction="row">
@@ -146,11 +146,11 @@ export default function OrderDetailsInfo({
     <>
       <CardHeader
         title="Payment"
-        action={
-          <IconButton>
-            <Iconify icon="solar:pen-bold" />
-          </IconButton>
-        }
+        // action={
+        //   <IconButton>
+        //     <Iconify icon="solar:pen-bold" />
+        //   </IconButton>
+        // }
       />
       <Stack
         direction="row"

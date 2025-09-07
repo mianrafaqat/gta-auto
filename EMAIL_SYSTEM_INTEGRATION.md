@@ -111,7 +111,7 @@ try {
 
 ### Order Confirmation Email
 
-- Professional GTA Auto branding
+- Professional Garage Tuned Autos branding
 - Complete order details
 - Order number and date
 - Payment method and total
@@ -182,7 +182,7 @@ EMAIL_PASS=chmgzkkgojpumcky
 
 ### ✅ **Professional Email Templates**
 
-- GTA Auto branding
+- Garage Tuned Autos branding
 - Complete order information
 - Professional styling
 - Mobile-responsive design

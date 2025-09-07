@@ -24,27 +24,20 @@ export default function ProductEditView({ productId }) {
     const fetchProduct = async () => {
       try {
         const data = await productsService.getById(productId);
-        console.log("Fetched product data:", data);
 
         // If data is nested in a 'product' field, extract it
         const productData = data.product || data;
-        console.log("Processed product data:", productData);
 
         // Ensure we have the required fields
         if (!productData.name) {
-          console.error(
-            "Missing required fields in product data:",
-            productData
-          );
+         
           enqueueSnackbar("Product data is incomplete", { variant: "error" });
           return;
         }
 
         setProduct(productData);
-        console.log("Set product state:", productData);
       } catch (error) {
         enqueueSnackbar("Failed to fetch product", { variant: "error" });
-        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -55,8 +48,7 @@ export default function ProductEditView({ productId }) {
 
   const handleUpdate = async (formData) => {
     try {
-      console.log("Updating product with ID:", productId);
-      console.log("Update payload:", formData);
+   
 
       // Ensure we have the product ID
       if (!productId) {
@@ -86,8 +78,6 @@ export default function ProductEditView({ productId }) {
       console.log("Formatted update payload:", updateData);
 
       // Call the update endpoint
-      const response = await productsService.update(productId, updateData);
-      console.log("Update response:", response);
 
       enqueueSnackbar("Product updated successfully", { variant: "success" });
       router.push(paths.dashboard.product.root);

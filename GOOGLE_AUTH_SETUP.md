@@ -1,6 +1,6 @@
 # Google Authentication Setup
 
-This guide will help you set up Google authentication for your GTA Auto application.
+This guide will help you set up Google authentication for your Garage Tuned Autos application.
 
 ## Prerequisites
 
@@ -18,12 +18,12 @@ This guide will help you set up Google authentication for your GTA Auto applicat
 4. Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client IDs"
 5. Configure the OAuth consent screen:
    - User Type: External
-   - App name: GTA Auto
+   - App name: Garage Tuned Autos
    - User support email: your-email@domain.com
    - Developer contact information: your-email@domain.com
 6. Create OAuth 2.0 Client ID:
    - Application type: Web application
-   - Name: GTA Auto Web Client
+   - Name: Garage Tuned Autos Web Client
    - Authorized JavaScript origins: `http://localhost:3032`
    - Authorized redirect URIs: `http://localhost:3032/api/auth/callback/google`
 

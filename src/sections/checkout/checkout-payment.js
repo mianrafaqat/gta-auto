@@ -16,6 +16,7 @@ import CheckoutDelivery from "./checkout-delivery";
 import CheckoutBillingInfo from "./checkout-billing-info";
 import CheckoutPaymentMethods from "./checkout-payment-methods";
 import { useCreateOrder } from "src/hooks/use-orders";
+import { useSendOrderEmails } from "src/hooks/use-email";
 import { useRouter } from "src/routes/hooks";
 import { paths } from "src/routes/paths";
 import OrderSuccess from "./order-success";
@@ -26,22 +27,22 @@ import { useState } from "react";
 const DELIVERY_OPTIONS = [
   {
     id: "689d373f5099e06126e689ca",
-    value: 1800,
+    value: 250,
     label: "Standard Delivery",
     description: "3-5 Business Days",
   },
-  {
-    id: "689d373f5099e06126e689cd",
-    value: 3600,
-    label: "Express Delivery",
-    description: "1-2 Business Days",
-  },
-  {
-    id: "689d373f5099e06126e689d0",
-    value: 7200,
-    label: "Premium Delivery",
-    description: "Same Day (Limited Areas)",
-  },
+  // {
+  //   id: "689d373f5099e06126e689cd",
+  //   value: 3600,
+  //   label: "Express Delivery",
+  //   description: "1-2 Business Days",
+  // },
+  // {
+  //   id: "689d373f5099e06126e689d0",
+  //   value: 7200,
+  //   label: "Premium Delivery",
+  //   description: "Same Day (Limited Areas)",
+  // },
 ];
 
 const PAYMENT_OPTIONS = [
@@ -73,6 +74,7 @@ export default function CheckoutPayment() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const createOrderMutation = useCreateOrder();
+  const sendOrderEmailsMutation = useSendOrderEmails();
   const [order, setOrder] = useState(null);
   const PaymentSchema = Yup.object().shape({
     payment: Yup.string().required("Payment is required"),
@@ -167,10 +169,48 @@ export default function CheckoutPayment() {
         order.order._id ||
         "Unknown";
 
-      enqueueSnackbar(
-        `Order #${orderNumber} created successfully! Check your email for confirmation.`,
-        { variant: "success" }
-      );
+      // Prepare customer data for email
+      const customer = {
+        name: checkout.billing?.firstName && checkout.billing?.lastName 
+          ? `${checkout.billing.firstName} ${checkout.billing.lastName}`
+          : checkout.billing?.name || "Customer",
+        email: checkout.billing?.email || order.shippingAddress?.email
+      };
+
+      // Send emails after successful order creation
+      try {
+        const emailResults = await sendOrderEmailsMutation.mutateAsync({
+          order: order.order || order,
+          customer
+        });
+
+        // Check if emails were sent successfully
+        const hasErrors = emailResults.errors && emailResults.errors.length > 0;
+        const hasSuccess = emailResults.confirmation || emailResults.adminNotification;
+
+        if (hasSuccess && !hasErrors) {
+          enqueueSnackbar(
+            `Order #${orderNumber} created successfully! Confirmation and admin notification emails sent.`,
+            { variant: "success" }
+          );
+        } else if (hasSuccess && hasErrors) {
+          enqueueSnackbar(
+            `Order #${orderNumber} created successfully! Some emails may not have been sent.`,
+            { variant: "warning" }
+          );
+        } else {
+          enqueueSnackbar(
+            `Order #${orderNumber} created successfully! Email notifications failed.`,
+            { variant: "warning" }
+          );
+        }
+      } catch (emailError) {
+        console.error("Email sending failed:", emailError);
+        enqueueSnackbar(
+          `Order #${orderNumber} created successfully! Check your email for confirmation.`,
+          { variant: "success" }
+        );
+      }
 
       try {
         // Clear checkout state completely to empty the cart

@@ -114,8 +114,7 @@ export default function ProductItem({
   const { updateUserData = () => {} } = useAuthContext() || {};
 
   // Debug: Log the entire auth context
-  console.log("Auth context user:", useAuthContext()?.user);
-  console.log("Extracted user object:", user);
+
 
   // React Query mutation for favorite functionality
   const addOrRemoveFavoriteMutation = useAddOrRemoveFavoriteCar();
@@ -124,19 +123,17 @@ export default function ProductItem({
     try {
       // Get the actual user data from the nested structure
       const actualUser = user?.user || user;
-      console.log("Current user object:", actualUser); // Debug: Log the entire user object
-      console.log("User ID being sent:", actualUser?._id); // Debug: Log the specific user ID
-
+     
       const data = {
         userID: actualUser?._id, // Fixed: Access user ID from the correct user object
         carID: product?._id, // Changed from carID to match backend expectation
       };
 
-      console.log("Sending favorite data:", data); // Debug log
+      // console.log("Sending favorite data:", data); // Debug log
 
       const result = await addOrRemoveFavoriteMutation.mutateAsync(data);
 
-      console.log("Favorite result:", result); // Debug log
+      // console.log("Favorite result:", result); // Debug log
 
       if (result?.status === 200) {
         // Update user data with the new favorite list
@@ -156,7 +153,7 @@ export default function ProductItem({
       name: productName,
       coverUrl: firstImage,
       available: productAvailable,
-      price: productPrice,
+      price: productSalePrice,
       colors: colors && colors.length > 0 ? [colors[0]] : [],
       size: sizes && sizes.length > 0 ? sizes[0] : "Default",
       quantity: 1,
@@ -168,7 +165,7 @@ export default function ProductItem({
     };
     try {
       onAddToCart(newProduct);
-      console.log("Added to cart:", newProduct);
+      // console.log("Added to cart:", newProduct);
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
@@ -199,7 +196,7 @@ export default function ProductItem({
       // Set the active step to 0 (cart step)
       // onGotoStep(0);
 
-      // console.log("Buy now:", newProduct);
+        // console.log("Buy now:", newProduct);
       // Small delay to ensure cart state is updated, then navigate to checkout
       handleAddCart();
       setTimeout(() => {

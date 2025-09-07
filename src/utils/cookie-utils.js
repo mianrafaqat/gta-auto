@@ -36,7 +36,6 @@ export const getLocalStorageItem = (key, defaultValue = null) => {
  */
 export const setLocalStorageItem = (key, value) => {
   if (!isLocalStorageAvailable()) {
-    console.warn('localStorage is not available');
     return false;
   }
 

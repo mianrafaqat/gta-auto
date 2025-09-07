@@ -112,20 +112,48 @@ export default function ProductShopView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [reset, setReset] = useState(false);
 
-  // State for products and loading
+  // State for products, pagination, and loading
   const [allCars, setAllCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+    totalItems: 0
+  });
 
-  // Fetch products using ProductService
-  const fetchProducts = useCallback(async () => {
+  // Fetch products using ProductService with pagination
+  const fetchProducts = useCallback(async (page = 1) => {
     try {
       setLoading(true);
-      const response = await ProductService.getAll();
-
+      const response = await ProductService.getAll({
+        page,
+        limit: pagination.limit,
+        ...filters // Pass filters to API
+      });
+      
+      console.log('API response:', response);
+      
       if (response && response.products) {
         setAllCars(response.products);
+        
+        // Handle the new pagination format: {total: 70, page: 1, pages: 7}
+        if (response.pagination) {
+          setPagination({
+            page: response.pagination.page || 1,
+            limit: pagination.limit,
+            totalPages: response.pagination.pages || 1,
+            totalItems: response.pagination.total || response.products.length
+          });
+        }
       } else if (response && response.data) {
         setAllCars(response.data);
+        // Fallback pagination if structure is different
+        setPagination(prev => ({
+          ...prev,
+          page: page,
+          totalItems: response.data.length
+        }));
       } else {
         setAllCars([]);
       }
@@ -135,18 +163,20 @@ export default function ProductShopView() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filters, pagination.limit]);
 
+  // Handle initial load and filter changes
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(pagination.page);
   }, [fetchProducts]);
+  
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    console.log('Changing to page:', newPage, 'Current pagination state:', pagination);
+    fetchProducts(newPage);
+  };
 
-  // Debug log to see the mapped data
-  useEffect(() => {
-    if (allCars.length > 0) {
-      console.log("Products from API in shop view:", allCars);
-    }
-  }, [allCars]);
+
 
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
@@ -160,11 +190,10 @@ export default function ProductShopView() {
     setReset((prev) => !prev);
   }, []);
 
-  const dataFiltered = applyFilter({
-    inputData: allCars,
-    filters,
-    sortBy,
-  });
+  // Apply client-side filters if needed
+  // Note: When using server pagination, we should avoid re-filtering the data
+  // that's already filtered by the server
+  const dataFiltered = allCars;
 
   const canReset = () => {
     setFilters({ ...defaultFilters });
@@ -450,11 +479,11 @@ export default function ProductShopView() {
                 loading={loading}
                 itemsPerPage={4}
               /> */}
-              <LatestProductsSection />
+              {/* <LatestProductsSection /> */}
             </Box>
-            <Box width="100%">
+            {/* <Box width="100%">
               <Discounted />
-            </Box>
+            </Box> */}
 
             {/* Render NotFound component if no results */}
             <Grid item xs={12}>
@@ -481,9 +510,14 @@ export default function ProductShopView() {
                 <ShopProductList
                   products={dataFiltered}
                   loading={loading}
+                  currentPage={pagination.page}
+                  totalPages={pagination.totalPages}
+                  onPageChange={handlePageChange}
                   onAddOrRemoveFav={() => {
-                    fetchProducts();
+                    fetchProducts(pagination.page);
                   }}
+                  serverPagination={true}
+                  sx={{ mb: 5 }}
                 />
               </Grid>
             </Grid>
@@ -531,19 +565,14 @@ function applyFilter({ inputData, filters, sortBy }) {
   }
 
   // Price range filter
-  console.log("Price range filter - min:", min, "max:", max); // Debug log
   inputData = inputData.filter((product) => {
     const productPrice = Number(product.price) || 0;
     const isInRange = productPrice >= min && productPrice <= max;
-    console.log(
-      `Product: ${product.name}, Price: ${productPrice}, In Range: ${isInRange}`
-    ); // Debug log
-    return isInRange;
+      return isInRange;
   });
 
   // Price range option filter (radio button selections)
   if (priceRangeOption && priceRangeOption !== "") {
-    console.log("Price range option filter:", priceRangeOption); // Debug log
     inputData = inputData.filter((product) => {
       const productPrice = Number(product.price) || 0;
 
@@ -572,9 +601,7 @@ function applyFilter({ inputData, filters, sortBy }) {
           isInRange = true;
           break;
       }
-      console.log(
-        `Product: ${product.name}, Price: ${productPrice}, Range Option: ${priceRangeOption}, In Range: ${isInRange}`
-      ); // Debug log
+
       return isInRange;
     });
   }
@@ -637,7 +664,6 @@ function applyFilter({ inputData, filters, sortBy }) {
   // Filter by status (published products only)
   inputData = inputData.filter((p) => p.status === "published");
 
-  console.log("Filtered products: ", inputData);
 
   return inputData;
 }

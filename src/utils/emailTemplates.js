@@ -72,7 +72,7 @@ export const EmailTemplates = {
     <body>
       <div class="container">
         <div class="header">
-          <h1 style="color: #333; margin: 0;">GTA Auto</h1>
+          <h1 style="color: #333; margin: 0;">Garage Tuned Autos</h1>
           <h2 style="color: #4CAF50; margin: 10px 0;">Order Confirmation</h2>
         </div>
         
@@ -144,13 +144,13 @@ export const EmailTemplates = {
           
           <p>We'll send you another email when your order ships with tracking information.</p>
           
-          <a href="https://gta-auto.vercel.app/dashboard/orders" class="button">View Order</a>
+          <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/dashboard/orders" class="button">View Order</a>
         </div>
         
         <div class="footer">
           <p>This is an automated message, please do not reply.</p>
-          <p>&copy; ${new Date().getFullYear()} GTA Auto. All rights reserved.</p>
-          <p>For support, contact us at <a href="mailto:support@gta-auto.com">support@gta-auto.com</a></p>
+          <p>&copy; ${new Date().getFullYear()} Garage Tuned Autos. All rights reserved.</p>
+          <p>For support, contact us at <a href="mailto:support@garagetunedautos.com">support@garagetunedautos.com</a></p>
         </div>
       </div>
     </body>
@@ -237,7 +237,7 @@ export const EmailTemplates = {
     <body>
       <div class="container">
         <div class="header">
-          <h1 style="margin: 0;">GTA Auto - Admin</h1>
+          <h1 style="margin: 0;">Garage Tuned Autos - Admin</h1>
           <h2 style="margin: 10px 0;">New Order Received</h2>
         </div>
         
@@ -320,12 +320,12 @@ export const EmailTemplates = {
             <div>PKR ${order.finalTotal?.toLocaleString() || "0"}</div>
           </div>
           
-          <a href="https://gta-auto.vercel.app/dashboard/orders/${order._id}" class="button">View Order in Dashboard</a>
+          <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/dashboard/orders/${order._id}" class="button">View Order in Dashboard</a>
         </div>
         
         <div class="footer">
           <p>This is an automated message for admin notification.</p>
-          <p>&copy; ${new Date().getFullYear()} GTA Auto. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Garage Tuned Autos. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -392,7 +392,7 @@ export const EmailTemplates = {
     <body>
       <div class="container">
         <div class="header">
-          <h1 style="color: #333; margin: 0;">GTA Auto</h1>
+          <h1 style="color: #333; margin: 0;">Garage Tuned Autos</h1>
           <h2 style="color: #4CAF50; margin: 10px 0;">Order Status Update</h2>
         </div>
         
@@ -408,13 +408,13 @@ export const EmailTemplates = {
           
           <p>We'll continue to keep you updated on your order progress.</p>
           
-          <a href="https://gta-auto.vercel.app/dashboard/orders" class="button">View Order</a>
+          <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/dashboard/orders" class="button">View Order</a>
         </div>
         
         <div class="footer">
           <p>This is an automated message, please do not reply.</p>
-          <p>&copy; ${new Date().getFullYear()} GTA Auto. All rights reserved.</p>
-          <p>For support, contact us at <a href="mailto:support@gta-auto.com">support@gta-auto.com</a></p>
+          <p>&copy; ${new Date().getFullYear()} Garage Tuned Autos. All rights reserved.</p>
+          <p>For support, contact us at <a href="mailto:support@garagetunedautos.com">support@garagetunedautos.com</a></p>
         </div>
       </div>
     </body>

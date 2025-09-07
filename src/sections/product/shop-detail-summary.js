@@ -342,12 +342,13 @@ export default function ShopDetailSummary({
   };
 
   const handleAddCart = async () => {
+console.log(product.salePrice, "product.salePrice");
     const newProduct = {
       id: productId,
       name: productName,
       coverUrl: firstImage,
       available: stockQuantity,
-      price: salePrice,
+      price: product.salePrice,
       colors: colors && colors.length > 0 ? [colors[0]] : [],
       size: sizes && sizes.length > 0 ? sizes[0] : "Default",
       quantity: values.quantity, // Use the selected quantity from the form
@@ -465,9 +466,9 @@ export default function ShopDetailSummary({
           <Typography variant="body1" color="#fff">
             {ratingCount} star rating
           </Typography>
-          <Typography variant="body1" color="#828282">
+          {/* <Typography variant="body1" color="#828282">
             (21,671 User feedback)
-          </Typography>
+          </Typography> */}
         </Stack>
         <Stack
           direction="row"

@@ -611,7 +611,7 @@ const ShippingPolicy = () => {
           variant="h6"
           gutterBottom
           sx={{ fontWeight: "bold", color: "primary.main" }}>
-          Fast & Reliable Shipping from GTA Auto! 🚚📦
+          Fast & Reliable Shipping from Garage Tuned Autos! 🚚📦
         </Typography>
         <Typography variant="body1" color="text.secondary">
           We're committed to getting your automotive parts and accessories to

@@ -68,6 +68,7 @@ export default function OrderDetailsToolbar({
           direction="row"
           alignItems="center"
           justifyContent="flex-end">
+            {user?.user?.role === 'admin' && (
           <Button
             color="inherit"
             variant="outlined"
@@ -76,15 +77,16 @@ export default function OrderDetailsToolbar({
             sx={{ textTransform: "capitalize" }}>
             {status}
           </Button>
+          )}
 
-          <Button
+          {/* <Button
             color="inherit"
             variant="outlined"
             startIcon={<Iconify icon="solar:printer-minimalistic-bold" />}>
             Print
-          </Button>
+          </Button> */}
 
-          {user?.isAdmin && (
+          {user?.user?.role === 'admin' && (
             <Button
               color="inherit"
               variant="contained"

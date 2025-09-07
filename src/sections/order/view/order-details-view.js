@@ -21,6 +21,7 @@ import { useGetOrderById } from "src/hooks/use-orders";
 import { transformApiOrderToComponent } from "src/utils/order-transformer";
 import { useSnackbar } from "src/components/snackbar";
 import { OrdersService } from "src/services";
+import OrderEmailService from "src/services/orders/orderEmail.service";
 
 import OrderDetailsInfo from "../order-details-info";
 import OrderDetailsItems from "../order-details-item";
@@ -52,7 +53,6 @@ export default function OrderDetailsView({ id }) {
     setIsStatusDialogOpen(true);
   }, []);
 
-  console.log(currentOrder, "currentOrder");
 
   // Handle actual status update
   const handleStatusUpdate = useCallback(
@@ -65,6 +65,8 @@ export default function OrderDetailsView({ id }) {
           note,
           userId: user?.id, // Add user ID to request
         });
+        console.log(currentOrder, "currentOrder");
+        await OrderEmailService.sendOrderStatusUpdateEmail(currentOrder, newStatus, note);
 
         // Update local state
         setStatus(newStatus);

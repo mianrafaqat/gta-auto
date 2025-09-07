@@ -121,7 +121,7 @@ export default function ComingSoonView() {
           textAlign: "center",
         }}>
         <Typography variant="caption">
-          © Copyrights GTA Auto | All Rights Reserved | 2024
+          © Copyrights Garage Tuned Autos | All Rights Reserved | 2024
         </Typography>
       </Box>
     </>

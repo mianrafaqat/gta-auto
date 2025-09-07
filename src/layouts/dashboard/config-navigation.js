@@ -92,15 +92,18 @@ export function useNavData() {
       // MANAGEMENT
       {
         subheader: t("management"),
+       
         items: [
           // ECOMMERCE
           {
             title: t("ecommerce"),
+            roles: [ ROLES.ADMIN],
             path: paths.dashboard.general.ecommerce,
             icon: ICONS.ecommerce,
             children: [
               {
                 title: t("products"),
+                roles: [ ROLES.ADMIN],
                 path: paths.dashboard.product.root,
                 icon: ICONS.product,
                 children: [
@@ -110,6 +113,7 @@ export function useNavData() {
               },
               {
                 title: t("Categories"),
+                roles: [ ROLES.ADMIN],
                 path: paths.dashboard.category.root,
                 icon: <CategoryIcon />,
                 children: [
@@ -119,28 +123,31 @@ export function useNavData() {
               },
               {
                 title: t("Attribute"),
+                roles: [ ROLES.ADMIN],
                 path: paths.dashboard.attribute.root,
                 icon: <AttributionIcon />,
                 children: [
-                  { title: t("list"), path: paths.dashboard.attribute.list },
+                  { title: t("list"), path: paths.dashboard.attribute.list, roles: [ROLES.ADMIN] },
                   { title: t("create"), path: paths.dashboard.attribute.add },
                 ],
               },
               {
                 title: t("Tax"),
+                roles: [ ROLES.ADMIN],
                 path: paths.dashboard.tax.root,
                 icon: <ReceiptIcon />,
                 children: [
-                  { title: t("list"), path: paths.dashboard.tax.list },
+                  { title: t("list"), path: paths.dashboard.tax.list, roles: [ROLES.ADMIN] },
                   { title: t("create"), path: paths.dashboard.tax.add },
                 ],
               },
               {
                 title: t("Coupons"),
+                roles: [ ROLES.ADMIN],
                 path: paths.dashboard.coupon.root,
                 icon: <DiscountIcon />,
                 children: [
-                  { title: t("list"), path: paths.dashboard.coupon.list },
+                  { title: t("list"), path: paths.dashboard.coupon.list, roles: [ROLES.ADMIN] },
                   { title: t("create"), path: paths.dashboard.coupon.add },
                 ],
               },
@@ -149,9 +156,11 @@ export function useNavData() {
                 path: paths.dashboard.order.root,
                 icon: ICONS.order,
                 children: [
-                  { title: t("list"), path: paths.dashboard.order.list },
+                  { title: t("list"), path: paths.dashboard.order.list, roles: [ROLES.ADMIN] },
+                  // { title: t("My Orders"), path: paths.dashboard.order.new, roles: [ROLES.USER] },
                 ],
               },
+
               // {
               //   title: t("shipping"),
               //   path: paths.dashboard.shipping.root,
@@ -233,14 +242,15 @@ export function useNavData() {
           },
 
           {
+            roles: [ROLES.ADMIN],
             title: "Blog",
             path: paths.dashboard.post.root,
             icon: ICONS.blog,
             children: [
-              { title: "List", path: paths.dashboard.post.root },
-              { title: "Details", path: paths.dashboard.post.demo.details },
-              { title: "Create", path: paths.dashboard.post.new },
-              { title: "Edit", path: paths.dashboard.post.demo.edit },
+              { title: "List", path: paths.dashboard.post.root, roles: [ROLES.ADMIN] },
+              { title: "Details", path: paths.dashboard.post.demo.details, roles: [ROLES.ADMIN] },
+              { title: "Create", path: paths.dashboard.post.new, roles: [ROLES.ADMIN] },
+              { title: "Edit", path: paths.dashboard.post.demo.edit, roles: [ROLES.ADMIN]  },
             ],
           },
           // Forum section
@@ -257,6 +267,16 @@ export function useNavData() {
               },
             ],
           },
+          {
+            // roles: [ROLES.ADMIN],
+            title: "Orders",
+            path: paths.dashboard.order.root,
+            icon: ICONS.order,
+            children: [
+              // { title: "List", path: paths.dashboard.order.list, },
+              { title: "My Orders", path: paths.dashboard.order.my, },
+            ],
+          }
         ],
       },
     ],

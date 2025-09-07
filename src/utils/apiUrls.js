@@ -68,7 +68,20 @@ export const API_URLS = {
     getAll: "/api/orders/all", // GET: Get All Orders (Admin only) - Updated to match API docs
     updateStatus: (id) => `/api/orders/${id}/status`, // PUT: Update Order Status (Admin only)
     addTracking: (id) => `/api/orders/${id}/tracking`, // POST: Add Tracking Information (Admin only)
+
+    // Email Routes
+    sendConfirmationEmail: "/api/orders/send-confirmation-email", // POST: Send order confirmation email
+    sendAdminNotification: "/api/orders/send-admin-notification", // POST: Send admin notification email
+    sendStatusUpdateEmail: "/api/orders/send-status-update-email", // POST: Send order status update email
+    resendConfirmation: (id) => `/api/orders/${id}/resend-confirmation`, // POST: Resend order confirmation email
   },
+
+  email: {
+    // Email Management Routes
+    sendWelcome: "/api/email/send-welcome", // POST: Send welcome email
+    verifyConfig: "/api/email/verify-config", // GET: Verify email configuration
+  },
+
   cars: {
     // Public Routes
     getAll: "/api/car/getAll",

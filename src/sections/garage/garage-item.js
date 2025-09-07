@@ -56,8 +56,7 @@ export default function GarageItem({
   const { updateUserData = () => {} } = useAuthContext() || {};
 
   // Debug: Log the entire auth context
-  console.log("Auth context user:", useAuthContext()?.user);
-  console.log("Extracted user object:", user);
+
 
   // React Query mutation for favorite functionality
   const addOrRemoveFavoriteMutation = useAddOrRemoveFavoriteCar();
