@@ -34,13 +34,13 @@ const TrackOrder = () => {
     // Here you would typically make an API call to track the order
     console.log("Tracking order:", { orderId, billingEmail });
     enqueueSnackbar("Order tracking request submitted", { variant: "success" });
-    router.push(paths.orderDetail(orderId));
+    router.push(paths.dashboard.orderDetail(orderId));
   };
 
   return (
     <Box
       sx={{
-        backgroundColor: "#000000",
+        backgroundColor: "transparent",
         display: "flex",
         py: 8,
       }}>
@@ -81,7 +81,7 @@ const TrackOrder = () => {
                 variant="body2"
                 sx={{
                   mb: 1,
-                  color: "#FFFFFF",
+                  color: "#4CAF50",
                   fontWeight: 500,
                 }}>
                 Order ID
@@ -96,10 +96,10 @@ const TrackOrder = () => {
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: "#FFFFFF",
                     "& fieldset": {
-                      borderColor: "transparent",
+                      borderColor: "#4CAF50",
                     },
                     "&:hover fieldset": {
-                      borderColor: "transparent",
+                      borderColor: "#4CAF50",
                     },
                     "&.Mui-focused fieldset": {
                       borderColor: "#4CAF50",
@@ -132,7 +132,7 @@ const TrackOrder = () => {
                 <Typography
                   variant="caption"
                   sx={{
-                    color: "#FFFFFF",
+                    color: "#4CAF50",
                     opacity: 0.8,
                     fontSize: "12px",
                   }}>
@@ -162,10 +162,10 @@ const TrackOrder = () => {
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: "#FFFFFF",
                     "& fieldset": {
-                      borderColor: "transparent",
+                      borderColor: "#4CAF50",
                     },
                     "&:hover fieldset": {
-                      borderColor: "transparent",
+                      borderColor: "#4CAF50",
                     },
                     "&.Mui-focused fieldset": {
                       borderColor: "#4CAF50",
@@ -208,7 +208,7 @@ const TrackOrder = () => {
             />
           </Button>
         </Box>
-        <HeroBottom />
+        {/* <HeroBottom bgColor="transparent" /> */}
       </Container>
     </Box>
   );

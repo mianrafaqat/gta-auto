@@ -9,7 +9,7 @@ import Comics from "./comics";
 
 const Chemicals = () => {
   return (
-    <Box sx={{ mt: "50px" }}>
+    <Box>
       <HeroBanner />
       <ExpertCar />
       <Washing />
