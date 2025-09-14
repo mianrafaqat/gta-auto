@@ -126,7 +126,7 @@ const OrderDetail = ({ id }) => {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#000000",
+        backgroundColor: "#transparent",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

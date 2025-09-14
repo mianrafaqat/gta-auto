@@ -22,6 +22,7 @@ import { bgBlur } from "src/theme/css";
 // import Logo from 'src/components/logo';
 import Label from "src/components/label";
 import Iconify from "src/components/iconify";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import NavMobile from "./nav/mobile";
 import NavDesktop from "./nav/desktop";
@@ -65,7 +66,7 @@ export default function Header() {
   return (
     <>
       <AppBar sx={{}}>
-        <SubHeader />
+        {/* <SubHeader /> */}
         <Toolbar
           disableGutters
           sx={{
@@ -165,11 +166,41 @@ export default function Header() {
                 />
               )}
               {mdUp && Object.keys(user).length > 0 && (
-                <MoveTo
-                  title="Favourite"
-                  path={paths.user.favourites}
-                  sx={{ color: "white", borderColor: "black" }}
-                />
+                <IconButton
+                  component={Link}
+                  href={paths.user.favourites}
+                  sx={{
+                    color: "white",
+                    border: "1px solid #000",
+                    borderRadius: "8px",
+                    "&:hover": {
+                      color: "primary.main",
+                      border: "1px solid #000",
+                    },
+                  }}>
+                  <FavoriteIcon />
+                </IconButton>
+              )}
+
+              {mdUp && (
+                <Link
+                  href="tel:+92363330222"
+                  style={{ textDecoration: "none" }}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    p="10px"
+                    sx={{
+                      cursor: "pointer",
+                      border: "1px solid #000",
+                      borderRadius: "8px",
+                    }}>
+                    <Iconify
+                      icon="eva:phone-fill"
+                      sx={{ color: "#fff", width: 20, height: 20 }}
+                    />
+                  </Stack>
+                </Link>
               )}
 
               {!mdUp && <NavMobile data={navConfig} />}

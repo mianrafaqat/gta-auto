@@ -4,7 +4,7 @@ import { Box, Container, Typography, useTheme } from "@mui/material";
 import React from "react";
 import Iconify from "src/components/iconify";
 
-const HeroBottom = () => {
+const HeroBottom = ({ bgColor = "#000" }) => {
   const services = [
     {
       icon: "/assets/fastDelevery.svg",
@@ -29,7 +29,7 @@ const HeroBottom = () => {
   ];
 
   return (
-    <Box sx={{ bgcolor: "black", py: { xs: 2, sm: 3, md: 4 } }}>
+    <Box sx={{ bgcolor: bgColor, py: { xs: 2, sm: 3, md: 4 } }}>
       <Container maxWidth="lg">
         <Box
           sx={{
