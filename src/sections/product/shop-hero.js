@@ -40,7 +40,7 @@ const ShopHero = () => {
                 lineHeight: 1.1,
                 mb: 1,
               }}>
-              Import your Dream Car
+              Premier Destination for Car Accessories
             </Typography>
 
             <Typography
@@ -51,7 +51,7 @@ const ShopHero = () => {
                 fontWeight: 700,
                 lineHeight: 1.1,
               }}>
-              hassle free!
+              in Pakistan
             </Typography>
           </Box>
 
