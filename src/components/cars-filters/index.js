@@ -68,29 +68,30 @@ export default function CarsFiltersPage() {
   return (
     <>
       <Hero />
-      <HeroBottom />
+      {/* <HeroBottom /> */}
 
       {/* Car Body Types Section */}
       {/* <CarBodyTypesSection  /> */}
 
       {/* Services Section */}
-      <ServicesSection />
 
       {/* Latest Products Section */}
       <LatestProductsSection />
 
-      <CategoryOffers />
+      {/* <CategoryOffers /> */}
 
       {/* Featured Cars Section */}
       <FeaturedCarsSection />
 
-      <Discounted />
+      {/* <Discounted /> */}
 
       {/* Browse Brands Section */}
 
       {/* <BrowseBrandsSection /> */}
 
       {/* Browse Videos Section */}
+
+      <ServicesSection />
       <BrowseVideosSection />
 
       <CTA />

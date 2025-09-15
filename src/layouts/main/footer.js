@@ -272,7 +272,7 @@ export default function Footer() {
               }}
             />
 
-            <Stack spacing={1}>
+            {/* <Stack spacing={1}>
               {QUICK_LINKS.map((link) => (
                 <Link
                   key={link.name}
@@ -289,7 +289,7 @@ export default function Footer() {
                   {link.name}
                 </Link>
               ))}
-            </Stack>
+            </Stack> */}
           </Grid>
 
           {/* Customer Services Column */}

@@ -119,64 +119,70 @@ export default function ProductShopView() {
     page: 1,
     limit: 10,
     totalPages: 1,
-    totalItems: 0
+    totalItems: 0,
   });
 
   // Fetch products using ProductService with pagination
-  const fetchProducts = useCallback(async (page = 1) => {
-    try {
-      setLoading(true);
-      const response = await ProductService.getAll({
-        page,
-        limit: pagination.limit,
-        ...filters // Pass filters to API
-      });
-      
-      console.log('API response:', response);
-      
-      if (response && response.products) {
-        setAllCars(response.products);
-        
-        // Handle the new pagination format: {total: 70, page: 1, pages: 7}
-        if (response.pagination) {
-          setPagination({
-            page: response.pagination.page || 1,
-            limit: pagination.limit,
-            totalPages: response.pagination.pages || 1,
-            totalItems: response.pagination.total || response.products.length
-          });
+  const fetchProducts = useCallback(
+    async (page = 1) => {
+      try {
+        setLoading(true);
+        const response = await ProductService.getAll({
+          page,
+          limit: pagination.limit,
+          ...filters, // Pass filters to API
+        });
+
+        console.log("API response:", response);
+
+        if (response && response.products) {
+          setAllCars(response.products);
+
+          // Handle the new pagination format: {total: 70, page: 1, pages: 7}
+          if (response.pagination) {
+            setPagination({
+              page: response.pagination.page || 1,
+              limit: pagination.limit,
+              totalPages: response.pagination.pages || 1,
+              totalItems: response.pagination.total || response.products.length,
+            });
+          }
+        } else if (response && response.data) {
+          setAllCars(response.data);
+          // Fallback pagination if structure is different
+          setPagination((prev) => ({
+            ...prev,
+            page: page,
+            totalItems: response.data.length,
+          }));
+        } else {
+          setAllCars([]);
         }
-      } else if (response && response.data) {
-        setAllCars(response.data);
-        // Fallback pagination if structure is different
-        setPagination(prev => ({
-          ...prev,
-          page: page,
-          totalItems: response.data.length
-        }));
-      } else {
+      } catch (error) {
+        console.error("Error fetching products:", error);
         setAllCars([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setAllCars([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [filters, pagination.limit]);
+    },
+    [filters, pagination.limit]
+  );
 
   // Handle initial load and filter changes
   useEffect(() => {
     fetchProducts(pagination.page);
   }, [fetchProducts]);
-  
+
   // Handle page change
   const handlePageChange = (newPage) => {
-    console.log('Changing to page:', newPage, 'Current pagination state:', pagination);
+    console.log(
+      "Changing to page:",
+      newPage,
+      "Current pagination state:",
+      pagination
+    );
     fetchProducts(newPage);
   };
-
-
 
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
@@ -259,7 +265,7 @@ export default function ProductShopView() {
   return (
     <Box sx={{ display: "" }}>
       <ShopHero />
-      <HeroBottom />
+      {/* <HeroBottom /> */}
 
       <Drawer
         open={toggle}
@@ -568,7 +574,7 @@ function applyFilter({ inputData, filters, sortBy }) {
   inputData = inputData.filter((product) => {
     const productPrice = Number(product.price) || 0;
     const isInRange = productPrice >= min && productPrice <= max;
-      return isInRange;
+    return isInRange;
   });
 
   // Price range option filter (radio button selections)
@@ -663,7 +669,6 @@ function applyFilter({ inputData, filters, sortBy }) {
 
   // Filter by status (published products only)
   inputData = inputData.filter((p) => p.status === "published");
-
 
   return inputData;
 }
