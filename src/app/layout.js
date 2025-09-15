@@ -1,10 +1,10 @@
 'use client';
 
 /* eslint-disable perfectionist/sort-imports */
-import 'src/global.css';
+import '../global.css';
 
 // i18n
-import 'src/locales/i18n';
+import '../locales/i18n';
 
 // ----------------------------------------------------------------------
 
