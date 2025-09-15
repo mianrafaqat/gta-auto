@@ -221,9 +221,9 @@ export default function ProductShopDetailsView({ id }) {
         </Grid>
       </Grid>
 
-      <Box sx={{ mt: 5 }}>
+      {/* <Box sx={{ mt: 5 }}>
         <HeroBottom />
-      </Box>
+      </Box> */}
 
       <Box
         gap={5}
