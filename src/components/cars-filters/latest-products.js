@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Typography,
@@ -8,61 +8,191 @@ import {
   Card,
   Stack,
   Button,
+  IconButton,
 } from "@mui/material";
 import ProductItem from "src/sections/product/product-item";
 import { ProductItemSkeleton } from "src/sections/product/product-skeleton";
 import ProductService from "src/services/products/products.service";
 import { WhatsApp } from "@mui/icons-material";
 import ProductList from "src/sections/product/product-list";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Iconify from "src/components/iconify";
 
-// Custom ProductList for Latest Products with horizontal slide view
+// Custom ProductList for Latest Products with slider view
 const LatestProductsList = ({ products, loading }) => {
-  const renderSkeleton = (
-    <>
-      {[...Array(4)].map((_, index) => (
-        <Box
-          key={index}
-          sx={{
-            flexShrink: 0,
-            width: { xs: "280px", sm: "320px" },
-            scrollSnapAlign: "start",
-          }}>
-          <ProductItemSkeleton />
-        </Box>
-      ))}
-    </>
-  );
+  const sliderRef = useRef(null);
 
-  const renderList = (
-    <>
-      {products.map((product) => (
+  // Calculate slidesToShow based on available products
+  const getSlidesToShow = (defaultValue) => {
+    return Math.min(defaultValue, products.length);
+  };
+
+  // Check if we have only one product
+  const isSingleProduct = products.length === 1;
+
+  const sliderSettings = {
+    dots: false,
+    infinite: products.length > 4,
+    speed: 500,
+    slidesToShow: getSlidesToShow(4),
+    slidesToScroll: 1,
+    autoplay: false,
+    arrows: false, // Disable default arrows
+    responsive: [
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: getSlidesToShow(3),
+          slidesToScroll: 1,
+          arrows: false,
+        },
+      },
+      {
+        breakpoint: 900,
+        settings: {
+          slidesToShow: getSlidesToShow(2),
+          slidesToScroll: 1,
+          arrows: false,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: getSlidesToShow(1),
+          slidesToScroll: 1,
+          arrows: false,
+        },
+      },
+    ],
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
         <Box
-          key={product._id}
           sx={{
-            flexShrink: 0,
-            width: { xs: "280px", sm: "320px" },
-            scrollSnapAlign: "start",
+            display: "flex",
+            flexDirection: "row",
+            gap: 3,
+            overflowX: "auto",
+            overflowY: "hidden",
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": { display: "none" },
+            pb: 2,
           }}>
-          <ProductItem product={product} />
+          {[...Array(4)].map((_, index) => (
+            <Box
+              key={index}
+              sx={{
+                flexShrink: 0,
+                width: { xs: "280px", sm: "320px" },
+                scrollSnapAlign: "start",
+              }}>
+              <ProductItemSkeleton />
+            </Box>
+          ))}
         </Box>
-      ))}
-    </>
-  );
+      </Box>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "200px",
+        }}>
+        <Typography variant="h6" color="grey.400">
+          No chemical products found
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        gap: 3,
-        overflowX: "auto",
-        overflowY: "hidden",
-        scrollSnapType: "x mandatory",
-        scrollbarWidth: "none",
-        "&::-webkit-scrollbar": { display: "none" },
-        pb: 2,
-      }}>
-      {loading ? renderSkeleton : renderList}
+    <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
+      {isSingleProduct ? (
+        // Single product display - center it
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <Box sx={{ maxWidth: "350px", width: "100%" }}>
+            <ProductItem product={products[0]} />
+          </Box>
+        </Box>
+      ) : (
+        // Multiple products - use slider
+        <Slider
+          key={`slider-${products.length}`}
+          ref={sliderRef}
+          {...sliderSettings}
+          style={{ width: "100%", display: "flex !important" }}>
+          {products.map((product) => (
+            <Box key={product._id} sx={{ px: 1, display: "flex !important" }}>
+              <ProductItem product={product} />
+            </Box>
+          ))}
+        </Slider>
+      )}
+
+      {/* Custom Navigation Buttons - Bottom Left */}
+      {!isSingleProduct && (
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: -20,
+            left: 0,
+            display: "flex",
+            gap: 1,
+            zIndex: 10,
+          }}>
+          <IconButton
+            onClick={() => sliderRef.current?.slickPrev()}
+            sx={{
+              width: 40,
+              height: 40,
+              bgcolor: "white",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              "&:hover": {
+                bgcolor: "#f5f5f5",
+                borderColor: "#999",
+              },
+            }}>
+            <Iconify
+              icon="eva:arrow-back-fill"
+              sx={{ fontSize: 18, color: "black" }}
+            />
+          </IconButton>
+          <IconButton
+            onClick={() => sliderRef.current?.slickNext()}
+            sx={{
+              width: 40,
+              height: 40,
+              bgcolor: "white",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              "&:hover": {
+                bgcolor: "#f5f5f5",
+                borderColor: "#999",
+              },
+            }}>
+            <Iconify
+              icon="eva:arrow-forward-fill"
+              sx={{ fontSize: 18, color: "black" }}
+            />
+          </IconButton>
+        </Box>
+      )}
     </Box>
   );
 };
@@ -72,6 +202,8 @@ export default function LatestProductsSection({
 }) {
   const [latestProducts, setLatestProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [firstTenProducts, setFirstTenProducts] = useState([]);
+  const [loadingFirstTen, setLoadingFirstTen] = useState(true);
 
   useEffect(() => {
     const fetchLatestProducts = async () => {
@@ -84,11 +216,23 @@ export default function LatestProductsSection({
         } else if (response && response.data) {
           products = response.data;
         }
+        // Filter products that have a category with name "Chemicals"
+        let filtered = products.filter(
+          (product) =>
+            Array.isArray(product.categories) &&
+            product.categories.some(
+              (cat) =>
+                cat &&
+                (cat.name?.toLowerCase() === "chemicals" ||
+                  cat.slug?.toLowerCase() === "chemicals")
+            )
+        );
+
         // Sort by createdAt descending if available, else just take first 4
-        if (products && products.length > 0) {
+        if (filtered && filtered.length > 0) {
           // If products have a createdAt field, sort by it
-          if (products[0]?.createdAt) {
-            products = products
+          if (filtered[0]?.createdAt) {
+            filtered = filtered
               .slice()
               .sort(
                 (a, b) =>
@@ -96,7 +240,7 @@ export default function LatestProductsSection({
                   new Date(a.createdAt).getTime()
               );
           }
-          setLatestProducts(products.slice(0, 4));
+          setLatestProducts(filtered);
         } else {
           setLatestProducts([]);
         }
@@ -108,6 +252,44 @@ export default function LatestProductsSection({
     };
 
     fetchLatestProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchFirstTenProducts = async () => {
+      setLoadingFirstTen(true);
+      try {
+        const response = await ProductService.getAll();
+        let products = [];
+        if (response && response.products) {
+          products = response.products;
+        } else if (response && response.data) {
+          products = response.data;
+        }
+        // Filter out products that have a category with name "Chemicals"
+        const nonChemicalProducts = products.filter(
+          (product) =>
+            !Array.isArray(product.categories) ||
+            !product.categories.some(
+              (cat) =>
+                cat &&
+                (cat.name?.toLowerCase() === "chemicals" ||
+                  cat.slug?.toLowerCase() === "chemicals")
+            )
+        );
+        // Take first 10 non-chemical products
+        if (nonChemicalProducts && nonChemicalProducts.length > 0) {
+          setFirstTenProducts(nonChemicalProducts.slice(0, 10));
+        } else {
+          setFirstTenProducts([]);
+        }
+      } catch (error) {
+        setFirstTenProducts([]);
+      } finally {
+        setLoadingFirstTen(false);
+      }
+    };
+
+    fetchFirstTenProducts();
   }, []);
 
   return (
@@ -236,6 +418,29 @@ export default function LatestProductsSection({
 
         <Grid item xs={12}>
           <LatestProductsList products={latestProducts} loading={loading} />
+        </Grid>
+      </Box>
+
+      {/* Shop Section */}
+      <Box sx={{ position: "relative", zIndex: 2, mt: 8 }}>
+        {/* Shop Section Title */}
+        <Typography
+          variant="h3"
+          sx={{
+            color: "#4caf50",
+            fontWeight: "bold",
+            fontSize: { xs: "24px", md: "32px" },
+            mb: 6,
+            textTransform: "uppercase",
+          }}>
+          Shop
+        </Typography>
+
+        <Grid item xs={12}>
+          <LatestProductsList
+            products={firstTenProducts}
+            loading={loadingFirstTen}
+          />
         </Grid>
       </Box>
     </Container>
