@@ -57,7 +57,6 @@ export default function GarageItem({
 
   // Debug: Log the entire auth context
 
-
   // React Query mutation for favorite functionality
   const addOrRemoveFavoriteMutation = useAddOrRemoveFavoriteCar();
 
@@ -300,7 +299,7 @@ export default function GarageItem({
               <Box
                 component="h6"
                 sx={{
-                  maxWidth: "150px",
+                  maxWidth: "250px",
                   margin: 0,
                   display: "block",
                   fontWeight: 500,
@@ -313,7 +312,7 @@ export default function GarageItem({
                   ...(onHome
                     ? {
                         fontSize: "14px",
-                        maxWidth: { md: "230px", xs: "330px", sm: "330px" },
+                        maxWidth: { md: "430px", xs: "330px", sm: "330px" },
                       }
                     : {}),
                 }}

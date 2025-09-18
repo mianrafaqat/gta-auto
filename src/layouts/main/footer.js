@@ -252,7 +252,7 @@ export default function Footer() {
 
           {/* Quick Links Column */}
           <Grid item xs={12} md={4}>
-            <Typography
+            {/* <Typography
               variant="h6"
               sx={{
                 color: "#4caf50",
@@ -270,7 +270,7 @@ export default function Footer() {
                 backgroundColor: "#4caf50",
                 mb: 3,
               }}
-            />
+            /> */}
 
             {/* <Stack spacing={1}>
               {QUICK_LINKS.map((link) => (
