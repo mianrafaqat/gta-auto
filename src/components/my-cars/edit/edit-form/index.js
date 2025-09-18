@@ -39,8 +39,22 @@ export default function EditCarForm() {
 
   const { user = {} } = useAuthContext()?.user || {};
   
-  console.log('EditCarForm - carId:', carId);
-  console.log('EditCarForm - user:', user);
+  // Determine available category options based on user role
+  const categoryOptions = useMemo(() => {
+    const isAdmin = user?.user?.role === 'admin' || user?.user?.role === 'superadmin';
+    const baseOptions = [
+      { value: 'sale', label: 'Sale' },
+      { value: 'hire', label: 'Hire' }
+    ];
+    
+    if (isAdmin) {
+      baseOptions.push({ value: 'rent', label: 'Rent' });
+    }
+    
+    return baseOptions;
+  }, [user?.user?.role]);
+  
+
 
   const { enqueueSnackbar } = useSnackbar();
   const [files, setFiles] = useState([]);
@@ -211,10 +225,7 @@ export default function EditCarForm() {
               defaultValue="hire"
               label="Category *"
               spacing={4}
-              options={[
-                { value: 'sale', label: 'Sale' },
-                { value: 'hire', label: 'Hire' },
-              ]}
+              options={categoryOptions}
             />
           </Grid>
           <Grid item xs={12} md={4}>

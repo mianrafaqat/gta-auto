@@ -209,7 +209,7 @@ export function useNavData() {
               {
                 title: "Add",
                 path: paths.dashboard.cars.my.add,
-                roles: [ROLES.USER],
+                roles: [ROLES.USER, ROLES.ADMIN],
               },
               {
                 title: "List",

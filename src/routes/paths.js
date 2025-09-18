@@ -247,6 +247,8 @@ export const paths = {
     admin: {
       cars: {
         list: `${ROOTS.DASHBOARD}/admin/cars/list`,
+        add: `${ROOTS.DASHBOARD}/admin/cars/add`,
+        edit: (id) => `${ROOTS.DASHBOARD}/admin/cars/edit?carId=${id}`,
       },
       users: {
         list: `${ROOTS.DASHBOARD}/admin/users/list`,

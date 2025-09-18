@@ -556,6 +556,7 @@ export default function ProductDetailsSummary({
             padding: ".75rem 1rem",
           }}>
           <CheckAvailabiltyForm
+            category={product.category}
             make={product.carDetails?.make}
             year={product.carDetails?.yearOfManufacture}
             carUserEmail={product?.owner?.email}

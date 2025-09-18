@@ -47,7 +47,11 @@ const validateImages = (value) => {
 };
 
 const schema = yup.object().shape({
-  price: yup.string().required("Price is required."),
+  price: yup.string().when('category', {
+    is: 'rent',
+    then: (schema) => schema.optional(),
+    otherwise: (schema) => schema.required("Price is required."),
+  }),
   description: yup.string().required("Description is required."),
   image: yup
     .array()
@@ -75,14 +79,59 @@ const schema = yup.object().shape({
     driveTrain: yup.string(),
     doorPlan: yup.string(),
     tel: yup.string().required("Phone is required."),
+    
+    // Rental-specific fields
+    dailyRate: yup.string().when('$category', {
+      is: 'rent',
+      then: (schema) => schema.required("Daily rate is required for rental."),
+      otherwise: (schema) => schema.optional(),
+    }),
+    weeklyRate: yup.string().when('$category', {
+      is: 'rent',
+      then: (schema) => schema.optional(),
+      otherwise: (schema) => schema.optional(),
+    }),
+    monthlyRate: yup.string().when('$category', {
+      is: 'rent',
+      then: (schema) => schema.optional(),
+      otherwise: (schema) => schema.optional(),
+    }),
+    securityDeposit: yup.string().when('$category', {
+      is: 'rent',
+      then: (schema) => schema.required("Security deposit is required for rental."),
+      otherwise: (schema) => schema.optional(),
+    }),
+    minimumRentalPeriod: yup.string().when('$category', {
+      is: 'rent',
+      then: (schema) => schema.required("Minimum rental period is required."),
+      otherwise: (schema) => schema.optional(),
+    }),
+    availableFromDate: yup.string().when('$category', {
+      is: 'rent',
+      then: (schema) => schema.required("Available from date is required."),
+      otherwise: (schema) => schema.optional(),
+    }),
+    availableToDate: yup.string().when('$category', {
+      is: 'rent',
+      then: (schema) => schema.optional(),
+      otherwise: (schema) => schema.optional(),
+    }),
   }),
   title: yup.string().required("Title is required."),
   category: yup.string().required("Category is required."),
   link: yup.string(),
   location: yup.string().required("Location is required."),
   postalCode: yup.string().required("Postal Code is required."),
-  saleAs: yup.string().required('Sale As is required').nullable(),
-  companyOrSellerName: yup.string().required('Required').nullable()
+  saleAs: yup.string().when('category', {
+    is: 'sale',
+    then: (schema) => schema.required('Sale As is required').nullable(),
+    otherwise: (schema) => schema.optional().nullable(),
+  }),
+  companyOrSellerName: yup.string().when('category', {
+    is: 'sale',
+    then: (schema) => schema.required('Required').nullable(),
+    otherwise: (schema) => schema.optional().nullable(),
+  })
 });
 
 export default function AddNewCarForm({ isEditMode = false }) {
@@ -120,6 +169,14 @@ export default function AddNewCarForm({ isEditMode = false }) {
       doorPlan: '',
       variant: '',
       tel: '',
+      // Rental fields
+      dailyRate: '',
+      weeklyRate: '',
+      monthlyRate: '',
+      securityDeposit: '',
+      minimumRentalPeriod: '',
+      availableFromDate: '',
+      availableToDate: '',
     },
     category: 'sale',
     title: '',

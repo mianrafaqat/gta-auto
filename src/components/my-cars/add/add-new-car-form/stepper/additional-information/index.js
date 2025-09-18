@@ -6,7 +6,6 @@ import { RHFEditor, RHFSelect, RHFTextField } from "src/components/hook-form";
 
 const OTHER_FIELDS = [
   { name: "title", label: "Title *" },
-  { name: "price", label: "Price *" },
   { name: "carDetails.mileage", label: "Mileage *" },
   { name: "link", label: "Youtube Link" },
   { name: "location", label: "Location *" },
@@ -37,7 +36,7 @@ export default function AdditionalInformation({
   }, [isEditMode]);
 
   useEffect(() => {
-    if (!currentValues.saleAs && currentValues.category == "sale") {
+    if (!currentValues.saleAs && currentValues.category === "sale") {
       setError("saleAs", { type: "error", custom: "Sale As is required" });
     } else {
       clearErrors("saleAs");
@@ -47,7 +46,7 @@ export default function AdditionalInformation({
   useEffect(() => {
     if (
       !currentValues.companyOrSellerName &&
-      currentValues.category == "sale"
+      currentValues.category === "sale"
     ) {
       setError("companyOrSellerName", { type: "error", custom: "Required" });
     } else {
@@ -90,6 +89,40 @@ export default function AdditionalInformation({
             />
           </Grid>
         ))}
+        
+        {/* Price field - only show for sale category */}
+        {currentValues.category === "sale" && (
+          <Grid item xs={12} md={4}>
+            <RHFTextField
+              name="price"
+              label="Price *"
+              InputLabelProps={{
+                shrink: true,
+                sx: {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                  background: '#fff',
+                  px: 1,
+                }
+              }}
+              error={!!errors.price}
+              helperText={errors.price?.message || ' '}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: 'white',
+                  '&.Mui-error': {
+                    borderColor: 'error.main',
+                  },
+                  '& fieldset': {
+                    borderWidth: '1px !important',
+                  },
+                },
+                '& .MuiFormLabel-root': {
+                  marginTop: 0,
+                }
+              }}
+            />
+          </Grid>
+        )}
         {currentValues.category === "sale" && (
           <Grid item xs={12} md={4}>
             <RHFSelect
@@ -134,16 +167,19 @@ export default function AdditionalInformation({
           sx={{ ml: 1 }}
           onClick={async () => {
             // Validate all required fields
-            const fieldsToValidate = [
+            let fieldsToValidate = [
               'title',
-              'price',
               'carDetails.mileage',
               'location',
               'postalCode',
               'carDetails.tel',
-              'description',
-              ...(currentValues.category === 'sale' ? ['saleAs', 'companyOrSellerName'] : [])
+              'description'
             ];
+            
+            // Add price validation only for sale category
+            if (currentValues.category === 'sale') {
+              fieldsToValidate.push('price', 'saleAs', 'companyOrSellerName');
+            }
             
             const isValid = await trigger(fieldsToValidate);
             
