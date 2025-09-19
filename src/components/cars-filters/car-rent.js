@@ -4,68 +4,45 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  Tabs,
-  Tab,
   IconButton,
 } from "@mui/material";
 import React, { useState, useRef, useEffect } from "react";
 import { useGetAllCars } from "src/hooks/use-cars";
-import { useRouter } from "next/navigation";
-import { WhatsApp } from "@mui/icons-material";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
-import { paths } from "src/routes/paths";
 import GarageItem from "src/sections/garage/garage-item";
 
-export default function LastestEightCars() {
+export default function CarRentSection() {
   const { data: allCarsData, isLoading, error } = useGetAllCars();
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState(0);
   const sliderRef = useRef(null);
 
-  // Filter cars based on selected tab
-  const getFilteredCars = () => {
-    const baseCars =
-      allCarsData?.data?.filter((c) => c?.status !== "Paused") || [];
+  // Filter cars with rent category
+  const getRentCars = () => {
+    const baseCars = allCarsData?.data || [];
 
-    // First filter by sale category
-    const saleCars = baseCars.filter(
-      (car) => car.category?.toLowerCase() === "sale"
+    // Filter by rent category (include all statuses for rental cars)
+    const rentCars = baseCars.filter(
+      (car) => car.category?.toLowerCase() === "rent"
     );
 
-    switch (activeTab) {
-      case 0: // In Stock
-        return saleCars.filter(
-          (car) => car.status === "Active" || car.status === "In Stock"
-        );
-      case 1: // New Cars
-        return saleCars.filter((car) => car.carDetails?.carType === "new");
-      case 2: // Used Cars
-        return saleCars.filter((car) => car.carDetails?.carType === "used");
-      default:
-        return saleCars;
-    }
+    return rentCars;
   };
 
-  const filteredCars = getFilteredCars();
+  const rentCars = getRentCars();
 
   // Calculate slidesToShow based on available cars
   const getSlidesToShow = (defaultValue) => {
-    return Math.min(defaultValue, filteredCars.length);
+    return Math.min(defaultValue, rentCars.length);
   };
 
   // Check if we have only one car
-  const isSingleCar = filteredCars.length === 1;
+  const isSingleCar = rentCars.length === 1;
 
   const sliderSettings = {
     dots: false,
-    infinite: filteredCars.length > 4,
+    infinite: rentCars.length > 4,
     speed: 500,
     slidesToShow: getSlidesToShow(4),
     slidesToScroll: 1,
@@ -98,17 +75,6 @@ export default function LastestEightCars() {
       },
     ],
   };
-
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-  };
-
-  // Reset slider when tab changes
-  useEffect(() => {
-    if (sliderRef.current) {
-      sliderRef.current.slickGoTo(0);
-    }
-  }, [activeTab, filteredCars.length]);
 
   if (isLoading) {
     return (
@@ -157,49 +123,12 @@ export default function LastestEightCars() {
               mb: 1,
               width: "max-content",
             }}>
-            Explore All Vehicles
+            Car Rental
           </Typography>
-        </Box>
-        {/* Tabs Navigation */}
-        <Box
-          sx={{ mb: 4, borderBottom: "1px solid #fff", position: "relative" }}>
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            sx={{
-              "& .MuiTabs-indicator": {
-                bgcolor: "#4CAF50",
-                height: 4,
-                borderRadius: "1px",
-                zIndex: 10,
-                bottom: "-1px",
-              },
-              "& .MuiTab-root": {
-                color: "rgba(255,255,255,0.7)",
-                fontSize: "1rem",
-                fontWeight: 500,
-                textTransform: "none",
-                minWidth: 100,
-                padding: "16px 24px",
-                position: "relative",
-                "&.Mui-selected": {
-                  color: "#4CAF50",
-                  fontWeight: 600,
-                },
-                "&:hover": {
-                  color: "#4CAF50",
-                  backgroundColor: "rgba(76, 175, 80, 0.05)",
-                },
-              },
-            }}>
-            <Tab label="All" />
-            <Tab label="New Cars" />
-            <Tab label="Used Cars" />
-          </Tabs>
         </Box>
 
         {/* Cars Slider */}
-        {filteredCars.length > 0 ? (
+        {rentCars.length > 0 ? (
           <Box sx={{ mb: 6, position: "relative", width: "100%", pb: 8 }}>
             {isSingleCar ? (
               // Single car display - center it without full width
@@ -210,17 +139,17 @@ export default function LastestEightCars() {
                   alignItems: "center",
                 }}>
                 <Box sx={{ maxWidth: "350px", width: "100%" }}>
-                  <GarageItem product={filteredCars[0]} />
+                  <GarageItem product={rentCars[0]} />
                 </Box>
               </Box>
             ) : (
               // Multiple cars - use slider
               <Slider
-                key={`slider-${activeTab}-${filteredCars.length}`}
+                key={`slider-${rentCars.length}`}
                 ref={sliderRef}
                 {...sliderSettings}
                 style={{ width: "100%", display: "flex !important" }}>
-                {filteredCars.slice(0, 10).map((car) => (
+                {rentCars.slice(0, 10).map((car) => (
                   <Box key={car._id} sx={{ px: 1, display: "flex !important" }}>
                     <GarageItem product={car} />
                   </Box>
@@ -287,12 +216,10 @@ export default function LastestEightCars() {
               minHeight: "200px",
             }}>
             <Typography variant="h6" color="grey.400">
-              No cars found
+              No rental cars found
             </Typography>
           </Box>
         )}
-
-        {/* WhatsApp Import Section */}
       </Container>
     </Box>
   );
