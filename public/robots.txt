@@ -1,3 +1,69 @@
 # https://www.robotstxt.org/robotstxt.html
+# Robots.txt for Garage Tuned Autos
+
 User-agent: *
-Disallow:
+
+# Allow crawling of main content
+Allow: /
+Allow: /product/
+Allow: /cars/
+Allow: /blog/
+Allow: /post/
+Allow: /about-us
+Allow: /contact-us
+Allow: /faqs
+Allow: /support
+Allow: /services
+Allow: /pricing
+
+# Allow policy pages (good for SEO and user trust)
+Allow: /privacy-policy
+Allow: /terms-and-conditions
+Allow: /shipping-policy
+Allow: /cancellation-refund-policy
+
+# Disallow admin and dashboard areas
+Disallow: /dashboard/
+Disallow: /admin/
+
+# Disallow authentication pages
+Disallow: /auth/
+Disallow: /auth-demo/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+
+# Disallow user-specific pages
+Disallow: /favourites
+Disallow: /track-order
+Disallow: /payment
+
+# Disallow error pages
+Disallow: /error/
+Disallow: /404
+Disallow: /403
+Disallow: /500
+
+# Disallow maintenance and development pages
+Disallow: /maintenance
+Disallow: /under-construction
+Disallow: /coming-soon
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Disallow checkout process (sensitive user data)
+Disallow: /product/checkout/
+
+# Allow static assets
+Allow: /assets/
+Allow: /images/
+Allow: /favicon/
+Allow: /_next/static/
+
+# Crawl-delay (optional - be respectful to server resources)
+Crawl-delay: 1
+
+# Sitemap location (add this when you create a sitemap)
+# Sitemap: https://garagetuneautos.com/sitemap.xml

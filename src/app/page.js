@@ -7,7 +7,12 @@ import { Box } from "@mui/material";
 
 export const metadata = {
   title: "garage tuned autos: Home",
+  description: "Your premier destination for automotive products and services",
+  verification: {
+    google: "wF3dRaXdpca-BY45EI1zQ3un-YW-lLF4nlMmkextMYU",
+  },
 };
+
 
 export default function OverviewAppPage() {
   return (

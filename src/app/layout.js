@@ -56,8 +56,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={primaryFont.className}>
       <head>
-      <meta name="google-site-verification" content="wF3dRaXdpca-BY45EI1zQ3un-YW-lLF4nlMmkextMYU" />
-      </head>
+      <meta name="google-site-verification" content="wF3dRaXdpca-BY45EI1zQ3un-YW-lLF4nlMmkextMYU" />      </head>
       <body>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
