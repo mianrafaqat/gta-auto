@@ -198,7 +198,7 @@ export default function LastestEightCars() {
           </Tabs>
         </Box>
 
-        {/* Cars Slider */}
+        {/* Cars Display */}
         {filteredCars.length > 0 ? (
           <Box sx={{ mb: 6, position: "relative", width: "100%", pb: 8 }}>
             {isSingleCar ? (
@@ -214,28 +214,53 @@ export default function LastestEightCars() {
                 </Box>
               </Box>
             ) : (
-              // Multiple cars - use slider
-              <Slider
-                key={`slider-${activeTab}-${filteredCars.length}`}
-                ref={sliderRef}
-                {...sliderSettings}
-                style={{ width: "100%", display: "flex !important" }}>
-                {filteredCars.slice(0, 10).map((car) => (
-                  <Box key={car._id} sx={{ px: 1, display: "flex !important" }}>
-                    <GarageItem product={car} />
-                  </Box>
-                ))}
-              </Slider>
+              <>
+                {/* Mobile View - Vertical Stack */}
+                <Box
+                  sx={{
+                    display: { xs: "block", md: "none" },
+                  }}>
+                  <Stack spacing={3} alignItems="center">
+                    {filteredCars.slice(0, 10).map((car) => (
+                      <Box
+                        key={car._id}
+                        sx={{ width: "100%", maxWidth: "400px" }}>
+                        <GarageItem product={car} />
+                      </Box>
+                    ))}
+                  </Stack>
+                </Box>
+
+                {/* Desktop View - Slider */}
+                <Box
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                  }}>
+                  <Slider
+                    key={`slider-${activeTab}-${filteredCars.length}`}
+                    ref={sliderRef}
+                    {...sliderSettings}
+                    style={{ width: "100%", display: "flex !important" }}>
+                    {filteredCars.slice(0, 10).map((car) => (
+                      <Box
+                        key={car._id}
+                        sx={{ px: 1, display: "flex !important" }}>
+                        <GarageItem product={car} />
+                      </Box>
+                    ))}
+                  </Slider>
+                </Box>
+              </>
             )}
 
-            {/* Custom Navigation Buttons - Bottom Left */}
+            {/* Custom Navigation Buttons - Bottom Left (Desktop Only) */}
             {!isSingleCar && (
               <Box
                 sx={{
                   position: "absolute",
                   bottom: -20,
                   left: 0,
-                  display: "flex",
+                  display: { xs: "none", md: "flex" },
                   gap: 1,
                   zIndex: 10,
                 }}>

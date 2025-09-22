@@ -130,28 +130,53 @@ const LatestProductsList = ({ products, loading }) => {
           </Box>
         </Box>
       ) : (
-        // Multiple products - use slider
-        <Slider
-          key={`slider-${products.length}`}
-          ref={sliderRef}
-          {...sliderSettings}
-          style={{ width: "100%", display: "flex !important" }}>
-          {products.map((product) => (
-            <Box key={product._id} sx={{ px: 1, display: "flex !important" }}>
-              <ProductItem product={product} />
-            </Box>
-          ))}
-        </Slider>
+        <>
+          {/* Mobile View - Vertical Stack */}
+          <Box
+            sx={{
+              display: { xs: "block", md: "none" },
+            }}>
+            <Stack spacing={3} alignItems="center">
+              {products.map((product) => (
+                <Box
+                  key={product._id}
+                  sx={{ width: "100%", maxWidth: "400px" }}>
+                  <ProductItem product={product} />
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Desktop View - Slider */}
+          <Box
+            sx={{
+              display: { xs: "none", md: "block" },
+            }}>
+            <Slider
+              key={`slider-${products.length}`}
+              ref={sliderRef}
+              {...sliderSettings}
+              style={{ width: "100%", display: "flex !important" }}>
+              {products.map((product) => (
+                <Box
+                  key={product._id}
+                  sx={{ px: 1, display: "flex !important" }}>
+                  <ProductItem product={product} />
+                </Box>
+              ))}
+            </Slider>
+          </Box>
+        </>
       )}
 
-      {/* Custom Navigation Buttons - Bottom Left */}
+      {/* Custom Navigation Buttons - Bottom Left (Desktop Only) */}
       {!isSingleProduct && (
         <Box
           sx={{
             position: "absolute",
             bottom: -20,
             left: 0,
-            display: "flex",
+            display: { xs: "none", md: "flex" },
             gap: 1,
             zIndex: 10,
           }}>
