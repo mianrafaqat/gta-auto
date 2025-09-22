@@ -99,6 +99,22 @@ export default function ShopDetailSummary({
   // Get the product stock status, handling both old and new API structures
   const productStockStatus = stockStatus || inventoryType || "in stock";
 
+  // Helper function to get the appropriate price for display
+  const getDisplayPrice = () => {
+    if (productCategory?.toLowerCase() === "rent") {
+      return carDetails?.dailyRate || "N/A";
+    }
+    return price || "N/A";
+  };
+
+  // Helper function to get the price label
+  const getPriceLabel = () => {
+    if (productCategory?.toLowerCase() === "rent") {
+      return "PKR/day";
+    }
+    return "PKR";
+  };
+
   // Get the product status, handling both old and new API structures
   const productStatusValue = productStatus || "published";
 
@@ -342,7 +358,7 @@ export default function ShopDetailSummary({
   };
 
   const handleAddCart = async () => {
-console.log(product.salePrice, "product.salePrice");
+    console.log(product.salePrice, "product.salePrice");
     const newProduct = {
       id: productId,
       name: productName,
@@ -641,9 +657,9 @@ console.log(product.salePrice, "product.salePrice");
   const shareData = {
     title: productName,
     url: typeof window !== "undefined" ? window.location.href : "",
-    description: `Check out this amazing ${productName} - Starting at PKR ${Number(price)?.toLocaleString()}`,
+    description: `Check out this amazing ${productName} - Starting at ${getPriceLabel()} ${Number(getDisplayPrice())?.toLocaleString()}`,
     image: firstImage,
-    price: `PKR ${Number(price)?.toLocaleString()}`,
+    price: `${getPriceLabel()} ${Number(getDisplayPrice())?.toLocaleString()}`,
     hashtags: [productCategory, "Cars", "Automotive", "CityAutos"],
   };
 

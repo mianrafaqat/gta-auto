@@ -235,6 +235,22 @@ export default function GarageItem({
     );
   };
 
+  // Helper function to get the appropriate price for display
+  const getDisplayPrice = () => {
+    if (category?.toLowerCase() === "rent") {
+      return carDetails?.dailyRate || "N/A";
+    }
+    return price || "N/A";
+  };
+
+  // Helper function to get the price label
+  const getPriceLabel = () => {
+    if (category?.toLowerCase() === "rent") {
+      return "PKR";
+    }
+    return "PKR";
+  };
+
   const renderContent = (
     <Stack gap={2.5} sx={{ px: "31px", py: "16px", bgcolor: "#fff" }}>
       {onHome ? (
@@ -271,7 +287,8 @@ export default function GarageItem({
               alignItems="center"
               justifyContent="space-between"
               color="white">
-              PKR{Number(price)?.toLocaleString()}
+              {getPriceLabel()}
+              {Number(getDisplayPrice())?.toLocaleString()} / day
               <Typography variant="caption" color="white">
                 {" "}
                 |
@@ -373,6 +390,55 @@ export default function GarageItem({
                 </Typography>
               </Box>
             </Stack>
+
+            {/* Rental-specific information */}
+            {category?.toLowerCase() === "rent" && (
+              <Stack direction="row" spacing={2} sx={{ mb: 0.5 }}>
+                {carDetails?.minimumRentalPeriod && (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <Iconify
+                      icon="eva:clock-outline"
+                      sx={{ fontSize: 16, color: "grey.500" }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "grey.600", fontSize: "0.8rem" }}>
+                      Min: {carDetails.minimumRentalPeriod}
+                    </Typography>
+                  </Box>
+                )}
+                {carDetails?.securityDeposit && (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <Iconify
+                      icon="eva:shield-outline"
+                      sx={{ fontSize: 16, color: "grey.500" }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "grey.600", fontSize: "0.8rem" }}>
+                      Deposit: PKR{" "}
+                      {Number(carDetails.securityDeposit)?.toLocaleString()}
+                    </Typography>
+                  </Box>
+                )}
+                {carDetails?.availableFromDate && (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <Iconify
+                      icon="eva:calendar-outline"
+                      sx={{ fontSize: 16, color: "grey.500" }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "grey.600", fontSize: "0.8rem" }}>
+                      From:{" "}
+                      {new Date(
+                        carDetails.availableFromDate
+                      ).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+                )}
+              </Stack>
+            )}
           </Stack>
         </Stack>
       )}
@@ -390,7 +456,8 @@ export default function GarageItem({
             color: "black",
             fontSize: "1rem !important",
           }}>
-          PKR {Number(price)?.toLocaleString() || "N/A"}
+          {getPriceLabel()}{" "}
+          {Number(getDisplayPrice())?.toLocaleString() || "N/A"}/d
         </Typography>
         <Button
           variant="text"

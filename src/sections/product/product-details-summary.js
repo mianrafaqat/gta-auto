@@ -86,6 +86,22 @@ export default function ProductDetailsSummary({
   // Get the product status, handling both old and new API structures
   const productStatusValue = productStatus || "published";
 
+  // Helper function to get the appropriate price for display
+  const getDisplayPrice = () => {
+    if (productCategory?.toLowerCase() === "rent") {
+      return product.carDetails?.dailyRate || "N/A";
+    }
+    return price || "N/A";
+  };
+
+  // Helper function to get the price label
+  const getPriceLabel = () => {
+    if (productCategory?.toLowerCase() === "rent") {
+      return "PKR";
+    }
+    return "PKR";
+  };
+
   const existProduct =
     !!items?.length && items.map((item) => item.id).includes(productId);
 
@@ -255,7 +271,11 @@ export default function ProductDetailsSummary({
             alignItems="center"
             variant="h5"
             color="#4CAF50">
-            PKR{price ? Number(price)?.toLocaleString() : 0}
+            {getPriceLabel()}
+            {getDisplayPrice()
+              ? Number(getDisplayPrice())?.toLocaleString()
+              : 0}
+            /d
           </Typography>
           <Typography
             color="#828282"
