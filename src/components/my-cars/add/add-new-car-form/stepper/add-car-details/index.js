@@ -1,9 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid,
-  MenuItem,
-} from "@mui/material";
+import { Box, Button, Grid, MenuItem } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import {
@@ -20,7 +15,7 @@ const CAR_DETAILS_FIELDS = [
   { id: "make", name: "carDetails.make", label: "Make" },
   {
     id: "yearOfManufacture",
-    name: "carDetails.yearOfManufacture", 
+    name: "carDetails.yearOfManufacture",
     label: "Year of Manufacture",
   },
   {
@@ -52,42 +47,79 @@ const CAR_DETAILS_FIELDS = [
 ];
 
 const REQUIRED_FIELDS = [
-  'make',
-  'yearOfManufacture', 
-  'engineCapacity',
-  'fuelType',
-  'colour',
-  'model',
-  'registeredCity',
-  'condition',
-  'transmission',
-  'carType',
-  'makeType',
-  'driveTrain',
-  'doorPlan'
+  "make",
+  "yearOfManufacture",
+  "engineCapacity",
+  "fuelType",
+  "colour",
+  "model",
+  "registeredCity",
+  "condition",
+  "transmission",
+  "carType",
+  "makeType",
+  "driveTrain",
+  "doorPlan",
 ];
 
 const RENTAL_REQUIRED_FIELDS = [
-  'dailyRate',
-  'securityDeposit',
-  'minimumRentalPeriod',
-  'availableFromDate'
+  "dailyRate",
+  "securityDeposit",
+  "minimumRentalPeriod",
+  "availableFromDate",
 ];
 
 const RENTAL_FIELDS = [
   { id: "dailyRate", name: "carDetails.dailyRate", label: "Daily Rate (PKR)" },
-  { id: "weeklyRate", name: "carDetails.weeklyRate", label: "Weekly Rate (PKR)" },
-  { id: "monthlyRate", name: "carDetails.monthlyRate", label: "Monthly Rate (PKR)" },
-  { id: "securityDeposit", name: "carDetails.securityDeposit", label: "Security Deposit (PKR)" },
-  { 
-    id: "minimumRentalPeriod", 
-    name: "carDetails.minimumRentalPeriod", 
+  {
+    id: "weeklyRate",
+    name: "carDetails.weeklyRate",
+    label: "Weekly Rate (PKR)",
+  },
+  {
+    id: "monthlyRate",
+    name: "carDetails.monthlyRate",
+    label: "Monthly Rate (PKR)",
+  },
+  {
+    id: "securityDeposit",
+    name: "carDetails.securityDeposit",
+    label: "Security Deposit (PKR)",
+  },
+  {
+    id: "minimumRentalPeriod",
+    name: "carDetails.minimumRentalPeriod",
     label: "Minimum Rental Period",
     type: "select",
-    options: ["1 Day", "3 Days", "1 Week", "2 Weeks", "1 Month", "3 Months", "6 Months", "1 Year"]
+    options: [
+      "1 Day",
+      "3 Days",
+      "1 Week",
+      "2 Weeks",
+      "1 Month",
+      "3 Months",
+      "6 Months",
+      "1 Year",
+    ],
   },
-  { id: "availableFromDate", name: "carDetails.availableFromDate", label: "Available From Date", type: "date" },
-  { id: "availableToDate", name: "carDetails.availableToDate", label: "Available To Date", type: "date" },
+  {
+    id: "availableFromDate",
+    name: "carDetails.availableFromDate",
+    label: "Available From Date",
+    type: "date",
+  },
+  {
+    id: "availableToDate",
+    name: "carDetails.availableToDate",
+    label: "Available To Date",
+    type: "date",
+  },
+  {
+    id: "guard",
+    name: "carDetails.guard",
+    label: "Guard Rent Per Day",
+    type: "text",
+  },
 ];
 
 export default function AddCarDetails({
@@ -99,17 +131,23 @@ export default function AddCarDetails({
   const [isCustomModel, setIsCustomModel] = useState(false);
   const [isCustomVariant, setIsCustomVariant] = useState(false);
 
-  const { setValue, watch, getValues, trigger, formState: { errors } } = useFormContext();
+  const {
+    setValue,
+    watch,
+    getValues,
+    trigger,
+    formState: { errors },
+  } = useFormContext();
   const { user = {} } = useAuthContext()?.user || {};
-  
+
   // Watch all the fields we need
-  const carDetails = watch('carDetails');
-  const category = watch('category');
-  
+  const carDetails = watch("carDetails");
+  const category = watch("category");
+
   // Log the form values when they change
   useEffect(() => {
     const values = getValues();
-    console.log('Form State:', {
+    console.log("Form State:", {
       values: {
         carDetails: values.carDetails,
         category: values.category,
@@ -121,37 +159,35 @@ export default function AddCarDetails({
 
   const checkCarDetailsFilled = (data) => {
     if (!data) return false;
-    
-    return REQUIRED_FIELDS.every(field => {
+
+    return REQUIRED_FIELDS.every((field) => {
       const value = data[field];
-      return value && String(value).trim() !== '';
+      return value && String(value).trim() !== "";
     });
   };
 
   const isAllFilled = useMemo(() => {
     if (!carDetails) return false;
-    
+
     // Check basic required fields
-    const basicFieldsValid = REQUIRED_FIELDS.every(field => {
+    const basicFieldsValid = REQUIRED_FIELDS.every((field) => {
       const value = carDetails[field];
       console.log(`Field ${field}:`, value); // Debug log
-      return value && String(value).trim() !== '';
+      return value && String(value).trim() !== "";
     });
-    
+
     // Check rental fields if category is rent
     let rentalFieldsValid = true;
-    if (category === 'rent') {
-      rentalFieldsValid = RENTAL_REQUIRED_FIELDS.every(field => {
+    if (category === "rent") {
+      rentalFieldsValid = RENTAL_REQUIRED_FIELDS.every((field) => {
         const value = carDetails[field];
         console.log(`Rental Field ${field}:`, value); // Debug log
-        return value && String(value).trim() !== '';
+        return value && String(value).trim() !== "";
       });
     }
-    
-    const result = basicFieldsValid && rentalFieldsValid;
-    
 
-    
+    const result = basicFieldsValid && rentalFieldsValid;
+
     return result;
   }, [carDetails, category]);
 
@@ -169,7 +205,9 @@ export default function AddCarDetails({
       });
 
       const data = {
-        selectedCar: filterCarMake?.value?.toLowerCase() || carDetails?.make?.toLowerCase(),
+        selectedCar:
+          filterCarMake?.value?.toLowerCase() ||
+          carDetails?.make?.toLowerCase(),
         year: carDetails?.yearOfManufacture,
       };
 
@@ -177,7 +215,10 @@ export default function AddCarDetails({
       if (res?.status === 200) {
         setCarModels(res.data);
         if (!isEditMode) {
-          setValue("carDetails.model", carDetails?.model || res.data?.[0]?.model || "");
+          setValue(
+            "carDetails.model",
+            carDetails?.model || res.data?.[0]?.model || ""
+          );
         }
       }
     } catch (err) {
@@ -222,7 +263,7 @@ export default function AddCarDetails({
     "Backup Camera",
     "Cruise Control",
     "USB Port",
-    "FM Radio"
+    "FM Radio",
   ];
 
   const features = useMemo(() => {
@@ -232,7 +273,9 @@ export default function AddCarDetails({
       return DEFAULT_FEATURES;
     }
 
-    const selectedModel = carModels.find(car => car?.model === carDetails?.model);
+    const selectedModel = carModels.find(
+      (car) => car?.model === carDetails?.model
+    );
     if (!selectedModel) {
       // If model not found, provide default features
       return DEFAULT_FEATURES;
@@ -244,7 +287,9 @@ export default function AddCarDetails({
     setValue("carDetails.wheelType", selectedModel.wheel_type || "");
     setValue("carDetails.doorPlan", selectedModel.door_plan || "");
 
-    return selectedModel.features?.length ? selectedModel.features : DEFAULT_FEATURES;
+    return selectedModel.features?.length
+      ? selectedModel.features
+      : DEFAULT_FEATURES;
   }, [carDetails?.model, carModels]);
 
   const variants = useMemo(() => {
@@ -253,7 +298,9 @@ export default function AddCarDetails({
       return [];
     }
 
-    const selectedModel = carModels.find(car => car?.model === carDetails?.model);
+    const selectedModel = carModels.find(
+      (car) => car?.model === carDetails?.model
+    );
     if (!selectedModel?.variants?.length) return [];
 
     setValue("carDetails.variant", selectedModel.variants[0]);
@@ -261,7 +308,7 @@ export default function AddCarDetails({
   }, [carDetails?.model, carModels]);
 
   const categoryDefaultValue = useMemo(() => {
-    const category = watch('category');
+    const category = watch("category");
     if (!category) {
       const defaultValue = !isEditMode ? "sale" : "";
       setValue("category", defaultValue);
@@ -270,16 +317,16 @@ export default function AddCarDetails({
     return category;
   }, [watch, isEditMode, setValue]);
 
-  console.log('categoryOptions', user?.role);
+  console.log("categoryOptions", user?.role);
   // Determine available category options based on user role
   const categoryOptions = useMemo(() => {
-    const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
+    const isAdmin = user?.role === "admin" || user?.role === "superadmin";
     const baseOptions = [{ value: "sale", label: "Sale" }];
-    
+
     if (isAdmin) {
       baseOptions.push({ value: "rent", label: "Rent" });
     }
-    
+
     return baseOptions;
   }, [user?.role]);
 
@@ -289,7 +336,6 @@ export default function AddCarDetails({
         <RHFRadioGroup
           row
           name="category"
-          value={categoryDefaultValue}
           label="Category *"
           spacing={4}
           options={categoryOptions}
@@ -304,7 +350,7 @@ export default function AddCarDetails({
           spacing={4}
           options={[
             { value: "new", label: "New" },
-            { value: "used", label: "Used" }
+            { value: "used", label: "Used" },
           ]}
           error={!!errors?.carDetails?.carType}
           helperText={errors?.carDetails?.carType?.message}
@@ -313,39 +359,38 @@ export default function AddCarDetails({
 
       {CAR_DETAILS_FIELDS.map((c) => (
         <Grid key={c.name} item xs={12} md={3}>
-          {c.type === 'select' ? (
+          {c.type === "select" ? (
             <RHFSelect
               name={c.name}
               label={`${c.label} *`}
               fullWidth
               error={!!errors?.carDetails?.[c.id]}
-              helperText={errors?.carDetails?.[c.id]?.message || ' '}
-              InputLabelProps={{ 
+              helperText={errors?.carDetails?.[c.id]?.message || " "}
+              InputLabelProps={{
                 shrink: true,
                 sx: {
-                  transform: 'translate(14px, -9px) scale(0.75)',
-                  background: '#fff',
+                  transform: "translate(14px, -9px) scale(0.75)",
+                  background: "#fff",
                   px: 1,
-                }
+                },
               }}
               sx={{
-                '& .MuiOutlinedInput-root': {
-                  backgroundColor: 'white',
-                  '&.Mui-error': {
-                    borderColor: 'error.main',
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  "&.Mui-error": {
+                    borderColor: "error.main",
                   },
-                  '& fieldset': {
-                    borderWidth: '1px !important',
+                  "& fieldset": {
+                    borderWidth: "1px !important",
                   },
                 },
-                '& .MuiSelect-select': {
-                  padding: '12.5px 14px',
+                "& .MuiSelect-select": {
+                  padding: "12.5px 14px",
                 },
-                '& .MuiFormLabel-root': {
+                "& .MuiFormLabel-root": {
                   marginTop: 0,
-                }
-              }}
-            >
+                },
+              }}>
               <MenuItem value="">Select {c.label}</MenuItem>
               {c.options.map((option) => (
                 <MenuItem key={option} value={option}>
@@ -362,13 +407,13 @@ export default function AddCarDetails({
                 setValue(c.name, e.target.value);
               }}
               error={!!errors?.carDetails?.[c.id]}
-              helperText={errors?.carDetails?.[c.id]?.message || ' '}
+              helperText={errors?.carDetails?.[c.id]?.message || " "}
               sx={{
-                '& .MuiOutlinedInput-root': {
-                  '&.Mui-error': {
-                    borderColor: 'error.main',
-                  }
-                }
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-error": {
+                    borderColor: "error.main",
+                  },
+                },
               }}
             />
           )}
@@ -383,40 +428,39 @@ export default function AddCarDetails({
             label="Custom Model *"
             InputLabelProps={{ shrink: true }}
             error={!!errors?.carDetails?.model}
-            helperText={errors?.carDetails?.model?.message || ' '}
+            helperText={errors?.carDetails?.model?.message || " "}
             sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: 'white',
-                '&.Mui-error': {
-                  borderColor: 'error.main',
-                }
-              }
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "white",
+                "&.Mui-error": {
+                  borderColor: "error.main",
+                },
+              },
             }}
           />
         ) : (
-          <RHFSelect 
-            fullWidth 
-            name="carDetails.model" 
+          <RHFSelect
+            fullWidth
+            name="carDetails.model"
             label="Model *"
             error={!!errors?.carDetails?.model}
-            helperText={errors?.carDetails?.model?.message || ' '}
+            helperText={errors?.carDetails?.model?.message || " "}
             sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: 'white',
-                '&.Mui-error': {
-                  borderColor: 'error.main',
-                }
-              }
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "white",
+                "&.Mui-error": {
+                  borderColor: "error.main",
+                },
+              },
             }}
             onChange={(e) => {
-              if (e.target.value === 'custom') {
+              if (e.target.value === "custom") {
                 setIsCustomModel(true);
-                setValue('carDetails.model', '');
+                setValue("carDetails.model", "");
               } else {
-                setValue('carDetails.model', e.target.value);
+                setValue("carDetails.model", e.target.value);
               }
-            }}
-          >
+            }}>
             <MenuItem value="custom">
               <em>Enter Custom Model</em>
             </MenuItem>
@@ -435,7 +479,7 @@ export default function AddCarDetails({
           label="Make Type *"
           name="carDetails.makeType"
           error={!!errors?.carDetails?.makeType}
-          helperText={errors?.carDetails?.makeType?.message || ' '}
+          helperText={errors?.carDetails?.makeType?.message || " "}
         />
       </Grid>
 
@@ -445,7 +489,7 @@ export default function AddCarDetails({
           label="Drivetrain *"
           name="carDetails.driveTrain"
           error={!!errors?.carDetails?.driveTrain}
-          helperText={errors?.carDetails?.driveTrain?.message || ' '}
+          helperText={errors?.carDetails?.driveTrain?.message || " "}
         />
       </Grid>
 
@@ -455,7 +499,7 @@ export default function AddCarDetails({
           label="Door Plan *"
           name="carDetails.doorPlan"
           error={!!errors?.carDetails?.doorPlan}
-          helperText={errors?.carDetails?.doorPlan?.message || ' '}
+          helperText={errors?.carDetails?.doorPlan?.message || " "}
         />
       </Grid>
 
@@ -467,40 +511,39 @@ export default function AddCarDetails({
             label="Custom Variant"
             InputLabelProps={{ shrink: true }}
             error={!!errors?.carDetails?.variant}
-            helperText={errors?.carDetails?.variant?.message || ' '}
+            helperText={errors?.carDetails?.variant?.message || " "}
             sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: 'white',
-                '&.Mui-error': {
-                  borderColor: 'error.main',
-                }
-              }
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "white",
+                "&.Mui-error": {
+                  borderColor: "error.main",
+                },
+              },
             }}
           />
         ) : (
-          <RHFSelect 
-            fullWidth 
-            name="carDetails.variant" 
+          <RHFSelect
+            fullWidth
+            name="carDetails.variant"
             label="Variant"
             error={!!errors?.carDetails?.variant}
-            helperText={errors?.carDetails?.variant?.message || ' '}
+            helperText={errors?.carDetails?.variant?.message || " "}
             sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: 'white',
-                '&.Mui-error': {
-                  borderColor: 'error.main',
-                }
-              }
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "white",
+                "&.Mui-error": {
+                  borderColor: "error.main",
+                },
+              },
             }}
             onChange={(e) => {
-              if (e.target.value === 'custom') {
+              if (e.target.value === "custom") {
                 setIsCustomVariant(true);
-                setValue('carDetails.variant', '');
+                setValue("carDetails.variant", "");
               } else {
-                setValue('carDetails.variant', e.target.value);
+                setValue("carDetails.variant", e.target.value);
               }
-            }}
-          >
+            }}>
             <MenuItem value="custom">
               <em>Enter Custom Variant</em>
             </MenuItem>
@@ -520,49 +563,48 @@ export default function AddCarDetails({
             name="carDetails.features"
             label="Features"
             spacing={4}
-            options={features.map(f => f && { value: f, label: f })}
+            options={features.map((f) => f && { value: f, label: f })}
           />
         )}
       </Grid>
 
       {/* Rental Fields - Only show when category is rent */}
-      {category === 'rent' && (
+      {category === "rent" && (
         <>
           {RENTAL_FIELDS.map((field) => (
             <Grid key={field.name} item xs={12} md={3}>
-              {field.type === 'select' ? (
+              {field.type === "select" ? (
                 <RHFSelect
                   name={field.name}
-                  label={`${field.label} ${RENTAL_REQUIRED_FIELDS.includes(field.id) ? '*' : ''}`}
+                  label={`${field.label} ${RENTAL_REQUIRED_FIELDS.includes(field.id) ? "*" : ""}`}
                   fullWidth
                   error={!!errors?.carDetails?.[field.id]}
-                  helperText={errors?.carDetails?.[field.id]?.message || ' '}
-                  InputLabelProps={{ 
+                  helperText={errors?.carDetails?.[field.id]?.message || " "}
+                  InputLabelProps={{
                     shrink: true,
                     sx: {
-                      transform: 'translate(14px, -9px) scale(0.75)',
-                      background: '#fff',
+                      transform: "translate(14px, -9px) scale(0.75)",
+                      background: "#fff",
                       px: 1,
-                    }
+                    },
                   }}
                   sx={{
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: 'white',
-                      '&.Mui-error': {
-                        borderColor: 'error.main',
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "white",
+                      "&.Mui-error": {
+                        borderColor: "error.main",
                       },
-                      '& fieldset': {
-                        borderWidth: '1px !important',
+                      "& fieldset": {
+                        borderWidth: "1px !important",
                       },
                     },
-                    '& .MuiSelect-select': {
-                      padding: '12.5px 14px',
+                    "& .MuiSelect-select": {
+                      padding: "12.5px 14px",
                     },
-                    '& .MuiFormLabel-root': {
+                    "& .MuiFormLabel-root": {
                       marginTop: 0,
-                    }
-                  }}
-                >
+                    },
+                  }}>
                   <MenuItem value="">Select {field.label}</MenuItem>
                   {field.options.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -573,34 +615,34 @@ export default function AddCarDetails({
               ) : (
                 <RHFTextField
                   name={field.name}
-                  label={`${field.label} ${RENTAL_REQUIRED_FIELDS.includes(field.id) ? '*' : ''}`}
-                  type={field.type === 'date' ? 'date' : 'text'}
-                  InputLabelProps={{ 
+                  label={`${field.label} ${RENTAL_REQUIRED_FIELDS.includes(field.id) ? "*" : ""}`}
+                  type={field.type === "date" ? "date" : "text"}
+                  InputLabelProps={{
                     shrink: true,
                     sx: {
-                      transform: 'translate(14px, -9px) scale(0.75)',
-                      background: '#fff',
+                      transform: "translate(14px, -9px) scale(0.75)",
+                      background: "#fff",
                       px: 1,
-                    }
+                    },
                   }}
                   onChange={(e) => {
                     setValue(field.name, e.target.value);
                   }}
                   error={!!errors?.carDetails?.[field.id]}
-                  helperText={errors?.carDetails?.[field.id]?.message || ' '}
+                  helperText={errors?.carDetails?.[field.id]?.message || " "}
                   sx={{
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: 'white',
-                      '&.Mui-error': {
-                        borderColor: 'error.main',
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "white",
+                      "&.Mui-error": {
+                        borderColor: "error.main",
                       },
-                      '& fieldset': {
-                        borderWidth: '1px !important',
+                      "& fieldset": {
+                        borderWidth: "1px !important",
                       },
                     },
-                    '& .MuiFormLabel-root': {
+                    "& .MuiFormLabel-root": {
                       marginTop: 0,
-                    }
+                    },
                   }}
                 />
               )}
@@ -615,28 +657,31 @@ export default function AddCarDetails({
             variant="contained"
             onClick={async () => {
               // Validate all car detail fields
-              let fieldsToValidate = REQUIRED_FIELDS.map(field => `carDetails.${field}`);
-              
+              let fieldsToValidate = REQUIRED_FIELDS.map(
+                (field) => `carDetails.${field}`
+              );
+
               // Add rental fields if category is rent
-              if (category === 'rent') {
+              if (category === "rent") {
                 fieldsToValidate = [
                   ...fieldsToValidate,
-                  ...RENTAL_REQUIRED_FIELDS.map(field => `carDetails.${field}`)
+                  ...RENTAL_REQUIRED_FIELDS.map(
+                    (field) => `carDetails.${field}`
+                  ),
                 ];
               }
-              
+
               // Also validate the category field
-              fieldsToValidate.push('category');
-              
+              fieldsToValidate.push("category");
+
               const isValid = await trigger(fieldsToValidate);
-              
+
               if (isValid) {
                 setActiveStep((prev) => prev + 1);
               } else {
-                console.log('Validation failed:', errors);
+                console.log("Validation failed:", errors);
               }
-            }}
-          >
+            }}>
             Next
           </Button>
         </Box>

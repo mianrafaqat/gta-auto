@@ -3,8 +3,17 @@
 import React, { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { Box, Divider, Grid, MenuItem, Stack, Typography } from "@mui/material";
-import { RHFSelect, RHFTextField } from "src/components/hook-form";
+import {
+  Box,
+  Divider,
+  Grid,
+  MenuItem,
+  Stack,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
+import { RHFSelect, RHFTextField, RHFCheckbox } from "src/components/hook-form";
 import { useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import FormProvider from "src/components/hook-form";
@@ -23,18 +32,22 @@ const RENTAL_INTERESTED_OPTIONS = [
   "I'd like to know your rental rates",
   "I'd like to check availability for specific dates",
   "I'd like to know about rental terms and conditions",
+  "I'm interested in renting this vehicle with guard",
+  "I'd like to know your rental rates with guard",
+  "I'd like to check availability for specific dates with guard",
+  "I'd like to know about rental terms and conditions with guard",
 ];
 
 const RENTAL_DURATION_OPTIONS = [
   "1 Day",
   "3 Days",
   "1 Week",
-  "2 Weeks", 
+  "2 Weeks",
   "1 Month",
   "3 Months",
   "6 Months",
   "1 Year",
-  "Other (Please specify in message)"
+  "Other (Please specify in message)",
 ];
 
 const schema = Yup.object().shape({
@@ -44,18 +57,42 @@ const schema = Yup.object().shape({
   interested: Yup.string().required(),
   phone: Yup.string().required(),
   // Rental-specific fields
-  rentalDuration: Yup.string().when('$category', {
-    is: 'rent',
+  rentalDuration: Yup.string().when("$category", {
+    is: "rent",
     then: (schema) => schema.required("Rental duration is required"),
     otherwise: (schema) => schema.optional(),
   }),
-  startDate: Yup.string().when('$category', {
-    is: 'rent',
+  startDate: Yup.string().when("$category", {
+    is: "rent",
     then: (schema) => schema.optional(),
     otherwise: (schema) => schema.optional(),
   }),
-  endDate: Yup.string().when('$category', {
-    is: 'rent',
+  endDate: Yup.string().when("$category", {
+    is: "rent",
+    then: (schema) => schema.optional(),
+    otherwise: (schema) => schema.optional(),
+  }),
+  // Guard rental fields
+  includeGuard: Yup.boolean().when("$category", {
+    is: "rent",
+    then: (schema) => schema.optional(),
+    otherwise: (schema) => schema.optional(),
+  }),
+  guardDuration: Yup.string().when(["$category", "includeGuard"], {
+    is: (category, includeGuard) =>
+      category === "rent" && includeGuard === true,
+    then: (schema) => schema.required("Guard duration is required"),
+    otherwise: (schema) => schema.optional(),
+  }),
+  guardStartDate: Yup.string().when(["$category", "includeGuard"], {
+    is: (category, includeGuard) =>
+      category === "rent" && includeGuard === true,
+    then: (schema) => schema.optional(),
+    otherwise: (schema) => schema.optional(),
+  }),
+  guardEndDate: Yup.string().when(["$category", "includeGuard"], {
+    is: (category, includeGuard) =>
+      category === "rent" && includeGuard === true,
     then: (schema) => schema.optional(),
     otherwise: (schema) => schema.optional(),
   }),
@@ -71,10 +108,17 @@ export default function CheckAvailabiltyForm({
   const [loading, setLoading] = useState(false);
 
   const defaultValues = {
-    interested: category === "rent" ? RENTAL_INTERESTED_OPTIONS[0] : INTERESTED_OPTIONS[0],
+    interested:
+      category === "rent"
+        ? RENTAL_INTERESTED_OPTIONS[0]
+        : INTERESTED_OPTIONS[0],
     rentalDuration: category === "rent" ? RENTAL_DURATION_OPTIONS[0] : "",
     startDate: "",
     endDate: "",
+    includeGuard: false,
+    guardDuration: "",
+    guardStartDate: "",
+    guardEndDate: "",
     additionalMessage: "",
   };
 
@@ -95,7 +139,7 @@ export default function CheckAvailabiltyForm({
   const onSubmit = async (values) => {
     try {
       setLoading(true);
-      
+
       // Prepare email data based on category
       const emailData = {
         ...values,
@@ -110,7 +154,7 @@ export default function CheckAvailabiltyForm({
       if (category === "rent") {
         emailData.subject = `Rental Quote Request for ${year} ${make}`;
         emailData.emailType = "rental_quote";
-        
+
         // Format rental duration and dates for the email
         let rentalDetails = `Rental Duration: ${values.rentalDuration}`;
         if (values.startDate) {
@@ -119,10 +163,27 @@ export default function CheckAvailabiltyForm({
         if (values.endDate) {
           rentalDetails += `\nPreferred End Date: ${values.endDate}`;
         }
+
+        // Add guard rental information if requested
+        if (values.includeGuard) {
+          rentalDetails += `\nGuard Service: Yes`;
+          if (values.guardDuration) {
+            rentalDetails += `\nGuard Duration: ${values.guardDuration}`;
+          }
+          if (values.guardStartDate) {
+            rentalDetails += `\nGuard Start Date: ${values.guardStartDate}`;
+          }
+          if (values.guardEndDate) {
+            rentalDetails += `\nGuard End Date: ${values.guardEndDate}`;
+          }
+        } else {
+          rentalDetails += `\nGuard Service: No`;
+        }
+
         if (values.additionalMessage) {
           rentalDetails += `\nAdditional Requirements: ${values.additionalMessage}`;
         }
-        
+
         emailData.rentalDetails = rentalDetails;
       } else {
         emailData.subject = `Purchase Inquiry for ${year} ${make}`;
@@ -196,8 +257,7 @@ export default function CheckAvailabiltyForm({
                   label="I am interested in *"
                   size="small"
                   fullWidth
-                  InputLabelProps={{ shrink: true }}
-                >
+                  InputLabelProps={{ shrink: true }}>
                   {RENTAL_INTERESTED_OPTIONS.map((value) => (
                     <MenuItem key={value} value={value}>
                       {value}
@@ -211,8 +271,7 @@ export default function CheckAvailabiltyForm({
                   label="Rental Duration *"
                   size="small"
                   fullWidth
-                  InputLabelProps={{ shrink: true }}
-                >
+                  InputLabelProps={{ shrink: true }}>
                   {RENTAL_DURATION_OPTIONS.map((value) => (
                     <MenuItem key={value} value={value}>
                       {value}
@@ -241,6 +300,50 @@ export default function CheckAvailabiltyForm({
                 />
               </Grid>
               <Grid item xs={12}>
+                <RHFCheckbox
+                  name="includeGuard"
+                  label="Include Guard Service"
+                  helperText="Check this if you want to include a security guard with your rental"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <RHFSelect
+                  name="guardDuration"
+                  label="Guard Duration"
+                  size="small"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  disabled={!methods.watch("includeGuard")}>
+                  {RENTAL_DURATION_OPTIONS.map((value) => (
+                    <MenuItem key={value} value={value}>
+                      {value}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <RHFTextField
+                  name="guardStartDate"
+                  label="Guard Start Date"
+                  type="date"
+                  size="small"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  disabled={!methods.watch("includeGuard")}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <RHFTextField
+                  name="guardEndDate"
+                  label="Guard End Date"
+                  type="date"
+                  size="small"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  disabled={!methods.watch("includeGuard")}
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <RHFTextField
                   name="additionalMessage"
                   label="Additional Message or Special Requirements"
@@ -252,8 +355,13 @@ export default function CheckAvailabiltyForm({
                 />
               </Grid>
             </Grid>
-            <Typography variant="body2" sx={{ mt: 2, mb: 1, color: "text.secondary" }}>
-              Request for: <strong>{year} {make}</strong>
+            <Typography
+              variant="body2"
+              sx={{ mt: 2, mb: 1, color: "text.secondary" }}>
+              Request for:{" "}
+              <strong>
+                {year} {make}
+              </strong>
             </Typography>
           </Box>
         ) : (
@@ -267,17 +375,15 @@ export default function CheckAvailabiltyForm({
               mt: 1,
             }}
             alignItems="center"
-            gap="10px"
-          >
+            gap="10px">
             <Typography
               sx={{
                 flexWrap: "wrap",
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
-                color: "#000"
-              }}
-            >
+                color: "#000",
+              }}>
               Hi! my name is{" "}
               <RHFTextField
                 hideHelperText
@@ -291,8 +397,7 @@ export default function CheckAvailabiltyForm({
                 sx={{ width: "50%" }}
                 size="small"
                 name="interested"
-                InputLabelProps={{ shrink: true }}
-              >
+                InputLabelProps={{ shrink: true }}>
                 {INTERESTED_OPTIONS.map((value) => (
                   <MenuItem key={value} value={value}>
                     {value}
@@ -333,8 +438,7 @@ export default function CheckAvailabiltyForm({
           variant="contained"
           color="primary"
           sx={{ mt: 2, width: "100%" }}
-          loading={loading}
-        >
+          loading={loading}>
           {category === "rent" ? "Request Rental Quote" : "Check Availability"}
         </LoadingButton>
       </FormProvider>
