@@ -40,6 +40,9 @@ const LatestProductsList = ({ products, loading }) => {
     slidesToScroll: 1,
     autoplay: false,
     arrows: false, // Disable default arrows
+    variableWidth: false,
+    centerMode: false,
+    centerPadding: "0px",
     responsive: [
       {
         breakpoint: 1200,
@@ -170,7 +173,7 @@ const LatestProductsList = ({ products, loading }) => {
       )}
 
       {/* Custom Navigation Buttons - Bottom Left (Desktop Only) */}
-      {!isSingleProduct && (
+      {!isSingleProduct && products.length > 4 && (
         <Box
           sx={{
             position: "absolute",
@@ -181,7 +184,10 @@ const LatestProductsList = ({ products, loading }) => {
             zIndex: 10,
           }}>
           <IconButton
-            onClick={() => sliderRef.current?.slickPrev()}
+            onClick={() => {
+              console.log("Previous clicked, sliderRef:", sliderRef.current);
+              sliderRef.current?.slickPrev();
+            }}
             sx={{
               width: 40,
               height: 40,
@@ -199,7 +205,10 @@ const LatestProductsList = ({ products, loading }) => {
             />
           </IconButton>
           <IconButton
-            onClick={() => sliderRef.current?.slickNext()}
+            onClick={() => {
+              console.log("Next clicked, sliderRef:", sliderRef.current);
+              sliderRef.current?.slickNext();
+            }}
             sx={{
               width: 40,
               height: 40,
@@ -303,7 +312,7 @@ export default function LatestProductsSection({
         );
         // Take first 10 non-chemical products
         if (nonChemicalProducts && nonChemicalProducts.length > 0) {
-          setFirstTenProducts(nonChemicalProducts.slice(0, 10));
+          setFirstTenProducts(nonChemicalProducts.slice(0, 40));
         } else {
           setFirstTenProducts([]);
         }

@@ -103,7 +103,7 @@ export default function CarsFiltersPage() {
               }}>
               <Stack direction="row" gap={2} alignItems="center">
                 <Box>
-                  <img src="/assets/convertable.png" alt="Comic" />
+                  <img src="/assets/bugati.png" alt="Comic" />
                 </Box>
 
                 <Box>
@@ -173,7 +173,7 @@ export default function CarsFiltersPage() {
           </Card>
         </Box>
 
-        <Box
+        {/* <Box
           sx={{
             width: "100%",
             mt: "32px",
@@ -203,7 +203,11 @@ export default function CarsFiltersPage() {
                 position: "relative",
                 zIndex: 2,
               }}>
-              <Stack direction="row" gap={2} alignItems="center">
+              <Stack
+                direction="row"
+                gap={2}
+                alignItems="center"
+                justifyContent="space-between">
                 <Box>
                   <img src="/assets/convertable.png" alt="Comic" />
                 </Box>
@@ -375,7 +379,7 @@ export default function CarsFiltersPage() {
               </Stack>
             </CardContent>
           </Card>
-        </Box>
+        </Box> */}
       </Container>
 
       <CarRentSection />
@@ -387,6 +391,115 @@ export default function CarsFiltersPage() {
       {/* Services Section */}
 
       {/* Latest Products Section */}
+
+      <Container maxWidth="xl">
+        <Box
+          sx={{
+            width: "100%",
+            mt: "32px",
+            display: { md: "block", xs: "none" },
+          }}>
+          <Card
+            sx={{
+              background: "#25D366",
+              borderRadius: 3,
+              mb: 4,
+              height: "100%",
+              overflow: "hidden",
+              position: "relative",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              },
+            }}>
+            <CardContent
+              sx={{
+                p: { xs: 4, md: "32px" },
+                textAlign: "center",
+                position: "relative",
+                zIndex: 2,
+              }}>
+              <Stack
+                direction="row"
+                gap={2}
+                alignItems="center"
+                justifyContent="space-between">
+                <Box>
+                  <img src="/assets/convertable.png" alt="Comic" />
+                </Box>
+
+                <Box>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      color: "#000",
+                      fontWeight: 700,
+                      mb: 2,
+                      fontSize: { xs: "2rem", md: "34px !important" },
+                      lineHeight: 1.2,
+                      whiteSpace: "nowrap",
+                    }}>
+                    Import your desire accessories
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      color: "#ffffff",
+                      fontSize: "16px !important",
+                      mb: 4,
+                      fontWeight: 400,
+                      opacity: 0.9,
+                      maxWidth: 800,
+                      mx: "auto",
+                      lineHeight: 1.2,
+                      textAlign: "center",
+                      maxWidth: 400,
+                    }}>
+                    From genuine OEM parts to aftermarket upgrades, we source
+                    and import quality car parts for all brands.
+                  </Typography>
+                </Box>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={3}
+                  justifyContent="center"
+                  alignItems="center">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
+                    onClick={() => {
+                      const message =
+                        "Hi! I'm interested in importing car parts. Can you help me find the parts I need?";
+                      const whatsappUrl = `https://wa.me/923263331000?text=${encodeURIComponent(message)}`;
+                      window.open(whatsappUrl, "_blank");
+                    }}
+                    sx={{
+                      backgroundColor: "transparent",
+                      border: "1px solid #fff",
+                      color: "#000",
+                      px: 4,
+                      py: 2,
+                      fontSize: "16px !important",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      borderRadius: "50px",
+                      minWidth: 250,
+                      whiteSpace: "nowrap",
+                    }}>
+                    Chat on WhatsApp
+                  </Button>
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Box>
+      </Container>
+
       <LatestProductsSection />
 
       {/* <CategoryOffers /> */}

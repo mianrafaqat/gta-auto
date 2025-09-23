@@ -23,6 +23,7 @@ import SimpleDialog from "../_examples/mui/dialog-view/simple-dialog";
 import { useAuthContext } from "src/auth/hooks";
 import { useEffect, useMemo } from "react";
 import { useAddOrRemoveFavoriteCar } from "src/hooks/use-cars";
+import { useRouter } from "next/navigation";
 
 // ----------------------------------------------------------------------
 
@@ -31,6 +32,7 @@ export default function GarageItem({
   onAddOrRemoveFav = () => {},
   onHome = false,
 }) {
+  const router = useRouter();
   const { onAddToCart } = useCheckoutContext();
 
   const {
@@ -457,7 +459,8 @@ export default function GarageItem({
             fontSize: "1rem !important",
           }}>
           {getPriceLabel()}{" "}
-          {Number(getDisplayPrice())?.toLocaleString() || "N/A"}/d
+          {Number(getDisplayPrice())?.toLocaleString() || "N/A"}
+          {category === "rent" ? "/d" : ""}
         </Typography>
         <Button
           variant="text"
