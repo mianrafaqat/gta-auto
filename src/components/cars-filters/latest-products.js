@@ -233,6 +233,7 @@ const LatestProductsList = ({ products, loading }) => {
 
 export default function LatestProductsSection({
   titleText = " Latest Products",
+  isShop = false,
 }) {
   const [latestProducts, setLatestProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -335,7 +336,7 @@ export default function LatestProductsSection({
         backgroundColor: "black",
         minHeight: "600px",
       }}>
-      <Box sx={{ position: "relative", zIndex: 2 }}>
+       {!isShop && (<Box sx={{ position: "relative", zIndex: 2 }}>
         {/* Section Title */}
         <Typography
           variant="h3"
@@ -350,12 +351,13 @@ export default function LatestProductsSection({
         </Typography>
 
         <Grid item xs={12}>
-          <LatestProductsList products={latestProducts} loading={loading} />
-        </Grid>
-      </Box>
+            <LatestProductsList products={latestProducts} loading={loading} />
+          </Grid>
+        </Box>
+      )}
 
       {/* Shop Section */}
-      <Box sx={{ position: "relative", zIndex: 2, mt: 8 }}>
+    {isShop &&  (<Box sx={{ position: "relative", zIndex: 2, mt: 8 }}>
         {/* Shop Section Title */}
         <Typography
           variant="h3"
@@ -375,7 +377,7 @@ export default function LatestProductsSection({
             loading={loadingFirstTen}
           />
         </Grid>
-      </Box>
+      </Box>)}
     </Container>
   );
 }

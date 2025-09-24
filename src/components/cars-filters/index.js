@@ -103,7 +103,7 @@ export default function CarsFiltersPage() {
               }}>
               <Stack direction="row" gap={2} alignItems="center">
                 <Box>
-                  <img src="/assets/bugati.png" alt="Comic" />
+                  <img width={300} height={185} style={{ objectFit: "contain" }} src="/assets/bugati.png" alt="Comic" />
                 </Box>
 
                 <Box>
@@ -383,6 +383,8 @@ export default function CarsFiltersPage() {
       </Container>
 
       <CarRentSection />
+      <FeaturedCarsSection />
+
       {/* <HeroBottom /> */}
 
       {/* Car Body Types Section */}
@@ -391,7 +393,9 @@ export default function CarsFiltersPage() {
       {/* Services Section */}
 
       {/* Latest Products Section */}
+      <LatestProductsSection isShop={false} />
 
+      <BrowseVideosSection />
       <Container maxWidth="xl">
         <Box
           sx={{
@@ -429,7 +433,7 @@ export default function CarsFiltersPage() {
                 alignItems="center"
                 justifyContent="space-between">
                 <Box>
-                  <img src="/assets/convertable.png" alt="Comic" />
+                  <img src="/assets/car-accessories-png-car-parts-clipart.png" alt="Comic" />
                 </Box>
 
                 <Box>
@@ -443,7 +447,7 @@ export default function CarsFiltersPage() {
                       lineHeight: 1.2,
                       whiteSpace: "nowrap",
                     }}>
-                    Import your desire accessories
+                    Import Your Desire Accessories
                   </Typography>
                   <Typography
                     variant="h5"
@@ -499,15 +503,13 @@ export default function CarsFiltersPage() {
           </Card>
         </Box>
       </Container>
+     <LatestProductsSection isShop={true} />
 
-      <LatestProductsSection />
 
       {/* <CategoryOffers /> */}
 
       {/* Featured Cars Section */}
-      <FeaturedCarsSection />
-      <BrowseVideosSection />
-
+    
       {/* <Discounted /> */}
 
       {/* Browse Brands Section */}
