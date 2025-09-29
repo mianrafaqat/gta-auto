@@ -448,7 +448,16 @@ export default function ProductItem({
               backgroundColor: "rgba(76, 175, 80, 0.04)",
             },
           }}>
-          <FavoriteBorderOutlinedIcon />
+          {/* Show filled heart if product is in favorites, outline heart if not */}
+          {(() => {
+            const actualUser = user?.user || user;
+            const isFavorited = actualUser?.favourite?.includes(productId);
+            return isFavorited ? (
+              <FavoriteIcon sx={{ color: "#4caf50" }} />
+            ) : (
+              <FavoriteBorderOutlinedIcon />
+            );
+          })()}
         </Button>
       </Stack>
     </Stack>

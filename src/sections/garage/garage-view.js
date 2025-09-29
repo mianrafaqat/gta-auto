@@ -65,7 +65,7 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 export default function GarageView() {
   const defaultFilters = {
     priceRange: [100000, 25000000],
-    category: "all",
+    category: "sale",
     searchByTitle: "",
     year: [1940, new Date().getFullYear()],
     fuelType: "",
@@ -121,6 +121,8 @@ export default function GarageView() {
     filters,
     sortBy,
   });
+
+
 
   const canReset = () => {
     setFilters({ ...defaultFilters });
@@ -460,35 +462,54 @@ function applyFilter({ inputData, filters, sortBy }) {
     mileage,
     makeType,
   } = filters;
-  // return inputData;
+  
+  console.log('applyFilter - Input data length:', inputData?.length);
+  console.log('applyFilter - Filters:', filters);
+  
   const min = priceRange[0];
-
   const max = priceRange[1];
-
   const minYear = year[0];
   const maxYear = year[1];
-
   const minMileage = mileage[0];
   const maxMileage = mileage[1];
 
   // FILTERS
 
-  if (category !== "all") {
+  if (category && category !== "all") {
+    const beforeCategory = inputData.length;
     inputData = inputData.filter(
-      (product) => product?.category?.toUpperCase() === category?.toUpperCase()
+      (product) => product?.category?.toLowerCase() === category?.toLowerCase()
     );
+    console.log('applyFilter - After category filter:', beforeCategory, '->', inputData.length);
   }
 
+  // Only apply price filter if price is not empty
+  const beforePrice = inputData.length;
   inputData = inputData.filter(
-    (product) => Number(product.price) >= min && Number(product.price) <= max
+    (product) => {
+      const price = Number(product.price);
+      const passes = !product.price || product.price === "" || (price >= min && price <= max);
+      if (!passes) {
+        console.log('Price filter excluded:', product.title, 'Price:', product.price, 'Min:', min, 'Max:', max);
+      }
+      return passes;
+    }
   );
+  console.log('applyFilter - After price filter:', beforePrice, '->', inputData.length);
 
   if (minYear >= 0 || maxYear <= new Date().getFullYear()) {
+    const beforeYear = inputData.length;
     inputData = inputData.filter(
-      (product) =>
-        Number(product.carDetails?.yearOfManufacture) >= minYear &&
-        Number(product.carDetails?.yearOfManufacture) <= maxYear
+      (product) => {
+        const year = product.carDetails?.yearOfManufacture;
+        const passes = !year || year === "N/A" || (Number(year) >= minYear && Number(year) <= maxYear);
+        if (!passes) {
+          console.log('Year filter excluded:', product.title, 'Year:', year, 'Min:', minYear, 'Max:', maxYear);
+        }
+        return passes;
+      }
     );
+    console.log('applyFilter - After year filter:', beforeYear, '->', inputData.length);
   }
 
   if (searchByTitle) {
@@ -506,11 +527,18 @@ function applyFilter({ inputData, filters, sortBy }) {
   }
 
   if (minMileage >= 0 || maxMileage <= 200000000) {
+    const beforeMileage = inputData.length;
     inputData = inputData.filter(
-      (product) =>
-        Number(product.carDetails?.mileage) >= Number(minMileage) &&
-        Number(product.carDetails?.mileage) <= Number(maxMileage)
+      (product) => {
+        const mileage = product.carDetails?.mileage;
+        const passes = !mileage || mileage === "N/A" || (Number(mileage) >= Number(minMileage) && Number(mileage) <= Number(maxMileage));
+        if (!passes) {
+          console.log('Mileage filter excluded:', product.title, 'Mileage:', mileage, 'Min:', minMileage, 'Max:', maxMileage);
+        }
+        return passes;
+      }
     );
+    console.log('applyFilter - After mileage filter:', beforeMileage, '->', inputData.length);
   }
 
   if (makeType) {
@@ -535,6 +563,6 @@ function applyFilter({ inputData, filters, sortBy }) {
   //   });
   // }
 
-
+  console.log('applyFilter - Final result:', inputData.length, 'cars');
   return inputData;
 }

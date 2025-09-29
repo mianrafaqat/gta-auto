@@ -64,6 +64,40 @@ gtaAutosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Define public endpoints that should not trigger authentication redirects
+    const publicEndpoints = [
+      '/api/products',
+      '/api/car/getAll',
+      '/api/car/carsList',
+      '/api/car/carsBodyList',
+      '/api/car/getCarModelsByCar',
+      '/api/car/getCarModelsByYear',
+      '/api/car/filterByMakeAndModel',
+      '/api/blogs/getAll',
+      '/api/blogs/get/',
+      '/api/ads/getAll',
+      '/api/video/getAll',
+      '/api/categories',
+      '/api/categories/tree',
+      '/api/categories/attributes',
+      '/api/tax',
+      '/api/coupons',
+      '/api/forum/categories',
+      '/api/forum/topics',
+      '/api/forum/search',
+      '/api/forum/stats',
+      '/api/blog-comments/blog/',
+      '/api/blog-comments/',
+      '/api/address-book/primary',
+      '/api/shipping/available',
+      '/api/shipping/calculate'
+    ];
+
+    // Check if the current request is to a public endpoint
+    const isPublicEndpoint = publicEndpoints.some(endpoint => 
+      originalRequest.url && originalRequest.url.includes(endpoint)
+    );
+
     // If error is not 401 or request has already been retried, reject
     if (error?.response?.status !== 401 || originalRequest._retry) {
       // Use the new error handler
@@ -83,6 +117,11 @@ gtaAutosInstance.interceptors.response.use(
       });
       
       return Promise.reject(formattedError);
+    }
+
+    // For public endpoints, don't attempt token refresh or redirect
+    if (isPublicEndpoint) {
+      return Promise.reject(error);
     }
 
     originalRequest._retry = true;

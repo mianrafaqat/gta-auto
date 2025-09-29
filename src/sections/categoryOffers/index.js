@@ -327,12 +327,14 @@ const CategoryOffers = () => {
               minWidth: 120,
               cursor: "pointer",
               transition: "all 0.3s ease",
+              background: "transparent",
             }}
             onClick={() => handleCategoryClick(category)}>
             {/* Circular Category Element */}
             <Box
               sx={{
                 mb: 2,
+                background: "transparent",
               }}>
               {category.imageUrl ? (
                 <img
