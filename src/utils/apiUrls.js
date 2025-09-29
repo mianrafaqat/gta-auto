@@ -63,6 +63,7 @@ export const API_URLS = {
     create: "/api/orders", // POST: Create Order
     getMyOrders: "/api/orders", // GET: Get My Orders (with optional query params)
     getById: (id) => `/api/orders/${id}`, // GET: Get Order by ID
+    getByUserId: (userId) => `/api/orders/user/${userId}`, // GET: Get orders by user ID
 
     // Admin Routes
     getAll: "/api/orders/all", // GET: Get All Orders (Admin only) - Updated to match API docs
@@ -113,6 +114,7 @@ export const API_URLS = {
     add: "/api/blogs/add",
     update: "/api/blogs/update",
     delete: "/api/blogs/delete",
+    uploadImage: "/api/blogs/upload-image", // Image uploader for blog images
   },
   blogComment: {
     // Public Routes
@@ -171,6 +173,9 @@ export const API_URLS = {
     // Forum Search and Statistics Routes
     search: "/api/forum/search",
     stats: "/api/forum/stats",
+
+    // Image upload for forum
+    uploadImage: "/api/forum/upload-image", // Image uploader for forum images
   },
   video: {
     // Public Routes

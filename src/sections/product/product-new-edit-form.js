@@ -194,7 +194,7 @@ export default function ProductNewEditForm({
           .required("Regular price is required"),
       otherwise: (schema) => schema.nullable(),
     }),
-    salePrice: Yup.number().nullable(),
+    salePrice: Yup.number(),
     category: Yup.string().required("Category is required"),
     sku: Yup.string().nullable(),
     stockQuantity: Yup.number()
@@ -255,28 +255,6 @@ export default function ProductNewEditForm({
     resolver: yupResolver(NewProductSchema),
     defaultValues,
     mode: "onBlur",
-    values: currentProduct
-      ? {
-          name: currentProduct.name,
-          slug: currentProduct.slug,
-          description: currentProduct.description,
-          productType: currentProduct.type || "simple",
-          price: currentProduct.price || 0,
-          regularPrice: currentProduct.regularPrice || 0,
-          salePrice: currentProduct.salePrice || 0,
-          category: getCategoryId(currentProduct.categories?.[0]) || "",
-          sku: currentProduct.sku || "",
-          stockQuantity: currentProduct.stockQuantity || 0,
-          weight: currentProduct.weight || 0,
-          dimensions: {
-            length: currentProduct.dimensions?.length || 0,
-            width: currentProduct.dimensions?.width || 0,
-            height: currentProduct.dimensions?.height || 0,
-          },
-          metaTitle: currentProduct.metaTitle || "",
-          metaDescription: currentProduct.metaDescription || "",
-        }
-      : defaultValues,
   });
 
   const {
@@ -302,14 +280,11 @@ export default function ProductNewEditForm({
     if (currentProduct) {
       console.log("Setting form values from currentProduct:", currentProduct);
 
-      // First reset the form with default values
-      reset(defaultValues);
-
-      // Then set each field explicitly to ensure they're populated
-      methods.reset({
-        name: currentProduct.name,
-        slug: currentProduct.slug,
-        description: currentProduct.description,
+      // Create the form values object
+      const formValues = {
+        name: currentProduct.name || "",
+        slug: currentProduct.slug || "",
+        description: currentProduct.description || "",
         productType: currentProduct.type || "simple",
         price: currentProduct.price || 0,
         regularPrice: currentProduct.regularPrice || 0,
@@ -325,7 +300,14 @@ export default function ProductNewEditForm({
         },
         metaTitle: currentProduct.metaTitle || "",
         metaDescription: currentProduct.metaDescription || "",
-      });
+      };
+
+      console.log("Form values being set:", formValues);
+
+      // Reset the form with the current product values
+      reset(formValues);
+
+      // Set local state values
       setSlug(currentProduct?.slug || "");
       setProductType(currentProduct?.type || "simple");
 
@@ -359,7 +341,7 @@ export default function ProductNewEditForm({
         setPrimaryImageIndex(0);
       }
     }
-  }, [currentProduct, defaultValues, reset]);
+  }, [currentProduct, reset]);
 
   // Handle product type change
   const handleProductTypeChange = (event) => {
@@ -728,7 +710,8 @@ export default function ProductNewEditForm({
 
       if (isEdit && externalSubmit) {
         console.log("Submitting edit form with data:", data);
-        await externalSubmit({
+        
+        const editData = {
           ...data,
           type: data.productType,
           categories: data.category ? [data.category] : [],
@@ -742,9 +725,16 @@ export default function ProductNewEditForm({
             width: Number(data.dimensions?.width) || 0,
             height: Number(data.dimensions?.height) || 0,
           },
+          // Include additional fields that might not be in the form
+          stockStatus: stockStatus,
+          metaTitle: data.metaTitle || "",
+          metaDescription: data.metaDescription || "",
           // Ensure images is an array
           images: Array.isArray(images) ? images : (images ? [images] : []),
-        });
+        };
+
+        console.log("Final edit data being submitted:", editData);
+        await externalSubmit(editData);
         return;
       }
       // For variable products, ensure variations exist and have valid pricing

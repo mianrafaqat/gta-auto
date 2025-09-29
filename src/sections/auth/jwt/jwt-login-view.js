@@ -47,8 +47,20 @@ export default function JwtLoginView() {
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
-      .required("Email is required")
-      .email("Email must be a valid email address"),
+      .required("Email or phone number is required")
+      .test('email-or-phone', 'Must be a valid email address or phone number', function(value) {
+        if (!value) return false;
+        
+        // Check if it's a valid email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(value)) return true;
+        
+        // Check if it's a valid phone number (basic validation for numbers with optional + and spaces/dashes)
+        const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,15}$/;
+        if (phoneRegex.test(value.replace(/\s/g, ''))) return true;
+        
+        return false;
+      }),
     password: Yup.string().required("Password is required"),
     captchaResponse: Yup.string().required("Captcha is required"),
   });
@@ -103,7 +115,7 @@ export default function JwtLoginView() {
 
   const renderForm = (
     <Stack spacing={2.5}>
-      <RHFTextField name="email" label="Email address" />
+      <RHFTextField name="email" label="Email or Phone Number" />
       <RHFTextField
         name="password"
         label="Password"

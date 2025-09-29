@@ -36,6 +36,10 @@ import PostDetailsPreview from "./post-details-preview";
 // Import the blog API hooks
 import { useCreatePost, useUpdatePost } from "src/api/blog";
 
+// Import image upload service
+import ImageUploadService from "src/services/imageUpload/imageUpload.service";
+import BlogService from "src/services/blog/blog.service";
+
 // ----------------------------------------------------------------------
 
 export default function PostNewEditForm({ currentPost }) {
@@ -98,80 +102,115 @@ export default function PostNewEditForm({ currentPost }) {
     }
   }, [currentPost, defaultValues, reset]);
 
+  // Helper function to get post ID
+  const getPostId = (post) => post._id || post.id || post.blogID;
+
+  // Helper function to prepare blog data
+  const prepareBlogData = (formData) => {
+    // Handle cover URL - prioritize uploaded URL over local preview
+    let coverUrl = null;
+    if (typeof formData.coverUrl === "string") {
+      // Already uploaded URL
+      coverUrl = formData.coverUrl;
+    } else if (formData.coverUrl?.preview) {
+      // Local file preview (fallback)
+      coverUrl = formData.coverUrl.preview;
+    }
+
+    return {
+      title: formData.title,
+      description: formData.description,
+      content: formData.content,
+      coverUrl,
+      tags: formData.tags || [],
+      metaKeywords: formData.metaKeywords || [],
+      metaTitle: formData.metaTitle || "",
+      metaDescription: formData.metaDescription || "",
+      publish: "published",
+      enableComments: true,
+    };
+  };
+
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // Prepare the blog data
-      const blogData = {
-        title: data.title,
-        description: data.description,
-        content: data.content,
-        coverUrl:
-          typeof data.coverUrl === "string"
-            ? data.coverUrl
-            : data.coverUrl?.preview,
-        tags: data.tags || [],
-        metaKeywords: data.metaKeywords || [],
-        metaTitle: data.metaTitle || "",
-        metaDescription: data.metaDescription || "",
-        publish: "published", // Default to published
-        enableComments: true, // Default to enabled
-      };
-
-      console.log("🔍 Form submission - Blog data:", blogData);
+      const blogData = prepareBlogData(data);
 
       if (currentPost) {
         // Update existing post
-        const postId = currentPost._id || currentPost.id || currentPost.blogID;
-        console.log("🔍 Form submission - Available ID fields:", {
-          _id: currentPost._id,
-          id: currentPost.id,
-          blogID: currentPost.blogID,
-          selectedId: postId,
-        });
-
+        const postId = getPostId(currentPost);
+        
         if (!postId) {
-          throw new Error("Post ID not found in currentPost object");
+          throw new Error(
+            `Post ID not found. Available fields: ${Object.keys(currentPost).join(", ")}`
+          );
         }
 
-        const updateData = {
-          id: postId,
-          ...blogData,
-        };
-        console.log("🔍 Form submission - Update data:", updateData);
-        console.log("🔍 Form submission - Current post:", currentPost);
-        await updatePostMutation.mutateAsync(updateData);
-        enqueueSnackbar("Update success!");
+        await updatePostMutation.mutateAsync({ id: postId, ...blogData });
+        enqueueSnackbar("Post updated successfully!");
       } else {
         // Create new post
         await createPostMutation.mutateAsync(blogData);
-        enqueueSnackbar("Create success!");
+        enqueueSnackbar("Post created successfully!");
       }
 
       reset();
       preview.onFalse();
       router.push(paths.dashboard.post.root);
-      console.info("DATA", data);
     } catch (error) {
-      console.error(error);
-      enqueueSnackbar(error?.message || "Something went wrong!", {
-        variant: "error",
-      });
+      const errorMessage = error?.response?.data?.message || error?.message || "Something went wrong!";
+      enqueueSnackbar(errorMessage, { variant: "error" });
     }
   });
 
   const handleDrop = useCallback(
-    (acceptedFiles) => {
+    async (acceptedFiles) => {
       const file = acceptedFiles[0];
 
-      const newFile = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
+      if (!file) return;
 
-      if (file) {
+      try {
+        // Validate the image
+        const validation = ImageUploadService.validateImages(file, {
+          maxSize: 5 * 1024 * 1024, // 5MB
+          maxFiles: 1,
+          allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+        });
+
+        if (!validation.isValid) {
+          enqueueSnackbar(validation.errors.join(', '), { variant: "error" });
+          return;
+        }
+
+        // Create FormData and upload image
+        const formData = ImageUploadService.createFormData(file, 'image');
+        
+        // Show loading state
+        enqueueSnackbar("Uploading image...", { variant: "info" });
+        
+        // Upload image using the imageuploader API
+        const response = await BlogService.uploadImage(formData);
+        
+        // Extract image URL using the helper method
+        const imageUrl = ImageUploadService.extractImageUrl(response);
+
+        if (imageUrl) {
+          setValue("coverUrl", imageUrl, { shouldValidate: true });
+          enqueueSnackbar("Image uploaded successfully!", { variant: "success" });
+        } else {
+          throw new Error("No image URL returned from upload service");
+        }
+
+      } catch (error) {
+        enqueueSnackbar(error.message || "Failed to upload image", { variant: "error" });
+        
+        // Fallback to local preview if upload fails
+        const newFile = Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        });
         setValue("coverUrl", newFile, { shouldValidate: true });
       }
     },
-    [setValue]
+    [setValue, enqueueSnackbar]
   );
 
   const handleRemoveFile = useCallback(() => {

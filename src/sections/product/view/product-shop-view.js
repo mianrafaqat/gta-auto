@@ -133,7 +133,6 @@ export default function ProductShopView() {
           ...filters, // Pass filters to API
         });
 
-        console.log("API response:", response);
 
         if (response && response.products) {
           setAllCars(response.products);
@@ -229,11 +228,11 @@ export default function ProductShopView() {
       />
 
       <Stack direction="row" spacing={1} flexShrink={0}>
-        <IconButton onClick={() => setToggle(!toggle)}>
+        {/* <IconButton onClick={() => setToggle(!toggle)}>
           <Typography sx={{ mr: "8px", color: "#4caf50" }}>Filters</Typography>
 
           <Icon icon="mage:filter-fill" color="#4caf50" />
-        </IconButton>
+        </IconButton> */}
         <ProductSort
           sort={sortBy}
           onSort={handleSortBy}
@@ -373,12 +372,7 @@ export default function ProductShopView() {
                       }}>
                       <Stack direction="row" gap={2} alignItems="center">
                         <Box>
-                          <img
-                            src="/assets/convertable.png"
-                            alt="Comic"
-                            // width={450}
-                            // height={150}
-                          />
+                        <img width={560} src="/assets/car-accessories-png-car-parts-clipart.png" alt="Comic" />
                         </Box>
 
                         <Box>
@@ -392,7 +386,7 @@ export default function ProductShopView() {
                               lineHeight: 1.2,
                               whiteSpace: "nowrap",
                             }}>
-                            Import your desire accessories
+                            Import Your Desire Accessories
                           </Typography>
                           <Typography
                             variant="h5"
@@ -455,7 +449,6 @@ export default function ProductShopView() {
                 mb: { xs: 3, md: 5 },
                 width: "100%",
               }}>
-              {renderFilters}
 
               {/* {canReset && renderResults} */}
             </Stack>
@@ -513,6 +506,8 @@ export default function ProductShopView() {
                 />
               </Grid>
               <Grid item xs={12} md={10}>
+              {/* {renderFilters} */}
+
                 <ShopProductList
                   products={dataFiltered}
                   loading={loading}
@@ -523,7 +518,7 @@ export default function ProductShopView() {
                     fetchProducts(pagination.page);
                   }}
                   serverPagination={true}
-                  sx={{ mb: 5 }}
+                  sx={{ my: 5 }}
                 />
               </Grid>
             </Grid>

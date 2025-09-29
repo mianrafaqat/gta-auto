@@ -155,7 +155,7 @@ export default function CheckoutBillingAddress() {
                   color="inherit" 
                   size="small" 
                   sx={{ ml: 1 }}
-                  onClick={() => window.location.href = '/auth/jwt/login/?returnTo=%2Fproduct%2Fcheckout%2F'}
+                  onClick={() => window.location.href = '/login/?returnTo=%2Fproduct%2Fcheckout%2F'}
                 >
                   Login to save addresses permanently
                 </Button>

@@ -9,7 +9,7 @@ function path(root, sublink) {
 }
 
 const ROOTS = {
-  AUTH: "/auth",
+  AUTH: "/",
   DASHBOARD: "/dashboard",
 };
 
@@ -71,12 +71,12 @@ export const paths = {
       forgotPassword: `${ROOTS.AUTH}/amplify/forgot-password`,
     },
     jwt: {
-      login: path(ROOTS.AUTH, "/jwt/login"),
-      register: path(ROOTS.AUTH, "/jwt/register"),
-      verify: path(ROOTS.AUTH, "/jwt/verify"),
-      verifyReset: path(ROOTS.AUTH, "/jwt/verify-reset"),
-      newPassword: path(ROOTS.AUTH, "/jwt/new-password"),
-      forgotPassword: path(ROOTS.AUTH, "/jwt/forgot-password"),
+      login: path(ROOTS.AUTH, "/login"),
+      register: path(ROOTS.AUTH, "/register"),
+      verify: path(ROOTS.AUTH, "/verify"),
+      verifyReset: path(ROOTS.AUTH, "/verify-reset"),
+      newPassword: path(ROOTS.AUTH, "/new-password"),
+      forgotPassword: path(ROOTS.AUTH, "/forgot-password"),
     },
     firebase: {
       login: `${ROOTS.AUTH}/firebase/login`,
@@ -302,5 +302,9 @@ export const paths = {
   },
   cars: {
     root: "/cars",
+  },
+  category: {
+    root: "/category",
+    bySlug: (slug) => `/category/${slug}`,
   },
 };

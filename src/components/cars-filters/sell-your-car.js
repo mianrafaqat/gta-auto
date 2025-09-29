@@ -129,7 +129,7 @@ export default function SellYourCarSection() {
                 backgroundColor: '#45a049',
               },
             }}
-            onClick={() => router.push('/auth/jwt/login')}
+            onClick={() => router.push('/login')}
           >
             Post Your Ad
           </Button>
