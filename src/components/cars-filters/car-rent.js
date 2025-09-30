@@ -124,7 +124,7 @@ export default function CarRentSection() {
               mb: 1,
               width: "max-content",
             }}>
-            Car Rental
+             Rental
           </Typography>
         </Box>
 

@@ -89,7 +89,7 @@ const Services = () => {
         backgroundColor: "#000000",
         minHeight: "100vh",
       }}>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {/* Header Section */}
         <Box textAlign="center" mb={8}>
           <Typography

@@ -254,7 +254,7 @@ export default function GarageItem({
   };
 
   const renderContent = (
-    <Stack gap={2.5} sx={{ px: "31px", py: "16px", bgcolor: "#fff" }}>
+    <Stack gap={2.5} sx={{ px: "18px", py: "16px", bgcolor: "#fff" }}>
       {onHome ? (
         <Stack
           direction={onHome ? "column" : "row"}
