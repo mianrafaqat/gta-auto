@@ -45,7 +45,7 @@ const LatestProductsList = ({ products, loading }) => {
     centerPadding: "0px",
     responsive: [
       {
-        breakpoint: 1200,
+        breakpoint: 1400,
         settings: {
           slidesToShow: getSlidesToShow(3),
           slidesToScroll: 1,
@@ -53,7 +53,7 @@ const LatestProductsList = ({ products, loading }) => {
         },
       },
       {
-        breakpoint: 900,
+        breakpoint: 1000,
         settings: {
           slidesToShow: getSlidesToShow(2),
           slidesToScroll: 1,
@@ -61,7 +61,7 @@ const LatestProductsList = ({ products, loading }) => {
         },
       },
       {
-        breakpoint: 600,
+        breakpoint: 768,
         settings: {
           slidesToShow: getSlidesToShow(1),
           slidesToScroll: 1,
@@ -143,7 +143,13 @@ const LatestProductsList = ({ products, loading }) => {
               {products.map((product) => (
                 <Box
                   key={product._id}
-                  sx={{ width: "100%", maxWidth: "400px" }}>
+                  sx={{ 
+                    width: "100%", 
+                    maxWidth: "400px",
+                    minWidth: "280px",
+                    display: "flex",
+                    justifyContent: "center"
+                  }}>
                   <ProductItem product={product} />
                 </Box>
               ))}
@@ -163,8 +169,15 @@ const LatestProductsList = ({ products, loading }) => {
               {products.map((product) => (
                 <Box
                   key={product._id}
-                  sx={{ px: 1, display: "flex !important" }}>
-                  <ProductItem product={product} />
+                  sx={{ 
+                    px: 1, 
+                    display: "flex !important",
+                    height: "100%",
+                    minHeight: "400px"
+                  }}>
+                  <Box sx={{ width: "100%", height: "100%" }}>
+                    <ProductItem product={product} />
+                  </Box>
                 </Box>
               ))}
             </Slider>

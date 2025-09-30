@@ -353,7 +353,7 @@ export default function GarageItem({
               {title}
             </Typography>
 
-            <Stack direction="row" spacing={2} sx={{ mb: 0.5 }}>
+            <Stack direction="row" flexWrap="wrap" spacing={2} sx={{ mb: 0.5 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                 <Iconify
                   icon="eva:car-outline"

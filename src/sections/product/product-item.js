@@ -333,57 +333,75 @@ export default function ProductItem({
   };
 
   const renderContent = (
-    <Stack gap={{ xs: 1, md: 2 }} sx={{ p: { xs: 1, md: 2 }, bgcolor: "#fff" }}>
-      {/* Product Title */}
-      <Typography
-        variant="h6"
-        sx={{
-          fontSize: { xs: "14px", md: "16px" },
-          fontWeight: "400",
-          color: "#333333",
-          lineHeight: 1.2,
-          whiteSpace: "nowrap",
-        }}>
-        {carDetails?.yearOfManufacture
-          ? `${carDetails.yearOfManufacture} - `
-          : ""}
-        {productName}
-      </Typography>
-
-      {/* Price Section */}
-      <Stack
-        direction="row"
-        gap={1}
-        justifyContent="space-between"
-        alignItems="center"
-        pb="12px"
-        borderBottom="1px solid #E0E0E0">
+    <Stack 
+      gap={{ xs: 1, md: 2 }} 
+      sx={{ 
+        p: { xs: 1, md: 2 }, 
+        bgcolor: "#fff",
+        flex: 1,
+        justifyContent: "space-between"
+      }}>
+      <Box>
+        {/* Product Title */}
         <Typography
           variant="h6"
           sx={{
-            fontWeight: "500",
+            fontSize: { xs: "14px", md: "16px" },
+            fontWeight: "400",
             color: "#333333",
-            fontSize: "16px",
+            lineHeight: 1.2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}>
-          PKR {Number(productSalePrice)?.toLocaleString()}
+          {carDetails?.yearOfManufacture
+            ? `${carDetails.yearOfManufacture} - `
+            : ""}
+          {productName}
         </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: "#999999",
-            textDecoration: "line-through",
-            fontSize: "14px",
-          }}>
-          PKR {Number(productRegularPrice)?.toLocaleString()}
-        </Typography>
-      </Stack>
+
+        {/* Price Section */}
+        <Stack
+          direction="row"
+          gap={1}
+          justifyContent="space-between"
+          alignItems="center"
+          pb="12px"
+          borderBottom="1px solid #E0E0E0"
+          sx={{ mt: 1 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "500",
+              color: "#333333",
+              fontSize: "16px",
+            }}>
+            PKR {Number(productSalePrice)?.toLocaleString()}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#999999",
+              textDecoration: "line-through",
+              fontSize: "14px",
+            }}>
+            PKR {Number(productRegularPrice)?.toLocaleString()}
+          </Typography>
+        </Stack>
+      </Box>
 
       {/* Action Buttons */}
       <Stack
         direction="row"
-        flexWrap={{ xs: "nowrap", md: "nowrap" }}
+        flexWrap="nowrap"
         gap={1}
-        sx={{ mt: 1, height: "58px", borderRadius: "3px" }}>
+        sx={{ 
+          mt: "auto",
+          height: "48px", 
+          borderRadius: "3px",
+          minHeight: "48px",
+          alignItems: "stretch"
+        }}>
         <LoadingButton
           variant="contained"
           loading={isBuyNowLoading}
@@ -392,13 +410,15 @@ export default function ProductItem({
             handleBuyNow();
           }}
           sx={{
-            width: { xs: "100%", md: "100%" },
+            flex: 1,
+            height: "48px",
             backgroundColor: "#4caf50",
             textTransform: "none",
-            fontSize: "14px",
+            fontSize: { xs: "12px", sm: "14px" },
             fontWeight: 500,
             whiteSpace: "nowrap",
-            minWidth: { md: "140px", xs: "unset" },
+            minWidth: "120px",
+            maxWidth: "200px",
             "&:hover": {
               backgroundColor: "#45a049",
             },
@@ -407,7 +427,6 @@ export default function ProductItem({
         </LoadingButton>
 
         <Button
-          fullWidth
           variant="outlined"
           size="medium"
           onClick={(e) => {
@@ -415,12 +434,16 @@ export default function ProductItem({
             handleAddCart();
           }}
           sx={{
+            minWidth: "48px",
+            width: "48px",
+            height: "48px",
             borderColor: "#4caf50",
             color: "#4caf50",
             backgroundColor: "#ffffff",
             textTransform: "none",
             fontSize: "14px",
             fontWeight: 500,
+            flexShrink: 0,
             "&:hover": {
               borderColor: "#45a049",
               backgroundColor: "rgba(76, 175, 80, 0.04)",
@@ -429,7 +452,6 @@ export default function ProductItem({
           <ShoppingCartOutlinedIcon />
         </Button>
         <Button
-          fullWidth
           variant="outlined"
           size="medium"
           onClick={(e) => {
@@ -437,12 +459,16 @@ export default function ProductItem({
             handleAddOrRemoveFav();
           }}
           sx={{
+            minWidth: "48px",
+            width: "48px",
+            height: "48px",
             borderColor: "#4caf50",
             color: "#4caf50",
             backgroundColor: "#ffffff",
             textTransform: "none",
             fontSize: "14px",
             fontWeight: 500,
+            flexShrink: 0,
             "&:hover": {
               borderColor: "#45a049",
               backgroundColor: "rgba(76, 175, 80, 0.04)",
@@ -474,6 +500,9 @@ export default function ProductItem({
         transition: "all 0.3s ease",
         overflow: "hidden",
         cursor: "pointer",
+        minHeight: "400px",
+        display: "flex",
+        flexDirection: "column",
         "&:hover": {
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         },
@@ -483,7 +512,9 @@ export default function ProductItem({
         router.push(paths.product.details(productId));
       }}>
       <RenderImg />
-      {renderContent}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {renderContent}
+      </Box>
     </Card>
   );
 }
