@@ -62,13 +62,16 @@ const CategoryOffers = () => {
   }, []);
 
   const handleCategoryClick = (category) => {
-    // Navigate to the category URL or use the slug
-    if (category.url) {
-      router.push(category.url);
-    } else if (category.slug) {
-      router.push(`/categories/${category.slug}`);
+    // Navigate to the category page using slug or name
+    if (category.slug) {
+      router.push(`/category/${category.slug}`);
+    } else if (category.name) {
+      // Create slug from name if slug doesn't exist
+      const slug = category.name.toLowerCase().replace(/\s+/g, '-');
+      router.push(paths.category.bySlug(slug));
     } else {
-      router.push(paths.cars.all + `?category=${category._id}`);
+      // Fallback to shop with category filter
+      router.push(paths.product.root + `?category=${category._id}`);
     }
   };
 

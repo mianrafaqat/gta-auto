@@ -312,6 +312,32 @@ class ForumService {
       throw ex;
     }
   };
+
+  // ========================================
+  // FORUM IMAGE UPLOAD
+  // ========================================
+
+  // Upload image for forum posts
+  uploadImage = async (formData) => {
+    try {
+      const res = await gtaAutosInstance.post(
+        API_URLS.forum.uploadImage,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      return res.data;
+    } catch (ex) {
+      const errorMessage = ex.response?.data?.message || ex.message || "Failed to upload forum image";
+      const error = new Error(errorMessage);
+      error.response = ex.response;
+      error.status = ex.response?.status;
+      throw error;
+    }
+  };
 }
 
 const instance = new ForumService();

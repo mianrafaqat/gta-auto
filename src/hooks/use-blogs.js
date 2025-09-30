@@ -9,25 +9,19 @@ export const useGetBlogs = () => {
     queryFn: async () => {
       try {
         const response = await BlogService.getAll();
-        console.log("Blog API Response:", response);
-        console.log("Blog API Response Data:", response?.data);
 
         // Handle different response structures
-        let blogs = [];
         if (response?.data?.data && Array.isArray(response.data.data)) {
-          blogs = response.data.data;
-        } else if (response?.data && Array.isArray(response.data)) {
-          blogs = response.data;
-        } else if (Array.isArray(response)) {
-          blogs = response;
-        } else {
-          console.warn("Unexpected response structure:", response);
-          blogs = [];
+          return response.data.data;
         }
-
-        return blogs;
+        if (response?.data && Array.isArray(response.data)) {
+          return response.data;
+        }
+        if (Array.isArray(response)) {
+          return response;
+        }
+        return [];
       } catch (error) {
-        console.error("Error fetching blogs:", error);
         return [];
       }
     },
@@ -41,25 +35,19 @@ export const useGetBlogById = (id) => {
     queryFn: async () => {
       try {
         const response = await BlogService.getById(id);
-        console.log("Blog by ID Response:", response);
 
         // Handle different response structures
-        let blogData = null;
         if (response?.data?.data) {
-          blogData = response.data.data;
-        } else if (response?.data) {
-          blogData = response.data;
-        } else if (response) {
-          blogData = response;
-        } else {
-          console.warn("Unexpected response structure in getById:", response);
-          blogData = null;
+          return response.data.data;
         }
-
-        console.log("Final blog data:", blogData);
-        return blogData;
+        if (response?.data) {
+          return response.data;
+        }
+        if (response) {
+          return response;
+        }
+        return null;
       } catch (error) {
-        console.error("Error fetching blog by ID:", error);
         return null;
       }
     },
@@ -102,12 +90,10 @@ export const useUpdateBlog = () => {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["blogs"]);
       queryClient.invalidateQueries(["blog", variables.id]);
-      enqueueSnackbar("Blog post updated successfully!");
     },
     onError: (error) => {
-      enqueueSnackbar(error?.message || "Failed to update blog post", {
-        variant: "error",
-      });
+      const errorMessage = error?.response?.data?.message || error?.message || "Failed to update blog post";
+      enqueueSnackbar(errorMessage, { variant: "error" });
     },
   });
 };
@@ -150,17 +136,9 @@ export const useSearchBlogs = (query) => {
           blogs = response.data;
         } else if (Array.isArray(response)) {
           blogs = response;
-        } else {
-          console.warn("Unexpected response structure in search:", response);
-          blogs = [];
         }
 
-        // Ensure blogs is always an array
-        if (!Array.isArray(blogs)) {
-          console.error("Blogs is not an array in search:", blogs);
-          return [];
-        }
-
+        if (!Array.isArray(blogs)) return [];
         if (!query) return blogs;
 
         return blogs.filter(
@@ -170,7 +148,6 @@ export const useSearchBlogs = (query) => {
             blog.content?.toLowerCase().includes(query.toLowerCase())
         );
       } catch (error) {
-        console.error("Error searching blogs:", error);
         return [];
       }
     },
@@ -194,20 +171,11 @@ export const useGetLatestBlogs = (limit = 5) => {
           blogs = response.data;
         } else if (Array.isArray(response)) {
           blogs = response;
-        } else {
-          console.warn("Unexpected response structure in latest:", response);
-          blogs = [];
         }
 
-        // Ensure blogs is always an array
-        if (!Array.isArray(blogs)) {
-          console.error("Blogs is not an array in latest:", blogs);
-          return [];
-        }
-
+        if (!Array.isArray(blogs)) return [];
         return blogs.slice(0, limit);
       } catch (error) {
-        console.error("Error fetching latest blogs:", error);
         return [];
       }
     },

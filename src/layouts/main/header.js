@@ -153,8 +153,22 @@ export default function Header() {
                 </IconButton>
               </Badge>
 
-              {mdUp && !Object.keys(user).length > 0 && <LoginButton />}
+              {mdUp && !Object.keys(user).length > 0 && (
+                <>
+                  <LoginButton />
+                  <MoveTo
+                    sx={{
+                      color: "white",
+                      borderColor: "black",
+                      whiteSpace: "nowrap",
+                    }}
+                    title="Post Your Ad"
+                    path={paths.dashboard.cars.my.add}
+                  />
+                </>
+                 )}
               {mdUp && Object.keys(user).length > 0 && (
+                <>
                 <MoveTo
                   sx={{
                     color: "white",
@@ -164,6 +178,16 @@ export default function Header() {
                   title="Move to Dashboard"
                   path={paths.dashboard.root}
                 />
+                <MoveTo
+                  sx={{
+                    color: "white",
+                    borderColor: "black",
+                    whiteSpace: "nowrap",
+                  }}
+                  title="Post Your Ad"
+                  path={paths.dashboard.cars.my.add}
+                />
+                </>
               )}
               {mdUp && Object.keys(user).length > 0 && (
                 <IconButton

@@ -48,7 +48,7 @@ export default function ProductEditView({ productId }) {
 
   const handleUpdate = async (formData) => {
     try {
-   
+      console.log("Updating product with form data:", formData);
 
       // Ensure we have the product ID
       if (!productId) {
@@ -78,6 +78,7 @@ export default function ProductEditView({ productId }) {
       console.log("Formatted update payload:", updateData);
 
       // Call the update endpoint
+      await productsService.update(productId, updateData);
 
       enqueueSnackbar("Product updated successfully", { variant: "success" });
       router.push(paths.dashboard.product.root);

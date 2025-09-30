@@ -19,6 +19,7 @@ import {
   LocalCarWash,
   Support,
 } from "@mui/icons-material";
+import CarRentSection from "../cars-filters/car-rent";
 
 const Services = () => {
   const services = [
@@ -287,7 +288,7 @@ const Services = () => {
             </Grid>
           ))}
         </Grid>
-
+        <CarRentSection />
         {/* Bottom CTA Section */}
         <Box
           sx={{

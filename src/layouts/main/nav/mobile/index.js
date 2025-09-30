@@ -68,9 +68,11 @@ export default function NavMobile({ data }) {
 
           <Box ml="20px" mt="20px">
             {!Object.keys(user).length > 0 && <LoginButton />}
-            {Object.keys(user).length > 0 && (
+            {Object.keys(user).length > 0 && (<>
               <MoveTo title="Move to Dashboard" path={paths.dashboard.root} />
-            )}
+              <MoveTo title="Post Your Ad" path={paths.dashboard.cars.my.add} />
+            </>
+          )}
           </Box>
         </Scrollbar>
       </Drawer>

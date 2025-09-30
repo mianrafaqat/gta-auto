@@ -103,7 +103,7 @@ export default function CarsFiltersPage() {
               }}>
               <Stack direction="row" gap={2} alignItems="center">
                 <Box>
-                  <img width={300} height={185} style={{ objectFit: "contain" }} src="/assets/bugati.png" alt="Comic" />
+                  <img width={560}  style={{ objectFit: "contain" }} src="/assets/bugati.png" alt="Comic" />
                 </Box>
 
                 <Box>
@@ -433,7 +433,7 @@ export default function CarsFiltersPage() {
                 alignItems="center"
                 justifyContent="space-between">
                 <Box>
-                  <img src="/assets/car-accessories-png-car-parts-clipart.png" alt="Comic" />
+                  <img width={560} src="/assets/car-accessories-png-car-parts-clipart.png" alt="Comic" />
                 </Box>
 
                 <Box>

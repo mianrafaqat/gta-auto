@@ -5,79 +5,44 @@ class BlogService {
   // Public Routes
   getAll = async () => {
     try {
-      console.log("🔍 BlogService.getAll: Starting...");
-      console.log(
-        "🔍 BlogService.getAll: API_URLS.blog.getAll:",
-        API_URLS.blog.getAll
-      );
-      console.log("🔍 BlogService.getAll: URL:", API_URLS.blog.getAll);
-      console.log(
-        "🔍 BlogService.getAll: Base URL:",
-        gtaAutosInstance.defaults.baseURL
-      );
-
       const res = await gtaAutosInstance.get(API_URLS.blog.getAll);
-      console.log("BlogService.getAll response:", res);
 
       // Ensure we always return a proper response structure
       if (!res || typeof res !== "object") {
-        console.warn("BlogService.getAll: Invalid response structure:", res);
         return { data: { data: [] } };
       }
 
       // Normalize the response structure
       if (res.data && Array.isArray(res.data)) {
-        // If data is directly an array, wrap it in the expected structure
         return { data: { data: res.data } };
-      } else if (res.data && res.data.data && Array.isArray(res.data.data)) {
-        // If data.data is an array, return as is
-        return res;
-      } else {
-        console.warn(
-          "BlogService.getAll: Unexpected data structure:",
-          res.data
-        );
-        return { data: { data: [] } };
       }
+      if (res.data && res.data.data && Array.isArray(res.data.data)) {
+        return res;
+      }
+      return { data: { data: [] } };
     } catch (ex) {
-      console.error("BlogService.getAll error:", ex);
-      // Return a safe default response structure
       return { data: { data: [] } };
     }
   };
 
   getById = async (id) => {
     try {
-      console.log("🔍 BlogService.getById: Starting...");
-      console.log("🔍 BlogService.getById: ID:", id);
-      console.log("🔍 BlogService.getById: URL:", API_URLS.blog.getById(id));
-
       const res = await gtaAutosInstance.get(API_URLS.blog.getById(id));
-      console.log("BlogService.getById response:", res);
 
       // Ensure we always return a proper response structure
       if (!res || typeof res !== "object") {
-        console.warn("BlogService.getById: Invalid response structure:", res);
         return { data: { data: null } };
       }
 
       // Normalize the response structure
       if (res.data && !res.data.data) {
-        // If data exists but doesn't have nested data, wrap it
         return { data: { data: res.data } };
-      } else if (res.data && res.data.data) {
-        // If data.data exists, return as is
-        return res;
-      } else {
-        console.warn(
-          "BlogService.getById: Unexpected data structure:",
-          res.data
-        );
-        return { data: { data: null } };
       }
+      if (res.data && res.data.data) {
+        return res;
+      }
+      return { data: { data: null } };
     } catch (ex) {
-      console.error("BlogService.getById error:", ex);
-      // Return a safe default response structure
       return { data: { data: null } };
     }
   };
@@ -94,41 +59,64 @@ class BlogService {
 
   update = async (data) => {
     try {
-      // Transform the data to match backend expectations
       const { id, ...blogData } = data;
+      
+      if (!id) {
+        throw new Error("Blog ID is required for update operation");
+      }
+      
       const requestData = {
         blogID: id, // Backend expects blogID, not id
         ...blogData,
       };
-
-      console.log("🔍 BlogService.update: Request data:", requestData);
+      
       const res = await gtaAutosInstance.put(API_URLS.blog.update, requestData);
-      console.log("🔍 BlogService.update: Response:", res);
       return res;
     } catch (ex) {
-      console.error("🔍 BlogService.update: Error:", ex);
-      throw ex;
+      const errorMessage = ex.response?.data?.message || ex.message || "Update failed";
+      const error = new Error(errorMessage);
+      error.response = ex.response;
+      error.status = ex.response?.status;
+      throw error;
     }
   };
 
   delete = async (data) => {
     try {
-      // Transform the data to match backend expectations
       const { id, ...otherData } = data;
       const requestData = {
         blogID: id, // Backend expects blogID, not id
         ...otherData,
       };
 
-      console.log("🔍 BlogService.delete: Request data:", requestData);
       const res = await gtaAutosInstance.delete(API_URLS.blog.delete, {
         data: requestData,
       });
-      console.log("🔍 BlogService.delete: Response:", res);
       return res;
     } catch (ex) {
-      console.error("🔍 BlogService.delete: Error:", ex);
       throw ex;
+    }
+  };
+
+  // Image upload for blog posts
+  uploadImage = async (formData) => {
+    try {
+      const res = await gtaAutosInstance.post(
+        API_URLS.blog.uploadImage,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      return res.data;
+    } catch (ex) {
+      const errorMessage = ex.response?.data?.message || ex.message || "Failed to upload blog image";
+      const error = new Error(errorMessage);
+      error.response = ex.response;
+      error.status = ex.response?.status;
+      throw error;
     }
   };
 }

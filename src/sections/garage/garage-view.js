@@ -348,12 +348,8 @@ export default function GarageView() {
                       }}>
                       <Stack direction="row" gap={2} alignItems="center">
                         <Box>
-                          <img
-                            src="/assets/convertable.png"
-                            alt="Comic"
-                            // width={450}
-                            // height={150}
-                          />
+                        <img width={560}  style={{ objectFit: "contain" }} src="/assets/bugati.png" alt="Comic" />
+
                         </Box>
 
                         <Box>

@@ -224,7 +224,7 @@ export default function MyOrdersView() {
           Retry
         </Button>
         <Button
-          onClick={() => (window.location.href = "/auth/jwt/login")}
+          onClick={() => (window.location.href = "/login")}
           variant="outlined">
           Go to Login
         </Button>

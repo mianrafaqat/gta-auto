@@ -33,25 +33,25 @@ const services = [
     id: 1,
     question: "Car Broke down?",
     title: "Call a Mechanic",
-    backgroundImage: "/assets/mechanicService.png",
+    backgroundImage: "/assets/Call-a-mechanic.png",
   },
   {
     id: 2,
     question: "Got into an accident!",
     title: "Towing Service",
-    backgroundImage: "/assets/towingService.png",
+    backgroundImage: "/assets/towing-service.png",
   },
   {
     id: 3,
     question: "Want a clean car?",
     title: "Car Detailing",
-    backgroundImage: "/assets/detailingService.png",
+    backgroundImage: "/assets/car-studio.png",
   },
   {
     id: 4,
     question: "Got into an accident!",
     title: "Towing Service",
-    backgroundImage: "/assets/towingService.png",
+    backgroundImage: "/assets/towing-service.png",
   },
 ];
 
@@ -201,7 +201,7 @@ export default function ServicesSection() {
                   />
 
                   {/* Question Bubble */}
-                  <Box
+                  {/* <Box
                     sx={{
                       position: "absolute",
                       top: 20,
@@ -221,7 +221,7 @@ export default function ServicesSection() {
                       }}>
                       {service.question}
                     </Typography>
-                  </Box>
+                  </Box> */}
 
                   {/* Service Button */}
                   <Box

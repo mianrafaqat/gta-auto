@@ -7,7 +7,7 @@ const createTransporter = () => {
     port: parseInt(process.env.EMAIL_PORT) || 587,
     secure: process.env.EMAIL_SECURE === 'true' || false, // true for 465, false for other ports
     auth: {
-      user: process.env.EMAIL_USER || 'cityautosuk@gmail.com',
+      user: process.env.EMAIL_USER || 'garagetunedautos01@gmail.com ',
       pass: process.env.EMAIL_PASS, // App password for Gmail
     },
     tls: {
