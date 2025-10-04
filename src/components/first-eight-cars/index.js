@@ -145,7 +145,7 @@ export default function LastestEightCars() {
   }
 
   return (
-    <Box sx={{ bgcolor: "black", py: 6 }}>
+    <Box sx={{  py: 6 }}>
       <Container maxWidth="xl">
         <Box sx={{ pb: "28px" }}>
           <Typography

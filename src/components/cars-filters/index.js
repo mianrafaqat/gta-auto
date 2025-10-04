@@ -383,7 +383,17 @@ export default function CarsFiltersPage() {
       </Container>
 
       <CarRentSection />
+      <Box sx={{
+        backgroundImage: "url(/assets/serviceBg.webp)",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "600px",
+      }}>
+        
       <FeaturedCarsSection />
+      </Box>
 
       {/* <HeroBottom /> */}
 
@@ -393,7 +403,17 @@ export default function CarsFiltersPage() {
       {/* Services Section */}
 
       {/* Latest Products Section */}
+      <Box sx={{
+        backgroundImage: "url(/assets/serviceBg.webp)",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "600px",
+      }}>
       <LatestProductsSection isShop={false} />
+      </Box>
+    
 
       <BrowseVideosSection />
       <Container maxWidth="xl">
@@ -520,7 +540,7 @@ export default function CarsFiltersPage() {
 
       <ServicesSection />
 
-      <CTA />
+      {/* <CTA /> */}
 
       {/* Upcoming Cars And Events Section */}
       {/* <UpcomingCarsSection /> */}
