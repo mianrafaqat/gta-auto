@@ -195,7 +195,7 @@ export default function ServicesSection() {
                       bottom: 0,
                       backgroundImage: `url(${service.backgroundImage})`,
                       backgroundSize: "cover",
-                      backgroundPosition: "center",
+                      backgroundPosition: {md: "center", xs: "unset"},
                       backgroundRepeat: "no-repeat",
                     }}
                   />

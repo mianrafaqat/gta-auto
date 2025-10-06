@@ -393,14 +393,17 @@ export default function ProductItem({
       {/* Action Buttons */}
       <Stack
         direction="row"
-        flexWrap="nowrap"
-        gap={1}
+        flexWrap={{md:"nowrap", xs:"wrap"}}
+        justifyContent={{xs:"space-between", md:"center"}}
+        gap={{ xs: 1, sm: 1.5, md: 2 }}
         sx={{ 
           mt: "auto",
-          height: "48px", 
+          height: { xs: "44px", sm: "48px" }, 
           borderRadius: "3px",
-          minHeight: "48px",
-          alignItems: "stretch"
+          minHeight: { xs: "44px", sm: "48px" },
+          alignItems: "stretch",
+          width: "100%",
+          px: { xs: 0.5, sm: 1 }
         }}>
         <LoadingButton
           variant="contained"
@@ -410,15 +413,16 @@ export default function ProductItem({
             handleBuyNow();
           }}
           sx={{
-            flex: 1,
-            height: "48px",
+            flex: { xs: 1, sm: 1.2, md: 1.5 },
+            height: { xs: "44px", sm: "48px" },
             backgroundColor: "#4caf50",
             textTransform: "none",
-            fontSize: { xs: "12px", sm: "14px" },
+            fontSize: { xs: "12px", sm: "13px", md: "14px" },
             fontWeight: 500,
             whiteSpace: "nowrap",
-            minWidth: "120px",
-            maxWidth: "200px",
+            minWidth: { xs: "90px", sm: "110px", md: "130px" },
+            maxWidth: { xs: "100%", sm: "160px", md: "180px" },
+            px: { xs: 1.5, sm: 2, md: 2.5 },
             "&:hover": {
               backgroundColor: "#45a049",
             },
@@ -426,65 +430,73 @@ export default function ProductItem({
           Buy Now
         </LoadingButton>
 
-        <Button
-          variant="outlined"
-          size="medium"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAddCart();
-          }}
-          sx={{
-            minWidth: "48px",
-            width: "48px",
-            height: "48px",
-            borderColor: "#4caf50",
-            color: "#4caf50",
-            backgroundColor: "#ffffff",
-            textTransform: "none",
-            fontSize: "14px",
-            fontWeight: 500,
-            flexShrink: 0,
-            "&:hover": {
-              borderColor: "#45a049",
-              backgroundColor: "rgba(76, 175, 80, 0.04)",
-            },
-          }}>
-          <ShoppingCartOutlinedIcon />
-        </Button>
-        <Button
-          variant="outlined"
-          size="medium"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAddOrRemoveFav();
-          }}
-          sx={{
-            minWidth: "48px",
-            width: "48px",
-            height: "48px",
-            borderColor: "#4caf50",
-            color: "#4caf50",
-            backgroundColor: "#ffffff",
-            textTransform: "none",
-            fontSize: "14px",
-            fontWeight: 500,
-            flexShrink: 0,
-            "&:hover": {
-              borderColor: "#45a049",
-              backgroundColor: "rgba(76, 175, 80, 0.04)",
-            },
-          }}>
-          {/* Show filled heart if product is in favorites, outline heart if not */}
-          {(() => {
-            const actualUser = user?.user || user;
-            const isFavorited = actualUser?.favourite?.includes(productId);
-            return isFavorited ? (
-              <FavoriteIcon sx={{ color: "#4caf50" }} />
-            ) : (
-              <FavoriteBorderOutlinedIcon />
-            );
-          })()}
-        </Button>
+        <Stack direction="row" gap={{ xs: 1, sm: 1.5, md: 1.5 }} sx={{ flexShrink: 0 }}>
+          <Button
+            variant="outlined"
+            size="medium"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddCart();
+            }}
+            sx={{
+              minWidth: { xs: "42px", sm: "46px", md: "48px" },
+              width: { xs: "42px", sm: "46px", md: "48px" },
+              height: { xs: "44px", sm: "48px" },
+              borderColor: "#4caf50",
+              color: "#4caf50",
+              backgroundColor: "#ffffff",
+              textTransform: "none",
+              fontSize: { xs: "12px", sm: "14px" },
+              fontWeight: 500,
+              flexShrink: 0,
+              "&:hover": {
+                borderColor: "#45a049",
+                backgroundColor: "rgba(76, 175, 80, 0.04)",
+              },
+              "& .MuiSvgIcon-root": {
+                fontSize: { xs: "18px", sm: "20px", md: "20px" }
+              }
+            }}>
+            <ShoppingCartOutlinedIcon />
+          </Button>
+          <Button
+            variant="outlined"
+            size="medium"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddOrRemoveFav();
+            }}
+            sx={{
+              minWidth: { xs: "42px", sm: "46px", md: "48px" },
+              width: { xs: "42px", sm: "46px", md: "48px" },
+              height: { xs: "44px", sm: "48px" },
+              borderColor: "#4caf50",
+              color: "#4caf50",
+              backgroundColor: "#ffffff",
+              textTransform: "none",
+              fontSize: { xs: "12px", sm: "14px" },
+              fontWeight: 500,
+              flexShrink: 0,
+              "&:hover": {
+                borderColor: "#45a049",
+                backgroundColor: "rgba(76, 175, 80, 0.04)",
+              },
+              "& .MuiSvgIcon-root": {
+                fontSize: { xs: "18px", sm: "20px", md: "20px" }
+              }
+            }}>
+            {/* Show filled heart if product is in favorites, outline heart if not */}
+            {(() => {
+              const actualUser = user?.user || user;
+              const isFavorited = actualUser?.favourite?.includes(productId);
+              return isFavorited ? (
+                <FavoriteIcon sx={{ color: "#4caf50" }} />
+              ) : (
+                <FavoriteBorderOutlinedIcon />
+              );
+            })()}
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );
