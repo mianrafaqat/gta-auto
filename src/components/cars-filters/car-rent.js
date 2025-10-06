@@ -112,8 +112,26 @@ export default function CarRentSection() {
   }
 
   return (
-    <Box sx={{ bgcolor: "black", py: 6 }}>
-      <Container maxWidth="xl">
+    <Box  sx={{
+      py: 8,
+      position: "relative",
+      backgroundImage: "url(/assets/rentcar.webp)",
+      backgroundSize: "cover",
+      backgroundAttachment: "fixed",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      "&::before": {
+        content: '""',
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 1,
+      },
+    }}>
+      <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2 }}>
         <Box sx={{ pb: "28px" }}>
           <Typography
             variant="h3"

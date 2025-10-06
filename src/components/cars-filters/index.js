@@ -43,7 +43,7 @@ export default function CarsFiltersPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Desktop playback IDs for 2 slides
-  const desktopPlaybackIds = ["B00IsdVWbxXksKmwxCMXjR9JCcUkLsdy02v64HZSQvCg4"];
+  const desktopPlaybackIds = ["CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w"];
 
   // Mobile playback ID
   const mobilePlaybackId = "gzB22KDrzm1XR4sfmnGnmQ1vF0000yNzo00f02rcNO2VlXg";
@@ -520,7 +520,7 @@ export default function CarsFiltersPage() {
 
       <ServicesSection />
 
-      <CTA />
+      {/* <CTA /> */}
 
       {/* Upcoming Cars And Events Section */}
       {/* <UpcomingCarsSection /> */}

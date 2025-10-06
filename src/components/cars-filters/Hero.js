@@ -11,10 +11,10 @@ import MuxPlayer from "@mux/mux-player-react";
 import SearchByModels from "./search-by-models";
 
 const Hero = () => {
-  const desktopPlaybackIds = ["9WU2Y5OXCT56CzULR8mFAhmKPwJshaP66G902lnvKyek"];
+  const desktopPlaybackIds = ["CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w"];
 
   // Mobile playback ID
-  const mobilePlaybackId = "9WU2Y5OXCT56CzULR8mFAhmKPwJshaP66G902lnvKyek";
+  const mobilePlaybackId = "CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w";
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));

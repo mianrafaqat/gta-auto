@@ -306,25 +306,36 @@ export default function LatestProductsSection({
     const fetchFirstTenProducts = async () => {
       setLoadingFirstTen(true);
       try {
-        const response = await ProductService.getAll();
+        // Fetch more products to ensure we get enough non-chemical products
+        const response = await ProductService.getAll({ limit: 100 });
         let products = [];
         if (response && response.products) {
           products = response.products;
         } else if (response && response.data) {
           products = response.data;
         }
+        
         // Filter out products that have a category with name "Chemicals"
         const nonChemicalProducts = products.filter(
-          (product) =>
-            !Array.isArray(product.categories) ||
-            !product.categories.some(
-              (cat) =>
-                cat &&
-                (cat.name?.toLowerCase() === "chemicals" ||
-                  cat.slug?.toLowerCase() === "chemicals")
-            )
+          (product) => {
+            const hasCategories = Array.isArray(product.categories);
+            if (!hasCategories) {
+              return true; // Include products without categories
+            }
+            
+            const hasChemicalCategory = product.categories.some(
+              (cat) => {
+                return cat &&
+                  (cat.name?.toLowerCase() === "chemicals" ||
+                    cat.slug?.toLowerCase() === "chemicals");
+              }
+            );
+            
+            return !hasChemicalCategory;
+          }
         );
-        // Take first 10 non-chemical products
+        
+        // Take up to 40 non-chemical products
         if (nonChemicalProducts && nonChemicalProducts.length > 0) {
           setFirstTenProducts(nonChemicalProducts.slice(0, 40));
         } else {

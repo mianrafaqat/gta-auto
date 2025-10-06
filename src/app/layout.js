@@ -56,8 +56,19 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={primaryFont.className}>
       <head>
-      <meta name="google-site-verification" content="wF3dRaXdpca-BY45EI1zQ3un-YW-lLF4nlMmkextMYU" />      </head>
+        <meta name="google-site-verification" content="wF3dRaXdpca-BY45EI1zQ3un-YW-lLF4nlMmkextMYU" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MDFNSKMM');`,
+          }}
+        />
+      </head>
       <body>
+        
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <LocalizationProvider>
@@ -86,6 +97,9 @@ export default function RootLayout({ children }) {
             </LocalizationProvider>
           </AuthProvider>
         </QueryClientProvider>
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MDFNSKMM"
+height="0" width="0" style={{display:'none',visibility:'hidden'}}></iframe></noscript>
+
       </body>
     </html>
   );

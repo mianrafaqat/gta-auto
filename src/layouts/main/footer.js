@@ -1,3 +1,5 @@
+'use client'
+import { useState, useEffect } from 'react';
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
@@ -57,6 +59,154 @@ const SOCIAL_LINKS = [
 
 export default function Footer() {
   const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  // Handle responsive sizing and scroll detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    const checkScrollable = () => {
+      const documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      );
+      const windowHeight = window.innerHeight;
+      const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Debug logging
+      console.log('=== Back to Top Debug ===');
+      console.log('Document height:', documentHeight);
+      console.log('Window height:', windowHeight);
+      console.log('Scroll position:', scrollPosition);
+      
+      // Show button if page is scrollable and user has scrolled down at least 200px
+      const isScrollable = documentHeight > windowHeight + 100; // Add buffer for better UX
+      const hasScrolled = scrollPosition > 200;
+      
+      console.log('Is scrollable:', isScrollable);
+      console.log('Has scrolled enough:', hasScrolled);
+      console.log('Should show button:', isScrollable && hasScrolled);
+      
+      setShowBackToTop(isScrollable && hasScrolled);
+    };
+
+    // Set initial values
+    handleResize();
+    checkScrollable();
+    
+    // Add event listeners
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', checkScrollable);
+    window.addEventListener('load', checkScrollable); // Check again after page fully loads
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', checkScrollable);
+      window.removeEventListener('load', checkScrollable);
+    };
+  }, []);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    // Try multiple scroll methods for better compatibility
+    const scrollToTopMethods = [
+      // Method 1: Check for SimpleBar container
+      () => {
+        const simpleBarElement = document.querySelector('.simplebar-content-wrapper');
+        if (simpleBarElement) {
+          simpleBarElement.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+          return true;
+        }
+        return false;
+      },
+      
+      // Method 2: Check for main scroll container or any scrollable parent
+      () => {
+        const scrollableElements = [
+          document.querySelector('main'),
+          document.querySelector('#__next'),
+          document.querySelector('[data-simplebar]'),
+          document.querySelector('.MuiBox-root'), // Material-UI Box containers
+          ...document.querySelectorAll('[style*="overflow"]') // Any element with overflow styles
+        ].filter(Boolean);
+        
+        for (const element of scrollableElements) {
+          if (element && element.scrollHeight > element.clientHeight) {
+            element.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+            return true;
+          }
+        }
+        return false;
+      },
+      
+      // Method 3: Force document scroll with animation
+      () => {
+        const startPosition = window.pageYOffset || document.documentElement.scrollTop;
+        const startTime = performance.now();
+        const duration = 500; // 500ms animation
+        
+        const animateScroll = (currentTime) => {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          
+          // Easing function (ease-out)
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          const currentPosition = startPosition * (1 - easeOut);
+          
+          document.documentElement.scrollTop = currentPosition;
+          document.body.scrollTop = currentPosition;
+          
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          }
+        };
+        
+        requestAnimationFrame(animateScroll);
+        return true;
+      },
+      
+      // Method 4: Modern smooth scroll on window
+      () => {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+        return true;
+      },
+      
+      // Method 5: Direct document scroll
+      () => {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0; // For Safari
+        return true;
+      }
+    ];
+    
+    // Try each method until one works
+    for (const method of scrollToTopMethods) {
+      try {
+        if (method()) {
+          break;
+        }
+      } catch (error) {
+        console.log('Scroll method failed:', error);
+      }
+    }
+  };
 
   const homePage = pathname === "/";
 
@@ -406,40 +556,78 @@ export default function Footer() {
           zIndex: 1000,
         }}>
         <Stack spacing={1}>
-          <Box
-            sx={{
-              width: { xs: "40px", md: "50px" },
-              height: { xs: "40px", md: "50px" },
-              backgroundColor: "#2196f3",
+          <a
+            href="https://wa.me/923263332888"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              width: isMobile ? "40px" : "50px",
+              height: isMobile ? "40px" : "50px",
+              backgroundColor: "green",
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
               cursor: "pointer",
+              textDecoration: "none",
+              transition: "all 0.3s ease",
+              border: "none",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = "#25D366";
+              e.target.style.transform = "scale(1.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = "green";
+              e.target.style.transform = "scale(1)";
             }}>
             <Iconify
-              icon="eva:message-circle-fill"
-              sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }}
+              icon="ic:baseline-whatsapp"
+              sx={{ color: "#ffffff", fontSize: isMobile ? "22px" : "34px" }}
             />
-          </Box>
-          <Box
-            sx={{
-              width: { xs: "40px", md: "50px" },
-              height: { xs: "40px", md: "50px" },
-              backgroundColor: "#4caf50",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-              cursor: "pointer",
-            }}>
-            <Iconify
-              icon="eva:arrow-up-fill"
-              sx={{ color: "#ffffff", fontSize: { xs: "18px", md: "24px" } }}
-            />
-          </Box>
+          </a>
+          
+          {/* Back to Top Button - Only show when there's scrollable content */}
+          {showBackToTop && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToTop();
+              }}
+              style={{
+                width: isMobile ? "40px" : "50px",
+                height: isMobile ? "40px" : "50px",
+                backgroundColor: "#4caf50",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                cursor: "pointer",
+                textDecoration: "none",
+                transition: "all 0.3s ease",
+                border: "none",
+                outline: "none",
+                zIndex: 1001,
+                opacity: showBackToTop ? 1 : 0,
+                transform: showBackToTop ? "scale(1)" : "scale(0.8)",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "#45a049";
+                e.target.style.transform = "scale(1.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "#4caf50";
+                e.target.style.transform = "scale(1)";
+              }}>
+              <Iconify
+                icon="eva:arrow-up-fill"
+                sx={{ color: "#ffffff", fontSize: isMobile ? "18px" : "24px" }}
+              />
+            </button>
+          )}
         </Stack>
       </Box>
     </Box>
