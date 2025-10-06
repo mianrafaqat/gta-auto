@@ -357,7 +357,7 @@ export default function LatestProductsSection({
       sx={{
         py: 8,
         px: { xs: 2, sm: 3, md: 4 },
-        backgroundColor: "black",
+        // backgroundColor: "black",
         minHeight: "600px",
       }}>
        {!isShop && (<Box sx={{ position: "relative", zIndex: 2 }}>
