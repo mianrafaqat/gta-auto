@@ -9,7 +9,7 @@ function path(root, sublink) {
 }
 
 const ROOTS = {
-  AUTH: "/",
+  AUTH: "",
   DASHBOARD: "/dashboard",
 };
 
