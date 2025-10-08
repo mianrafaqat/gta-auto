@@ -69,6 +69,35 @@ export default function CarsFiltersPage() {
   return (
     <>
       <Hero />
+      <Container maxWidth="xl">
+      <Box
+        p={3}
+        sx={{
+          zIndex: 999,
+          borderRadius: "12px",
+          marginBottom: 0,
+          maxWidth: {
+            sm: "95%",
+            md: "80%",
+            lg: "100%",
+          },
+          mt: "50px",
+        
+          background: "#fff",
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
+          position: "relative",
+          zIndex: 1,
+          display: { xs: "none", md: "block" },
+          height: "210px",
+          mb: "50px",
+          mx: "auto",
+        }}>
+        <Box mt={2} >
+          <SearchByModels />
+        </Box>
+      </Box>
+      </Container>
 
       <Container maxWidth="xl">
         <Box

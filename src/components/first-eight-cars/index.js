@@ -165,7 +165,7 @@ export default function LastestEightCars() {
       },
     }}>
       <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2 }}>
-        <Box sx={{ pb: "28px" }}>
+        <Box sx={{ pb: "28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Typography
             variant="h3"
             sx={{
@@ -177,6 +177,51 @@ export default function LastestEightCars() {
             }}>
             Explore All Vehicles
           </Typography>
+          
+          {!isSingleCar && filteredCars.length > 0 && (
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                gap: 1,
+              }}>
+              <IconButton
+                onClick={() => sliderRef.current?.slickPrev()}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  bgcolor: "white",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  "&:hover": {
+                    bgcolor: "#f5f5f5",
+                    borderColor: "#999",
+                  },
+                }}>
+                <Iconify
+                  icon="eva:arrow-back-fill"
+                  sx={{ fontSize: 18, color: "black" }}
+                />
+              </IconButton>
+              <IconButton
+                onClick={() => sliderRef.current?.slickNext()}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  bgcolor: "white",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  "&:hover": {
+                    bgcolor: "#f5f5f5",
+                    borderColor: "#999",
+                  },
+                }}>
+                <Iconify
+                  icon="eva:arrow-forward-fill"
+                  sx={{ fontSize: 18, color: "black" }}
+                />
+              </IconButton>
+            </Box>
+          )}
         </Box>
         {/* Tabs Navigation */}
         <Box
@@ -193,7 +238,7 @@ export default function LastestEightCars() {
                 bottom: "-1px",
               },
               "& .MuiTab-root": {
-                color: "rgba(255,255,255,0.7)",
+                color: "#ffffff !important",
                 fontSize: "1rem",
                 fontWeight: 500,
                 textTransform: "none",
@@ -201,7 +246,7 @@ export default function LastestEightCars() {
                 padding: "16px 24px",
                 position: "relative",
                 "&.Mui-selected": {
-                  color: "#4CAF50",
+                  color: "#4CAF50 !important",
                   fontWeight: 600,
                 },
                 "&:hover": {
@@ -269,56 +314,6 @@ export default function LastestEightCars() {
                   </Slider>
                 </Box>
               </>
-            )}
-
-            {/* Custom Navigation Buttons - Bottom Left (Desktop Only) */}
-            {!isSingleCar && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: -20,
-                  left: 0,
-                  display: { xs: "none", md: "flex" },
-                  gap: 1,
-                  zIndex: 10,
-                }}>
-                <IconButton
-                  onClick={() => sliderRef.current?.slickPrev()}
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    bgcolor: "white",
-                    border: "1px solid #ddd",
-                    borderRadius: "8px",
-                    "&:hover": {
-                      bgcolor: "#f5f5f5",
-                      borderColor: "#999",
-                    },
-                  }}>
-                  <Iconify
-                    icon="eva:arrow-back-fill"
-                    sx={{ fontSize: 18, color: "black" }}
-                  />
-                </IconButton>
-                <IconButton
-                  onClick={() => sliderRef.current?.slickNext()}
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    bgcolor: "white",
-                    border: "1px solid #ddd",
-                    borderRadius: "8px",
-                    "&:hover": {
-                      bgcolor: "#f5f5f5",
-                      borderColor: "#999",
-                    },
-                  }}>
-                  <Iconify
-                    icon="eva:arrow-forward-fill"
-                    sx={{ fontSize: 18, color: "black" }}
-                  />
-                </IconButton>
-              </Box>
             )}
           </Box>
         ) : (

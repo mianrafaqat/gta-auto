@@ -11,7 +11,9 @@ import MuxPlayer from "@mux/mux-player-react";
 import SearchByModels from "./search-by-models";
 
 const Hero = () => {
-  const desktopPlaybackIds = ["CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w"];
+  const desktopPlaybackIds = [
+    "CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w",
+  ];
 
   // Mobile playback ID
   const mobilePlaybackId = "CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w";
@@ -98,25 +100,8 @@ const Hero = () => {
         <Typography color="white" variant="h3" fontWeight={400}>
           The <span style={{ fontWeight: 600 }}>MOST WANTED</span> platform
         </Typography>
-        <Typography
-          variant="h2"
-          sx={{
-            color: "#fff",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            animation: "fadeInOut 2s infinite",
-            "@keyframes fadeInOut": {
-              "0%": { opacity: 0.4 },
-              "50%": { opacity: 1 },
-              "100%": { opacity: 0.4 },
-            },
-            textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-            fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
-          }}>
-          Coming Soon
-        </Typography>
       </Box>
-      <Box
+      {/* <Box
         p={3}
         sx={{
           zIndex: 999,
@@ -140,7 +125,9 @@ const Hero = () => {
         <Box mt={2}>
           <SearchByModels />
         </Box>
-      </Box>
+      </Box> */}
+
+     
     </Container>
   );
 };
