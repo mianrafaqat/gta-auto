@@ -13,6 +13,7 @@ import {
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { useSearchParams } from "next/navigation";
 
 import { paths } from "src/routes/paths";
 
@@ -74,6 +75,8 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 // ----------------------------------------------------------------------
 
 export default function ProductShopView() {
+  const searchParams = useSearchParams();
+  
   const defaultFilters = {
     priceRange: [0, 50000],
     category: "",
@@ -111,6 +114,19 @@ export default function ProductShopView() {
 
   const [filters, setFilters] = useState(defaultFilters);
   const [reset, setReset] = useState(false);
+
+  // Read search parameters from URL and apply them to filters
+  useEffect(() => {
+    const searchText = searchParams.get("searchText");
+    
+    if (searchText) {
+      setFilters((prev) => ({
+        ...prev,
+        searchByTitle: searchText,
+        activeFilter: searchText,
+      }));
+    }
+  }, [searchParams]);
 
   // State for products, pagination, and loading
   const [allCars, setAllCars] = useState([]);

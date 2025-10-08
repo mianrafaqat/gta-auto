@@ -15,6 +15,7 @@ import Iconify from "src/components/iconify";
 import { useGetCarMakes, useGetCarModels } from "src/hooks/use-cars";
 
 function SearchByModels({ reset = false, fetchAllCars = () => {} }) {
+  const [searchText, setSearchText] = useState("");
   const [selectedCar, setSelectedCar] = useState({});
   const [carModelsList, setCarsModelsList] = useState([]);
   const [selectedModel, setSelectModel] = useState({});
@@ -59,9 +60,22 @@ function SearchByModels({ reset = false, fetchAllCars = () => {} }) {
 
   const onHandleSearch = () => {
     try {
-      router.push(
-        `${paths.cars.root}?selectedCar=${selectedCar?.value}&model=${selectedModel?.model}&transmission=${selectedTransmission}&tab=one`
-      );
+      // If user has selected car-specific filters (make, model, transmission), search only in cars
+      const hasCarFilters = selectedCar?.value || selectedModel?.model || selectedTransmission;
+      
+      if (hasCarFilters) {
+        // Navigate to cars page with specific filters
+        router.push(
+          `${paths.cars.root}?searchText=${searchText || ""}&selectedCar=${selectedCar?.value || ""}&model=${selectedModel?.model || ""}&transmission=${selectedTransmission || ""}&tab=one`
+        );
+      } else if (searchText) {
+        // If only text search (no car-specific filters), navigate to unified search page
+        // This will search across both cars and products
+        router.push(`/search?searchText=${encodeURIComponent(searchText)}`);
+      } else {
+        // If no search criteria, go to cars page
+        router.push(paths.cars.root);
+      }
     } catch (err) {
       console.log("err: ", err);
     }
@@ -79,6 +93,7 @@ function SearchByModels({ reset = false, fetchAllCars = () => {} }) {
   }, [selectedCar, carModelsData]);
 
   const resetFilters = () => {
+    setSearchText("");
     setSelectedCar({});
     setCarsModelsList([]);
     setSelectModel({});
@@ -140,6 +155,13 @@ function SearchByModels({ reset = false, fetchAllCars = () => {} }) {
             fullWidth
             placeholder="What are you looking for..."
             variant="standard"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                onHandleSearch();
+              }
+            }}
             sx={{ width: "100%" }}
             InputProps={{
               startAdornment: (

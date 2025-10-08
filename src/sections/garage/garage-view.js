@@ -13,6 +13,7 @@ import {
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { useSearchParams } from "next/navigation";
 
 import { paths } from "src/routes/paths";
 
@@ -63,6 +64,8 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 // ----------------------------------------------------------------------
 
 export default function GarageView() {
+  const searchParams = useSearchParams();
+  
   const defaultFilters = {
     priceRange: [100000, 25000000],
     category: "sale",
@@ -87,6 +90,23 @@ export default function GarageView() {
 
   const [filters, setFilters] = useState(defaultFilters);
   const [reset, setReset] = useState(false);
+
+  // Read search parameters from URL and apply them to filters
+  useEffect(() => {
+    const searchText = searchParams.get("searchText");
+    const selectedCar = searchParams.get("selectedCar");
+    const model = searchParams.get("model");
+    const transmission = searchParams.get("transmission");
+
+    if (searchText || selectedCar || model || transmission) {
+      setFilters((prev) => ({
+        ...prev,
+        searchByTitle: searchText || "",
+        makeType: selectedCar || "",
+        // You can add model and transmission filters here if needed
+      }));
+    }
+  }, [searchParams]);
 
   // Replace useState and manual fetching with React Query
   const { data: allCars = [], isLoading: loading } = useQuery({
@@ -509,9 +529,17 @@ function applyFilter({ inputData, filters, sortBy }) {
   }
 
   if (searchByTitle) {
-    inputData = inputData.filter((product) =>
-      product.title?.toLowerCase().includes(searchByTitle?.toLowerCase())
-    );
+    const searchLower = searchByTitle?.toLowerCase();
+    inputData = inputData.filter((product) => {
+      // Search across multiple fields for better results
+      const titleMatch = product.title?.toLowerCase().includes(searchLower);
+      const makeMatch = product.carDetails?.makeType?.toLowerCase().includes(searchLower);
+      const modelMatch = product.carDetails?.model?.toLowerCase().includes(searchLower);
+      const descriptionMatch = product.description?.toLowerCase().includes(searchLower);
+      const categoryMatch = product.category?.toLowerCase().includes(searchLower);
+      
+      return titleMatch || makeMatch || modelMatch || descriptionMatch || categoryMatch;
+    });
   }
 
   if (fuelType) {

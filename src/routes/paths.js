@@ -37,6 +37,7 @@ export const paths = {
   termsAndConditions: "/terms-and-conditions",
   shippingPolicy: "/shipping-policy",
   cancellationRefundPolicy: "/cancellation-refund-policy",
+  search: "/search",
   figma:
     "https://www.figma.com/file/hjxMnGUJCjY7pX8lQbS7kn/%5BPreview%5D-Steel-Web.v5.4.0?type=design&node-id=0-1&mode=design&t=2fxnS70DuiTLGzND-0",
   product: {

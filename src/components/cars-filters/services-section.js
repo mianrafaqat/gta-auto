@@ -168,7 +168,6 @@ export default function ServicesSection() {
           </Box>
         </Box>
 
-        {/* Services Slider */}
         <Box sx={{ mb: 4 }}>
           <Slider {...sliderSettings}>
             {services.map((service) => (
@@ -185,7 +184,6 @@ export default function ServicesSection() {
                       transition: "transform 0.3s ease",
                     },
                   }}>
-                  {/* Background Image */}
                   <Box
                     sx={{
                       position: "absolute",
@@ -195,8 +193,22 @@ export default function ServicesSection() {
                       bottom: 0,
                       backgroundImage: `url(${service.backgroundImage})`,
                       backgroundSize: "cover",
-                      backgroundPosition: {md: "center", xs: "unset"},
+                      backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
+                      aspectRatio: "6/6",
+                    }}
+                  />
+                  
+                  {/* Dark Overlay */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: "rgba(0, 0, 0, 0.4)",
+                      zIndex: 1,
                     }}
                   />
 

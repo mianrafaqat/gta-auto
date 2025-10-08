@@ -21,7 +21,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
 
 // Custom ProductList for Latest Products with slider view
-const LatestProductsList = ({ products, loading }) => {
+const LatestProductsList = ({ products, loading, title }) => {
   const sliderRef = useRef(null);
 
   // Calculate slidesToShow based on available products
@@ -73,54 +73,152 @@ const LatestProductsList = ({ products, loading }) => {
 
   if (loading) {
     return (
-      <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 3,
-            overflowX: "auto",
-            overflowY: "hidden",
-            scrollSnapType: "x mandatory",
-            scrollbarWidth: "none",
-            "&::-webkit-scrollbar": { display: "none" },
-            pb: 2,
-          }}>
-          {[...Array(4)].map((_, index) => (
-            <Box
-              key={index}
-              sx={{
-                flexShrink: 0,
-                width: { xs: "280px", sm: "320px" },
-                scrollSnapAlign: "start",
-              }}>
-              <ProductItemSkeleton />
-            </Box>
-          ))}
+      <>
+        {/* Section Title */}
+        <Box sx={{ mb: 6 }}>
+          <Typography
+            variant="h3"
+            sx={{
+              color: "#4caf50",
+              fontWeight: "bold",
+              fontSize: { xs: "24px", md: "32px" },
+              textTransform: "uppercase",
+            }}>
+            {title}
+          </Typography>
         </Box>
-      </Box>
+
+        <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 3,
+              overflowX: "auto",
+              overflowY: "hidden",
+              scrollSnapType: "x mandatory",
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": { display: "none" },
+              pb: 2,
+            }}>
+            {[...Array(4)].map((_, index) => (
+              <Box
+                key={index}
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: "280px", sm: "320px" },
+                  scrollSnapAlign: "start",
+                }}>
+                <ProductItemSkeleton />
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      </>
     );
   }
 
   if (products.length === 0) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "200px",
-        }}>
-        <Typography variant="h6" color="grey.400">
-          No chemical products found
-        </Typography>
-      </Box>
+      <>
+        {/* Section Title */}
+        <Box sx={{ mb: 6 }}>
+          <Typography
+            variant="h3"
+            sx={{
+              color: "#4caf50",
+              fontWeight: "bold",
+              fontSize: { xs: "24px", md: "32px" },
+              textTransform: "uppercase",
+            }}>
+            {title}
+          </Typography>
+        </Box>
+        
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "200px",
+          }}>
+          <Typography variant="h6" color="grey.400">
+            No products found
+          </Typography>
+        </Box>
+      </>
     );
   }
 
   return (
-    <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
-      {isSingleProduct ? (
+    <>
+      {/* Section Title with Navigation */}
+      <Box sx={{ mb: 6, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Typography
+          variant="h3"
+          sx={{
+            color: "#4caf50",
+            fontWeight: "bold",
+            fontSize: { xs: "24px", md: "32px" },
+            textTransform: "uppercase",
+          }}>
+          {title}
+        </Typography>
+        
+        {!isSingleProduct && products.length > 4 && !loading && (
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              gap: 1,
+            }}>
+            <IconButton
+              onClick={() => {
+                console.log("Previous clicked, sliderRef:", sliderRef.current);
+                sliderRef.current?.slickPrev();
+              }}
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: "white",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                "&:hover": {
+                  bgcolor: "#f5f5f5",
+                  borderColor: "#999",
+                },
+              }}>
+              <Iconify
+                icon="eva:arrow-back-fill"
+                sx={{ fontSize: 18, color: "black" }}
+              />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                console.log("Next clicked, sliderRef:", sliderRef.current);
+                sliderRef.current?.slickNext();
+              }}
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: "white",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                "&:hover": {
+                  bgcolor: "#f5f5f5",
+                  borderColor: "#999",
+                },
+              }}>
+              <Iconify
+                icon="eva:arrow-forward-fill"
+                sx={{ fontSize: 18, color: "black" }}
+              />
+            </IconButton>
+          </Box>
+        )}
+      </Box>
+
+      <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
+        {isSingleProduct ? (
         // Single product display - center it
         <Box
           sx={{
@@ -184,63 +282,8 @@ const LatestProductsList = ({ products, loading }) => {
           </Box>
         </>
       )}
-
-      {/* Custom Navigation Buttons - Bottom Left (Desktop Only) */}
-      {!isSingleProduct && products.length > 4 && (
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: -20,
-            left: 0,
-            display: { xs: "none", md: "flex" },
-            gap: 1,
-            zIndex: 10,
-          }}>
-          <IconButton
-            onClick={() => {
-              console.log("Previous clicked, sliderRef:", sliderRef.current);
-              sliderRef.current?.slickPrev();
-            }}
-            sx={{
-              width: 40,
-              height: 40,
-              bgcolor: "white",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              "&:hover": {
-                bgcolor: "#f5f5f5",
-                borderColor: "#999",
-              },
-            }}>
-            <Iconify
-              icon="eva:arrow-back-fill"
-              sx={{ fontSize: 18, color: "black" }}
-            />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              console.log("Next clicked, sliderRef:", sliderRef.current);
-              sliderRef.current?.slickNext();
-            }}
-            sx={{
-              width: 40,
-              height: 40,
-              bgcolor: "white",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              "&:hover": {
-                bgcolor: "#f5f5f5",
-                borderColor: "#999",
-              },
-            }}>
-            <Iconify
-              icon="eva:arrow-forward-fill"
-              sx={{ fontSize: 18, color: "black" }}
-            />
-          </IconButton>
-        </Box>
-      )}
-    </Box>
+      </Box>
+    </>
   );
 };
 
@@ -360,48 +403,30 @@ export default function LatestProductsSection({
         // backgroundColor: "black",
         minHeight: "600px",
       }}>
-       {!isShop && (<Box sx={{ position: "relative", zIndex: 2 }}>
-        {/* Section Title */}
-        <Typography
-          variant="h3"
-          sx={{
-            color: "#4caf50",
-            fontWeight: "bold",
-            fontSize: { xs: "24px", md: "32px" },
-            mb: 6,
-            textTransform: "uppercase",
-          }}>
-          Latest Products
-        </Typography>
-
-        <Grid item xs={12}>
-            <LatestProductsList products={latestProducts} loading={loading} />
+       {!isShop && (
+         <Box sx={{ position: "relative", zIndex: 2 }}>
+          <Grid item xs={12}>
+            <LatestProductsList 
+              products={latestProducts} 
+              loading={loading} 
+              title="Latest Products"
+            />
           </Grid>
         </Box>
       )}
 
       {/* Shop Section */}
-    {isShop &&  (<Box sx={{ position: "relative", zIndex: 2, mt: 8 }}>
-        {/* Shop Section Title */}
-        <Typography
-          variant="h3"
-          sx={{
-            color: "#4caf50",
-            fontWeight: "bold",
-            fontSize: { xs: "24px", md: "32px" },
-            mb: 6,
-            textTransform: "uppercase",
-          }}>
-          Shop
-        </Typography>
-
-        <Grid item xs={12}>
-          <LatestProductsList
-            products={firstTenProducts}
-            loading={loadingFirstTen}
-          />
-        </Grid>
-      </Box>)}
+      {isShop && (
+        <Box sx={{ position: "relative", zIndex: 2, mt: 8 }}>
+          <Grid item xs={12}>
+            <LatestProductsList
+              products={firstTenProducts}
+              loading={loadingFirstTen}
+              title="Shop"
+            />
+          </Grid>
+        </Box>
+      )}
     </Container>
   );
 }
