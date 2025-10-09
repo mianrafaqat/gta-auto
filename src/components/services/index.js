@@ -78,7 +78,7 @@ const Services = () => {
 
   const handleWhatsAppClick = (serviceName) => {
     const message = `Hi! I'm interested in your ${serviceName} service. Can you provide more details?`;
-    const whatsappUrl = `https://wa.me/92363330222?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/+923263330222?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
 
