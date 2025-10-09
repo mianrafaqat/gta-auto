@@ -34,6 +34,7 @@ import CategoryOffers from "src/sections/categoryOffers";
 import CTA from "../cta";
 import Discounted from "../discounted";
 import CarRentSection from "./car-rent";
+import WhoWeAre from "./who-we-are";
 
 export default function CarsFiltersPage() {
   const { data: carBodyList = [], isLoading: carBodyLoading } =
@@ -98,6 +99,8 @@ export default function CarsFiltersPage() {
         </Box>
       </Box>
       </Container>
+
+      <WhoWeAre />
 
       <Container maxWidth="xl">
         <Box
