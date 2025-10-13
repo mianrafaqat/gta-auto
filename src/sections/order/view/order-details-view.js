@@ -170,6 +170,7 @@ export default function OrderDetailsView({ id }) {
       </Container>
     );
   }
+  const isAdmin = user?.user?.role === "admin";
 
   return (
     <>
@@ -183,7 +184,7 @@ export default function OrderDetailsView({ id }) {
 
       <Container maxWidth={settings.themeStretch ? false : "lg"}>
         <OrderDetailsToolbar
-          backLink={paths.dashboard.order.root}
+          backLink={isAdmin ? paths.dashboard.order.root : paths.dashboard.order.my}
           orderNumber={currentOrder.orderNumber}
           createdAt={currentOrder.createdAt}
           status={status}

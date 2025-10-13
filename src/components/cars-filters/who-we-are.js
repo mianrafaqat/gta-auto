@@ -7,11 +7,32 @@ const WhoWeAre = () => {
       <Container maxWidth="xl">
         <Box
           sx={{
+            
+            backgroundImage: 'url(/assets/WhoWeAre.jpeg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
             border: '2px solid #25D366',
             borderRadius: 4,
             p: 6,
             bgcolor: 'rgba(37, 211, 102, 0.05)',
-            color: '#fff'
+            color: '#fff',
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              borderRadius: 4,
+              zIndex: 1
+            },
+            '& > *': {
+              position: 'relative',
+              zIndex: 2
+            }
           }}
         >
           <Typography 

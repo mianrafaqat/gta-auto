@@ -29,6 +29,7 @@ import { fDate, fTime } from "src/utils/format-time";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import { CarsService } from "src/services";
+import { useRouter } from "next/navigation";
 
 // import UserQuickEditForm from './user-quick-edit-form';
 
@@ -40,6 +41,8 @@ export default function CarTableRow({
   onEditRow,
   onSelectRow,
   onDeleteRow,
+  onUpdateStatus,
+  onToggleFeatured,
   carDealOptions,
   onSuccess =() => {}
 }) {
@@ -47,6 +50,7 @@ export default function CarTableRow({
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const router = useRouter();
 
   const quickEdit = useBoolean();
 
@@ -56,6 +60,10 @@ export default function CarTableRow({
 
   const handleSelectedCarDeal = (value) => {
     try {
+      // Ensure carDealOptions is an array
+      if (!Array.isArray(carDealOptions)) {
+        return;
+      }
       let filterDeal = carDealOptions.find((deal) => deal.value === value);
       if (!filterDeal) {
         filterDeal = carDealOptions.find((deal) => deal.value === "no");
@@ -88,6 +96,14 @@ export default function CarTableRow({
     } finally {
     }
   };
+
+  const handleEditRow = () => {
+    popover.onClose();
+    router.push(paths.dashboard.admin.cars.edit(row._id));
+  };
+
+  // Check if edit should be shown (category is rent and has guard value)
+  const showEdit = row?.category?.toLowerCase() === 'rent' 
 
   useEffect(() => {
     handleSelectedCarDeal(row?.deal);
@@ -184,6 +200,35 @@ export default function CarTableRow({
           />
         </TableCell>
 
+        <TableCell>
+          <Label
+            variant="soft"
+            color={
+              (row?.status === 'Active' && 'success') ||
+              (row?.status === 'Paused' && 'warning') ||
+              'default'
+            }
+          >
+            {row?.status || 'N/A'}
+          </Label>
+        </TableCell>
+
+        <TableCell>
+          <IconButton
+            onClick={() => {
+              if (onToggleFeatured) {
+                onToggleFeatured();
+              }
+            }}
+            color={row?.carDetails?.isFeatured ? "warning" : "default"}
+          >
+            <Iconify 
+              icon={row?.carDetails?.isFeatured ? "solar:star-bold" : "solar:star-outline"} 
+              width={24}
+            />
+          </IconButton>
+        </TableCell>
+
         <TableCell align="right" sx={{ px: 1, whiteSpace: "nowrap" }}>
           <IconButton
             color={popover.open ? "inherit" : "default"}
@@ -200,6 +245,27 @@ export default function CarTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
+        {showEdit && (
+          <MenuItem onClick={handleEditRow}>
+            <Iconify icon="solar:pen-bold" />
+            Edit
+          </MenuItem>
+        )}
+        <MenuItem
+          onClick={() => {
+            if (onUpdateStatus) {
+              onUpdateStatus();
+            }
+            popover.onClose();
+          }}
+          sx={{ color: row?.status === 'Active' ? "error.main" : 'success.main' }}
+        >
+          <Iconify 
+            width='18px' 
+            icon={row?.status === 'Active' ? "raphael:no" : "mdi:tick-circle"} 
+          />
+          {row?.status === 'Active' ? 'Pause' : 'Activate'}
+        </MenuItem>
         <MenuItem
           onClick={() => {
             confirm.onTrue();
@@ -231,6 +297,10 @@ CarTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
+  onUpdateStatus: PropTypes.func,
+  onToggleFeatured: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,
+  carDealOptions: PropTypes.array,
+  onSuccess: PropTypes.func,
 };

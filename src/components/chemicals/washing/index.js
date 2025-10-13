@@ -37,12 +37,41 @@ const Washing = () => {
               lineHeight: 1.2,
               color: "white",
             }}>
-            Professional Washing
-            <br />
-            and Cleaning Car
+           Who we are
+          
+          </Typography>
+          <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, mb: 3, color: '#e0e0e0' }}>
+            Welcome to <strong style={{ color: '#25D366' }}>Garage Tuned Autos</strong> — your all-in-one destination for premium automotive care, performance, and passion.
           </Typography>
 
-          <Typography
+          <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, mb: 1, color: '#e0e0e0' }}>
+            At Garage Tuned Autos, we specialize in professional car tuning, detailing, repairs, and maintenance services, helping every vehicle reach its peak performance and appearance. From engine tuning and diagnostics to ceramic coating, detailing, and custom modifications, our expert technicians bring precision, experience, and innovation to every job.
+          </Typography>
+
+          <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, mb: 1, color: '#e0e0e0' }}>
+            We're also proud to offer a wide range of high-quality automotive chemicals and care products, including engine oils, detailing supplies, and performance additives — trusted by professionals and car lovers alike for reliability and results.
+          </Typography>
+
+          <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, mb: 1, color: '#e0e0e0' }}>
+            But that's not all — we go beyond the workshop! Explore our Car Listings section to buy or sell vehicles with confidence, and check out our Car Rental Service to experience top-tier cars for daily drives, business needs, or special occasions.
+          </Typography>
+
+          <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, mb: 2, color: '#e0e0e0' }}>
+            At Garage Tuned Autos, we don't just maintain cars — we build trust, performance, and a community of passionate drivers.
+          </Typography>
+
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              color: '#25D366', 
+              fontWeight: 700,
+              textAlign: 'center',
+              fontStyle: 'italic'
+            }}
+          >
+            Garage Tuned Autos — Tuned for Performance, Built for You.
+          </Typography>
+          {/* <Typography
             variant="body1"
             sx={{
               fontSize: "16px",
@@ -55,10 +84,10 @@ const Washing = () => {
             passion for performance and a commitment to quality, we specialize
             in providing top-grade automotive chemicals, genuine auto parts,
             easy vehicle listings, and hassle-free car imports.
-          </Typography>
+          </Typography> */}
 
           {/* Features List */}
-          <Stack spacing={2} sx={{ mb: 4 }}>
+          {/* <Stack spacing={2} sx={{ mb: 4 }}>
             {features.map((feature, index) => (
               <Box
                 key={index}
@@ -92,11 +121,11 @@ const Washing = () => {
                 </Typography>
               </Box>
             ))}
-          </Stack>
+          </Stack> */}
 
           {/* Contact Section */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-            {/* Team Avatars */}
+          {/* <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+           
             <Stack direction="row">
               <Avatar
                 sx={{
@@ -129,7 +158,7 @@ const Washing = () => {
               </Avatar>
             </Stack>
 
-            {/* Contact Info */}
+           
             <Stack>
               <Typography
                 variant="body2"
@@ -149,7 +178,7 @@ const Washing = () => {
                 Booking: <span style={{ color: "#4caf50" }}>+923263333456</span>
               </Typography>
             </Stack>
-          </Box>
+          </Box> */}
         </Box>
 
         {/* Right Section - Image */}
@@ -165,21 +194,12 @@ const Washing = () => {
               borderRadius: "16px",
               overflow: "hidden",
               backgroundImage:
-                "url(https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&h=500&fit=crop&crop=center)",
-              backgroundSize: "cover",
+                "url(/assets/cetificate-chemicals.jpeg)",
+              backgroundSize: "contain",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
               position: "relative",
-              "&::after": {
-                content: '""',
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                width: "100px",
-                height: "100px",
-                background: "linear-gradient(45deg, transparent 50%, #fff 50%)",
-                borderRadius: "0 0 16px 0",
-              },
+              
             }}
           />
         </Box>

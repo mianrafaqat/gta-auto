@@ -436,12 +436,7 @@ export default function CarsFiltersPage() {
 
       {/* Latest Products Section */}
       <Box sx={{
-        backgroundImage: "url(/assets/serviceBg.webp)",
-        backgroundSize: "cover",
-        backgroundAttachment: "fixed",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "600px",
+        
       }}>
       <LatestProductsSection isShop={false} />
       </Box>

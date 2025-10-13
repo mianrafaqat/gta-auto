@@ -523,7 +523,17 @@ export default function ProductItem({
         // Navigate to product details
         router.push(paths.product.details(productId));
       }}>
-      <RenderImg />
+      <Box
+        sx={{
+          minHeight: "320px",
+          backgroundImage: `url(${firstImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          position: "relative",
+        }}>
+        {/* <RenderImg /> */}
+      </Box>
       <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {renderContent}
       </Box>

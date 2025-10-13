@@ -66,19 +66,15 @@ export default function GarageItem({
     try {
       // Get the actual user data from the nested structure
       const actualUser = user?.user || user;
-      console.log("Current user object:", actualUser); // Debug: Log the entire user object
-      console.log("User ID being sent:", actualUser?._id); // Debug: Log the specific user ID
-
+   
       const data = {
         userID: actualUser?._id, // Fixed: Access user ID from the correct user object
         carID: product?._id, // Changed from carID to match backend expectation
       };
 
-      console.log("Sending favorite data:", data); // Debug log
 
       const result = await addOrRemoveFavoriteMutation.mutateAsync(data);
 
-      console.log("Favorite result:", result); // Debug log
 
       if (result?.status === 200) {
         // Update user data with the new favorite list
@@ -349,6 +345,10 @@ export default function GarageItem({
                 color: "grey.600",
                 mb: "12px",
                 fontSize: "0.875rem",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                textWrap: "nowrap",
               }}>
               {title}
             </Typography>
@@ -580,9 +580,20 @@ export default function GarageItem({
       sx={{
         width: "100%",
         borderRadius: "24px",
-        background: "transparent ",
+        background: "transparent",
+        overflow: "hidden",
       }}>
-      <RenderImg />
+      <Box
+        sx={{
+          minHeight: "380px",
+          backgroundImage: `url(${image?.[0]})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          position: "relative",
+        }}>
+        {/* <RenderImg /> */}
+      </Box>
       {renderContent}
     </Card>
   );

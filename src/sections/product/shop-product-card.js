@@ -393,6 +393,9 @@ export default function ShopProductCard({
           color: "#333333",
           lineHeight: 1.2,
           whiteSpace: "nowrap",
+          textWrap: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         }}>
         {carDetails?.yearOfManufacture
           ? `${carDetails.yearOfManufacture} - `
@@ -526,7 +529,17 @@ export default function ShopProductCard({
         // Navigate to product details
         router.push(paths.product.details(productId));
       }}>
-      <RenderImg />
+        <Box
+        sx={{
+          minHeight: "320px",
+          backgroundImage: `url(${firstImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          position: "relative",
+        }}>
+        </Box> 
+      {/* <RenderImg /> */}
       {renderContent}
     </Card>
   );

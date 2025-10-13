@@ -56,6 +56,8 @@ const TABLE_HEAD = [
   { id: "price", label: "Price" },
   { id: "expireAt", label: "Expire At" },
   { id: "deal", label: "Deal" },
+  { id: "status", label: "Status" },
+  { id: "featured", label: "Featured" },
   { id: "" },
 ];
 
@@ -136,6 +138,84 @@ export default function UserListView() {
     }
   };
 
+  const handleDeleteRows = useCallback(async () => {
+    try {
+      const deletePromises = table.selected.map((id) => {
+        const carData = tableData.find((row) => row._id === id);
+        if (carData) {
+          return CarsService.delete({
+            ownerID: carData?.owner?._id,
+            carID: carData?._id,
+          });
+        }
+        return null;
+      });
+
+      await Promise.all(deletePromises.filter(Boolean));
+      enqueueSnackbar('Cars deleted successfully');
+      fetchAllCars();
+      table.onUpdatePageDeleteRows({
+        totalRowsInPage: dataInPage.length,
+        totalRowsFiltered: dataFiltered.length,
+      });
+    } catch (e) {
+      console.log("error: ", e);
+      enqueueSnackbar('Failed to delete cars', { variant: "error" });
+    }
+  }, [table, tableData, dataInPage.length, dataFiltered.length, enqueueSnackbar]);
+
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.admin.cars.edit(id));
+    },
+    [router]
+  );
+
+  const handleUpdateStatus = useCallback(async (carData) => {
+    try {
+      const { _id: carID = '', status } = carData;
+      const newStatus = status === 'Active' ? 'Paused' : 'Active';
+      const data = {
+        carID,
+        ownerID: carData?.owner?._id,
+        status: newStatus
+      };
+      
+      const res = await CarsService.update(data);
+      if (res?.status === 200) {
+        enqueueSnackbar(res.data, { variant: 'success' });
+        fetchAllCars();
+      }
+    } catch (e) {
+      console.log("error: ", e);
+      enqueueSnackbar(e, { variant: "error" });
+    }
+  }, [enqueueSnackbar]);
+
+  const handleToggleFeatured = useCallback(async (carData) => {
+    try {
+      const { _id: carID = '' } = carData;
+      const newFeaturedStatus = !carData?.carDetails?.isFeatured;
+      const data = {
+        carID,
+        ownerID: carData?.owner?._id,
+        carDetails: {
+          ...carData?.carDetails,
+          isFeatured: newFeaturedStatus
+        }
+      };
+      
+      const res = await CarsService.update(data);
+      if (res?.status === 200) {
+        enqueueSnackbar(res.data, { variant: 'success' });
+        fetchAllCars();
+      }
+    } catch (e) {
+      console.log("error: ", e);
+      enqueueSnackbar(e, { variant: "error" });
+    }
+  }, [enqueueSnackbar]);
+
   const handleFilterStatus = useCallback(
     (event, newValue) => {
       handleFilters("status", newValue);
@@ -158,7 +238,9 @@ export default function UserListView() {
     try {
       const res = await CarsService.getCarDealOptions();
       if (res?.status === 200) {
-        setCarDealOptions(res?.data);
+        // Ensure carDealOptions is always an array
+        const options = Array.isArray(res?.data) ? res?.data : [];
+        setCarDealOptions(options);
       }
     } catch (err) {
       console.log("err: ", err);
@@ -226,6 +308,8 @@ export default function UserListView() {
                       selected={table.selected.includes(row._id)}
                       onSelectRow={() => table.onSelectRow(row._id)}
                       onDeleteRow={() => handleDeleteRow(row)}
+                      onUpdateStatus={() => handleUpdateStatus(row)}
+                      onToggleFeatured={() => handleToggleFeatured(row)}
                       carDealOptions={carDealOptions}
                       onSuccess={fetchAllCars}
                     />

@@ -1,15 +1,17 @@
-'use client';
-
-import PropTypes from 'prop-types';
-
-import AuthModernCompactLayout from 'src/layouts/auth/modern-compact';
-
-// ----------------------------------------------------------------------
-
-export default function Layout({ children }) {
-  return <AuthModernCompactLayout>{children}</AuthModernCompactLayout>;
-}
-
-Layout.propTypes = {
-  children: PropTypes.node,
+export const metadata = {
+  title: "garage tuned autos - Verify",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
 };
+
+export default function VerifyLayout({ children }) {
+  return <>{children}</>;
+}

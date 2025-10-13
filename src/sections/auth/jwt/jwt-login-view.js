@@ -31,8 +31,6 @@ import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 export default function JwtLoginView() {
   const { login } = useAuthContext();
 
-  let role = "user";
-
   const router = useRouter();
 
   const [errorMsg, setErrorMsg] = useState("");
@@ -62,13 +60,12 @@ export default function JwtLoginView() {
         return false;
       }),
     password: Yup.string().required("Password is required"),
-    captchaResponse: Yup.string().required("Captcha is required"),
+    // Remove captcha validation for now or implement proper captcha
   });
 
   const defaultValues = {
     email: "",
     password: "",
-    captchaResponse: "dummy data",
   };
 
   const methods = useForm({
@@ -84,13 +81,9 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (
-        data.email === "ahmadvision345@gmail.com" ||
-        data.email === "rafaqatmehar007@gmail.com"
-      ) {
-        role = "admin";
-      }
-      await login?.({ ...data, role });
+      // Role should be determined by backend authentication
+      // Never hardcode admin credentials in frontend code
+      await login?.(data);
     } catch (error) {
       console.error(error);
       setErrorMsg(typeof error === "string" ? error : error.message);

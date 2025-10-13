@@ -14,6 +14,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
 import GarageItem from "src/sections/garage/garage-item";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function CarRentSection() {
   const { data: allCarsData, isLoading, error } = useGetAllCars();
@@ -145,7 +147,7 @@ export default function CarRentSection() {
              Rental
           </Typography>
           
-          {!isSingleCar && rentCars.length > 0 && (
+          {/* {!isSingleCar && rentCars.length > 0 && (
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
@@ -188,10 +190,22 @@ export default function CarRentSection() {
                 />
               </IconButton>
             </Box>
-          )}
+          )} */}
         </Box>
+        <Box sx={{ display: "flex", flexDirection:{xs: "column", md: "row"}, gap: 2, justifyContent: "space-around" }}>
+         <Box>
+         <Link href="/guard" style={{ textDecoration: "none" , borderRadius: "10px" }}> 
+         <img src="/assets/Security-Guard-3.jpg" alt="rentcar"  height={650} ratio="16/9" />
+         </Link>
 
-        {/* Cars Display */}
+         </Box>
+         <Box>
+          <Link href="/rent" style={{ textDecoration: "none" , borderRadius: "10px" }}> 
+          <img style={{ borderRadius: "10px" }} src="/assets/cars-squad.jpg" alt="rentcar"  height={650} ratio="16/9" />
+          </Link>
+          </Box>
+        </Box>  
+       {/*   Cars Display 
         {rentCars.length > 0 ? (
           <Box sx={{ mb: 6, position: "relative", width: "100%", pb: 8 }}>
             {isSingleCar ? (
@@ -208,7 +222,7 @@ export default function CarRentSection() {
               </Box>
             ) : (
               <>
-                {/* Mobile View - Vertical Stack */}
+                {/* Mobile View - Vertical Stack 
                 <Box
                   sx={{
                     display: { xs: "block", md: "none" },
@@ -224,8 +238,7 @@ export default function CarRentSection() {
                   </Stack>
                 </Box>
 
-                {/* Desktop View - Slider */}
-                <Box
+                {/* Desktop View - Slider                 <Box
                   sx={{
                     display: { xs: "none", md: "block" },
                   }}>
@@ -258,7 +271,7 @@ export default function CarRentSection() {
               No rental cars found
             </Typography>
           </Box>
-        )}
+        )} */}
       </Container>
     </Box>
   );

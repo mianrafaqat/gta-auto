@@ -360,7 +360,7 @@ export default function AddNewCarForm({ isEditMode = false }) {
 
   const STEPPER = [
     {
-      label: "Add Car Details",
+      label: "Add Details",
       step: (
         <AddCarDetails isEditMode={isEditMode} setActiveStep={setActiveStep} />
       ),

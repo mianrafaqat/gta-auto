@@ -321,10 +321,10 @@ export default function AddCarDetails({
   // Determine available category options based on user role
   const categoryOptions = useMemo(() => {
     const isAdmin = user?.role === "admin" || user?.role === "superadmin";
-    const baseOptions = [{ value: "sale", label: "Sale" }];
+    let baseOptions = [{ value: "sale", label: "Sale" }];
 
     if (isAdmin) {
-      baseOptions.push({ value: "rent", label: "Rent" });
+      baseOptions = [ { value: "rent", label: "Car Rent" }];
     }
 
     return baseOptions;

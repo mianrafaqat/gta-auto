@@ -238,7 +238,7 @@ const LatestProductsList = ({ products, loading, title }) => {
               display: { xs: "block", md: "none" },
             }}>
             <Stack spacing={3} alignItems="center">
-              {products.map((product) => (
+              { products.slice(0, 8).map((product) => (
                 <Box
                   key={product._id}
                   sx={{ 

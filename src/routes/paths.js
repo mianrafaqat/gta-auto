@@ -304,6 +304,12 @@ export const paths = {
   cars: {
     root: "/cars",
   },
+  rent: {
+    root: "/rent",
+  },
+  guard: {
+    root: "/guard",
+  },
   category: {
     root: "/category",
     bySlug: (slug) => `/category/${slug}`,

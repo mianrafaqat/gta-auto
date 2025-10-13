@@ -32,7 +32,7 @@ export default function LastestEightCars() {
   // Filter cars based on selected tab
   const getFilteredCars = () => {
     const baseCars =
-      allCarsData?.data?.filter((c) => c?.status !== "Paused") || [];
+      allCarsData?.data?.filter((c) => c?.status !== "Paused" && c?.carDetails?.isFeatured) || [];
 
     // First filter by sale category
     const saleCars = baseCars.filter(

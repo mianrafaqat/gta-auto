@@ -20,7 +20,6 @@ import { paths } from "src/routes/paths";
 import { useBoolean } from "src/hooks/use-boolean";
 import { useDebounce } from "src/hooks/use-debounce";
 
-import { useGetProducts, useSearchProducts } from "src/api/product";
 import {
   PRODUCT_SORT_OPTIONS,
   PRODUCT_COLOR_OPTIONS,
@@ -32,9 +31,6 @@ import {
 import EmptyContent from "src/components/empty-content";
 import { useSettingsContext } from "src/components/settings";
 
-// import ProductSearch from "../product-search";
-// import { useCheckoutContext } from "../../checkout/context";
-// import ProductFiltersResult from "../product-filters-result";
 import {
   Box,
   Drawer,
@@ -51,9 +47,9 @@ import Loading from "src/app/loading";
 import { SplashScreen } from "src/components/loading-screen";
 import { Icon } from "@iconify/react";
 import { useQuery } from "@tanstack/react-query";
-import GarageSort from "./garage-sort";
-import GarageList from "./garage-list";
-import GarageFilters from "./garage-filter";
+import GarageSort from "../garage/garage-sort";
+import GarageList from "../garage/garage-list";
+import GarageFilters from "../garage/garage-filter";
 import { Button, Card, CardContent } from "@mui/material";
 import { WhatsApp } from "@mui/icons-material";
 
@@ -61,14 +57,12 @@ const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
 // ----------------------------------------------------------------------
 
-// ----------------------------------------------------------------------
-
-export default function GarageView() {
+export default function RentView() {
   const searchParams = useSearchParams();
   
   const defaultFilters = {
     priceRange: [100000, 25000000],
-    // category: "sale",
+    category: "rent", // Set default category to rent
     searchByTitle: "",
     year: [1940, new Date().getFullYear()],
     fuelType: "",
@@ -81,8 +75,6 @@ export default function GarageView() {
   }, []);
 
   const settings = useSettingsContext();
-
-  // const checkout = useCheckoutContext();
 
   const openFilters = useBoolean(true);
 
@@ -108,13 +100,14 @@ export default function GarageView() {
     }
   }, [searchParams]);
 
-  // Replace useState and manual fetching with React Query
+  // Fetch all cars and filter for rent category
   const { data: allCars = [], isLoading: loading } = useQuery({
-    queryKey: ["cars", "all"],
+    queryKey: ["cars", "rent"],
     queryFn: async () => {
       const res = await CarsService.getAll();
       if (res?.data) {
-        return res?.data?.filter((c) => c?.status !== "Paused" && c?.category?.toLowerCase() === "sale") || [];
+        // Filter for rent category only
+        return res?.data?.filter((c) => c?.status !== "Paused" && c?.category?.toLowerCase() === "rent") || [];
       }
       return [];
     },
@@ -142,8 +135,6 @@ export default function GarageView() {
     sortBy,
   });
 
-
-
   const canReset = () => {
     setFilters({ ...defaultFilters });
   };
@@ -162,14 +153,6 @@ export default function GarageView() {
       justifyContent="space-between"
       alignItems={{ xs: "flex-end", sm: "center" }}
       direction={{ xs: "column", sm: "row" }}>
-      {/* <ProductSearch
-        query={debouncedQuery}
-        results={searchResults}
-        onSearch={handleSearch}
-        loading={searchLoading}
-        hrefItem={(id) => paths.product.details(id)}
-      /> */}
-
       <Stack direction="row" spacing={1} flexShrink={0}>
         <GarageSort
           sort={sortBy}
@@ -192,25 +175,6 @@ export default function GarageView() {
     />
   );
 
-  const fetchAllCars = async () => {
-    try {
-      setLoading(true);
-      const res = await CarsService.getAll();
-      if (res?.data) {
-        const filteredCar =
-          res?.data?.filter((c) => c?.status !== "Paused") || [];
-        setAllCars(filteredCar);
-      }
-    } catch (err) {
-      console.log("error: ", err);
-    } finally {
-      // setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllCars();
-  }, []);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const lgUp = useResponsive("up", "lg");
@@ -220,89 +184,10 @@ export default function GarageView() {
 
   return (
     <Box sx={{ display: "flex", mt: "85px" }}>
-      {/* Sidebar for ProductFilters */}
-      {lgUp ? (
-        <Box
-          sx={{
-            width: "20%",
-            border: "1px solid #ccd1d1",
-            height: "fit-content",
-            borderRadius: "6px",
-            mt: "34px",
-            position: "sticky",
-            top: "120px",
-            mb: "30px",
-          }}>
-          <GarageFilters
-            open={openFilters.value}
-            onOpen={openFilters.onTrue}
-            onClose={openFilters.onFalse}
-            filters={filters}
-            onFilters={handleFilters}
-            canReset={canReset}
-            onResetFilters={handleResetFilters}
-            colorOptions={PRODUCT_COLOR_OPTIONS}
-            ratingOptions={PRODUCT_RATING_OPTIONS}
-            genderOptions={PRODUCT_GENDER_OPTIONS}
-            fuelOptions={[...FUEL_TYPES_LIST]}
-            reset={reset}
-          />
-        </Box>
-      ) : (
-        <Drawer
-          open={toggle}
-          onClose={onClose}
-          PaperProps={{
-            sx: {
-              width: "75%",
-              bgcolor: "#000",
-            },
-          }}>
-          <Box sx={{ bgcolor: "#000" }}>
-            <GarageFilters
-              open={openFilters.value}
-              onOpen={openFilters.onTrue}
-              onClose={openFilters.onFalse}
-              filters={filters}
-              onFilters={handleFilters}
-              canReset={canReset}
-              onResetFilters={handleResetFilters}
-              colorOptions={PRODUCT_COLOR_OPTIONS}
-              ratingOptions={PRODUCT_RATING_OPTIONS}
-              genderOptions={PRODUCT_GENDER_OPTIONS}
-              fuelOptions={[...FUEL_TYPES_LIST]}
-              reset={reset}
-            />
-          </Box>
-        </Drawer>
-      )}
-      {/* {!isSmallScreen && (
-      <Box sx={{ width: '20%' }}>
-        <ProductFilters
-          open={openFilters.value}
-          onOpen={openFilters.onTrue}
-          onClose={openFilters.onFalse}
-          //
-          filters={filters}
-          onFilters={handleFilters}
-          //
-          canReset={canReset}
-          onResetFilters={handleResetFilters}
-          //
-          colorOptions={PRODUCT_COLOR_OPTIONS}
-          ratingOptions={PRODUCT_RATING_OPTIONS}
-          genderOptions={PRODUCT_GENDER_OPTIONS}
-          categoryOptions={[...CATOGRIES_LIST]}
-          fuelOptions={[...FUEL_TYPES_LIST]}
-          onHandleSearch={setAllCars}
-          reset={reset}
-        />
-      </Box>
-    )} */}
-
+      
       <Box
         sx={{
-          width: isSmallScreen ? "100%" : "80%",
+          width: isSmallScreen ? "100%" : "100%",
           ml: isSmallScreen ? 0 : "auto",
         }}>
         <Container
@@ -311,11 +196,6 @@ export default function GarageView() {
             mb: 15,
           }}>
           <Grid container spacing={2}>
-            {/* Cart icon (optional) */}
-            {/* <Grid item xs={12}>
-            <CartIcon totalItems={checkout.totalItems} />
-          </Grid> */}
-
             {/* Title */}
             <Grid item xs={12}>
               <Stack
@@ -332,7 +212,7 @@ export default function GarageView() {
                     my: { xs: 3, md: 5 },
                     color: "#fff",
                   }}>
-                  Vehicles
+                  Rental Cars
                 </Typography>
                 {!lgUp && !loading && (
                   <IconButton onClick={() => setToggle(!toggle)}>
@@ -368,7 +248,7 @@ export default function GarageView() {
                       }}>
                       <Stack direction="row" gap={2} alignItems="center">
                         <Box>
-                        <img width={560}  style={{ objectFit: "contain" }} src="/assets/bugati.png" alt="Comic" />
+                        <img width={560}  style={{ objectFit: "contain" }} src="/assets/bugati.png" alt="Rental Car" />
 
                         </Box>
 
@@ -383,7 +263,7 @@ export default function GarageView() {
                               lineHeight: 1.2,
                               whiteSpace: "nowrap",
                             }}>
-                            Import Your Dream Car
+                            Rent Your Dream Car
                           </Typography>
                           <Typography
                             variant="h5"
@@ -398,9 +278,7 @@ export default function GarageView() {
                               lineHeight: 1.2,
                               textAlign: "center",
                             }}>
-                            From luxury brands to your everyday ride, we make
-                            importing your dream car a reality. Expert guidance,
-                            competitive pricing, and seamless process.
+                            From luxury brands to your everyday ride, find the perfect rental car for your needs. Competitive rates, flexible terms, and excellent service.
                           </Typography>
                         </Box>
                         <Stack
@@ -414,7 +292,7 @@ export default function GarageView() {
                             startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
                             onClick={() => {
                               const message =
-                                "Hi! I'm interested in importing car parts. Can you help me find the parts I need?";
+                                "Hi! I'm interested in renting a car. Can you help me find the right vehicle?";
                               const whatsappUrl = `https://wa.me/923263333456?text=${encodeURIComponent(message)}`;
                               window.open(whatsappUrl, "_blank");
                             }}
@@ -446,7 +324,7 @@ export default function GarageView() {
               {!dataFiltered?.length && !loading && (
                 <EmptyContent
                   filled
-                  title="No Data"
+                  title="No Rental Cars Available"
                   sx={{ py: 10, color: "#fff" }}
                 />
               )}
@@ -575,18 +453,7 @@ function applyFilter({ inputData, filters, sortBy }) {
 
   inputData = inputData.filter((p) => p.status !== "Paused");
 
-  // if (rating) {
-  //   inputData = inputData.filter((product) => {
-  //     const convertRating = (value) => {
-  //       if (value === "up4Star") return 4;
-  //       if (value === "up3Star") return 3;
-  //       if (value === "up2Star") return 2;
-  //       return 1;
-  //     };
-  //     return product.totalRatings > convertRating(rating);
-  //   });
-  // }
-
   console.log('applyFilter - Final result:', inputData.length, 'cars');
   return inputData;
 }
+

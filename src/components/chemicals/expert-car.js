@@ -146,6 +146,7 @@ const ExpertCar = () => {
             </Box>
           ) : (
             <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
+               
               {isSingleProduct ? (
                 // Single product display - center it
                 <Box
@@ -180,8 +181,8 @@ const ExpertCar = () => {
                 <Box
                   sx={{
                     position: "absolute",
-                    bottom: -20,
-                    left: 0,
+                    top: -60,
+                    right: 10,
                     display: "flex",
                     gap: 1,
                     zIndex: 10,
