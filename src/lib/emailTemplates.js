@@ -142,7 +142,7 @@ export const emailTemplates = {
           
           <p>We'll send you another email when your order ships with tracking information.</p>
           
-          <a href="https://gta-auto.vercel.app/dashboard/orders" class="button">View Order</a>
+          <a href="https://garagetunedautos.com/dashboard" class="button">View Order</a>
         </div>
         
         <div class="footer">
@@ -265,7 +265,7 @@ export const emailTemplates = {
             )
             .join("")}
           
-          <a href="https://gta-auto.vercel.app/dashboard/orders" class="button">View Order in Dashboard</a>
+          <a href="https://garagetunedautos.com/dashboard" class="button">View Order in Dashboard</a>
         </div>
         
         <div class="footer">
@@ -343,7 +343,7 @@ export const emailTemplates = {
           
           <p>We'll continue to keep you updated on your order progress.</p>
           
-          <a href="https://gta-auto.vercel.app/dashboard/orders" class="button">View Order</a>
+          <a href="https://garagetunedautos.com/dashboard" class="button">View Order</a>
         </div>
         
         <div class="footer">

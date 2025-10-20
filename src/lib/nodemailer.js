@@ -20,17 +20,18 @@ const createTransporter = () => {
 export const emailConfig = {
   from: {
     name: 'Garage Tuned Autos',
-    address: process.env.EMAIL_USER || 'cityautosuk@gmail.com'
+    address: process.env.EMAIL_USER || 'garagetunedautos01@gmail.com'
   },
   adminEmails: process.env.ADMIN_EMAILS ? 
     process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : 
-    ['admin@gta-auto.com'],
+    ['garagetunedautos01@gmail.com'],
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3033'
 };
 
 // Send email function
 export const sendEmail = async ({ to, subject, html, text, attachments = [] }) => {
   try {
+    console.log('Sending email to:', to, 'subject:', subject, 'html:', html, 'text:', text);
     const transporter = createTransporter();
     
     const mailOptions = {

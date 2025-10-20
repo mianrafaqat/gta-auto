@@ -461,11 +461,14 @@ function CartItem({ item, onDelete, onIncreaseQuantity, onDecreaseQuantity }) {
             {item.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            PKR {item.salePrice}
+            Qty: { item.quantity}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            PKR: {item.price * item.quantity}
           </Typography>
 
           {/* Show car details if available */}
-          {item.carDetails && (
+          {/* {item.carDetails && (
             <Typography
               variant="caption"
               color="text.secondary"
@@ -473,7 +476,7 @@ function CartItem({ item, onDelete, onIncreaseQuantity, onDecreaseQuantity }) {
               {item.carDetails.make} {item.carDetails.model} •{" "}
               {item.carDetails.yearOfManufacture}
             </Typography>
-          )}
+          )} */}
         </Box>
 
         <IconButton

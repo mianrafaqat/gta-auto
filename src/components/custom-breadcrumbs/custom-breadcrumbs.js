@@ -41,6 +41,7 @@ export default function CustomBreadcrumbs({
                   link={link}
                   activeLast={activeLast}
                   disabled={link.name === lastLink}
+                  sx={{ color: '#fff' }}
                 />
               ))}
             </Breadcrumbs>

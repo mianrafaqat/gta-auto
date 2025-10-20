@@ -27,13 +27,13 @@ export default function ProductDetailsReview({ totalRatings, totalReviews, ratin
 
   const renderSummary = (
     <Stack spacing={1} alignItems="center" justifyContent="center">
-      <Typography variant="subtitle2">Average rating</Typography>
+      <Typography variant="subtitle2" sx={{ color: '#fff' }}>Average rating</Typography>
 
-      <Typography variant="h2">{totalRatings}/5</Typography>
+      <Typography variant="h2" sx={{ color: '#fff' }}>{totalRatings}/5</Typography>
 
       <Rating readOnly value={totalRatings} precision={0.1} />
 
-      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+      <Typography variant="caption" sx={{ color: '#fff' }}>
         ({fShortenNumber(totalReviews)} reviews)
       </Typography>
     </Stack>
@@ -77,7 +77,7 @@ export default function ProductDetailsReview({ totalRatings, totalReviews, ratin
               component="span"
               sx={{
                 minWidth: 48,
-                color: 'text.secondary',
+                color: '#fff',
               }}
             >
               {fShortenNumber(rating.reviewCount)}
@@ -95,6 +95,7 @@ export default function ProductDetailsReview({ totalRatings, totalReviews, ratin
         color="inherit"
         onClick={review.onTrue}
         startIcon={<Iconify icon="solar:pen-bold" />}
+        sx={{ color: '#fff' }}
       >
         Write your review
       </Button>

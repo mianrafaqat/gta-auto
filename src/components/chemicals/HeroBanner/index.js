@@ -7,7 +7,7 @@ const HeroBanner = () => {
     <Box
       sx={{
         position: "relative",
-        height: "calc(100vh - 80px)",
+        height: { xs: "auto", md: "calc(100vh - 80px)" },
         overflow: "hidden",
       }}>
       <Box sx={{ height: "100%", objectFit: "cover", width: "100%" }}>

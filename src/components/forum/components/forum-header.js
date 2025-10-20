@@ -37,7 +37,7 @@ const ForumHeader = () => {
         Connect with fellow members, share experiences, and get help from our community
       </Typography>
 
-      <Breadcrumbs 
+      {/* <Breadcrumbs 
         separator={<Iconify icon="eva:arrow-ios-forward-fill" />}
         sx={{ 
           justifyContent: "center",
@@ -61,7 +61,7 @@ const ForumHeader = () => {
           Home
         </Link>
         <Typography color="text.primary">Forum</Typography>
-      </Breadcrumbs>
+      </Breadcrumbs> */}
     </Box>
   );
 };

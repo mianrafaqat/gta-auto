@@ -1,13 +1,10 @@
 "use client";
 
-import orderBy from "lodash/orderBy";
-import isEqual from "lodash/isEqual";
 import {
   useState,
   useCallback,
   useEffect,
-  useMemo,
-  useLayoutEffect,
+  useRef,
 } from "react";
 
 import Stack from "@mui/material/Stack";
@@ -15,60 +12,29 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { useSearchParams } from "next/navigation";
 
-import { paths } from "src/routes/paths";
-
-import { useBoolean } from "src/hooks/use-boolean";
-import { useDebounce } from "src/hooks/use-debounce";
-
 import ProductService from "src/services/products/products.service";
-import {
-  PRODUCT_SORT_OPTIONS,
-  PRODUCT_COLOR_OPTIONS,
-  PRODUCT_GENDER_OPTIONS,
-  PRODUCT_RATING_OPTIONS,
-  PRODUCT_CATEGORY_GROUP_OPTIONS,
-} from "src/_mock";
 
 import EmptyContent from "src/components/empty-content";
 import { useSettingsContext } from "src/components/settings";
 
-import ProductList from "../product-list";
-import ProductSort from "../product-sort";
-import CartIcon from "../common/cart-icon";
-import ProductSearch from "../product-search";
-import ProductFilters from "../product-filters";
 import { useCheckoutContext } from "../../checkout/context";
-import ProductFiltersResult from "../product-filters-result";
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Drawer,
   Grid,
-  Hidden,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { useResponsive } from "src/hooks/use-responsive";
-import IconButton from "@mui/material/IconButton";
-import SvgColor from "src/components/svg-color";
-import Loading from "src/app/loading";
 import { SplashScreen } from "src/components/loading-screen";
-import { Icon } from "@iconify/react";
 import { WhatsApp } from "@mui/icons-material";
-import Image from "next/image";
-import CategoryOffers from "src/sections/categoryOffers";
-import ProductFiltersNew from "src/components/product-filters-new";
 import BrowseVideosSection from "src/components/cars-filters/browse-videos";
 import CTA from "src/components/cta";
-import Discounted from "src/components/discounted";
 import ShopProductList from "../Shop-product-list";
 import ShopHero from "../shop-hero";
-import HeroBottom from "src/components/heroBottom";
 import LatestProductsSection from "src/components/cars-filters/latest-products";
-
-const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
 // ----------------------------------------------------------------------
 
@@ -108,10 +74,6 @@ export default function ProductShopView() {
     );
   }
 
-  const openFilters = useBoolean(true);
-
-  const [sortBy, setSortBy] = useState("featured");
-
   const [filters, setFilters] = useState(defaultFilters);
   const [reset, setReset] = useState(false);
 
@@ -128,76 +90,88 @@ export default function ProductShopView() {
     }
   }, [searchParams]);
 
-  // State for products, pagination, and loading
-  const [allCars, setAllCars] = useState([]);
+  // Pagination settings
+  const ITEMS_PER_PAGE = 12;
+  
+  // State for products and loading
+  const [allProducts, setAllProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 10,
-    totalPages: 1,
-    totalItems: 0,
-  });
+  const [page, setPage] = useState(1);
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const loaderRef = useRef(null);
 
-  // Fetch products using ProductService with pagination
-  const fetchProducts = useCallback(
-    async (page = 1) => {
-      try {
-        setLoading(true);
-        const response = await ProductService.getAll({
-          page,
-          limit: pagination.limit,
-          ...filters, // Pass filters to API
-        });
+  // Fetch all products initially
+  const fetchAllProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      // Fetch a large batch of products or implement progressive loading
+      const response = await ProductService.getAll({
+        page: 1,
+        limit: 100, // Fetch more products initially
+        ...filters,
+      });
 
-
-        if (response && response.products) {
-          setAllCars(response.products);
-
-          // Handle the new pagination format: {total: 70, page: 1, pages: 7}
-          if (response.pagination) {
-            setPagination({
-              page: response.pagination.page || 1,
-              limit: pagination.limit,
-              totalPages: response.pagination.pages || 1,
-              totalItems: response.pagination.total || response.products.length,
-            });
-          }
-        } else if (response && response.data) {
-          setAllCars(response.data);
-          // Fallback pagination if structure is different
-          setPagination((prev) => ({
-            ...prev,
-            page: page,
-            totalItems: response.data.length,
-          }));
-        } else {
-          setAllCars([]);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setAllCars([]);
-      } finally {
-        setLoading(false);
+      if (response && response.products) {
+        setAllProducts(response.products);
+        setHasMoreProducts(response.pagination?.pages > 1);
+      } else if (response && response.data) {
+        setAllProducts(response.data);
+        setHasMoreProducts(false);
+      } else {
+        setAllProducts([]);
+        setHasMoreProducts(false);
       }
-    },
-    [filters, pagination.limit]
-  );
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setAllProducts([]);
+      setHasMoreProducts(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [filters]);
 
-  // Handle initial load and filter changes
+  // Initial fetch
   useEffect(() => {
-    fetchProducts(pagination.page);
-  }, [fetchProducts]);
+    fetchAllProducts();
+  }, [fetchAllProducts]);
 
-  // Handle page change
-  const handlePageChange = (newPage) => {
-    console.log(
-      "Changing to page:",
-      newPage,
-      "Current pagination state:",
-      pagination
+  // Update displayed products when data or page changes
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      const endIndex = page * ITEMS_PER_PAGE;
+      setDisplayedProducts(allProducts.slice(0, endIndex));
+    }
+  }, [allProducts, page]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && !loading && displayedProducts.length < allProducts.length) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "100px",
+        threshold: 0.1,
+      }
     );
-    fetchProducts(newPage);
-  };
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [loading, displayedProducts.length, allProducts.length]);
+
+  const hasMore = displayedProducts.length < allProducts.length;
 
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
@@ -211,119 +185,27 @@ export default function ProductShopView() {
     setReset((prev) => !prev);
   }, []);
 
-  // Apply client-side filters if needed
-  // Note: When using server pagination, we should avoid re-filtering the data
-  // that's already filtered by the server
-  const dataFiltered = allCars;
+  // Use displayed products
+  const dataFiltered = displayedProducts;
 
   const canReset = () => {
     setFilters({ ...defaultFilters });
   };
 
-  const handleSortBy = useCallback((newValue) => {
-    setSortBy(newValue);
-  }, []);
-
-  const handleSearch = useCallback((inputValue) => {
-    setSearchQuery(inputValue);
-  }, []);
-
-  const renderFilters = (
-    <Stack
-      spacing={3}
-      justifyContent="space-between"
-      width="100%"
-      alignItems={{ xs: "flex-end", sm: "center" }}
-      direction={{ xs: "column", sm: "row" }}>
-      <ProductSearch
-        // query={debouncedQuery}
-        // results={searchResults}
-        onSearch={handleSearch}
-        // loading={searchLoading}
-        hrefItem={(id) => paths.product.details(id)}
-      />
-
-      <Stack direction="row" spacing={1} flexShrink={0}>
-        {/* <IconButton onClick={() => setToggle(!toggle)}>
-          <Typography sx={{ mr: "8px", color: "#4caf50" }}>Filters</Typography>
-
-          <Icon icon="mage:filter-fill" color="#4caf50" />
-        </IconButton> */}
-        <ProductSort
-          sort={sortBy}
-          onSort={handleSortBy}
-          sortOptions={PRODUCT_SORT_OPTIONS}
-        />
-      </Stack>
-    </Stack>
-  );
-
-  const renderResults = (
-    <ProductFiltersResult
-      filters={filters}
-      onFilters={handleFilters}
-      //
-      canReset={canReset}
-      onResetFilters={handleResetFilters}
-      //
-      results={dataFiltered.length}
-    />
-  );
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const lgUp = useResponsive("up", "lg");
 
-  const [toggle, setToggle] = useState(false);
-  const onClose = () => setToggle(false);
-
   return (
     <Box sx={{ display: "" }}>
       <ShopHero />
       {/* <HeroBottom /> */}
-
-      <Drawer
-        open={toggle}
-        onClose={onClose}
-        PaperProps={{
-          sx: {
-            width: { md: "30%", xs: "75%" },
-            backgroundColor: "#000",
-          },
-        }}>
-        <Box>
-          <ProductFiltersNew
-            filters={filters}
-            onFilters={handleFilters}
-            onResetFilters={handleResetFilters}
-          />
-        </Box>
-      </Drawer>
-
-      {/* {!isSmallScreen && (
-      <Box sx={{ width: '20%' }}>
-        <ProductFilters
-          open={openFilters.value}
-          onOpen={openFilters.onTrue}
-          onClose={openFilters.onFalse}
-          //
-          filters={filters}
-          onFilters={handleFilters}
-          //
-          canReset={canReset}
-          onResetFilters={handleResetFilters}
-          //
-          colorOptions={PRODUCT_COLOR_OPTIONS}
-          ratingOptions={PRODUCT_RATING_OPTIONS}
-          genderOptions={PRODUCT_GENDER_OPTIONS}
-          categoryOptions={[...CATOGRIES_LIST]}
-          fuelOptions={[...FUEL_TYPES_LIST]}
-          onHandleSearch={setAllCars}
-          reset={reset}
-        />
+ <Box sx={{
+        
+      }}>
+      <LatestProductsSection isShop={false} />
       </Box>
-    )} */}
-
       <Box
         sx={{
           width: isSmallScreen ? "100%" : "100%",
@@ -350,7 +232,7 @@ export default function ProductShopView() {
                   justifyContent: "space-between",
                   mt: "32px",
                 }}>
-                <Typography
+                {/* <Typography
                   variant="h4"
                   sx={{
                     my: { xs: 3, md: 5 },
@@ -358,10 +240,10 @@ export default function ProductShopView() {
                     fontSize: "32px !important",
                   }}>
                   Shop
-                </Typography>
+                </Typography> */}
 
                 <Box
-                  sx={{ width: "80%", display: { md: "block", xs: "none" } }}>
+                  sx={{ width: "100%", display: { md: "block", xs: "none" } }}>
                   <Card
                     sx={{
                       background: "#25D366",
@@ -450,7 +332,7 @@ export default function ProductShopView() {
                               minWidth: 250,
                               whiteSpace: "nowrap",
                             }}>
-                            Chat on WhatsApp
+                            Book an appointment
                           </Button>
                         </Stack>
                       </Stack>
@@ -469,7 +351,7 @@ export default function ProductShopView() {
               {/* {canReset && renderResults} */}
             </Stack>
 
-            <CategoryOffers />
+            {/* <CategoryOffers /> */}
             <Box width="100%">
               <Box
                 sx={{
@@ -513,27 +395,16 @@ export default function ProductShopView() {
 
             {/* Render ProductList */}
 
-            <Grid container gap="0px">
-              <Grid item xs={12} md={2} display={{ xs: "none", md: "block" }}>
-                <ProductFiltersNew
-                  filters={filters}
-                  onFilters={handleFilters}
-                  onResetFilters={handleResetFilters}
-                />
-              </Grid>
-              <Grid item xs={12} md={10}>
-              {/* {renderFilters} */}
-
+            <Grid container>
+              <Grid item xs={12}>
                 <ShopProductList
                   products={dataFiltered}
                   loading={loading}
-                  currentPage={pagination.page}
-                  totalPages={pagination.totalPages}
-                  onPageChange={handlePageChange}
+                  loaderRef={loaderRef}
+                  hasMore={hasMore}
                   onAddOrRemoveFav={() => {
-                    fetchProducts(pagination.page);
+                    fetchAllProducts();
                   }}
-                  serverPagination={true}
                   sx={{ my: 5 }}
                 />
               </Grid>
@@ -541,7 +412,7 @@ export default function ProductShopView() {
           </Grid>
         </Container>
         <BrowseVideosSection />
-        <CTA />
+        {/* <CTA /> */}
       </Box>
     </Box>
   );

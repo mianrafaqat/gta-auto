@@ -77,6 +77,7 @@ export default function CheckoutCart() {
           total={checkout.total}
           discount={checkout.discount}
           subTotal={checkout.subTotal}
+          shipping={checkout.shipping || 250}
           onApplyDiscount={checkout.onApplyDiscount}
         />
 
@@ -85,10 +86,16 @@ export default function CheckoutCart() {
           size="large"
           type="submit"
           variant="contained"
+          sx={{
+            backgroundColor: "#4caf50",
+            "&:hover": {
+              backgroundColor: "#45a049",
+            },
+          }}
           disabled={empty}
           onClick={checkout.onNextStep}
         >
-          Check Out
+          Checkout
         </Button>
       </Grid>
     </Grid>

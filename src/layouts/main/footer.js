@@ -79,19 +79,11 @@ export default function Footer() {
       const windowHeight = window.innerHeight;
       const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
       
-      // Debug logging
-      console.log('=== Back to Top Debug ===');
-      console.log('Document height:', documentHeight);
-      console.log('Window height:', windowHeight);
-      console.log('Scroll position:', scrollPosition);
-      
+   
       // Show button if page is scrollable and user has scrolled down at least 200px
       const isScrollable = documentHeight > windowHeight + 100; // Add buffer for better UX
       const hasScrolled = scrollPosition > 200;
-      
-      console.log('Is scrollable:', isScrollable);
-      console.log('Has scrolled enough:', hasScrolled);
-      console.log('Should show button:', isScrollable && hasScrolled);
+     
       
       setShowBackToTop(isScrollable && hasScrolled);
     };
@@ -280,7 +272,7 @@ export default function Footer() {
         {/* Main Content Grid */}
         <Grid container spacing={{ xs: 3, md: 4 }}>
           {/* Contact Us Column */}
-          <Grid item xs={12} md={4}>
+          <Grid xs={12} md={4}>
             {/* Logo positioned above Contact Us */}
             <Box sx={{ mb: 4, textAlign: "left" }}>
               <Box
@@ -401,7 +393,7 @@ export default function Footer() {
           </Grid>
 
           {/* Quick Links Column */}
-          <Grid item xs={12} md={4}>
+          <Grid xs={12} md={4}>
             {/* <Typography
               variant="h6"
               sx={{
@@ -443,7 +435,7 @@ export default function Footer() {
           </Grid>
 
           {/* Customer Services Column */}
-          <Grid item xs={12} md={4}>
+          <Grid xs={12} md={4}>
             <Typography
               variant="h6"
               sx={{
@@ -541,8 +533,7 @@ export default function Footer() {
               color: "#ffffff",
               fontSize: { xs: "12px", md: "14px" },
             }}>
-            © 2025 Garage Tuned Autos. All rights reserved. Powered by Digital
-            Stay Active
+            © 2025 Garage Tuned Autos. All rights reserved.
           </Typography>
         </Box>
       </Container>
@@ -561,8 +552,8 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              width: isMobile ? "40px" : "50px",
-              height: isMobile ? "40px" : "50px",
+              width: isMobile ? "40px" : "60px",
+              height: isMobile ? "40px" : "60px",
               backgroundColor: "green",
               borderRadius: "50%",
               display: "flex",
@@ -584,7 +575,11 @@ export default function Footer() {
             }}>
             <Iconify
               icon="ic:baseline-whatsapp"
-              sx={{ color: "#ffffff", fontSize: isMobile ? "22px" : "34px" }}
+              width={isMobile ? 22 : 30}
+              height={isMobile ? 22: 30}
+              size={isMobile ? "22px" : "50px"}
+              fontSize={isMobile ? "22px" : "50px"}
+              sx={{ color: "#ffffff", fontSize: isMobile ? "22px" : "50px" }}
             />
           </a>
           

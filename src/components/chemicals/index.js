@@ -11,7 +11,10 @@ const Chemicals = () => {
   return (
     <Box>
       <HeroBanner />
-      <ExpertCar />
+     
+     <Box sx={{ display: { xs: "none", md: "block" } }}> <ExpertCar />
+     </Box>
+    
       <Washing />
       {/* <Packages /> */}
       <Comics />

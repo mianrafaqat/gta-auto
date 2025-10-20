@@ -36,7 +36,7 @@ export const useGetProductById = (productId) => {
 export const useGetUserFavoriteProducts = (userId) => {
   return useQuery({
     queryKey: [...productKeys.favorites(), userId],
-    queryFn: () => UserService.getUserFavoriteProducts({ userID: userId }),
+    queryFn: () => UserService.getUserFavoriteProducts({ userId: userId }),
     enabled: !!userId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });

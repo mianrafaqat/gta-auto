@@ -12,6 +12,7 @@ import gtaAutosInstance from "src/utils/requestInterceptor";
  * - GET /api/orders/:id (Get Order by ID)
  * - PUT /api/orders/:id/status (Update Order Status - Admin)
  * - POST /api/orders/:id/tracking (Add Tracking Information - Admin)
+ * - DELETE /api/orders/:id (Delete Order - Admin)
  */
 class OrderService {
   
@@ -72,26 +73,16 @@ class OrderService {
    */
   async getAll(params = {}) {
     try {
-      const isAdmin = this._isAdmin();
       let endpoint;
-      
-      if (isAdmin) {
-        // Admin gets all orders
+    
+  
         endpoint = API_URLS.orders.getAll;
-      } else {
-        // Regular user gets their own orders by user ID
-        const userId = this._getCurrentUserId();
-        if (!userId) {
-          throw new Error('User ID not found. Please login again.');
-        }
-        endpoint = API_URLS.orders.getByUserId(userId);
-      }
 
       const res = await gtaAutosInstance.get(endpoint, {
         params,
+        
       });
       
-      console.log(`✅ [SERVICE] getAll success (${isAdmin ? 'admin' : 'user'}):`, res.status, res.data);
       return res.data;
     } catch (ex) {
       throw ex;
@@ -184,6 +175,20 @@ class OrderService {
         API_URLS.orders.addTracking(id),
         data
       );
+      return res.data;
+    } catch (ex) {
+      throw ex;
+    }
+  }
+
+  /**
+   * Delete an order (admin only).
+   * @param {string} id - Order ID
+   * @returns {Promise<Object>}
+   */
+  async delete(id) {
+    try {
+      const res = await gtaAutosInstance.delete(API_URLS.orders.delete(id));
       return res.data;
     } catch (ex) {
       throw ex;

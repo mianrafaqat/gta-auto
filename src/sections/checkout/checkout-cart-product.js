@@ -37,14 +37,13 @@ export default function CheckoutCartProduct({ row, onDelete, onDecrease, onIncre
             alignItems="center"
             sx={{ typography: 'body2', color: 'text.secondary' }}
           >
-            size: <Label sx={{ ml: 0.5 }}> {size} </Label>
             <Divider orientation="vertical" sx={{ mx: 1, height: 16 }} />
             <ColorPreview colors={colors} />
           </Stack>
         </Stack>
       </TableCell>
 
-      <TableCell>{fCurrency(price)}</TableCell>
+      <TableCell>PKR { price}</TableCell>
 
       <TableCell>
         <Box sx={{ width: 88, textAlign: 'right' }}>
@@ -53,7 +52,7 @@ export default function CheckoutCartProduct({ row, onDelete, onDecrease, onIncre
             onDecrease={onDecrease}
             onIncrease={onIncrease}
             disabledDecrease={quantity <= 1}
-            disabledIncrease={quantity >= available}
+            // disabledIncrease={quantity >= available}
           />
 
           <Typography variant="caption" component="div" sx={{ color: 'text.secondary', mt: 1 }}>
@@ -62,7 +61,7 @@ export default function CheckoutCartProduct({ row, onDelete, onDecrease, onIncre
         </Box>
       </TableCell>
 
-      <TableCell align="right">{fCurrency(price * quantity)}</TableCell>
+      <TableCell align="right">PKR { (price * quantity)}</TableCell>
 
       <TableCell align="right" sx={{ px: 1 }}>
         <IconButton onClick={onDelete}>

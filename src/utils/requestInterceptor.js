@@ -10,24 +10,19 @@ const gtaAutosInstance = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Request interceptor
 gtaAutosInstance.interceptors.request.use((config) => {
-  // Don't add token for refresh token request
   if (config.url === "/api/user/refresh-token") {
     return config;
   }
 
-  // Check rate limiting
   const isAuthenticated = !!localStorage.getItem(ACCESS_TOKEN_KEY);
   const userKey = isAuthenticated ? 'authenticated' : 'anonymous';
   
   if (!rateLimiter.isAllowed(userKey, isAuthenticated)) {
     const error = new Error('Rate limit exceeded. Please try again later.');
-    // error.response = { status: 429, data: { error: 'Rate limit exceeded' } };
     return Promise.reject(error);
   }
 
-  // Only add Authorization header if it's not already set
   if (!config.headers.Authorization) {
     const authToken = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (authToken) {
@@ -39,10 +34,8 @@ gtaAutosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor
 gtaAutosInstance.interceptors.response.use(
   (response) => {
-    // Add rate limit headers to response
     const isAuthenticated = !!localStorage.getItem(ACCESS_TOKEN_KEY);
     const userKey = isAuthenticated ? 'authenticated' : 'anonymous';
     const rateLimitHeaders = rateLimiter.getHeaders(userKey, isAuthenticated);
@@ -57,14 +50,11 @@ gtaAutosInstance.interceptors.response.use(
     
     const originalRequest = error.config;
 
-    // Handle rate limiting errors
     if (error?.response?.status === 429) {
       const retryAfter = error.response.headers['retry-after'] || 60;
-      // console.warn(`Rate limited. Retry after ${retryAfter} seconds.`);
       return Promise.reject(error);
     }
 
-    // Define public endpoints that should not trigger authentication redirects
     const publicEndpoints = [
       '/api/products',
       '/api/car/getAll',
@@ -83,18 +73,41 @@ gtaAutosInstance.interceptors.response.use(
       '/api/tax',
       '/api/coupons',
       '/api/forum/categories',
-      '/api/forum/topics',
       '/api/forum/search',
       '/api/forum/stats',
+      '/api/forum/comments',  // GET comments
+      '/api/forum/replies',   // GET replies
       '/api/blog-comments/blog/',
       '/api/blog-comments/',
-      '/api/address-book/primary',
+      // '/api/address-book/primary',
+      // '/api/address-book/getAll',
+      // '/api/address-book',
       '/api/shipping/available',
-      '/api/shipping/calculate'
+      '/api/shipping/calculate',
+      '/api/orders',
+
     ];
 
-    // Check if the current request is to a public endpoint
+    const optionalAuthEndpoints = [
+      '/api/user/addOrRemoveFavourite',
+      '/api/user/getUserFavouriteCars',
+      '/api/user/addOrRemoveFavouriteProduct'
+    ];
+
+  
     const isPublicEndpoint = publicEndpoints.some(endpoint => 
+      originalRequest.url && originalRequest.url.includes(endpoint)
+    ) || (
+      originalRequest.url && 
+      (originalRequest.url.includes('/api/forum/topics') || 
+       originalRequest.url.includes('/api/forum/comments') || 
+       originalRequest.url.includes('/api/forum/replies')) &&
+      originalRequest.method && 
+      originalRequest.method.toUpperCase() === 'GET'
+    );
+
+    // Check if the current request is to an optional auth endpoint
+    const isOptionalAuthEndpoint = optionalAuthEndpoints.some(endpoint => 
       originalRequest.url && originalRequest.url.includes(endpoint)
     );
 
@@ -121,6 +134,11 @@ gtaAutosInstance.interceptors.response.use(
 
     // For public endpoints, don't attempt token refresh or redirect
     if (isPublicEndpoint) {
+      return Promise.reject(error);
+    }
+
+    // For optional auth endpoints, fail silently without redirecting to login
+    if (isOptionalAuthEndpoint) {
       return Promise.reject(error);
     }
 

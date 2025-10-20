@@ -25,7 +25,7 @@ export const navConfig = [
   {
     title: "Shop",
     icon: <Iconify icon="solar:home-2-bold-duotone" />,
-    path: "/product",
+    path: "/shop",
   },
   {
     title: "Services",
@@ -50,6 +50,11 @@ export const navConfig = [
             title: "Blog",
             icon: <Iconify icon="solar:home-2-bold-duotone" />,
             path: "/blog",
+          },
+          {
+            title: "Forum",
+            icon: <Iconify icon="solar:home-2-bold-duotone" />,
+            path: "/forum",
           },
           {
             title: "Guard",

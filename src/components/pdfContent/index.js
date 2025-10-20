@@ -2,6 +2,7 @@ import React from 'react';
 import html2pdf from 'html2pdf.js';
 import { format } from 'date-fns';
 import { PdfDownloadService } from 'src/services';
+import { escapeHtml } from 'src/utils/sanitize';
 
 const TableRowWithDownload = ({ orderId, row, email = '' }) => {
   const handleDownload = async () => {
@@ -28,26 +29,26 @@ const TableRowWithDownload = ({ orderId, row, email = '' }) => {
         <small>S-Trade GmbH| Großenhainer Str. 98 | 01127 Dresden</small>
       </div>
       <div style="margin-top: 5px; display: flex; flex-direction: column; gap: 3px;">
-        <p style="margin: 0;">${row?.orderDetail?.shippingAddress?.name}</p>
+        <p style="margin: 0;">${escapeHtml(row?.orderDetail?.shippingAddress?.name)}</p>
         <p style="margin: 0;">
           ${
             row?.orderDetail?.shippingAddress?.street1
-              ? row?.orderDetail?.shippingAddress?.street1 + ','
+              ? escapeHtml(row?.orderDetail?.shippingAddress?.street1) + ','
               : ''
           }
           ${
             row?.orderDetail?.shippingAddress?.street2
-              ? row?.orderDetail?.shippingAddress?.street2 + ','
+              ? escapeHtml(row?.orderDetail?.shippingAddress?.street2) + ','
               : ''
           }
           ${
             row?.orderDetail?.shippingAddress?.cityName
-              ? row?.orderDetail?.shippingAddress?.cityName + ','
+              ? escapeHtml(row?.orderDetail?.shippingAddress?.cityName) + ','
               : ''
           }
           ${
             row?.orderDetail?.shippingAddress?.countryName
-              ? row?.orderDetail?.shippingAddress?.countryName
+              ? escapeHtml(row?.orderDetail?.shippingAddress?.countryName)
               : ''
           }
         </p>
@@ -55,7 +56,7 @@ const TableRowWithDownload = ({ orderId, row, email = '' }) => {
       <div style="display: flex; gap: 20px; justify-content: end;">
         <div style="display: flex; flex-direction: column; align-items: center;">
           <span style="font-weight: bold; font-size: 13px;">Kundennumber</span>
-          <span style="font-size: 12px;">${row?.orderDetail?.shippingAddress?.phone}</span>
+          <span style="font-size: 12px;">${escapeHtml(row?.orderDetail?.shippingAddress?.phone)}</span>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <span style="font-weight: bold; font-size: 13px;">Auftragsdatum</span>
@@ -95,10 +96,10 @@ const TableRowWithDownload = ({ orderId, row, email = '' }) => {
                     <td style="padding: 8px; text-align: left; vertical-align: top;">${
                       index + 1
                     }</td>
-                    <td style="padding: 8px;">${row?.orderDetail?.buyerUserID} <br> <b>${
-                      transaction?.item?.title
+                    <td style="padding: 8px;">${escapeHtml(row?.orderDetail?.buyerUserID)} <br> <b>${
+                      escapeHtml(transaction?.item?.title)
                     }</b></td>
-                    <td style="padding: 8px;">${transaction?.quantityPurchased}</td>
+                    <td style="padding: 8px;">${escapeHtml(String(transaction?.quantityPurchased))}</td>
                   </tr>
                 `
               )
@@ -113,26 +114,26 @@ const TableRowWithDownload = ({ orderId, row, email = '' }) => {
         <div style="display: flex; justify-content: space-between;">
           <div style="flex: 1; margin-right: 20px;">
             <ul style="list-style: none; margin: 0; padding: 0;">
-              <li>${sellerAddress}</li>
+              <li>${escapeHtml(sellerAddress)}</li>
             </ul>
           </div>
           <div style="flex: 1; margin-right: 20px;">
             <ul style="list-style: none; margin: 0; padding: 0;">
-              <li>Tel.: ${sellerPhone}</li>
-              <li>E-Mail: ${sellerEmail}</li>
-              <li>Web: ${sellerWeb}</li>
+              <li>Tel.: ${escapeHtml(sellerPhone)}</li>
+              <li>E-Mail: ${escapeHtml(sellerEmail)}</li>
+              <li>Web: ${escapeHtml(sellerWeb)}</li>
             </ul>
           </div>
           <div style="flex: 1; margin-right: 20px;">
             <ul style="list-style: none; margin: 0; padding: 0;">
-              <li>Bank: ${bankName}</li>
-              <li>IBAN: ${iban}</li>
-              <li>BIC: ${bic} ${kto}</li>
+              <li>Bank: ${escapeHtml(bankName)}</li>
+              <li>IBAN: ${escapeHtml(iban)}</li>
+              <li>BIC: ${escapeHtml(bic)} ${escapeHtml(kto)}</li>
             </ul>
           </div>
           <div style="flex: 1;">
             <ul style="list-style: none; margin: 0; padding: 0;">
-              <li>Ust-IdNr.: ${ustIdNr}</li>
+              <li>Ust-IdNr.: ${escapeHtml(ustIdNr)}</li>
             </ul>
           </div>
         </div>

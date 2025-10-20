@@ -3,6 +3,9 @@
 /* eslint-disable perfectionist/sort-imports */
 import '../global.css';
 
+// Suppress known warnings from third-party libraries
+import 'src/utils/suppress-warnings';
+
 // i18n
 import '../locales/i18n';
 
@@ -57,6 +60,16 @@ export default function RootLayout({ children }) {
     <html lang="en" className={primaryFont.className}>
       <head>
         <meta name="google-site-verification" content="wF3dRaXdpca-BY45EI1zQ3un-YW-lLF4nlMmkextMYU" />
+        
+        {/* Favicon */}
+        <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-chrome-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/favicon/android-chrome-512x512.png" />
+        <link rel="manifest" href="/manifest.json" />
+        
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

@@ -69,6 +69,7 @@ export const API_URLS = {
     getAll: "/api/orders/all", // GET: Get All Orders (Admin only) - Updated to match API docs
     updateStatus: (id) => `/api/orders/${id}/status`, // PUT: Update Order Status (Admin only)
     addTracking: (id) => `/api/orders/${id}/tracking`, // POST: Add Tracking Information (Admin only)
+    delete: (id) => `/api/orders/${id}`, // DELETE: Delete Order (Admin only)
 
     // Email Routes
     sendConfirmationEmail: "/api/orders/send-confirmation-email", // POST: Send order confirmation email

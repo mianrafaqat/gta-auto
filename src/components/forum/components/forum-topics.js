@@ -8,14 +8,74 @@ import {
   Skeleton,
   Divider,
   Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
+import { useState } from "react";
 import Iconify from "src/components/iconify";
 
-const ForumTopics = ({ topics, loading, onTopicClick, onLike }) => {
+const ForumTopics = ({ topics, loading, onTopicClick, onLike, onPin, onDelete, onLock, isAdmin }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleMenuOpen = (event, topic) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setSelectedTopic(topic);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    // Don't clear selectedTopic here, as we need it for delete confirmation
+  };
+
+  const handlePinClick = () => {
+    if (selectedTopic && onPin) {
+      onPin(selectedTopic.id, !selectedTopic.isPinned);
+    }
+    handleMenuClose();
+    // Clear selected topic after action
+    setSelectedTopic(null);
+  };
+
+  const handleLockClick = () => {
+    if (selectedTopic && onLock) {
+      onLock(selectedTopic.id, !selectedTopic.isLocked);
+    }
+    handleMenuClose();
+    // Clear selected topic after action
+    setSelectedTopic(null);
+  };
+
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+    handleMenuClose();
+    // Don't clear selectedTopic - we need it for the confirmation dialog
+  };
+
+  const handleDeleteConfirm = () => {
+    if (selectedTopic && onDelete) {
+      onDelete(selectedTopic.id);
+    }
+    setDeleteDialogOpen(false);
+    setSelectedTopic(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setSelectedTopic(null);
+  };
   if (loading) {
     return (
       <Box>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#4CAF50" }}>
           Topics
         </Typography>
         {[...Array(5)].map((_, index) => (
@@ -61,10 +121,10 @@ const ForumTopics = ({ topics, loading, onTopicClick, onLike }) => {
           icon="eva:message-circle-outline"
           sx={{ fontSize: 64, color: "text.secondary", mb: 2 }}
         />
-        <Typography variant="h6" sx={{ mb: 1 }}>
+        <Typography variant="h6" sx={{ mb: 1, color: "#4CAF50" }}>
           No topics found
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{ color: "#4CAF50" }}  >
           Try adjusting your search or filter criteria
         </Typography>
       </Paper>
@@ -73,7 +133,7 @@ const ForumTopics = ({ topics, loading, onTopicClick, onLike }) => {
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#4CAF50" , }}>
         Topics ({topics.length})
       </Typography>
 
@@ -81,14 +141,15 @@ const ForumTopics = ({ topics, loading, onTopicClick, onLike }) => {
         {topics.map((topic) => (
           <Paper
             key={topic.id}
-            elevation={0}
+            elevation={topic.isPinned ? 1 : 0}
             sx={{
               p: 3,
               border: "1px solid",
-              borderColor: "divider",
+              borderColor: topic.isPinned ? "#4CAF50" : "divider",
               borderRadius: 2,
               cursor: "pointer",
               transition: "all 0.2s ease-in-out",
+              bgcolor:  "background.paper",
               "&:hover": {
                 borderColor: "#4CAF50",
                 boxShadow: "0 4px 12px rgba(76, 175, 80, 0.1)",
@@ -113,24 +174,47 @@ const ForumTopics = ({ topics, loading, onTopicClick, onLike }) => {
                       alignItems: "center",
                       gap: 1,
                       mb: 1,
+                      flexWrap: "wrap",
                     }}>
                     {topic.isPinned && (
-                      <Iconify
-                        icon="eva:pin-fill"
-                        sx={{ fontSize: 16, color: "#4CAF50" }}
+                      <Chip
+                        icon={<Iconify icon="eva:pin-fill" sx={{ fontSize: 14 }} />}
+                        label="PINNED"
+                        size="small"
+                        sx={{
+                          bgcolor: "#4CAF50",
+                          color: "white",
+                          fontWeight: 600,
+                          fontSize: "0.7rem",
+                          height: 24,
+                          "& .MuiChip-icon": {
+                            color: "white",
+                          },
+                        }}
                       />
                     )}
                     {topic.isLocked && (
-                      <Iconify
-                        icon="eva:lock-fill"
-                        sx={{ fontSize: 16, color: "error.main" }}
+                      <Chip
+                        icon={<Iconify icon="eva:lock-fill" sx={{ fontSize: 14 }} />}
+                        label="LOCKED"
+                        size="small"
+                        sx={{
+                          bgcolor: "error.main",
+                          color: "white",
+                          fontWeight: 600,
+                          fontSize: "0.7rem",
+                          height: 24,
+                          "& .MuiChip-icon": {
+                            color: "white",
+                          },
+                        }}
                       />
                     )}
                     <Typography
                       variant="h6"
                       sx={{
                         fontWeight: 600,
-                        color: "text.primary",
+                        color: topic.isPinned ? "#4CAF50" : "text.primary",
                         "&:hover": { color: "#4CAF50" },
                       }}>
                       {topic.title}
@@ -216,12 +300,73 @@ const ForumTopics = ({ topics, loading, onTopicClick, onLike }) => {
                   <Typography variant="body2" color="text.secondary">
                     • {topic.lastActivity}
                   </Typography>
+                  {isAdmin && (
+                    <IconButton
+                      size="small"
+                      onClick={(e) => handleMenuOpen(e, topic)}
+                      sx={{
+                        ml: 1,
+                        color: "text.secondary",
+                        "&:hover": { color: "#4CAF50" },
+                      }}>
+                      <Iconify icon="eva:more-vertical-fill" />
+                    </IconButton>
+                  )}
                 </Box>
               </Box>
             </Stack>
           </Paper>
         ))}
       </Stack>
+
+      {/* Admin Actions Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}>
+        <MenuItem onClick={handlePinClick}>
+          <Iconify
+            icon={selectedTopic?.isPinned ? "eva:pin-outline" : "eva:pin-fill"}
+            sx={{ mr: 1, color: "#4CAF50" }}
+          />
+          {selectedTopic?.isPinned ? "Unpin Topic" : "Pin Topic"}
+        </MenuItem>
+        <MenuItem onClick={handleLockClick}>
+          <Iconify
+            icon={selectedTopic?.isLocked ? "eva:unlock-outline" : "eva:lock-outline"}
+            sx={{ mr: 1, color: "#FF9800" }}
+          />
+          {selectedTopic?.isLocked ? "Unlock Topic" : "Lock Topic"}
+        </MenuItem>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: "error.main" }}>
+          <Iconify icon="eva:trash-2-outline" sx={{ mr: 1 }} />
+          Delete Topic
+        </MenuItem>
+      </Menu>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        maxWidth="xs"
+        fullWidth>
+        <DialogTitle>Delete Topic</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this topic? This action cannot be
+            undone and will also delete all associated comments and replies.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

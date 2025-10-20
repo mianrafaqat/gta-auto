@@ -136,7 +136,7 @@ export default function OrderSuccess({ order: propOrder }) {
             <Button
               variant="outlined"
               size="large"
-              onClick={() => router.push(paths.dashboard.root)}
+              onClick={() => router.push("/")}
               sx={{
                 borderColor: "#FFFFFF",
                 color: "#4CAF50",
@@ -156,7 +156,7 @@ export default function OrderSuccess({ order: propOrder }) {
                 icon="eva:grid-fill"
                 sx={{ mr: 1, width: 20, height: 20 }}
               />
-              GO TO DASHBOARD
+              Go to Home
             </Button>
 
             <Button

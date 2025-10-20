@@ -130,7 +130,7 @@ class UserService {
       );
       return res;
     } catch (ex) {
-      throw ex;
+      throw "User not found";
     }
   };
 

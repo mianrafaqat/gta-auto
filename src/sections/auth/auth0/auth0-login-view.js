@@ -11,6 +11,7 @@ import { useSearchParams } from 'src/routes/hooks';
 
 import { useAuthContext } from 'src/auth/hooks';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { validateRedirectUrl } from 'src/utils/redirect-validation';
 
 // ----------------------------------------------------------------------
 
@@ -43,9 +44,10 @@ export default function Auth0LoginView() {
 
   const handleLoginWithRedirect = useCallback(async () => {
     try {
+      const safeRedirect = validateRedirectUrl(returnTo, PATH_AFTER_LOGIN);
       await loginWithRedirect?.({
         appState: {
-          returnTo: returnTo || PATH_AFTER_LOGIN,
+          returnTo: safeRedirect,
         },
       });
     } catch (error) {
@@ -55,9 +57,10 @@ export default function Auth0LoginView() {
 
   const handleRegisterWithRedirect = useCallback(async () => {
     try {
+      const safeRedirect = validateRedirectUrl(returnTo, PATH_AFTER_LOGIN);
       await loginWithRedirect?.({
         appState: {
-          returnTo: returnTo || PATH_AFTER_LOGIN,
+          returnTo: safeRedirect,
         },
         authorizationParams: {
           screen_hint: 'signup',

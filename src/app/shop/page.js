@@ -4,7 +4,7 @@ import { ProductShopView } from "src/sections/product/view";
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: "garage tuned autos - Home",
+  title: "Shop by Garage Tuned Autos",
 };
 
 export default function ShopPage() {

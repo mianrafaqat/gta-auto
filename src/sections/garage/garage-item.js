@@ -51,6 +51,7 @@ export default function GarageItem({
     postalCode,
     owner,
     tel,
+    slug,
   } = product;
 
   const { user = {} } = useAuthContext()?.user || {};
@@ -86,7 +87,7 @@ export default function GarageItem({
     }
   };
 
-  const linkTo = paths.product.details(id);
+  const linkTo = paths.product.details(slug || id);
 
   const handleAddCart = async () => {
     const newProduct = {

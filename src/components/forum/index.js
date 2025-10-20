@@ -59,9 +59,19 @@ const Forum = () => {
       const response = await ForumService.getAllCategories();
       if (response?.data?.success) {
         const apiCategories = response.data.data;
-        // Add "All Topics" option at the beginning
+        // Calculate total topic count across all categories
+        const totalTopicCount = apiCategories.reduce(
+          (sum, category) => sum + (category.topicCount || 0),
+          0
+        );
+        // Add "All Topics" option at the beginning with the total count
         const allCategories = [
-          { _id: "all", name: "All Topics", topicCount: 0, icon: "forum" },
+          {
+            _id: "all",
+            name: "All Topics",
+            topicCount: totalTopicCount,
+            icon: "forum",
+          },
           ...apiCategories,
         ];
         setCategories(allCategories);
@@ -291,8 +301,153 @@ const Forum = () => {
     }
   };
 
-  // Topics are already filtered by the API, so we just use the loaded topics
-  const filteredTopics = topics;
+  const handleTopicPin = async (topicId, shouldPin) => {
+    try {
+      const response = await ForumService.toggleTopicPin(topicId, {
+        isPinned: shouldPin,
+      });
+
+      if (response?.data?.success) {
+        // Update the topic in the list
+        setTopics(
+          topics.map((topic) =>
+            topic.id === topicId ? { ...topic, isPinned: shouldPin } : topic
+          )
+        );
+
+        // Update selected topic if it's open
+        if (selectedTopic?.id === topicId) {
+          setSelectedTopic({ ...selectedTopic, isPinned: shouldPin });
+        }
+
+        enqueueSnackbar(
+          shouldPin ? "Topic pinned successfully!" : "Topic unpinned successfully!",
+          { variant: "success" }
+        );
+
+        // Reload topics to get updated order (pinned topics should appear first)
+        loadTopics(pagination.page, selectedCategory, searchQuery);
+      }
+    } catch (error) {
+      console.error("Error toggling topic pin:", error);
+      
+      // Handle specific error cases
+      if (error?.response?.status === 401) {
+        enqueueSnackbar("You must be logged in as an admin to perform this action", { 
+          variant: "error" 
+        });
+      } else if (error?.response?.status === 403) {
+        enqueueSnackbar("You don't have permission to pin topics", { 
+          variant: "error" 
+        });
+      } else {
+        enqueueSnackbar(
+          error?.response?.data?.message || "Failed to update topic", 
+          { variant: "error" }
+        );
+      }
+    }
+  };
+
+  const handleTopicLock = async (topicId, shouldLock) => {
+    try {
+      const response = await ForumService.toggleTopicLock(topicId, {
+        isLocked: shouldLock,
+      });
+
+      if (response?.data?.success) {
+        // Update the topic in the list
+        setTopics(
+          topics.map((topic) =>
+            topic.id === topicId ? { ...topic, isLocked: shouldLock } : topic
+          )
+        );
+
+        // Update selected topic if it's open
+        if (selectedTopic?.id === topicId) {
+          setSelectedTopic({ ...selectedTopic, isLocked: shouldLock });
+        }
+
+        enqueueSnackbar(
+          shouldLock ? "Topic locked successfully!" : "Topic unlocked successfully!",
+          { variant: "success" }
+        );
+
+        // Reload topics to reflect changes
+        loadTopics(pagination.page, selectedCategory, searchQuery);
+      }
+    } catch (error) {
+      console.error("Error toggling topic lock:", error);
+      
+      // Handle specific error cases
+      if (error?.response?.status === 401) {
+        enqueueSnackbar("You must be logged in as an admin to perform this action", { 
+          variant: "error" 
+        });
+      } else if (error?.response?.status === 403) {
+        enqueueSnackbar("You don't have permission to lock topics", { 
+          variant: "error" 
+        });
+      } else {
+        enqueueSnackbar(
+          error?.response?.data?.message || "Failed to update topic", 
+          { variant: "error" }
+        );
+      }
+    }
+  };
+
+  const handleTopicDelete = async (topicId) => {
+    try {
+      const response = await ForumService.deleteTopic(topicId);
+
+      // Handle both success response formats
+      if (response?.data?.success || response?.status === 200 || response?.status === 204) {
+        // Remove the topic from the list
+        setTopics(topics.filter((topic) => topic.id !== topicId));
+
+        // Close the detail modal if it's open
+        if (selectedTopic?.id === topicId) {
+          setSelectedTopic(null);
+        }
+
+        enqueueSnackbar("Topic deleted successfully!", { variant: "success" });
+
+        // Reload topics and categories to update counts
+        loadTopics(pagination.page, selectedCategory, searchQuery);
+        loadCategories();
+      } else {
+        enqueueSnackbar("Topic may not have been deleted", { variant: "warning" });
+      }
+    } catch (error) {
+      console.error("Error deleting topic:", error);
+      
+      // Handle specific error cases
+      if (error?.response?.status === 401) {
+        enqueueSnackbar("You must be logged in as an admin to perform this action", { 
+          variant: "error" 
+        });
+      } else if (error?.response?.status === 403) {
+        enqueueSnackbar("You don't have permission to delete topics", { 
+          variant: "error" 
+        });
+      } else {
+        enqueueSnackbar(
+          error?.response?.data?.message || "Failed to delete topic",
+          { variant: "error" }
+        );
+      }
+    }
+  };
+
+  // Sort topics to show pinned topics at the top
+  const filteredTopics = [...topics].sort((a, b) => {
+    // Pinned topics come first
+    if (a.isPinned && !b.isPinned) return -1;
+    if (!a.isPinned && b.isPinned) return 1;
+    // If both pinned or both not pinned, maintain original order
+    return 0;
+  });
 
   const handleCloseTopicDetail = () => {
     setSelectedTopic(null);
@@ -306,7 +461,7 @@ const Forum = () => {
         {/* Main Content */}
         <Grid item xs={12} lg={8}>
           <Stack spacing={3}>
-            <ForumSearch onSearch={handleSearch} />
+            {/* <ForumSearch onSearch={handleSearch} /> */}
 
             <ForumCategories
               categories={categories}
@@ -320,6 +475,10 @@ const Forum = () => {
               loading={loading}
               onTopicClick={handleTopicClick}
               onLike={handleTopicLike}
+              onPin={handleTopicPin}
+              onLock={handleTopicLock}
+              onDelete={handleTopicDelete}
+              isAdmin={isAdmin}
             />
           </Stack>
         </Grid>
@@ -345,7 +504,7 @@ const Forum = () => {
                 Manage Categories
               </Button>
             )}
-            <ForumSidebar />
+            {/* <ForumSidebar /> */}
           </Stack>
         </Grid>
       </Grid>
@@ -366,6 +525,10 @@ const Forum = () => {
           onLike={handleTopicLike}
           onComment={handleTopicComment}
           onReply={handleTopicReply}
+          onPin={handleTopicPin}
+          onLock={handleTopicLock}
+          onDelete={handleTopicDelete}
+          isAdmin={isAdmin}
         />
       )}
     </Container>

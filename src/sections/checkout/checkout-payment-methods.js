@@ -82,7 +82,8 @@ function OptionItem({ option, cardOptions, selected, isCredit, onOpen, ...other 
         mt: 2.5,
         cursor: 'pointer',
         ...(selected && {
-          boxShadow: (theme) => `0 0 0 2px ${theme.palette.text.primary}`,
+          boxShadow: (theme) => `0 0 0 2px #4caf50`,
+          borderColor: "#4caf50",
         }),
       }}
       {...other}

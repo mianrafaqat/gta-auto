@@ -70,7 +70,7 @@ export default function CarsFiltersPage() {
   return (
     <>
       <Hero />
-      <Container maxWidth="xl">
+      {/* <Container maxWidth="xl">
       <Box
         p={3}
         sx={{
@@ -98,7 +98,7 @@ export default function CarsFiltersPage() {
           <SearchByModels />
         </Box>
       </Box>
-      </Container>
+      </Container> */}
 
       <WhoWeAre />
 
@@ -197,7 +197,7 @@ export default function CarsFiltersPage() {
                       minWidth: 250,
                       whiteSpace: "nowrap",
                     }}>
-                    Chat on WhatsApp
+                    Book an appointment
                   </Button>
                 </Stack>
               </Stack>
@@ -303,7 +303,7 @@ export default function CarsFiltersPage() {
                       minWidth: 250,
                       whiteSpace: "nowrap",
                     }}>
-                    Chat on WhatsApp
+                    Book an appointment
                   </Button>
                 </Stack>
               </Stack>
@@ -405,7 +405,7 @@ export default function CarsFiltersPage() {
                       minWidth: 250,
                       whiteSpace: "nowrap",
                     }}>
-                    Chat on WhatsApp
+                    Book an appointment
                   </Button>
                 </Stack>
               </Stack>
@@ -441,8 +441,13 @@ export default function CarsFiltersPage() {
       <LatestProductsSection isShop={false} />
       </Box>
     
-
+      <Container maxWidth="xl" sx={{
+        justifyContent: "center",
+        alignItems: "center",
+        p: 4,
+      }}> 
       <BrowseVideosSection />
+      </Container>
       <Container maxWidth="xl">
         <Box
           sx={{
@@ -542,7 +547,7 @@ export default function CarsFiltersPage() {
                       minWidth: 250,
                       whiteSpace: "nowrap",
                     }}>
-                    Chat on WhatsApp
+                    Book an appointment
                   </Button>
                 </Stack>
               </Stack>

@@ -28,12 +28,9 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 export default function VideoTableRow({
   row,
   selected,
-  onSelectRow,
-  onEditRow,
-  onViewRow,
   onDeleteRow,
 }) {
-  const { title, videoUrl, category, status, createdAt } = row;
+  const { title, videoUrl, category, status, createdAt, _id } = row;
 
   const openConfirm = useBoolean();
   const openPopover = useBoolean();
@@ -50,10 +47,7 @@ export default function VideoTableRow({
     openConfirm.onTrue();
   };
 
-  const handleEdit = () => {
-    onEditRow();
-    openPopover.onFalse();
-  };
+
 
   const handleConfirmDelete = () => {
     onDeleteRow();
@@ -122,12 +116,7 @@ export default function VideoTableRow({
         anchorEl={popoverRef.current}
         sx={{ width: 140 }}
       >
-        <MenuItem
-          onClick={handleEdit}
-        >
-          <Iconify icon="solar:pen-bold" />
-          Edit
-        </MenuItem>
+  
 
         <MenuItem
           onClick={handleDelete}

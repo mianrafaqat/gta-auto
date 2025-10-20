@@ -98,16 +98,24 @@ export default function MyOrdersView() {
   // Order status update mutation
   const { mutate: updateOrderStatus, isPending: isUpdating } = useUpdateOrderStatus();
 
-  // Fetch user's orders from API
-  const { data: apiOrders, isLoading, error, refetch } = useGetMyOrders();
+  const [filters, setFilters] = useState(defaultFilters);
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  // Fetch user's orders from API with pagination
+  const { data: apiOrders, isLoading, error, refetch } = useGetMyOrders({
+    page,
+    limit,
+    status: filters.status !== "all" ? filters.status : undefined,
+  });
 
   // Transform API data to component format
   const tableData = transformApiOrdersToComponent(apiOrders?.orders || []);
 
   // Get pagination info
   const pagination = apiOrders?.pagination || { total: 0, page: 1, pages: 1 };
-
-  const [filters, setFilters] = useState(defaultFilters);
 
   const dateError = isAfter(filters.startDate, filters.endDate);
 
@@ -118,10 +126,8 @@ export default function MyOrdersView() {
     dateError,
   });
 
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
+  // For server-side pagination, use all filtered data
+  const dataInPage = dataFiltered;
 
   const denseHeight = table.dense ? 56 : 56 + 20;
 
@@ -135,6 +141,7 @@ export default function MyOrdersView() {
   const handleFilters = useCallback(
     (name, value) => {
       table.onResetPage();
+      setPage(1); // Reset to first page when filters change
       setFilters((prevState) => ({
         ...prevState,
         [name]: value,
@@ -144,6 +151,7 @@ export default function MyOrdersView() {
   );
 
   const handleResetFilters = useCallback(() => {
+    setPage(1); // Reset to first page when filters are reset
     setFilters(defaultFilters);
   }, []);
 
@@ -362,13 +370,15 @@ export default function MyOrdersView() {
 
         <TablePaginationCustom
           count={pagination.total}
-          page={pagination.page - 1} // Convert to 0-based index
-          rowsPerPage={table.rowsPerPage}
+          page={page - 1} // Convert to 0-based index for MUI
+          rowsPerPage={limit}
           onPageChange={(event, newPage) => {
-            // Handle pagination here - you might need to call API with new page
-            console.log("Page changed to:", newPage + 1);
+            setPage(newPage + 1); // Convert from 0-based to 1-based
           }}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
+          onRowsPerPageChange={(event) => {
+            setLimit(parseInt(event.target.value, 10));
+            setPage(1); // Reset to first page when changing rows per page
+          }}
           dense={table.dense}
           onChangeDense={table.onChangeDense}
         />

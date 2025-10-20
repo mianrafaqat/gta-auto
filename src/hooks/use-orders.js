@@ -7,6 +7,7 @@ import OrderEmailService from "src/services/orders/orderEmail.service";
 // Helper function to check if user is authenticated
 const checkAuthentication = () => {
   const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+  console.log("token", token);
   if (!token) {
     throw new Error("Please log in to access orders");
   }
@@ -41,7 +42,7 @@ export function useCreateOrder() {
 
   return useMutation({
     mutationFn: (orderData) => {
-      checkAuthentication();
+      // checkAuthentication();
       return OrdersService.create(orderData);
     },
     onSuccess: () => {
@@ -51,22 +52,18 @@ export function useCreateOrder() {
 }
 
 // Get all orders (Admin) - with fallback to user's own orders
-export function useGetAllOrders() {
+export function useGetAllOrders(params = {}) {
   return useQuery({
-    queryKey: ["orders", "all"],
+    queryKey: ["orders", "all", params],
     queryFn: async () => {
       try {
-        // First try to get all orders (admin only)
-        // checkAdminRole();
-        const result = await OrdersService.getAll();
-        // console.log("✅ [HOOK] getAllOrders success:", result);
+        checkAuthentication();
+        const result = await OrdersService.getAll(params);
         return result;
       } catch (error) {
-        // If admin check fails or we get a 403, fall back to user's own orders
-        // console.log("✅ [HOOK] getAllOrders error:", error);
+      
           try {
-            const userOrders = await OrdersService.getMyOrders();
-            // console.log("✅ [HOOK] getMyOrders success:", userOrders);
+            const userOrders = await OrdersService.getMyOrders(params);
             return userOrders;
           } catch (userError) {
             throw userError;

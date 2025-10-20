@@ -12,12 +12,12 @@ const Washing = () => {
   ];
 
   return (
-    <Box sx={{ py: 8, px: 2 }}>
+    <Box sx={{ py: 8, px: 2, }}>
       <Box
         sx={{
           mx: "auto",
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          flexDirection: { xs: "column-reverse",  sm: "column-reverse", md: "row" } ,
           gap: 4,
           alignItems: "center",
         }}>
@@ -184,6 +184,7 @@ const Washing = () => {
         {/* Right Section - Image */}
         <Box
           sx={{
+            width: { xs: "100%", md: "50%" },
             flex: 1,
             position: "relative",
           }}>

@@ -32,7 +32,7 @@ const ForumCategories = ({
   if (loading) {
     return (
       <Box>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+        <Typography variant="h2"  sx={{ mb: 2, fontWeight: 600, color: "#4CAF50" }}>
           Categories
         </Typography>
         <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
@@ -53,7 +53,7 @@ const ForumCategories = ({
   if (categories.length === 0) {
     return (
       <Box>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#4CAF50" }}>
           Categories
         </Typography>
         <Box
@@ -95,7 +95,7 @@ const ForumCategories = ({
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#4CAF50" }}>
         Categories
       </Typography>
 
@@ -115,11 +115,11 @@ const ForumCategories = ({
             variant={selectedCategory === category._id ? "filled" : "outlined"}
             sx={{
               borderColor:
-                selectedCategory === category._id ? "#4CAF50" : "divider",
+                selectedCategory === category._id ? "#4CAF50" : "#4CAF50",
               bgcolor:
                 selectedCategory === category._id ? "#4CAF50" : "transparent",
               color:
-                selectedCategory === category._id ? "white" : "text.primary",
+                selectedCategory === category._id ? "white" : "#4CAF50",
               fontWeight: selectedCategory === category._id ? 600 : 400,
               "&:hover": {
                 bgcolor:

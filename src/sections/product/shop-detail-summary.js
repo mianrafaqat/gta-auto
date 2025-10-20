@@ -12,6 +12,7 @@ import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import { formHelperTextClasses } from "@mui/material/FormHelperText";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
@@ -156,16 +157,6 @@ export default function ShopDetailSummary({
 
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
-  // Test UserService availability
-  console.log("UserService available:", !!UserService);
-  console.log(
-    "UserService.addOrRemoveFavoriteProduct available:",
-    !!UserService?.addOrRemoveFavoriteProduct
-  );
-
-  // Debug user context
-  console.log("useAuthContext():", useAuthContext());
-  console.log("user from context:", user);
 
   // Check if product is in favorites when component mounts or when user/product changes
   useEffect(() => {
@@ -194,7 +185,7 @@ export default function ShopDetailSummary({
           setIsFavorite(isProductFavorite);
         }
       } catch (err) {
-        console.error("Error checking favorite status:", err);
+        
       }
     };
 
@@ -357,14 +348,14 @@ export default function ShopDetailSummary({
     );
   };
 
-  const handleAddCart = async () => {
+  const handleAddCart = async (productId) => {
     console.log(product.salePrice, "product.salePrice");
     const newProduct = {
-      id: productId,
+      id: productId || product?.id,
       name: productName,
       coverUrl: firstImage,
       available: stockQuantity,
-      price: product.salePrice,
+      price: product?.salePrice || product?.price,
       colors: colors && colors.length > 0 ? [colors[0]] : [],
       size: sizes && sizes.length > 0 ? sizes[0] : "Default",
       quantity: values.quantity, // Use the selected quantity from the form
@@ -375,25 +366,26 @@ export default function ShopDetailSummary({
     };
     try {
       onAddToCart(newProduct);
+      setTimeout(() => {
+        router.push(paths.product.checkout);
+      }, 100);
       console.log("Added to cart:", newProduct);
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
   };
 
-  const handleBuyNow = async () => {
-    setIsBuyNowLoading(true);
-    try {
-      // Add the product to cart with selected quantity, then navigate to checkout
-      handleAddCart();
-      setTimeout(() => {
-        router.push(paths.product.checkout);
-      }, 100);
-    } catch (error) {
-      console.error("Error with buy now:", error);
-      setIsBuyNowLoading(false);
-    }
-  };
+  // const handleAddCart = async (productId) => {
+  //   setIsBuyNowLoading(true);
+  //   try {
+  //     // Add the product to cart with selected quantity, then navigate to checkout
+  //     handleAddCart(productId);
+      
+  //   } catch (error) {
+  //     console.error("Error with buy now:", error);
+  //     setIsBuyNowLoading(false);
+  //   }
+  // };
 
   const dealStatus = useMemo(() => {
     if (product?.status) {
@@ -467,7 +459,7 @@ export default function ShopDetailSummary({
           {productName}
         </Typography>
         <Stack direction="row" alignItems="center" gap="5px">
-          <Rating
+          {/* <Rating
             size="small"
             value={ratingCount}
             precision={0.1}
@@ -478,10 +470,10 @@ export default function ShopDetailSummary({
               "& .MuiRating-iconHover": { color: "#4CAF50" },
               "& .MuiRating-iconEmpty": { color: "#e0e0e0" },
             }}
-          />
-          <Typography variant="body1" color="#fff">
+          /> */}
+          {/* <Typography variant="body1" color="#fff">
             {ratingCount} star rating
-          </Typography>
+          </Typography> */}
           {/* <Typography variant="body1" color="#828282">
             (21,671 User feedback)
           </Typography> */}
@@ -851,7 +843,7 @@ export default function ShopDetailSummary({
   );
 
   const renderActions = (
-    <Stack direction="row" spacing={2} width="100%">
+    <Stack direction="row"  spacing={{xs: 1, md: 2}} width="100%">
       <Button
         fullWidth
         disabled={isMaxQuantity || disabledActions}
@@ -885,10 +877,10 @@ export default function ShopDetailSummary({
             color: "#666",
           },
         }}>
-        Add to Card
+        Add to Cart
       </Button>
 
-      <Button
+      <LoadingButton
         fullWidth
         size="large"
         variant="outlined"
@@ -896,7 +888,7 @@ export default function ShopDetailSummary({
         loading={isBuyNowLoading}
         onClick={(e) => {
           e.stopPropagation();
-          handleBuyNow();
+          handleAddCart( productId);
         }}
         sx={{
           backgroundColor: "#000",
@@ -917,7 +909,7 @@ export default function ShopDetailSummary({
           },
         }}>
         Buy Now
-      </Button>
+      </LoadingButton>
     </Stack>
   );
 
@@ -1005,7 +997,7 @@ export default function ShopDetailSummary({
 
         {/* {renderSizeOptions} */}
 
-        <Stack direction="row" gap={1} width="100%">
+        <Stack direction={{xs: "column", md: "row"}} gap={1} width="100%">
           {renderQuantity}
           {renderActions}
         </Stack>

@@ -144,11 +144,12 @@ export default function UserListView() {
   const fetchAllUsers = async () => {
     try {
       const res = await UserService.getAllUsers();
-      if (res?.data?.length) {
-        setTableData(res.data);
+      // console.log("res", res?.data?.data);
+      if (res?.data?.data?.length) {
+        setTableData(res?.data?.data);
       }
     } catch (err) {
-      console.log("🚀 ~ fetchAllCars ~ err:", err);
+      console.log("error", err);
     }
   };
 

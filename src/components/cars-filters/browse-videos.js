@@ -132,7 +132,10 @@ export default function BrowseVideosSection() {
   return (
     <Box
       maxWidth="xl"
+
       sx={{
+        justifyContent: "center",
+        alignItems: "center",
         py: 8,
         px: { xs: 2, sm: 3, md: 4 },
         minHeight: "600px",

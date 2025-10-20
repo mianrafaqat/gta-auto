@@ -63,7 +63,6 @@ const ICONS = {
 export function useNavData() {
   const { t } = useTranslate();
   const auth = useAuthContext();
-  console.log("auth", auth);
   const isAuthenticated = useMemo(() => {
     const userAccount = auth?.authenticated;
     if (userAccount) {
@@ -278,11 +277,7 @@ export function useNavData() {
                 path: paths.dashboard.post.new,
                 roles: [ROLES.ADMIN],
               },
-              {
-                title: "Edit",
-                path: paths.dashboard.post.demo.edit,
-                roles: [ROLES.ADMIN],
-              },
+             
             ],
           },
           // Forum section
@@ -296,27 +291,29 @@ export function useNavData() {
                 title: "Categories",
                 path: paths.dashboard.admin.forum.categories,
                 roles: [ROLES.ADMIN],
-              },
+              }
             ],
           },
           {
-            // roles: [ROLES.ADMIN],
+            roles: [ROLES.USER],
             title: "Orders",
             path: paths.dashboard.order.root,
+
             icon: ICONS.order,
             children: [
               // { title: "List", path: paths.dashboard.order.list, },
-              { title: "My Orders", path: paths.dashboard.order.my },
+              { title: "My Orders", path: paths.dashboard.order.my, roles: [ROLES.USER] },
             ],
           },
 
           {
+            roles: [ROLES.USER],
             title: "Track Order",
             path: paths.dashboard.trackOrder,
             icon: ICONS.order,
             children: [
               // { title: "List", path: paths.dashboard.order.list, },
-              { title: "Track Order", path: paths.dashboard.trackOrder },
+              { title: "Track Order", path: paths.dashboard.trackOrder, roles: [ROLES.USER] },
             ],
           },
         ],

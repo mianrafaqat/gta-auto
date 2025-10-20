@@ -138,7 +138,7 @@ export default function ProductDetailsView({ id }) {
       <ProductDetailsToolbar
         backLink={paths.dashboard.product.root}
         editLink={paths.dashboard.product.edit(`${product?.id}`)}
-        liveLink={paths.product.details(`${product?.id}`)}
+        liveLink={paths.product.details(`${product?.slug || product?._id || product?.id}`)}
         publish={publish || ""}
         onChangePublish={handleChangePublish}
         publishOptions={PRODUCT_PUBLISH_OPTIONS}
@@ -154,7 +154,7 @@ export default function ProductDetailsView({ id }) {
         </Grid>
       </Grid>
 
-      <Box
+      {/* <Box
         gap={5}
         display="grid"
         gridTemplateColumns={{
@@ -179,9 +179,9 @@ export default function ProductDetailsView({ id }) {
             </Typography>
           </Box>
         ))}
-      </Box>
+      </Box> */}
 
-      <Card>
+      <Card sx={{ my: 5 }}>
         <Tabs
           value={currentTab}
           onChange={handleChangeTab}

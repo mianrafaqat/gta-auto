@@ -78,6 +78,7 @@ export default function ProductItem({
     regularPrice,
     salePrice,
     categories,
+    slug,
   } = product;
 
   // Get the product ID, handling both old and new API structures
@@ -86,6 +87,10 @@ export default function ProductItem({
   // Get the image array, handling both old and new API structures
   const imageArray = images || image || [];
   const firstImage = imageArray[0] || coverUrl || "/assets/placeholder.svg";
+  const secondImage = imageArray[1] || null;
+
+  // State for hover effect
+  const [isHovered, setIsHovered] = useState(false);
 
   // Get the product name, handling both old and new API structures
   const productName = name || title || "Product";
@@ -145,11 +150,11 @@ export default function ProductItem({
     }
   };
 
-  const linkTo = paths.product.details(id);
+  const linkTo = paths.product.details(slug || _id || id);
 
-  const handleAddCart = async () => {
+  const handleAddCart = async (productId) => {
     const newProduct = {
-      id: productId,
+      id: productId || product?.id,
       name: productName,
       coverUrl: firstImage,
       available: productAvailable,
@@ -165,50 +170,16 @@ export default function ProductItem({
     };
     try {
       onAddToCart(newProduct);
+      setTimeout(() => {
+        router.push(paths.product.checkout);
+      }, 100);
       // console.log("Added to cart:", newProduct);
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
   };
 
-  const handleBuyNow = async () => {
-    setIsBuyNowLoading(true);
-    // const newProduct = {
-    //   id: productId,
-    //   name: productName,
-    //   coverUrl: firstImage,
-    //   available: productAvailable,
-    //   price: productPrice,
-    //   colors: colors && colors.length > 0 ? [colors[0]] : [],
-    //   size: sizes && sizes.length > 0 ? sizes[0] : "Default",
-    //   quantity: 1,
-    //   // Add car-specific properties if available
-    //   carDetails: carDetails || {},
-    //   category: productCategory,
-    //   location: productLocation,
-    //   postalCode: productPostalCode,
-    // };
-    try {
-      // Clear cart first, then add the product to cart
-      // onClearCart();
-      // onAddToCart(newProduct);
 
-      // Set the active step to 0 (cart step)
-      // onGotoStep(0);
-
-        // console.log("Buy now:", newProduct);
-      // Small delay to ensure cart state is updated, then navigate to checkout
-      handleAddCart();
-      setTimeout(() => {
-        router.push(paths.product.checkout);
-      }, 100);
-    } catch (error) {
-      console.error("Error with buy now:", error);
-      setIsBuyNowLoading(false);
-    }
-  };
-
-  const renderLabels = () => null;
 
   const DealStatus = ({ title, icon, color }) => {
     return (
@@ -410,7 +381,7 @@ export default function ProductItem({
           loading={isBuyNowLoading}
           onClick={(e) => {
             e.stopPropagation();
-            handleBuyNow();
+            handleAddCart(productId);
           }}
           sx={{
             flex: { xs: 1, sm: 1.2, md: 1.5 },
@@ -521,16 +492,34 @@ export default function ProductItem({
       }}
       onClick={() => {
         // Navigate to product details
-        router.push(paths.product.details(productId));
+        router.push(paths.product.details(slug || productId));
       }}>
       <Box
+        onMouseEnter={() => secondImage && setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         sx={{
           minHeight: "320px",
-          backgroundImage: `url(${firstImage})`,
+          backgroundImage: `url(${isHovered && secondImage ? secondImage : firstImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           position: "relative",
+          transition: "background-image 0.3s ease-in-out",
+          "&::before": secondImage ? {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: `url(${secondImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            opacity: isHovered ? 1 : 0,
+            transition: "opacity 0.3s ease-in-out",
+            pointerEvents: "none",
+          } : {},
         }}>
         {/* <RenderImg /> */}
       </Box>

@@ -35,7 +35,7 @@ const IncrementerButton = forwardRef(
         typography: "subtitle2",
         border: "solid 1px #fff",
         ...sx,
-        color: "#fff",
+        color: "#4caf50",
       }}
       {...other}>
       <IconButton

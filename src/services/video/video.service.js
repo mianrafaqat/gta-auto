@@ -60,7 +60,7 @@ class VideoService {
 
   delete = async (data) => {
     try {
-      const res = await gtaAutosInstance.delete(API_URLS.video.delete, { data });
+      const res = await gtaAutosInstance.delete(API_URLS.video.delete, { data: { videoID: data } });
       return res;
     } catch (ex) {
       throw ex;

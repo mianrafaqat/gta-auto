@@ -73,7 +73,7 @@ const Hero = () => {
           streamType="on-demand"
           style={{
             height: "100%",
-            width: "100vw",
+            // width: "100vw",
             objectFit: "cover",
             // borderRadius: '12px',
             "--media-object-fit": "cover",

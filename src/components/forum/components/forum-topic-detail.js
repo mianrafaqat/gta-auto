@@ -15,14 +15,20 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   Alert,
   Skeleton,
 } from "@mui/material";
 import Iconify from "src/components/iconify";
 import ForumService from "src/services/forum/forum.service";
+import { useAuthContext } from "src/auth/hooks";
+import { useSnackbar } from "src/components/snackbar";
 
-const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
+const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply, onPin, onDelete, onLock, isAdmin }) => {
+  const { user } = useAuthContext();
+  const { enqueueSnackbar } = useSnackbar();
+  const currentUserId = user?.user?._id;
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
@@ -31,6 +37,7 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Load comments when topic changes
   useEffect(() => {
@@ -47,21 +54,74 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
       if (response?.data?.success) {
         const apiComments = response.data.data.comments;
 
-        // Transform API comments to match component expectations
-        const transformedComments = apiComments.map((comment) => ({
-          id: comment._id,
-          author: comment.author?.name || "Anonymous",
-          authorAvatar:
-            comment.author?.avatarUrl || "/assets/avatars/avatar_default.jpg",
-          content: comment.content,
-          timestamp: formatTimestamp(comment.createdAt),
-          likes: comment.likesCount || 0,
-          isLiked: comment.likes?.includes(comment.author?._id) || false,
-          replies: [], // We'll load replies separately if needed
-        }));
+        // Transform API comments and load replies for each
+        const transformedComments = await Promise.all(
+          apiComments.map(async (comment) => {
+            // Load replies for this comment
+            let replies = [];
+            try {
+              const repliesResponse = await ForumService.getRepliesByComment(comment._id);
+              console.log(`Full replies response for comment ${comment._id}:`, JSON.stringify(repliesResponse, null, 2));
+              
+              // Handle multiple possible response structures
+              let apiReplies = [];
+              
+              if (repliesResponse?.data?.success && repliesResponse.data.data?.replies) {
+                // Structure: {data: {success: true, data: {replies: [...]}}}
+                apiReplies = repliesResponse.data.data.replies;
+                console.log(`✅ Found ${apiReplies.length} replies (nested data structure)`);
+              } else if (repliesResponse?.data?.replies) {
+                // Structure: {data: {replies: [...]}}
+                apiReplies = repliesResponse.data.replies;
+                console.log(`✅ Found ${apiReplies.length} replies (direct structure)`);
+              } else if (Array.isArray(repliesResponse?.data?.data)) {
+                // Structure: {data: {data: [...]}}
+                apiReplies = repliesResponse.data.data;
+                console.log(`✅ Found ${apiReplies.length} replies (array in data.data)`);
+              } else if (Array.isArray(repliesResponse?.data)) {
+                // Structure: {data: [...]}
+                apiReplies = repliesResponse.data;
+                console.log(`✅ Found ${apiReplies.length} replies (array in data)`);
+              } else {
+                console.warn(`❌ Unknown response structure for comment ${comment._id}:`, repliesResponse?.data);
+              }
+              
+              replies = apiReplies.map((reply) => ({
+                id: reply._id,
+                author: reply.author?.name || "Anonymous",
+                authorId: reply.author?._id,
+                authorAvatar: reply.author?.avatarUrl || "/assets/avatars/avatar_default.jpg",
+                content: reply.content,
+                timestamp: formatTimestamp(reply.createdAt),
+                likes: reply.likesCount || 0,
+                isLiked: reply.likes?.includes(currentUserId) || false,
+              }));
+              
+              console.log(`Processed ${replies.length} replies for comment ${comment._id}`);
+            } catch (error) {
+              console.error(`❌ Error loading replies for comment ${comment._id}:`, error);
+              console.error("Error status:", error?.response?.status);
+              console.error("Error data:", error?.response?.data);
+            }
 
+            return {
+              id: comment._id,
+              author: comment.author?.name || "Anonymous",
+              authorId: comment.author?._id,
+              authorAvatar: comment.author?.avatarUrl || "/assets/avatars/avatar_default.jpg",
+              content: comment.content,
+              timestamp: formatTimestamp(comment.createdAt),
+              likes: comment.likesCount || 0,
+              isLiked: comment.likes?.includes(currentUserId) || false,
+              replies,
+            };
+          })
+        );
+
+        console.log("📝 Final transformed comments with replies:", transformedComments);
         setComments(transformedComments);
       } else {
+        console.warn("No comments found in response");
         setComments([]);
       }
     } catch (error) {
@@ -101,28 +161,31 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
           content: commentText,
         });
 
+        console.log("Comment creation response:", response);
+
         if (response?.data?.success) {
-          const newComment = {
-            id: response.data.data._id,
-            author: response.data.data.author?.name || "You",
-            authorAvatar:
-              response.data.data.author?.avatarUrl ||
-              "/assets/avatars/avatar_current.jpg",
-            content: commentText,
-            timestamp: "Just now",
-            likes: 0,
-            isLiked: false,
-            replies: [],
-          };
-          setComments([newComment, ...comments]);
+          enqueueSnackbar("Comment posted successfully!", { variant: "success" });
+          
+          // Clear comment text
           setCommentText("");
+
+          // Reload comments to get the persisted comment from the backend
+          await loadComments();
 
           if (onComment) {
             onComment(topic.id, commentText);
           }
+        } else {
+          console.warn("Comment creation failed:", response);
+          enqueueSnackbar("Failed to post comment. Please try again.", { variant: "error" });
         }
       } catch (error) {
         console.error("Error creating comment:", error);
+        console.error("Error details:", error?.response?.data);
+        enqueueSnackbar(
+          error?.response?.data?.message || "Failed to post comment. Please try again.",
+          { variant: "error" }
+        );
       }
     }
   };
@@ -134,32 +197,29 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
           content: replyText,
         });
 
+        console.log("Reply creation response:", response);
+
         if (response?.data?.success) {
-          const newReply = {
-            id: response.data.data._id,
-            author: response.data.data.author?.name || "You",
-            authorAvatar:
-              response.data.data.author?.avatarUrl ||
-              "/assets/avatars/avatar_current.jpg",
-            content: replyText,
-            timestamp: "Just now",
-            likes: 0,
-            isLiked: false,
-          };
-
-          const updatedComments = comments.map((comment) =>
-            comment.id === selectedComment.id
-              ? { ...comment, replies: [...comment.replies, newReply] }
-              : comment
-          );
-
-          setComments(updatedComments);
+          enqueueSnackbar("Reply posted successfully!", { variant: "success" });
+          
+          // Close dialog and clear state
           setReplyText("");
           setShowReplyDialog(false);
           setSelectedComment(null);
+
+          // Reload comments to get the persisted reply from the backend
+          await loadComments();
+        } else {
+          console.warn("Reply creation failed:", response);
+          enqueueSnackbar("Failed to post reply. Please try again.", { variant: "error" });
         }
       } catch (error) {
         console.error("Error creating reply:", error);
+        console.error("Error details:", error?.response?.data);
+        enqueueSnackbar(
+          error?.response?.data?.message || "Failed to post reply. Please try again.",
+          { variant: "error" }
+        );
       }
     }
   };
@@ -232,6 +292,74 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
     setAnchorEl(null);
   };
 
+  const handlePinClick = () => {
+    if (onPin) {
+      onPin(topic.id, !topic.isPinned);
+    }
+    handleMenuClose();
+  };
+
+  const handleLockClick = () => {
+    if (onLock) {
+      onLock(topic.id, !topic.isLocked);
+    }
+    handleMenuClose();
+  };
+
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+    handleMenuClose();
+  };
+
+  const handleDeleteConfirm = () => {
+    if (onDelete && topic) {
+      onDelete(topic.id);
+    } else {
+      console.error("onDelete handler not provided or topic missing");
+    }
+    setDeleteDialogOpen(false);
+    onClose();
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await ForumService.deleteComment(commentId);
+      if (response?.data?.success || response?.status === 200 || response?.status === 204) {
+        setComments(comments.filter((comment) => comment.id !== commentId));
+        enqueueSnackbar("Comment deleted successfully!", { variant: "success" });
+      }
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      enqueueSnackbar("Failed to delete comment", { variant: "error" });
+    }
+  };
+
+  const handleDeleteReply = async (commentId, replyId) => {
+    try {
+      const response = await ForumService.deleteReply(replyId);
+      if (response?.data?.success || response?.status === 200 || response?.status === 204) {
+        setComments(
+          comments.map((comment) =>
+            comment.id === commentId
+              ? {
+                  ...comment,
+                  replies: comment.replies.filter((reply) => reply.id !== replyId),
+                }
+              : comment
+          )
+        );
+        enqueueSnackbar("Reply deleted successfully!", { variant: "success" });
+      }
+    } catch (error) {
+      console.error("Error deleting reply:", error);
+      enqueueSnackbar("Failed to delete reply", { variant: "error" });
+    }
+  };
+
   return (
     <Dialog
       open={true}
@@ -248,13 +376,61 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "space-between",
+            gap: 2,
           }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {topic.title}
-          </Typography>
-          <IconButton onClick={onClose}>
+          <Box sx={{ flex: 1 }}>
+            <Stack direction="row" spacing={1} sx={{ mb: 1, flexWrap: "wrap" }}>
+              {topic.isPinned && (
+                <Chip
+                  icon={<Iconify icon="eva:pin-fill" sx={{ fontSize: 14 }} />}
+                  label="PINNED"
+                  size="small"
+                  sx={{
+                    bgcolor: "#4CAF50",
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: "0.7rem",
+                    height: 24,
+                    "& .MuiChip-icon": {
+                      color: "white",
+                    },
+                  }}
+                />
+              )}
+              {topic.isLocked && (
+                <Chip
+                  icon={<Iconify icon="eva:lock-fill" sx={{ fontSize: 14 }} />}
+                  label="LOCKED"
+                  size="small"
+                  sx={{
+                    bgcolor: "error.main",
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: "0.7rem",
+                    height: 24,
+                    "& .MuiChip-icon": {
+                      color: "white",
+                    },
+                  }}
+                />
+              )}
+            </Stack>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 600,
+                fontSize: { xs: '1rem', sm: '1.25rem' },
+                lineHeight: { xs: 1.3, sm: 1.4 },
+                wordBreak: 'break-word',
+                color: topic.isPinned ? "#4CAF50" : "text.primary",
+              }}
+            >
+              {topic.title}
+            </Typography>
+          </Box>
+          <IconButton onClick={onClose} sx={{ mt: -1 }}>
             <Iconify icon="eva:close-fill" />
           </IconButton>
         </Box>
@@ -290,25 +466,32 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
               </Box>
             </Box>
 
-            <Typography variant="body1" sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 2 , wordBreak: 'break-word',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: { xs: 2, sm: 1 },
+              WebkitBoxOrient: 'vertical' }}>
               {topic.content ||
                 "This is the topic content. It would contain the full text of the forum post."}
             </Typography>
 
-            <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-              {topic.tags.map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  size="small"
-                  variant="outlined"
-                  sx={{
-                    borderColor: "#4CAF50",
-                    color: "#4CAF50",
-                  }}
-                />
-              ))}
-            </Stack>
+            {topic.tags && topic.tags.length > 0 && (
+              <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+                {topic.tags.map((tag) => (
+                  <Chip
+                    key={tag}
+                    label={tag}
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      borderColor: "#4CAF50",
+                      color: "#4CAF50",
+                    }}
+                  />
+                ))}
+              </Stack>
+            )}
 
             <Divider sx={{ my: 2 }} />
 
@@ -503,10 +686,24 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
                         }}>
                         Reply
                       </Button>
+
+                      {(comment.authorId === currentUserId || isAdmin) && (
+                        <Button
+                          size="small"
+                          startIcon={<Iconify icon="eva:trash-2-outline" />}
+                          onClick={() => handleDeleteComment(comment.id)}
+                          sx={{
+                            color: "error.main",
+                            minWidth: "auto",
+                            px: 1,
+                          }}>
+                          Delete
+                        </Button>
+                      )}
                     </Box>
 
                     {/* Replies */}
-                    {comment.replies.length > 0 && (
+                    {comment.replies && comment.replies.length > 0 && (
                       <Box sx={{ mt: 2, ml: 4 }}>
                         <Typography
                           variant="caption"
@@ -558,37 +755,55 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
                                 {reply.content}
                               </Typography>
 
-                              <Button
-                                size="small"
-                                startIcon={
-                                  <Iconify
-                                    icon={
-                                      reply.isLiked
-                                        ? "eva:heart-fill"
-                                        : "eva:heart-outline"
-                                    }
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Button
+                                  size="small"
+                                  startIcon={
+                                    <Iconify
+                                      icon={
+                                        reply.isLiked
+                                          ? "eva:heart-fill"
+                                          : "eva:heart-outline"
+                                      }
+                                      sx={{
+                                        fontSize: 14,
+                                        color: reply.isLiked
+                                          ? "#e91e63"
+                                          : "inherit",
+                                      }}
+                                    />
+                                  }
+                                  onClick={() =>
+                                    handleLikeReply(comment.id, reply.id)
+                                  }
+                                  sx={{
+                                    color: reply.isLiked
+                                      ? "#e91e63"
+                                      : "text.secondary",
+                                    minWidth: "auto",
+                                    px: 1,
+                                    py: 0.5,
+                                    fontSize: "0.75rem",
+                                  }}>
+                                  {reply.likes}
+                                </Button>
+
+                                {(reply.authorId === currentUserId || isAdmin) && (
+                                  <Button
+                                    size="small"
+                                    startIcon={<Iconify icon="eva:trash-2-outline" />}
+                                    onClick={() => handleDeleteReply(comment.id, reply.id)}
                                     sx={{
-                                      fontSize: 14,
-                                      color: reply.isLiked
-                                        ? "#e91e63"
-                                        : "inherit",
-                                    }}
-                                  />
-                                }
-                                onClick={() =>
-                                  handleLikeReply(comment.id, reply.id)
-                                }
-                                sx={{
-                                  color: reply.isLiked
-                                    ? "#e91e63"
-                                    : "text.secondary",
-                                  minWidth: "auto",
-                                  px: 1,
-                                  py: 0.5,
-                                  fontSize: "0.75rem",
-                                }}>
-                                {reply.likes}
-                              </Button>
+                                      color: "error.main",
+                                      minWidth: "auto",
+                                      px: 1,
+                                      py: 0.5,
+                                      fontSize: "0.75rem",
+                                    }}>
+                                    Delete
+                                  </Button>
+                                )}
+                              </Box>
                             </Paper>
                           ))}
                         </Stack>
@@ -641,6 +856,27 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}>
+        {isAdmin && [
+          <MenuItem key="pin" onClick={handlePinClick}>
+            <Iconify
+              icon={topic.isPinned ? "eva:pin-outline" : "eva:pin-fill"}
+              sx={{ mr: 1, color: "#4CAF50" }}
+            />
+            {topic.isPinned ? "Unpin Topic" : "Pin Topic"}
+          </MenuItem>,
+          <MenuItem key="lock" onClick={handleLockClick}>
+            <Iconify
+              icon={topic.isLocked ? "eva:unlock-outline" : "eva:lock-outline"}
+              sx={{ mr: 1, color: "#FF9800" }}
+            />
+            {topic.isLocked ? "Unlock Topic" : "Lock Topic"}
+          </MenuItem>,
+          <MenuItem key="delete" onClick={handleDeleteClick} sx={{ color: "error.main" }}>
+            <Iconify icon="eva:trash-2-outline" sx={{ mr: 1 }} />
+            Delete Topic
+          </MenuItem>,
+          <Divider key="divider" />
+        ]}
         <MenuItem onClick={handleMenuClose}>
           <Iconify icon="eva:share-outline" sx={{ mr: 1 }} />
           Share
@@ -654,6 +890,30 @@ const ForumTopicDetail = ({ topic, onClose, onLike, onComment, onReply }) => {
           Bookmark
         </MenuItem>
       </Menu>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        maxWidth="xs"
+        fullWidth>
+        <DialogTitle>Delete Topic</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this topic? This action cannot be
+            undone and will also delete all associated comments and replies.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   );
 };

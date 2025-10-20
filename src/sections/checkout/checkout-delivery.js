@@ -15,6 +15,8 @@ import Iconify from "src/components/iconify";
 export default function CheckoutDelivery({
   options,
   onApplyShipping,
+  disabled = false,
+  selectedOption,
   ...other
 }) {
   const { control } = useFormContext();
@@ -41,9 +43,12 @@ export default function CheckoutDelivery({
                 key={option.label}
                 option={option}
                 selected={field.value === option.id}
+                disabled={disabled}
                 onClick={() => {
-                  field.onChange(option.id);
-                  onApplyShipping(option.value);
+                  if (!disabled) {
+                    field.onChange(option.id);
+                    onApplyShipping(option.value);
+                  }
                 }}
               />
             ))}
@@ -57,11 +62,13 @@ export default function CheckoutDelivery({
 CheckoutDelivery.propTypes = {
   onApplyShipping: PropTypes.func,
   options: PropTypes.array,
+  disabled: PropTypes.bool,
+  selectedOption: PropTypes.object,
 };
 
 // ----------------------------------------------------------------------
 
-function OptionItem({ option, selected, ...other }) {
+function OptionItem({ option, selected, disabled = false, ...other }) {
   const { value, label, description } = option;
 
   return (
@@ -70,10 +77,14 @@ function OptionItem({ option, selected, ...other }) {
       key={value}
       sx={{
         p: 2.5,
-        cursor: "pointer",
+        cursor: disabled ? "not-allowed" : "pointer",
         display: "flex",
+        opacity: disabled ? 0.6 : 1,
         ...(selected && {
-          boxShadow: (theme) => `0 0 0 2px ${theme.palette.text.primary}`,
+          boxShadow: (theme) => `0 0 0 2px #4caf50`,
+        }),
+        ...(disabled && {
+          bgcolor: "grey.100",
         }),
       }}
       {...other}>
@@ -104,4 +115,5 @@ function OptionItem({ option, selected, ...other }) {
 OptionItem.propTypes = {
   option: PropTypes.object,
   selected: PropTypes.bool,
+  disabled: PropTypes.bool,
 };

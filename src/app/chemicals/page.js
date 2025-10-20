@@ -4,7 +4,7 @@ import Chemicals from "src/components/chemicals";
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: "garage tuned autos - Chemicals",
+  title: "Garage Tuned Autos - Chemicals",
 };
 
 export default function ChemicalsPage() {

@@ -61,7 +61,7 @@ const Services = () => {
       id: 3,
       title: "Car Studio",
       description:
-        "Premium car detailing and studio services. From basic wash to complete detailing, ceramic coating, and paint protection - we make your car look brand new. Professional care for your vehicle's appearance.",
+        "Premium car detailing and studio services for all types of vehicles. From basic wash to complete detailing, ceramic coating, and paint protection - we make your car look brand new. Professional care for your vehicle's appearance.",
       image: "/assets/car-studio.png",
       icon: <LocalCarWash sx={{ fontSize: 30, color: "#4caf50" }} />,
       features: [
@@ -168,11 +168,13 @@ const Services = () => {
                 {/* Service Image */}
                 <CardMedia
                   component="img"
-                  height="250"
+                  height="320px"
+                  // cover={true}
                   image={service.image}
                   alt={service.title}
                   sx={{
                     position: "relative",
+                    objectFit: "contain",
                   }}
                 />
 
@@ -290,7 +292,7 @@ const Services = () => {
         </Grid>
         <CarRentSection />
         {/* Bottom CTA Section */}
-        <Box
+        {/* <Box
           sx={{
             mt: 10,
             p: 6,
@@ -343,7 +345,7 @@ const Services = () => {
             }}>
             Contact Us on WhatsApp
           </Button>
-        </Box>
+        </Box> */}
       </Container>
 
       {/* CSS Animation for pulse effect */}

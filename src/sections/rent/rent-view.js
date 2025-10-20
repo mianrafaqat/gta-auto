@@ -309,7 +309,7 @@ export default function RentView() {
                               minWidth: 250,
                               whiteSpace: "nowrap",
                             }}>
-                            Chat on WhatsApp
+                            Book an appointment
                           </Button>
                         </Stack>
                       </Stack>

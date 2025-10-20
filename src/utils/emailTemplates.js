@@ -144,7 +144,7 @@ export const EmailTemplates = {
           
           <p>We'll send you another email when your order ships with tracking information.</p>
           
-          <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/dashboard/orders" class="button">View Order</a>
+          <a href="${process.env.APP_URL}/dashboard/orders" class="button">View Order</a>
         </div>
         
         <div class="footer">
@@ -320,7 +320,7 @@ export const EmailTemplates = {
             <div>PKR ${order.finalTotal?.toLocaleString() || "0"}</div>
           </div>
           
-          <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/dashboard/orders/${order._id}" class="button">View Order in Dashboard</a>
+          <a href="${process.env.APP_URL}/dashboard/orders/${order._id}" class="button">View Order in Dashboard</a>
         </div>
         
         <div class="footer">
@@ -408,7 +408,7 @@ export const EmailTemplates = {
           
           <p>We'll continue to keep you updated on your order progress.</p>
           
-          <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/dashboard/orders" class="button">View Order</a>
+          <a href="${process.env.APP_URL}/dashboard/orders" class="button">View Order</a>
         </div>
         
         <div class="footer">

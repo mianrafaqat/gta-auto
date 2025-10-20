@@ -26,7 +26,7 @@ export default function CheckoutSummary({
   onEdit,
   onApplyDiscount,
 }) {
-  const displayShipping = shipping !== null ? "Free" : "-";
+  const displayShipping = shipping && shipping > 0 ? `PKR ${shipping}` : "PKR 250";
 
   return (
     <Card sx={{ mb: 3 }}>
@@ -53,21 +53,21 @@ export default function CheckoutSummary({
             <Typography variant="subtitle2">PKR {subTotal}</Typography>
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between">
+          {/* <Stack direction="row" justifyContent="space-between">
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               Discount
             </Typography>
             <Typography variant="subtitle2">
               {discount ? fCurrency(-discount) : "-"}
             </Typography>
-          </Stack>
+          </Stack> */}
 
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               Shipping
             </Typography>
             <Typography variant="subtitle2">
-              {shipping ? `PKR ${shipping}` : displayShipping}
+              {displayShipping}
             </Typography>
           </Stack>
 
@@ -79,13 +79,11 @@ export default function CheckoutSummary({
               <Typography variant="subtitle1" sx={{ color: "error.main" }}>
                 PKR {total}
               </Typography>
-              <Typography variant="caption" sx={{ fontStyle: "italic" }}>
-                (VAT included if applicable)
-              </Typography>
+              
             </Box>
           </Stack>
 
-          {onApplyDiscount && (
+          {/* {onApplyDiscount && (
             <TextField
               fullWidth
               placeholder="Discount codes / Gifts"
@@ -103,7 +101,7 @@ export default function CheckoutSummary({
                 ),
               }}
             />
-          )}
+          )} */}
         </Stack>
       </CardContent>
     </Card>

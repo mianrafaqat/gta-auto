@@ -47,11 +47,8 @@ export function CheckoutProvider({ children }) {
       update("activeStep", 1);
     }
 
-    // If we have items but no activeStep, start from step 0
-    if (state.items.length > 0 && state.activeStep === 0) {
-      update("activeStep", 1);
-    }
-  }, [state.activeStep, state.billing, state.items.length, update]);
+    // Removed problematic logic that was automatically jumping from cart view to billing address
+  }, [state.activeStep, state.billing, update]);
 
   const onGetCart = useCallback(() => {
     const totalItems = state.items.reduce(
@@ -64,24 +61,27 @@ export function CheckoutProvider({ children }) {
       0
     );
 
+    // Get current discount and shipping from state to use in calculation
+    const currentDiscount = state.items.length ? state.discount : 0;
+    const currentShipping = state.items.length ? (state.shipping || 250) : 0;
+    
+    // Calculate total using the current values
+    const calculatedTotal = subTotal - currentDiscount + currentShipping;
+
+    // Update all calculated values at once
     update("subTotal", subTotal);
     update("totalItems", totalItems);
-    // Don't clear billing address on refresh - only clear it when explicitly going back to step 1
-    // update('billing', state.activeStep === 1 ? null : state.billing);
-    update("discount", state.items.length ? state.discount : 0);
-    update("shipping", state.items.length ? state.shipping : 0);
-    update("total", state.subTotal - state.discount + state.shipping);
+    update("discount", currentDiscount);
+    update("shipping", currentShipping);
+    update("total", calculatedTotal);
 
     // Validate and fix the checkout state after calculations
     validateAndFixCheckoutState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     state.items,
-    state.activeStep,
-    state.billing,
     state.discount,
     state.shipping,
-    state.subTotal,
+    update,
     validateAndFixCheckoutState,
   ]);
 
@@ -96,9 +96,8 @@ export function CheckoutProvider({ children }) {
 
   // Recalculate cart totals whenever items change
   useEffect(() => {
-    if (state.items.length > 0) {
-      onGetCart();
-    }
+    // Always recalculate, even when cart is empty (to reset totals to 0)
+    onGetCart();
   }, [state.items, onGetCart]);
 
   // Debug function to log current checkout state
@@ -110,7 +109,11 @@ export function CheckoutProvider({ children }) {
 
   const onAddToCart = useCallback(
     (newItem) => {
-      const updatedItems = state.items.map((item) => {
+      // Get fresh state from storage to avoid stale closures
+      const currentStorage = getStorage(STORAGE_KEY);
+      const currentItems = currentStorage?.items || state.items;
+      
+      const updatedItems = currentItems.map((item) => {
         if (item.id === newItem.id) {
           return {
             ...item,
@@ -126,21 +129,23 @@ export function CheckoutProvider({ children }) {
       }
 
       update("items", updatedItems);
-      // Explicitly recalculate cart totals
-      setTimeout(() => onGetCart(), 0);
+      // Cart totals will be recalculated automatically by useEffect
     },
-    [update, state.items, onGetCart]
+    [update, state.items]
   );
 
   const onDeleteCart = useCallback(
     (itemId) => {
-      const updatedItems = state.items.filter((item) => item.id !== itemId);
+      // Get fresh state from storage to avoid stale closures
+      const currentStorage = getStorage(STORAGE_KEY);
+      const currentItems = currentStorage?.items || state.items;
+      
+      const updatedItems = currentItems.filter((item) => item.id !== itemId);
 
       update("items", updatedItems);
-      // Explicitly recalculate cart totals
-      setTimeout(() => onGetCart(), 0);
+      // Cart totals will be recalculated automatically by useEffect
     },
-    [update, state.items, onGetCart]
+    [update, state.items]
   );
 
   const onBackStep = useCallback(() => {
@@ -171,7 +176,11 @@ export function CheckoutProvider({ children }) {
 
   const onIncreaseQuantity = useCallback(
     (itemId) => {
-      const updatedItems = state.items.map((item) => {
+      // Get fresh state from storage to avoid stale closures
+      const currentStorage = getStorage(STORAGE_KEY);
+      const currentItems = currentStorage?.items || state.items;
+      
+      const updatedItems = currentItems.map((item) => {
         if (item.id === itemId) {
           return {
             ...item,
@@ -182,15 +191,18 @@ export function CheckoutProvider({ children }) {
       });
 
       update("items", updatedItems);
-      // Explicitly recalculate cart totals
-      setTimeout(() => onGetCart(), 0);
+      // Cart totals will be recalculated automatically by useEffect
     },
-    [update, state.items, onGetCart]
+    [update, state.items]
   );
 
   const onDecreaseQuantity = useCallback(
     (itemId) => {
-      const updatedItems = state.items.map((item) => {
+      // Get fresh state from storage to avoid stale closures
+      const currentStorage = getStorage(STORAGE_KEY);
+      const currentItems = currentStorage?.items || state.items;
+      
+      const updatedItems = currentItems.map((item) => {
         if (item.id === itemId) {
           return {
             ...item,
@@ -201,10 +213,9 @@ export function CheckoutProvider({ children }) {
       });
 
       update("items", updatedItems);
-      // Explicitly recalculate cart totals
-      setTimeout(() => onGetCart(), 0);
+      // Cart totals will be recalculated automatically by useEffect
     },
-    [update, state.items, onGetCart]
+    [update, state.items]
   );
 
   const onCreateBilling = useCallback(
@@ -225,15 +236,23 @@ export function CheckoutProvider({ children }) {
   const onApplyDiscount = useCallback(
     (discount) => {
       update("discount", discount);
+      // Trigger recalculation after discount update
+      setTimeout(() => {
+        onGetCart();
+      }, 0);
     },
-    [update]
+    [update, onGetCart]
   );
 
   const onApplyShipping = useCallback(
     (shipping) => {
       update("shipping", shipping);
+      // Trigger recalculation after shipping update
+      setTimeout(() => {
+        onGetCart();
+      }, 0);
     },
-    [update]
+    [update, onGetCart]
   );
 
   // Manual restore function for debugging and manual state recovery

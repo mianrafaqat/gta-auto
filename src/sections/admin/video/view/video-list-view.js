@@ -51,7 +51,6 @@ export default function VideoListView() {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  // Query for fetching all videos
   const { data: allVideos = [], isLoading: loading } = useQuery({
     queryKey: ['videos', 'all'],
     queryFn: async () => {
@@ -70,7 +69,8 @@ export default function VideoListView() {
       const response = await VideoService.delete(id);
       if (response?.status === 200) {
         enqueueSnackbar('Video deleted successfully');
-        getAllVideos(); // Refresh the list
+        queryClient.invalidateQueries({ queryKey: ['videos', 'all'] });
+        setTableData(allVideos.filter((video) => video._id !== id));
       }
     } catch (error) {
       console.error(error);
@@ -107,7 +107,7 @@ export default function VideoListView() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={() => router.push(paths.dashboard.admin.video.add)}
+          onClick={() => router.push(paths.dashboard.video.my.add)}
         >
           Add Video
         </Button>
@@ -131,7 +131,7 @@ export default function VideoListView() {
                     key={row._id}
                     row={row}
                     onDeleteRow={() => handleDeleteRow(row._id)}
-                    onEditRow={() => handleEditRow(row._id)}
+                    // onEditRow={() => handleEditRow(row._id)}
                   />
                 ))}
 

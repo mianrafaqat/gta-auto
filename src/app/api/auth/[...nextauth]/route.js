@@ -16,7 +16,7 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
+          const response = await fetch(`${process.env.API_URL}/api/user/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const handler = NextAuth({
       if (account?.provider === 'google') {
         try {
           // Call your backend API with the Google ID token
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/google-auth`, {
+          const response = await fetch(`${process.env.API_URL}/api/user/google-auth`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

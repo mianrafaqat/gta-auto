@@ -4,9 +4,8 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import Pagination from "@mui/material/Pagination";
+import CircularProgress from "@mui/material/CircularProgress";
 import { ProductItemSkeleton } from "./product-skeleton";
-import { paths } from "src/routes/paths";
 import ShopProductCard from "./shop-product-card";
 import ProductSort from "./product-sort";
 import Iconify from "src/components/iconify";
@@ -16,13 +15,11 @@ export default function ShopProductList({
   products,
   loading,
   itemsPerPage = 12,
-  currentPage = 1,
-  totalPages = 1,
-  onPageChange = () => {},
   onAddOrRemoveFav = () => {},
-  serverPagination = false,
   onSearch = () => {},
   onSort = () => {},
+  loaderRef,
+  hasMore,
   ...other
 }) {
   // Local state for search and sort
@@ -80,24 +77,6 @@ export default function ShopProductList({
     return filteredProducts;
   }, [products, searchQuery, sortBy]);
 
-  // Handle pagination change
-  const handlePageChange = (event, value) => {
-    console.log(`Changing to page ${value}, total pages: ${totalPages || Math.ceil(filteredAndSortedProducts.length / itemsPerPage)}`);
-    
-    // Scroll to top of product list
-    window.scrollTo({
-      top: document.querySelector('.product-list-container')?.offsetTop || 0,
-      behavior: 'smooth',
-    });
-    
-    // Call the parent handler with the new page value
-    onPageChange(value);
-  };
-
-  // For client-side pagination (fallback)
-  const startIndex = serverPagination ? 0 : (currentPage - 1) * itemsPerPage;
-  const endIndex = serverPagination ? products.length : Math.min(startIndex + itemsPerPage, products.length);
-
   const renderSkeleton = (
     <>
       {[...Array(itemsPerPage || 10)].map((_, index) => (
@@ -108,7 +87,7 @@ export default function ShopProductList({
 
   const renderList = (
     <>
-      {(serverPagination ? filteredAndSortedProducts : filteredAndSortedProducts.slice(startIndex, endIndex)).map((product) => (
+      {filteredAndSortedProducts.map((product) => (
         <ShopProductCard
           key={product._id}
           product={product}
@@ -197,8 +176,8 @@ export default function ShopProductList({
         gap={{ xs: 2, md: 3 }}
         display="grid"
         gridTemplateColumns={{
-          xs: "repeat(2, 1fr)",
-          sm: "repeat(2, 1fr)",
+          xs: "repeat(1, 1fr)",
+          sm: "repeat(1, 1fr)",
           md: "repeat(3, 1fr)",
           lg: "repeat(4, 1fr)",
         }}
@@ -206,32 +185,19 @@ export default function ShopProductList({
         {loading ? renderSkeleton : renderList}
       </Box>
 
-      {/* Show pagination only when:
-          1. No search query (showing all products), OR
-          2. Search query exists but results are many (more than itemsPerPage) */}
-      {filteredAndSortedProducts && filteredAndSortedProducts.length > 0 && 
-       (!searchQuery || filteredAndSortedProducts.length > itemsPerPage) && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 5, mb: 5 }}>
-          <Pagination
-            count={serverPagination ? totalPages : Math.ceil(filteredAndSortedProducts.length / itemsPerPage)}
-            page={currentPage}
-            onChange={handlePageChange}
-            color="primary"
-            size="large"
-            sx={{
-              '& .MuiPaginationItem-root': {
-                color: '#fff',
-                fontSize: '1.2rem',
-                '&.Mui-selected': {
-                  backgroundColor: '#4caf50',
-                  fontWeight: 'bold',
-                }
-              },
-              '& .MuiPaginationItem-page': {
-                border: '1px solid #4caf50',
-              }
-            }}
-          />
+      {/* Loading indicator for infinite scroll */}
+      {hasMore && !loading && (
+        <Box
+          ref={loaderRef}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            py: 4,
+            mt: 4,
+            width: "100%",
+          }}>
+          <CircularProgress sx={{ color: "#4caf50" }} />
         </Box>
       )}
     </>
@@ -242,11 +208,9 @@ ShopProductList.propTypes = {
   loading: PropTypes.bool,
   products: PropTypes.array,
   itemsPerPage: PropTypes.number,
-  currentPage: PropTypes.number,
-  totalPages: PropTypes.number,
-  onPageChange: PropTypes.func,
   onAddOrRemoveFav: PropTypes.func,
   onSearch: PropTypes.func,
   onSort: PropTypes.func,
-  serverPagination: PropTypes.bool,
+  loaderRef: PropTypes.object,
+  hasMore: PropTypes.bool,
 };

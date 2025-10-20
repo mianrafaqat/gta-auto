@@ -21,7 +21,7 @@ import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
 import { useBoolean } from "src/hooks/use-boolean";
-import { useGetAllOrders } from "src/hooks/use-orders";
+import { useGetAllOrders, useDeleteOrder } from "src/hooks/use-orders";
 
 import { isAfter, isBetween } from "src/utils/format-time";
 import { transformApiOrdersToComponent } from "src/utils/order-transformer";
@@ -88,16 +88,27 @@ export default function OrderListView() {
 
   const confirm = useBoolean();
 
-  // Fetch orders from API
-  const { data: apiOrders, isLoading, error, refetch } = useGetAllOrders();
+  const [filters, setFilters] = useState(defaultFilters);
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  // Delete mutation
+  const { mutate: deleteOrder, isPending: isDeleting } = useDeleteOrder();
+
+  // Fetch orders from API with pagination
+  const { data: apiOrders, isLoading, error, refetch } = useGetAllOrders({
+    page,
+    limit,
+    status: filters.status !== "all" ? filters.status : undefined,
+  });
 
   // Transform API data to component format
   const tableData = transformApiOrdersToComponent(apiOrders?.orders || []);
 
   // Get pagination info
   const pagination = apiOrders?.pagination || { total: 0, page: 1, pages: 1 };
-
-  const [filters, setFilters] = useState(defaultFilters);
 
   const dateError = isAfter(filters.startDate, filters.endDate);
 
@@ -108,10 +119,8 @@ export default function OrderListView() {
     dateError,
   });
 
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
+  // For server-side pagination, use all filtered data
+  const dataInPage = dataFiltered;
 
   const denseHeight = table.dense ? 56 : 56 + 20;
 
@@ -125,6 +134,7 @@ export default function OrderListView() {
   const handleFilters = useCallback(
     (name, value) => {
       table.onResetPage();
+      setPage(1); // Reset to first page when filters change
       setFilters((prevState) => ({
         ...prevState,
         [name]: value,
@@ -134,21 +144,25 @@ export default function OrderListView() {
   );
 
   const handleResetFilters = useCallback(() => {
+    setPage(1); // Reset to first page when filters are reset
     setFilters(defaultFilters);
   }, []);
 
   const handleDeleteRow = useCallback(
     (id) => {
-      // TODO: Implement actual delete API call here
-      // For now, just show success message and refetch data
-      enqueueSnackbar("Delete success!");
-      
-      // Refetch the data to get updated list
-      refetch();
-      
-      table.onUpdatePageDeleteRow(dataInPage.length);
+      deleteOrder(id, {
+        onSuccess: () => {
+          enqueueSnackbar("Order deleted successfully!", { variant: "success" });
+          refetch();
+          table.onUpdatePageDeleteRow(dataInPage.length);
+        },
+        onError: (error) => {
+          const errorMessage = error.response?.data?.message || error.message || "Failed to delete order";
+          enqueueSnackbar(errorMessage, { variant: "error" });
+        },
+      });
     },
-    [dataInPage.length, enqueueSnackbar, table, refetch]
+    [dataInPage.length, enqueueSnackbar, table, refetch, deleteOrder]
   );
 
   const handleViewRow = useCallback(
@@ -157,6 +171,32 @@ export default function OrderListView() {
     },
     [router]
   );
+
+  const handleDeleteRows = useCallback(() => {
+    const deletePromises = table.selected.map((id) =>
+      new Promise((resolve, reject) => {
+        deleteOrder(id, {
+          onSuccess: resolve,
+          onError: reject,
+        });
+      })
+    );
+
+    Promise.all(deletePromises)
+      .then(() => {
+        enqueueSnackbar(`${table.selected.length} order(s) deleted successfully!`, { variant: "success" });
+        refetch();
+        table.onUpdatePageDeleteRows({
+          totalRowsInPage: dataInPage.length,
+          totalRowsFiltered: dataFiltered.length,
+        });
+        confirm.onFalse();
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || error.message || "Failed to delete some orders";
+        enqueueSnackbar(errorMessage, { variant: "error" });
+      });
+  }, [table, deleteOrder, enqueueSnackbar, refetch, dataInPage.length, dataFiltered.length, confirm]);
 
   // Show loading state
   if (isLoading) {
@@ -170,46 +210,6 @@ export default function OrderListView() {
   }
 
   // Show error state
-  if (error) {
-    const isForbidden = error.status === 403 || error.isForbidden;
-
-    return (
-      <Container maxWidth={settings.themeStretch ? false : "lg"}>
-        <Alert severity={isForbidden ? "warning" : "error"} sx={{ mb: 3 }}>
-          <strong>
-            {isForbidden
-              ? "Access Denied - Trying to load your orders instead..."
-              : "Failed to load orders:"}
-          </strong>{" "}
-          {error.message}
-          {error.response?.status && (
-            <Box component="div" sx={{ mt: 1, fontSize: "0.875rem" }}>
-              Status: {error.response.status} {error.response.statusText}
-            </Box>
-          )}
-          {error.response?.data?.message && (
-            <Box component="div" sx={{ mt: 1, fontSize: "0.875rem" }}>
-              Server: {error.response.data.message}
-            </Box>
-          )}
-          {isForbidden && (
-            <Box component="div" sx={{ mt: 1, fontSize: "0.875rem" }}>
-              Note: You don't have admin access, so showing your personal orders
-              instead.
-            </Box>
-          )}
-        </Alert>
-        <Button onClick={() => refetch()} variant="contained" sx={{ mr: 2 }}>
-          Retry
-        </Button>
-        <Button
-          onClick={() => (window.location.href = "/login")}
-          variant="outlined">
-          Go to Login
-        </Button>
-      </Container>
-    );
-  }
 
   return (
     <Container maxWidth={settings.themeStretch ? false : "lg"}>
@@ -341,13 +341,15 @@ export default function OrderListView() {
 
         <TablePaginationCustom
           count={pagination.total}
-          page={pagination.page - 1} // Convert to 0-based index
-          rowsPerPage={table.rowsPerPage}
+          page={page - 1} // Convert to 0-based index for MUI
+          rowsPerPage={limit}
           onPageChange={(event, newPage) => {
-            // Handle pagination here - you might need to call API with new page
-            console.log("Page changed to:", newPage + 1);
+            setPage(newPage + 1); // Convert from 0-based to 1-based
           }}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
+          onRowsPerPageChange={(event) => {
+            setLimit(parseInt(event.target.value, 10));
+            setPage(1); // Reset to first page when changing rows per page
+          }}
           dense={table.dense}
           onChangeDense={table.onChangeDense}
         />
@@ -357,10 +359,20 @@ export default function OrderListView() {
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
-        content="Are you sure want to delete?"
+        content={
+          <>
+            Are you sure you want to delete{" "}
+            <strong>{table.selected.length}</strong> order(s)?
+          </>
+        }
         action={
-          <Button variant="contained" color="error" onClick={confirm.onFalse}>
-            Delete
+          <Button 
+            variant="contained" 
+            color="error" 
+            onClick={handleDeleteRows}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
           </Button>
         }
       />

@@ -110,13 +110,13 @@ export default function ProductDetailsCarousel({ product }) {
   const renderLargeImg = (
     <Box
       sx={{
-        mb: 3,
+        mb: 0,
         borderRadius: 2,
         overflow: "hidden",
         position: "relative",
-        backgroundColor: "#f8f9fa",
+        backgroundColor: "#ffffff00",
         padding: 2,
-        border: "1px solid #e0e0e0",
+        // border: "1px solid #fff",
       }}>
       <Carousel
         {...carouselLarge.carouselSettings}
@@ -133,10 +133,11 @@ export default function ProductDetailsCarousel({ product }) {
               onClick={() => lightbox.onOpen(slide.src)}
               sx={{
                 cursor: "zoom-in",
-                minHeight: "400px",
+                minHeight: {xs: "250px", md: "400px"},
                 "& img": {
                   objectFit: "contain",
-                  backgroundColor: "#f5f5f5",
+                  // backgroundColor: "#f5f5f5",
+                  backgroundColor: "#ffffff00",
                 },
               }}
             />
@@ -168,7 +169,8 @@ export default function ProductDetailsCarousel({ product }) {
               sx={{
                 width: THUMB_SIZE,
                 height: THUMB_SIZE,
-                opacity: 0.48,
+                opacity: 1,
+                
                 cursor: "pointer",
                 ...(carouselLarge.currentIndex === index && {
                   opacity: 1,

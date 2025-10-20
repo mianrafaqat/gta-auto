@@ -79,7 +79,6 @@ export default function ProductShopDetailsView({ id }) {
 
   // Safety check for checkout context
   if (!checkout) {
-    console.log("Checkout context is not available");
     return (
       <Container maxWidth="lg">
         <div>Loading checkout...</div>
@@ -89,7 +88,6 @@ export default function ProductShopDetailsView({ id }) {
 
   // Safety check for settings context
   if (!settings) {
-    console.log("Settings context is not available");
     return (
       <Container maxWidth="lg">
         <div>Loading settings...</div>
@@ -97,12 +95,6 @@ export default function ProductShopDetailsView({ id }) {
     );
   }
 
-  console.log(
-    "Contexts loaded - checkout:",
-    !!checkout,
-    "settings:",
-    !!settings
-  );
 
   // Fetch product data using ProductService
   const fetchProduct = useCallback(async () => {
@@ -112,32 +104,29 @@ export default function ProductShopDetailsView({ id }) {
       setProductLoading(true);
       setProductError(null);
 
-      const response = await ProductService.getById(id);
+      // Try to fetch by slug first, fall back to ID if it fails
+      let response;
+      try {
+        response = await ProductService.getBySlug(id);
+      } catch (slugError) {
+        // If slug fetch fails, try fetching by ID for backward compatibility
+        response = await ProductService.getById(id);
+      }
 
-      console.log("API Response:", response);
-      console.log("Response type:", typeof response);
-      console.log(
-        "Response keys:",
-        response ? Object.keys(response) : "No response"
-      );
+    
 
       if (response) {
         // Check different possible response structures
         if (response.product) {
-          console.log("Using response.product structure");
           setProduct(response.product);
         } else if (response.data && response.data.product) {
-          console.log("Using response.data.product structure");
           setProduct(response.data.product);
         } else if (response.data) {
-          console.log("Using response.data structure");
           setProduct(response.data);
         } else {
-          console.log("No product data found in response");
           setProductError(new Error("Product not found"));
         }
       } else {
-        console.log("No response received");
         setProductError(new Error("Product not found"));
       }
     } catch (error) {
@@ -152,20 +141,7 @@ export default function ProductShopDetailsView({ id }) {
     fetchProduct();
   }, [fetchProduct]);
 
-  // Debug log to help identify the issue
-  console.log("Product details view:", {
-    id,
-    product,
-    productLoading,
-    productError,
-  });
 
-  // Debug log for API response structure
-  useEffect(() => {
-    if (product) {
-      console.log("Product data structure:", product);
-    }
-  }, [product]);
 
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
@@ -192,7 +168,6 @@ export default function ProductShopDetailsView({ id }) {
 
   const renderProduct = product && (
     <>
-      {console.log("Rendering product:", product.name)}
       <CustomBreadcrumbs
         links={[
           { name: "Home", href: "/", color: "#fff" },
@@ -203,7 +178,7 @@ export default function ProductShopDetailsView({ id }) {
           },
           { name: product?.name || "Product Details" },
         ]}
-        sx={{ mb: 5, color: "#fff" }}
+        sx={{ mb: {xs: 0, md: 5}, color: "#fff" }}
       />
 
       <Grid container spacing={{ xs: 3, md: 5, lg: 8 }}>
@@ -216,7 +191,6 @@ export default function ProductShopDetailsView({ id }) {
             product={product}
             items={checkout.items}
             onAddCart={checkout.onAddToCart}
-            onGotoStep={checkout.onGotoStep}
           />
         </Grid>
       </Grid>
@@ -225,7 +199,7 @@ export default function ProductShopDetailsView({ id }) {
         <HeroBottom />
       </Box> */}
 
-      <Box
+      {/* <Box
         gap={5}
         display="grid"
         gridTemplateColumns={{
@@ -252,7 +226,7 @@ export default function ProductShopDetailsView({ id }) {
             </Typography>
           </Box>
         ))}
-      </Box>
+      </Box> */}
 
       <Card
         sx={{
@@ -261,20 +235,29 @@ export default function ProductShopDetailsView({ id }) {
           borderRadius: "8px",
           overflow: "hidden",
           pt: "47px",
+          my: 5,
         }}>
         <Tabs
           value={currentTab}
           onChange={handleChangeTab}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{
             backgroundColor: "#000",
             borderBottom: "1px solid #fff",
-            justifyContent: "center",
             "& .MuiTabs-indicator": {
               backgroundColor: "#4CAF50",
               height: "3px",
             },
             "& .MuiTabs-flexContainer": {
-              justifyContent: "center",
+              justifyContent: { xs: "flex-start", md: "center" },
+            },
+            "& .MuiTabs-scrollButtons": {
+              color: "#4CAF50",
+              "&.Mui-disabled": {
+                opacity: 0.3,
+              },
             },
           }}>
           {[
@@ -284,36 +267,41 @@ export default function ProductShopDetailsView({ id }) {
             },
             {
               value: "additional",
-              label: "ADDITIONAL INFORMATION",
+              label: "ADDITIONAL INFO",
             },
             {
               value: "specification",
               label: "SPECIFICATION",
             },
-            {
-              value: "reviews",
-              label: "REVIEW",
-            },
+            // {
+            //   value: "reviews",
+            //   label: "REVIEW",
+            // },
           ].map((tab) => (
             <Tab
               key={tab.value}
               value={tab.value}
               label={tab.label}
               sx={{
-                color: currentTab === tab.value ? "#000" : "#828282",
+                color: "#4CAF50",
                 backgroundColor:
-                  currentTab === tab.value ? "#fff" : "transparent",
+                  currentTab === tab.value ? "#4CAF50" : "transparent",
                 fontWeight: "bold",
                 textTransform: "uppercase",
-                fontSize: "14px",
-                padding: "16px 24px",
+                fontSize: { xs: "12px", sm: "13px", md: "14px" },
+                padding: { xs: "12px 16px", sm: "14px 20px", md: "16px 24px" },
+                minWidth: { xs: "auto", sm: "120px" },
+                whiteSpace: { xs: "nowrap", md: "normal" },
                 "&.Mui-selected": {
-                  color: "#000",
-                  backgroundColor: "#fff",
+                  color: "#fff",
+                  backgroundColor: "#4CAF50",
                 },
                 "&:hover": {
                   backgroundColor:
-                    currentTab === tab.value ? "#fff" : "rgba(255,255,255,0.1)",
+                    currentTab === tab.value ? "#4CAF50" : "rgba(255,255,255,0.1)",
+                },
+                "&:not(.Mui-selected)": {
+                  color: "#4CAF50",
                 },
               }}
             />
@@ -323,7 +311,7 @@ export default function ProductShopDetailsView({ id }) {
         <Box sx={{ p: "40px" }}>
           {currentTab === "description" && (
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid xs={12} md={4}>
                 <Box sx={{ pr: 2 }}>
                   <Typography
                     variant="h6"
@@ -341,7 +329,7 @@ export default function ProductShopDetailsView({ id }) {
                 </Box>
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid xs={12} md={4}>
                 <Box sx={{ borderRight: "1px solid #333", pr: 2 }}>
                   <Typography
                     variant="h6"
@@ -355,30 +343,30 @@ export default function ProductShopDetailsView({ id }) {
                   </Typography>
                   <Stack spacing={1}>
                     {[
-                      {
-                        icon: <WorkspacePremium sx={{ color: "#4CAF50" }} />,
-                        text: "Free 1 Year Warranty",
-                      },
+                      // {
+                      //   icon: <WorkspacePremium sx={{ color: "#4CAF50" }} />,
+                      //   text: "Free 1 Year Warranty",
+                      // },
                       {
                         icon: (
                           <LocalShippingOutlined sx={{ color: "#4CAF50" }} />
                         ),
-                        text: "Free Shipping & Fast Delivery",
+                        text: "Fast Shipping & Fast Delivery",
                       },
-                      {
-                        icon: (
-                          <MonetizationOnOutlined sx={{ color: "#4CAF50" }} />
-                        ),
-                        text: "100% Money-back guarantee",
-                      },
+                      // {
+                      //   icon: (
+                      //     <MonetizationOnOutlined sx={{ color: "#4CAF50" }} />
+                      //   ),
+                      //   text: "100% Money-back guarantee",
+                      // },
                       {
                         icon: <HeadphonesOutlined sx={{ color: "#4CAF50" }} />,
                         text: "24/7 Customer support",
                       },
-                      {
-                        icon: <WalletOutlined sx={{ color: "#4CAF50" }} />,
-                        text: "Secure payment method",
-                      },
+                      // {
+                      //   icon: <WalletOutlined sx={{ color: "#4CAF50" }} />,
+                      //   text: "Secure payment method",
+                      // },
                     ].map((feature, index) => (
                       <Box
                         key={index}
@@ -398,7 +386,7 @@ export default function ProductShopDetailsView({ id }) {
                 </Box>
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid xs={12} md={4}>
                 <Box>
                   <Typography
                     variant="h6"
@@ -412,10 +400,8 @@ export default function ProductShopDetailsView({ id }) {
                   </Typography>
                   <Stack spacing={2}>
                     {[
-                      "Courier: 2-4 days, free shipping",
-                      "Local Shipping: up to one week, $19.00",
-                      "UPS Ground Shipping: 4-6 days, $29.00",
-                      "Unishop Global Export: 3-4 days, $39.00",
+                      "Courier: 3-5 days",
+                      "Shipping Charge:  ₨ 250",
                     ].map((shipping, index) => (
                       <Typography
                         key={index}
@@ -473,20 +459,10 @@ export default function ProductShopDetailsView({ id }) {
   return (
     <Container
       maxWidth={settings.themeStretch ? false : "lg"}
-      sx={{ mt: "80px", mb: "150px" }}>
+      sx={{ mt: {xs: 3, md: "80px"}, mb: {xs: 0, md: "150px"} }}>
       {/* <CartIcon totalItems={checkout.totalItems} /> */}
 
-      {console.log(
-        "Final render - productLoading:",
-        productLoading,
-        "productError:",
-        productError,
-        "product:",
-        !!product,
-        "productData:",
-        product
-      )}
-
+      
       {productLoading && renderSkeleton}
 
       {productError && renderError}
@@ -509,11 +485,11 @@ export default function ProductShopDetailsView({ id }) {
       )}
 
       {product && renderProduct}
-      <Discounted />
-      <CategoryOffers />
-      <RecentlyPurchased />
+      {/* <Discounted /> */}
+      {/* <CategoryOffers /> */}
+      {/* <RecentlyPurchased /> */}
       <BrowseVideosSection />
-      <CTA />
+      {/* <CTA /> */}
     </Container>
   );
 }

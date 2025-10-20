@@ -41,12 +41,12 @@ export const paths = {
   figma:
     "https://www.figma.com/file/hjxMnGUJCjY7pX8lQbS7kn/%5BPreview%5D-Steel-Web.v5.4.0?type=design&node-id=0-1&mode=design&t=2fxnS70DuiTLGzND-0",
   product: {
-    root: `/product`,
-    checkout: `/product/checkout`,
-    orderSuccess: `/product/checkout/success`,
-    details: (id) => `/product/${id}`,
+    root: `/shop`,
+    checkout: `/shop/checkout`,
+    orderSuccess: `/shop/checkout/success`,
+    details: (slug) => `/shop/${slug}`,
     demo: {
-      details: `/product/${_id[1]}`,
+      details: `/shop/${_id[1]}`,
     },
   },
   trackOrder: "/track-order",
@@ -261,6 +261,7 @@ export const paths = {
       },
       forum: {
         categories: `${ROOTS.DASHBOARD}/admin/forum/categories`,
+        topics: `${ROOTS.DASHBOARD}/admin/forum/topics`,
       },
     },
     category: {
