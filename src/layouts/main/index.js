@@ -7,6 +7,7 @@ import { usePathname } from 'src/routes/hooks';
 
 import Footer from './footer';
 import Header from './header';
+import MobileBottomNav from 'src/components/mobile-bottom-nav';
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +34,7 @@ export default function MainLayout({ children, hideFooter = false }) {
           ...(!homePage && {
             pt: { xs: 8, md: 10 },
           }),
+          pb: { xs: '80px', md: 0 }, // Add padding bottom on mobile to prevent content being hidden by bottom nav
         }}
       >
         {children}
@@ -43,6 +45,9 @@ export default function MainLayout({ children, hideFooter = false }) {
         <Footer />
       )
      }
+
+     {/* Mobile Bottom Navigation */}
+     <MobileBottomNav />
     </Box>
   );
 }

@@ -140,7 +140,7 @@ export default function BrowseVideosSection() {
         px: { xs: 2, sm: 3, md: 4 },
         minHeight: "600px",
       }}>
-      <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2 }}>
+      <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2, p: 0 }}>
         {/* Section Header */}
         <Box
           sx={{

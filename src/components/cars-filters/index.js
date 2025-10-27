@@ -441,13 +441,9 @@ export default function CarsFiltersPage() {
       <LatestProductsSection isShop={false} titleText="Latest Products" />
       </Box>
     
-      <Container maxWidth="xl" sx={{
-        justifyContent: "center",
-        alignItems: "center",
-        p: 4,
-      }}> 
+      
       <BrowseVideosSection />
-      </Container>
+  
       <Container maxWidth="xl">
         <Box
           sx={{
@@ -555,7 +551,13 @@ export default function CarsFiltersPage() {
           </Card>
         </Box>
       </Container>
-     <LatestProductsSection isShop={true} />
+
+      <Box sx={{
+        pb: {md: 0, xs: 4}
+      }}>
+      <LatestProductsSection isShop={true} />
+      </Box>
+   
 
 
       {/* <CategoryOffers /> */}
