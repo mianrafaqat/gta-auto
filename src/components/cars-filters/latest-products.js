@@ -31,12 +31,12 @@ const LatestProductsList = ({ products, loading, title }) => {
 
   // Check if we have only one product
   const isSingleProduct = products.length === 1;
-
+  const slidesToShow = title === "Addons" ? getSlidesToShow(3) : getSlidesToShow(4)
   const sliderSettings = {
     dots: false,
     infinite: products.length > 4,
     speed: 500,
-    slidesToShow: getSlidesToShow(4),
+    slidesToShow: slidesToShow,
     slidesToScroll: 1,
     autoplay: false,
     arrows: false, // Disable default arrows
@@ -288,7 +288,7 @@ const LatestProductsList = ({ products, loading, title }) => {
 };
 
 export default function LatestProductsSection({
-  titleText = " Latest Products",
+  titleText,
   isShop = false,
 }) {
   const [latestProducts, setLatestProducts] = useState([]);
@@ -407,9 +407,10 @@ export default function LatestProductsSection({
          <Box sx={{ position: "relative", zIndex: 2 }}>
           <Grid item xs={12}>
             <LatestProductsList 
+
               products={latestProducts} 
               loading={loading} 
-              title="Latest Products"
+              title={titleText}
             />
           </Grid>
         </Box>

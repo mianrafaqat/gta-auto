@@ -7,12 +7,12 @@ const HeroBanner = () => {
     <Box
       sx={{
         position: "relative",
-        height: { xs: "auto", md: "calc(100vh - 80px)" },
+        height: { xs: "auto", md: "auto" },
         overflow: "hidden",
       }}>
       <Box sx={{ height: "100%", objectFit: "cover", width: "100%" }}>
         <img
-          src="/assets/chemical-bg.jpeg"
+          src="/assets/ChemialsBG.jpg"
           alt="chemical-bg"
           style={{ width: "100%" }}
         />

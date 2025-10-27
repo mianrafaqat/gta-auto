@@ -275,7 +275,7 @@ export default function ProductDetailsSummary({
             {getDisplayPrice()
               ? Number(getDisplayPrice())?.toLocaleString()
               : 0}
-            /d
+            {productCategory?.toLowerCase() === "rent" ? "/d" : ""}
           </Typography>
           <Typography
             color="#828282"

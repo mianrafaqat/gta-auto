@@ -25,6 +25,10 @@ Allow: /cancellation-refund-policy
 # Disallow admin and dashboard areas
 Disallow: /dashboard/
 Disallow: /admin/
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /login/?returnTo=/dashboard/
+
 
 # Disallow authentication pages
 Disallow: /auth/
