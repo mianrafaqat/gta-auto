@@ -438,7 +438,7 @@ export default function CarsFiltersPage() {
       <Box sx={{
         
       }}>
-      <LatestProductsSection isShop={false} />
+      <LatestProductsSection isShop={false} titleText="Latest Products" />
       </Box>
     
       

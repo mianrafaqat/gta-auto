@@ -45,6 +45,7 @@ import CategoryOffers from "src/sections/categoryOffers";
 import RecentlyPurchased from "src/components/recently-purchased";
 import BrowseVideosSection from "src/components/cars-filters/browse-videos";
 import CTA from "src/components/cta";
+import LatestProductsSection from "src/components/cars-filters/latest-products";
 
 // ----------------------------------------------------------------------
 
@@ -488,6 +489,7 @@ export default function ProductShopDetailsView({ id }) {
       {/* <Discounted /> */}
       {/* <CategoryOffers /> */}
       {/* <RecentlyPurchased /> */}
+      <LatestProductsSection titleText="Addons"/>
       <BrowseVideosSection />
       {/* <CTA /> */}
     </Container>
