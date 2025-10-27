@@ -67,15 +67,13 @@ export default function GarageItem({
     try {
       // Get the actual user data from the nested structure
       const actualUser = user?.user || user;
-   
+
       const data = {
         userID: actualUser?._id, // Fixed: Access user ID from the correct user object
         carID: product?._id, // Changed from carID to match backend expectation
       };
 
-
       const result = await addOrRemoveFavoriteMutation.mutateAsync(data);
-
 
       if (result?.status === 200) {
         // Update user data with the new favorite list
@@ -251,7 +249,13 @@ export default function GarageItem({
   };
 
   const renderContent = (
-    <Stack gap={2.5} sx={{ px: {md:"18px", xs: "12px"}, py: {md: "16px", xs: "12px"}, bgcolor: "#fff" }}>
+    <Stack
+      gap={{md:2.5, xs: 1}}
+      sx={{
+        px: { md: "18px", xs: "12px" },
+        py: { md: "16px", xs: "12px" },
+        bgcolor: "#fff",
+      }}>
       {onHome ? (
         <Stack
           direction={onHome ? "column" : "row"}
@@ -315,13 +319,13 @@ export default function GarageItem({
               <Box
                 component="h6"
                 sx={{
-                  maxWidth: {md: "250px", xs: "150px"},
+                  maxWidth: { md: "250px", xs: "150px" },
                   margin: 0,
                   display: "block",
                   fontWeight: 500,
                   color: "black",
                   mb: "0px",
-                  fontSize: {md: "1.1rem", xs: "1rem"},
+                  fontSize: { md: "1.1rem", xs: "1rem" },
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
@@ -339,22 +343,27 @@ export default function GarageItem({
             {/* <Typography variant="caption" color="white">
               {carDetails?.mileage} mi
             </Typography> */}
-
-            <Typography
-              variant="body2"
-              sx={{
-                color: "grey.600",
-                mb: {md:"12px", xs: "8px"},
-                fontSize: {md: "0.875rem", xs: "0.8rem"},
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-                textWrap: "nowrap",
-              }}>
-              {title}
-            </Typography>
-
-            <Stack direction="row" flexWrap="wrap" gap={{md:2, xs:0.5}} sx={{ mb: 0.5 }}>
+            <Box sx={{ display: { md: "block", xs: "none" } }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "grey.600",
+                  mb: { md: "12px", xs: "8px" },
+                  fontSize: { md: "0.875rem", xs: "0.8rem" },
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  textWrap: "nowrap",
+                }}>
+                {title}
+              </Typography>
+            </Box>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              display={{ md: "flex", xs: "none" }}
+              gap={{ md: 2, xs: 0.5 }}
+              sx={{ mb: 0.5 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                 <Iconify
                   icon="eva:car-outline"
@@ -379,6 +388,38 @@ export default function GarageItem({
                   variant="body2"
                   sx={{ color: "grey.600", fontSize: "0.8rem" }}>
                   {carDetails?.fuelType || "N/A"}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Iconify
+                  icon="eva:settings-outline"
+                  sx={{ fontSize: 16, color: "grey.500" }}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{ color: "grey.600", fontSize: "0.8rem" }}>
+                  {carDetails?.transmission || "N/A"}
+                </Typography>
+              </Box>
+            </Stack>
+
+            {/* milage section for mobile */}
+
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              gap={{ md: 2, xs: 0.5 }}
+              sx={{ mb: 0.5 }}>
+             
+             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Iconify
+                  icon="eva:droplet-outline"
+                  sx={{ fontSize: 16, color: "grey.500" }}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{ color: "grey.600", fontSize: "0.8rem" }}>
+                  {carDetails?.fuelType || "N/A"} |
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -451,14 +492,14 @@ export default function GarageItem({
           justifyContent: "space-between",
           alignItems: "center",
           mt: "auto",
-          flexWrap: {md:"nowrap", xs:"wrap"},
+          flexWrap: { md: "nowrap", xs: "wrap" },
         }}>
         <Typography
           variant="h6"
           sx={{
             fontWeight: 600,
             color: "black",
-            fontSize: "1rem !important",
+            fontSize: {md: "1rem !important", xs: "0.8rem !important"},
           }}>
           {getPriceLabel()}{" "}
           {Number(getDisplayPrice())?.toLocaleString() || "N/A"}
@@ -468,11 +509,15 @@ export default function GarageItem({
           variant="text"
           endIcon={<Iconify icon="eva:arrow-forward-fill" />}
           sx={{
-            color: "#405FF2",
+            color: "#fff",
             fontWeight: 500,
             fontSize: "0.875rem",
             textTransform: "none",
-            p: 0,
+            backgroundColor: "#4caf50",
+            fontSize: { xs: "12px", sm: "13px", md: "14px" },
+            px: { xs: 1.5, sm: 2, md: 2.5 },
+            mt: "6px",
+            width: "100%",
             "&:hover": {
               bgcolor: "rgba(33, 150, 243, 0.1)",
             },
@@ -582,14 +627,14 @@ export default function GarageItem({
     <Card
       sx={{
         width: "100%",
-        borderRadius: {md:"24px", xs: "12px"},
+        borderRadius: { md: "24px", xs: "12px" },
         background: "transparent",
         overflow: "hidden",
-        p: 0
+        p: 0,
       }}>
       <Box
         sx={{
-          minHeight: {md: "380px", xs: "150px"},
+          minHeight: { md: "380px", xs: "150px" },
           backgroundImage: `url(${image?.[0]})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
