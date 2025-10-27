@@ -68,6 +68,14 @@ const LatestProductsList = ({ products, loading, title }) => {
           arrows: false,
         },
       },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: getSlidesToShow(2),
+          slidesToScroll: 1,
+          arrows: false,
+        },
+      },
     ],
   };
 
@@ -134,7 +142,7 @@ const LatestProductsList = ({ products, loading, title }) => {
             {title}
           </Typography>
         </Box>
-        
+
         <Box
           sx={{
             display: "flex",
@@ -153,7 +161,14 @@ const LatestProductsList = ({ products, loading, title }) => {
   return (
     <>
       {/* Section Title with Navigation */}
-      <Box sx={{ mb: 6, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box
+        sx={{
+          mb: 6,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          px: { xs: 3, sm: 3, md: 0 },
+        }}>
         <Typography
           variant="h3"
           sx={{
@@ -164,7 +179,7 @@ const LatestProductsList = ({ products, loading, title }) => {
           }}>
           {title}
         </Typography>
-        
+
         {!isSingleProduct && products.length > 4 && !loading && (
           <Box
             sx={{
@@ -217,45 +232,45 @@ const LatestProductsList = ({ products, loading, title }) => {
         )}
       </Box>
 
-      <Box sx={{ position: "relative", width: "100%", pb: {md:8, xs: 0} }}>
+      <Box sx={{ position: "relative", width: "100%", pb: { md: 8, xs: 0 } }}>
         {isSingleProduct ? (
-        // Single product display - center it
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
-          <Box sx={{ maxWidth: "350px", width: "100%" }}>
-            <ProductItem product={products[0]} />
+          // Single product display - center it
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <Box sx={{ maxWidth: "350px", width: "100%" }}>
+              <ProductItem product={products[0]} />
+            </Box>
           </Box>
-        </Box>
-      ) : (
-        <>
-          <Box>
-            <Slider
-              key={`slider-${products.length}`}
-              ref={sliderRef}
-              {...sliderSettings}
-              style={{ width: "100%", display: "flex !important" }}>
-              {products.map((product) => (
-                <Box
-                  key={product._id}
-                  sx={{ 
-                    // px: 1, 
-                    display: "flex !important",
-                    height: "100%",
-                    minHeight: {md: "400px", xs: "100%"}
-                  }}>
-                  <Box sx={{ width: "100%", height: "100%" }}>
-                    <ProductItem product={product} />
+        ) : (
+          <>
+            <Box>
+              <Slider
+                key={`slider-${products.length}`}
+                ref={sliderRef}
+                {...sliderSettings}
+                style={{ width: "100%", display: "flex !important" }}>
+                {products.map((product) => (
+                  <Box
+                    key={product._id}
+                    sx={{
+                      px: { md: 1.5, xs: 1 },
+                      display: "flex !important",
+                      height: "100%",
+                      minHeight: { md: "400px", xs: "100%" },
+                    }}>
+                    <Box sx={{ width: "100%", height: "100%" }}>
+                      <ProductItem product={product} />
+                    </Box>
                   </Box>
-                </Box>
-              ))}
-            </Slider>
-          </Box>
-        </>
-      )}
+                ))}
+              </Slider>
+            </Box>
+          </>
+        )}
       </Box>
     </>
   );
@@ -331,27 +346,25 @@ export default function LatestProductsSection({
         } else if (response && response.data) {
           products = response.data;
         }
-        
+
         // Filter out products that have a category with name "Chemicals"
-        const nonChemicalProducts = products.filter(
-          (product) => {
-            const hasCategories = Array.isArray(product.categories);
-            if (!hasCategories) {
-              return true; // Include products without categories
-            }
-            
-            const hasChemicalCategory = product.categories.some(
-              (cat) => {
-                return cat &&
-                  (cat.name?.toLowerCase() === "chemicals" ||
-                    cat.slug?.toLowerCase() === "chemicals");
-              }
-            );
-            
-            return !hasChemicalCategory;
+        const nonChemicalProducts = products.filter((product) => {
+          const hasCategories = Array.isArray(product.categories);
+          if (!hasCategories) {
+            return true; // Include products without categories
           }
-        );
-        
+
+          const hasChemicalCategory = product.categories.some((cat) => {
+            return (
+              cat &&
+              (cat.name?.toLowerCase() === "chemicals" ||
+                cat.slug?.toLowerCase() === "chemicals")
+            );
+          });
+
+          return !hasChemicalCategory;
+        });
+
         // Take up to 40 non-chemical products
         if (nonChemicalProducts && nonChemicalProducts.length > 0) {
           setFirstTenProducts(nonChemicalProducts.slice(0, 40));
@@ -373,18 +386,18 @@ export default function LatestProductsSection({
       maxWidth="xl"
       sx={{
         pt: 8,
-        pb: {md: 8, xs: 0},
-        
-        px: { xs: 2, sm: 3, md: 4 },
+        pb: { md: 8, xs: 0 },
+
+        px: { xs: 0, sm: 3, md: 4 },
         // backgroundColor: "black",
-        minHeight: {md: "600px", xs: "unset"},
+        minHeight: { md: "600px", xs: "unset" },
       }}>
-       {!isShop && (
-         <Box sx={{ position: "relative", zIndex: 2 }}>
+      {!isShop && (
+        <Box sx={{ position: "relative", zIndex: 2 }}>
           <Grid item xs={12}>
-            <LatestProductsList 
-              products={latestProducts} 
-              loading={loading} 
+            <LatestProductsList
+              products={latestProducts}
+              loading={loading}
               title="Latest Products"
             />
           </Grid>

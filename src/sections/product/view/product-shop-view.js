@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
@@ -42,7 +37,7 @@ import LatestProductsSection from "src/components/cars-filters/latest-products";
 
 export default function ProductShopView() {
   const searchParams = useSearchParams();
-  
+
   const defaultFilters = {
     priceRange: [0, 50000],
     category: "",
@@ -80,7 +75,7 @@ export default function ProductShopView() {
   // Read search parameters from URL and apply them to filters
   useEffect(() => {
     const searchText = searchParams.get("searchText");
-    
+
     if (searchText) {
       setFilters((prev) => ({
         ...prev,
@@ -92,7 +87,7 @@ export default function ProductShopView() {
 
   // Pagination settings
   const ITEMS_PER_PAGE = 12;
-  
+
   // State for products and loading
   const [allProducts, setAllProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -149,7 +144,11 @@ export default function ProductShopView() {
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0];
-        if (target.isIntersecting && !loading && displayedProducts.length < allProducts.length) {
+        if (
+          target.isIntersecting &&
+          !loading &&
+          displayedProducts.length < allProducts.length
+        ) {
           setPage((prevPage) => prevPage + 1);
         }
       },
@@ -192,7 +191,6 @@ export default function ProductShopView() {
     setFilters({ ...defaultFilters });
   };
 
-
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const lgUp = useResponsive("up", "lg");
@@ -201,10 +199,8 @@ export default function ProductShopView() {
     <Box sx={{ display: "" }}>
       <ShopHero />
       {/* <HeroBottom /> */}
- <Box sx={{
-        
-      }}>
-      <LatestProductsSection isShop={false} />
+      <Box>
+        <LatestProductsSection isShop={true} />
       </Box>
       <Box
         sx={{
@@ -270,7 +266,11 @@ export default function ProductShopView() {
                       }}>
                       <Stack direction="row" gap={2} alignItems="center">
                         <Box>
-                        <img width={560} src="/assets/car-accessories-png-car-parts-clipart.png" alt="Comic" />
+                          <img
+                            width={560}
+                            src="/assets/car-accessories-png-car-parts-clipart.png"
+                            alt="Comic"
+                          />
                         </Box>
 
                         <Box>
@@ -347,7 +347,6 @@ export default function ProductShopView() {
                 mb: { xs: 3, md: 5 },
                 width: "100%",
               }}>
-
               {/* {canReset && renderResults} */}
             </Stack>
 
@@ -396,7 +395,7 @@ export default function ProductShopView() {
             {/* Render ProductList */}
 
             <Grid container>
-              <Grid item xs={12}>
+              <Grid item md={12} >
                 <ShopProductList
                   products={dataFiltered}
                   loading={loading}

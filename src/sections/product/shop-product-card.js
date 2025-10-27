@@ -389,7 +389,7 @@ export default function ShopProductCard({
     <Stack
       gap={{ xs: 1, md: 1.5 }}
       sx={{ p: { xs: 1, md: 1.5 }, bgcolor: "#fff" }}>
-      {/* Product Title */}
+      
       <Typography
         variant="h6"
         sx={{
@@ -538,7 +538,7 @@ export default function ShopProductCard({
         onMouseEnter={() => secondImage && setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         sx={{
-          minHeight: "320px",
+          minHeight: {md: "320px", xs: "150px"},
           backgroundImage: `url(${isHovered && secondImage ? secondImage : firstImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",

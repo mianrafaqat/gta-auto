@@ -11,6 +11,7 @@ import {
   ChatBubbleRounded, 
   MenuRounded 
 } from '@mui/icons-material';
+import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +24,7 @@ const NAV_ITEMS = [
   {
     title: 'My Ads',
     icon: CampaignRounded,
-    path: '/dashboard/garage',
+    path: paths.dashboard.cars.my.add,
   },
   {
     title: 'Sell',
