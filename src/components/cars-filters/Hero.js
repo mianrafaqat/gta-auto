@@ -45,7 +45,7 @@ const Hero = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-end",
-        minHeight: 630,
+        minHeight: {md: 630, xs: 350},
         position: "relative",
         // mt: "85px",
       }}

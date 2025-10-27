@@ -63,7 +63,7 @@ const LatestProductsList = ({ products, loading, title }) => {
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: getSlidesToShow(1),
+          slidesToShow: getSlidesToShow(2),
           slidesToScroll: 1,
           arrows: false,
         },
@@ -168,7 +168,7 @@ const LatestProductsList = ({ products, loading, title }) => {
         {!isSingleProduct && products.length > 4 && !loading && (
           <Box
             sx={{
-              display: { xs: "none", md: "flex" },
+              display: "flex",
               gap: 1,
             }}>
             <IconButton
@@ -217,7 +217,7 @@ const LatestProductsList = ({ products, loading, title }) => {
         )}
       </Box>
 
-      <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
+      <Box sx={{ position: "relative", width: "100%", pb: {md:8, xs: 0} }}>
         {isSingleProduct ? (
         // Single product display - center it
         <Box
@@ -232,33 +232,7 @@ const LatestProductsList = ({ products, loading, title }) => {
         </Box>
       ) : (
         <>
-          {/* Mobile View - Vertical Stack */}
-          <Box
-            sx={{
-              display: { xs: "block", md: "none" },
-            }}>
-            <Stack spacing={3} alignItems="center">
-              { products.slice(0, 8).map((product) => (
-                <Box
-                  key={product._id}
-                  sx={{ 
-                    width: "100%", 
-                    maxWidth: "400px",
-                    minWidth: "280px",
-                    display: "flex",
-                    justifyContent: "center"
-                  }}>
-                  <ProductItem product={product} />
-                </Box>
-              ))}
-            </Stack>
-          </Box>
-
-          {/* Desktop View - Slider */}
-          <Box
-            sx={{
-              display: { xs: "none", md: "block" },
-            }}>
+          <Box>
             <Slider
               key={`slider-${products.length}`}
               ref={sliderRef}
@@ -268,10 +242,10 @@ const LatestProductsList = ({ products, loading, title }) => {
                 <Box
                   key={product._id}
                   sx={{ 
-                    px: 1, 
+                    // px: 1, 
                     display: "flex !important",
                     height: "100%",
-                    minHeight: "400px"
+                    minHeight: {md: "400px", xs: "100%"}
                   }}>
                   <Box sx={{ width: "100%", height: "100%" }}>
                     <ProductItem product={product} />
@@ -398,10 +372,12 @@ export default function LatestProductsSection({
     <Container
       maxWidth="xl"
       sx={{
-        py: 8,
+        pt: 8,
+        pb: {md: 8, xs: 0},
+        
         px: { xs: 2, sm: 3, md: 4 },
         // backgroundColor: "black",
-        minHeight: "600px",
+        minHeight: {md: "600px", xs: "unset"},
       }}>
        {!isShop && (
          <Box sx={{ position: "relative", zIndex: 2 }}>

@@ -542,7 +542,7 @@ export default function Footer() {
       <Box
         sx={{
           position: "fixed",
-          bottom: { xs: "10px", md: "20px" },
+          bottom: { xs: "90px", md: "20px" },
           right: { xs: "10px", md: "20px" },
           zIndex: 1000,
         }}>

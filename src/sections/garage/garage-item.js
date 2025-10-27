@@ -251,7 +251,7 @@ export default function GarageItem({
   };
 
   const renderContent = (
-    <Stack gap={2.5} sx={{ px: "18px", py: "16px", bgcolor: "#fff" }}>
+    <Stack gap={2.5} sx={{ px: {md:"18px", xs: "12px"}, py: {md: "16px", xs: "12px"}, bgcolor: "#fff" }}>
       {onHome ? (
         <Stack
           direction={onHome ? "column" : "row"}
@@ -315,13 +315,13 @@ export default function GarageItem({
               <Box
                 component="h6"
                 sx={{
-                  maxWidth: "250px",
+                  maxWidth: {md: "250px", xs: "150px"},
                   margin: 0,
                   display: "block",
                   fontWeight: 500,
                   color: "black",
                   mb: "0px",
-                  fontSize: "1.1rem",
+                  fontSize: {md: "1.1rem", xs: "1rem"},
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
@@ -344,8 +344,8 @@ export default function GarageItem({
               variant="body2"
               sx={{
                 color: "grey.600",
-                mb: "12px",
-                fontSize: "0.875rem",
+                mb: {md:"12px", xs: "8px"},
+                fontSize: {md: "0.875rem", xs: "0.8rem"},
                 whiteSpace: "nowrap",
                 textOverflow: "ellipsis",
                 overflow: "hidden",
@@ -354,7 +354,7 @@ export default function GarageItem({
               {title}
             </Typography>
 
-            <Stack direction="row" flexWrap="wrap" spacing={2} sx={{ mb: 0.5 }}>
+            <Stack direction="row" flexWrap="wrap" gap={{md:2, xs:0.5}} sx={{ mb: 0.5 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                 <Iconify
                   icon="eva:car-outline"
@@ -451,6 +451,7 @@ export default function GarageItem({
           justifyContent: "space-between",
           alignItems: "center",
           mt: "auto",
+          flexWrap: {md:"nowrap", xs:"wrap"},
         }}>
         <Typography
           variant="h6"
@@ -471,6 +472,7 @@ export default function GarageItem({
             fontWeight: 500,
             fontSize: "0.875rem",
             textTransform: "none",
+            p: 0,
             "&:hover": {
               bgcolor: "rgba(33, 150, 243, 0.1)",
             },
@@ -580,13 +582,14 @@ export default function GarageItem({
     <Card
       sx={{
         width: "100%",
-        borderRadius: "24px",
+        borderRadius: {md:"24px", xs: "12px"},
         background: "transparent",
         overflow: "hidden",
+        p: 0
       }}>
       <Box
         sx={{
-          minHeight: "380px",
+          minHeight: {md: "380px", xs: "150px"},
           backgroundImage: `url(${image?.[0]})`,
           backgroundSize: "cover",
           backgroundPosition: "center",

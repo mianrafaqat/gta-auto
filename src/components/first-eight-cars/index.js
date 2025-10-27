@@ -91,7 +91,7 @@ export default function LastestEightCars() {
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: getSlidesToShow(1),
+          slidesToShow: getSlidesToShow(2),
           slidesToScroll: 1,
           arrows: false,
         },
@@ -263,7 +263,7 @@ export default function LastestEightCars() {
 
         {/* Cars Display */}
         {filteredCars.length > 0 ? (
-          <Box sx={{ mb: 6, position: "relative", width: "100%", pb: 8 }}>
+          <Box sx={{ mb: {md: 6, xs: 0}, position: "relative", width: "100%", pb: {md: 8, xs: 0} }}>
             {isSingleCar ? (
               // Single car display - center it without full width
               <Box
@@ -278,27 +278,8 @@ export default function LastestEightCars() {
               </Box>
             ) : (
               <>
-                {/* Mobile View - Vertical Stack */}
-                <Box
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}>
-                  <Stack spacing={3} alignItems="center">
-                    {filteredCars.slice(0, 10).map((car) => (
-                      <Box
-                        key={car._id}
-                        sx={{ width: "100%", maxWidth: "400px" }}>
-                        <GarageItem product={car} />
-                      </Box>
-                    ))}
-                  </Stack>
-                </Box>
-
                 {/* Desktop View - Slider */}
-                <Box
-                  sx={{
-                    display: { xs: "none", md: "block" },
-                  }}>
+                <Box>
                   <Slider
                     key={`slider-${activeTab}-${filteredCars.length}`}
                     ref={sliderRef}
@@ -307,7 +288,7 @@ export default function LastestEightCars() {
                     {filteredCars.slice(0, 10).map((car) => (
                       <Box
                         key={car._id}
-                        sx={{ px: 1, display: "flex !important" }}>
+                        sx={{ px: {md: 1, xs: 0}, display: "flex !important" }}>
                         <GarageItem product={car} />
                       </Box>
                     ))}

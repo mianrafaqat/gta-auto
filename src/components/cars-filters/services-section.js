@@ -105,7 +105,7 @@ export default function ServicesSection() {
       <style>
         {`
           .slick-slide {
-            padding: 0 8px;
+            padding: 0 4px;
           }
           .slick-dots {
             bottom: -40px;

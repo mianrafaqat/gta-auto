@@ -364,17 +364,17 @@ export default function ProductItem({
       {/* Action Buttons */}
       <Stack
         direction="row"
-        flexWrap={{md:"nowrap", xs:"wrap"}}
-        justifyContent={{xs:"space-between", md:"center"}}
-        gap={{ xs: 1, sm: 1.5, md: 2 }}
+        flexWrap={{md:"nowrap", xs:"nowrap"}}
+        justifyContent={{xs:"space-between", md:"space-between"}}
+        gap={{ xs: 0.5, sm: 1, md: 2 }}
         sx={{ 
           mt: "auto",
-          height: { xs: "44px", sm: "48px" }, 
+          height: { xs: "34px", sm: "34px", md: "48px" }, 
           borderRadius: "3px",
-          minHeight: { xs: "44px", sm: "48px" },
+          minHeight: { xs: "34px", sm: "34px" },
           alignItems: "stretch",
           width: "100%",
-          px: { xs: 0.5, sm: 1 }
+       
         }}>
         <LoadingButton
           variant="contained"
@@ -384,14 +384,14 @@ export default function ProductItem({
             handleAddCart(productId);
           }}
           sx={{
-            flex: { xs: 1, sm: 1.2, md: 1.5 },
-            height: { xs: "44px", sm: "48px" },
+            // flex: { xs: 1, sm: 1.2, md: 1.5 },
+            height: { xs: "34px", sm: "48px" },
             backgroundColor: "#4caf50",
             textTransform: "none",
             fontSize: { xs: "12px", sm: "13px", md: "14px" },
             fontWeight: 500,
             whiteSpace: "nowrap",
-            minWidth: { xs: "90px", sm: "110px", md: "130px" },
+            minWidth: { xs: "unset", sm: "unset", md: "130px" },
             maxWidth: { xs: "100%", sm: "160px", md: "180px" },
             px: { xs: 1.5, sm: 2, md: 2.5 },
             "&:hover": {
@@ -412,7 +412,7 @@ export default function ProductItem({
             sx={{
               minWidth: { xs: "42px", sm: "46px", md: "48px" },
               width: { xs: "42px", sm: "46px", md: "48px" },
-              height: { xs: "44px", sm: "48px" },
+              height: { xs: "34px", sm: "48px" },
               borderColor: "#4caf50",
               color: "#4caf50",
               backgroundColor: "#ffffff",
@@ -440,7 +440,7 @@ export default function ProductItem({
             sx={{
               minWidth: { xs: "42px", sm: "46px", md: "48px" },
               width: { xs: "42px", sm: "46px", md: "48px" },
-              height: { xs: "44px", sm: "48px" },
+              height: { xs: "34px", sm: "48px" },
               borderColor: "#4caf50",
               color: "#4caf50",
               backgroundColor: "#ffffff",
@@ -481,9 +481,9 @@ export default function ProductItem({
         border: "1px solid #e0e0e0",
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
         transition: "all 0.3s ease",
-        overflow: "hidden",
+        // overflow: "hidden",
         cursor: "pointer",
-        minHeight: "400px",
+        minHeight: {md:"400px", xs:"100%"},
         display: "flex",
         flexDirection: "column",
         "&:hover": {
@@ -498,7 +498,7 @@ export default function ProductItem({
         onMouseEnter={() => secondImage && setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         sx={{
-          minHeight: "320px",
+          minHeight: {md:"320px", xs:"150px"},
           backgroundImage: `url(${isHovered && secondImage ? secondImage : firstImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -523,7 +523,7 @@ export default function ProductItem({
         }}>
         {/* <RenderImg /> */}
       </Box>
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+      <Box sx={{ flex: {md:1, xs:0}, display: "flex", flexDirection: "column" }}>
         {renderContent}
       </Box>
     </Card>
