@@ -35,6 +35,7 @@ import CTA from "../cta";
 import Discounted from "../discounted";
 import CarRentSection from "./car-rent";
 import WhoWeAre from "./who-we-are";
+import MobileBanner from "./mobile-banner";
 
 export default function CarsFiltersPage() {
   const { data: carBodyList = [], isLoading: carBodyLoading } =
@@ -44,7 +45,9 @@ export default function CarsFiltersPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Desktop playback IDs for 2 slides
-  const desktopPlaybackIds = ["CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w"];
+  const desktopPlaybackIds = [
+    "CR7wgz029UVdMH01e2ZbZG02hSozEYnSNOuF02vEvMtZZ01w",
+  ];
 
   // Mobile playback ID
   const mobilePlaybackId = "gzB22KDrzm1XR4sfmnGnmQ1vF0000yNzo00f02rcNO2VlXg";
@@ -69,6 +72,7 @@ export default function CarsFiltersPage() {
 
   return (
     <>
+    <MobileBanner />
       <Hero />
       {/* <Container maxWidth="xl">
       <Box
@@ -135,7 +139,12 @@ export default function CarsFiltersPage() {
               }}>
               <Stack direction="row" gap={2} alignItems="center">
                 <Box>
-                  <img width={560}  style={{ objectFit: "contain" }} src="/assets/bugati.png" alt="Comic" />
+                  <img
+                    width={560}
+                    style={{ objectFit: "contain" }}
+                    src="/assets/bugati.png"
+                    alt="Comic"
+                  />
                 </Box>
 
                 <Box>
@@ -414,18 +423,22 @@ export default function CarsFiltersPage() {
         </Box> */}
       </Container>
 
-      <CarRentSection />
-      <Box sx={{
-        backgroundImage: "url(/assets/serviceBg.webp)",
-        backgroundSize: "cover",
-        backgroundAttachment: "fixed",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "600px",
-      }}>
-        
-      <FeaturedCarsSection />
-      </Box>
+      
+
+      <Stack sx={{flexDirection: {xs: "column-reverse", md: "column"}}}>
+        <CarRentSection />
+        <Box
+          sx={{
+            backgroundImage: "url(/assets/serviceBg.webp)",
+            backgroundSize: "cover",
+            backgroundAttachment: "fixed",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            minHeight: "600px",
+          }}>
+          <FeaturedCarsSection />
+        </Box>
+      </Stack>
 
       {/* <HeroBottom /> */}
 
@@ -435,15 +448,12 @@ export default function CarsFiltersPage() {
       {/* Services Section */}
 
       {/* Latest Products Section */}
-      <Box sx={{
-        
-      }}>
-      <LatestProductsSection isShop={false} titleText="Latest Products" />
+      <Box sx={{}}>
+        <LatestProductsSection isShop={false} titleText="Latest Products" />
       </Box>
-    
-      
+
       <BrowseVideosSection />
-  
+
       <Container maxWidth="xl">
         <Box
           sx={{
@@ -481,7 +491,11 @@ export default function CarsFiltersPage() {
                 alignItems="center"
                 justifyContent="space-between">
                 <Box>
-                  <img width={560} src="/assets/car-accessories-png-car-parts-clipart.png" alt="Comic" />
+                  <img
+                    width={560}
+                    src="/assets/car-accessories-png-car-parts-clipart.png"
+                    alt="Comic"
+                  />
                 </Box>
 
                 <Box>
@@ -552,18 +566,17 @@ export default function CarsFiltersPage() {
         </Box>
       </Container>
 
-      <Box sx={{
-        pb: {md: 0, xs: 4}
-      }}>
-      <LatestProductsSection isShop={true} />
+      <Box
+        sx={{
+          pb: { md: 0, xs: 4 },
+        }}>
+        <LatestProductsSection isShop={true} />
       </Box>
-   
-
 
       {/* <CategoryOffers /> */}
 
       {/* Featured Cars Section */}
-    
+
       {/* <Discounted /> */}
 
       {/* Browse Brands Section */}

@@ -64,13 +64,13 @@ export default function LastestEightCars() {
   const isSingleCar = filteredCars.length === 1;
 
   const sliderSettings = {
-    dots: false,
-    infinite: filteredCars.length > 4,
+    dots: true,
+    infinite: filteredCars.length > getSlidesToShow(4),
     speed: 500,
     slidesToShow: getSlidesToShow(4),
     slidesToScroll: 1,
     autoplay: false,
-    arrows: false, // Disable default arrows
+    arrows: false, // We use custom arrows
     responsive: [
       {
         breakpoint: 1200,
@@ -82,14 +82,6 @@ export default function LastestEightCars() {
       },
       {
         breakpoint: 900,
-        settings: {
-          slidesToShow: getSlidesToShow(2),
-          slidesToScroll: 1,
-          arrows: false,
-        },
-      },
-      {
-        breakpoint: 600,
         settings: {
           slidesToShow: getSlidesToShow(2),
           slidesToScroll: 1,
@@ -178,20 +170,21 @@ export default function LastestEightCars() {
             Explore All Vehicles
           </Typography>
           
-          {!isSingleCar && filteredCars.length > 0 && (
+          {!isSingleCar && filteredCars.length > getSlidesToShow(4) && (
             <Box
               sx={{
-                display: { xs: "none", md: "flex" },
+                display: "flex",
                 gap: 1,
               }}>
               <IconButton
                 onClick={() => sliderRef.current?.slickPrev()}
                 sx={{
-                  width: 40,
-                  height: 40,
+                  width: { xs: 36, md: 40 },
+                  height: { xs: 36, md: 40 },
                   bgcolor: "white",
                   border: "1px solid #ddd",
                   borderRadius: "8px",
+                  display: { xs: "none", md: "flex" },
                   "&:hover": {
                     bgcolor: "#f5f5f5",
                     borderColor: "#999",
@@ -199,17 +192,18 @@ export default function LastestEightCars() {
                 }}>
                 <Iconify
                   icon="eva:arrow-back-fill"
-                  sx={{ fontSize: 18, color: "black" }}
+                  sx={{ fontSize: { xs: 16, md: 18 }, color: "black" }}
                 />
               </IconButton>
               <IconButton
                 onClick={() => sliderRef.current?.slickNext()}
                 sx={{
-                  width: 40,
-                  height: 40,
+                  width: { xs: 36, md: 40 },
+                  height: { xs: 36, md: 40 },
                   bgcolor: "white",
                   border: "1px solid #ddd",
                   borderRadius: "8px",
+                  display: { xs: "none", md: "flex" },
                   "&:hover": {
                     bgcolor: "#f5f5f5",
                     borderColor: "#999",
@@ -217,7 +211,7 @@ export default function LastestEightCars() {
                 }}>
                 <Iconify
                   icon="eva:arrow-forward-fill"
-                  sx={{ fontSize: 18, color: "black" }}
+                  sx={{ fontSize: { xs: 16, md: 18 }, color: "black" }}
                 />
               </IconButton>
             </Box>
@@ -225,7 +219,7 @@ export default function LastestEightCars() {
         </Box>
         {/* Tabs Navigation */}
         <Box
-          sx={{ mb: 4, borderBottom: "1px solid #fff", position: "relative" }}>
+          sx={{ mb: 4, borderBottom: "1px solid #fff", position: "relative", p: 0 }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
@@ -271,26 +265,71 @@ export default function LastestEightCars() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  p: 0,
                 }}>
-                <Box sx={{ maxWidth: "350px", width: "100%" }}>
+                <Box sx={{ maxWidth: "350px", width: "100%", p: 0 }}>
                   <GarageItem product={filteredCars[0]} />
                 </Box>
               </Box>
             ) : (
               <>
-                {/* Desktop View - Slider */}
-                <Box>
+                {/* Mobile Grid Layout - 2x2 (4 cards) */}
+                <Box
+                  sx={{
+                    display: { xs: "grid", md: "none" },
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: 2,
+                    mb: 4,
+                    p: 0,
+                  }}>
+                  {filteredCars.slice(0, 4).map((car) => (
+                    <Box key={car._id}>
+                      <GarageItem product={car} />
+                    </Box>
+                  ))}
+                </Box>
+
+                {/* Desktop Slider Layout */}
+                <Box
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                    "& .slick-slide": {
+                      display: "flex",
+                      justifyContent: "center",
+                      "& > div": {
+                        width: "100%",
+                      },
+                    },
+                    "& .slick-list": {
+                      margin: "0 -8px",
+                    },
+                    "& .slick-slide > div": {
+                      // padding: "0 8px",
+                      display: "flex",
+                    },
+                    "& .slick-dots": {
+                      bottom: "-50px",
+                      "& li button:before": {
+                        color: "#4CAF50",
+                        fontSize: "12px",
+                        opacity: 0.3,
+                      },
+                      "& li.slick-active button:before": {
+                        opacity: 1,
+                        color: "#4CAF50",
+                      },
+                    },
+                  }}>
                   <Slider
                     key={`slider-${activeTab}-${filteredCars.length}`}
                     ref={sliderRef}
-                    {...sliderSettings}
-                    style={{ width: "100%", display: "flex !important" }}>
-                    {filteredCars.slice(0, 10).map((car) => (
-                      <Box
-                        key={car._id}
-                        sx={{ px: {md: 1, xs: 0}, display: "flex !important" }}>
-                        <GarageItem product={car} />
-                      </Box>
+                    {...sliderSettings}>
+                    {filteredCars.map((car) => (
+                      <div key={car._id}>
+                        <Box sx={{  height: "100%", display: "flex" }}>
+                          <GarageItem product={car} />
+                        </Box>
+                      </div>
                     ))}
                   </Slider>
                 </Box>

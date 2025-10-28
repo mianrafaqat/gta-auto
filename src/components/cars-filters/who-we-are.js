@@ -4,7 +4,7 @@ import React from 'react'
 const WhoWeAre = () => {
   const isMobile = useMediaQuery('(max-width: 600px)');
   return (
-    <Box sx={{ py: 8, bgcolor: '#000' }}>
+    <Box sx={{ py: 8, bgcolor: '#000', display: {md: "block", xs: "none"} }}>
       <Container maxWidth="xl">
         <Box
           sx={{

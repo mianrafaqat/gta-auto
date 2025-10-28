@@ -42,7 +42,7 @@ const Hero = () => {
     <Container
       sx={{
         borderRadius: "12px",
-        display: "flex",
+        display: {md:"flex", xs: "none"},
         justifyContent: "center",
         alignItems: "flex-end",
         minHeight: {md: 630, xs: 350},

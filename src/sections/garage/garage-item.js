@@ -250,7 +250,7 @@ export default function GarageItem({
 
   const renderContent = (
     <Stack
-      gap={{md:2.5, xs: 1}}
+      gap={{md:2.5, xs: 0.5}}
       sx={{
         px: { md: "18px", xs: "12px" },
         py: { md: "16px", xs: "12px" },
@@ -308,6 +308,9 @@ export default function GarageItem({
           direction={onHome ? "column" : "row"}
           alignItems="start"
           justifyContent="space-between"
+          onClick={() =>
+            router.push(paths.dashboard.cars.details(product?._id))
+          }
           bgcolor="#fff">
           <Stack
             direction="column"
@@ -325,13 +328,13 @@ export default function GarageItem({
                   fontWeight: 500,
                   color: "black",
                   mb: "0px",
-                  fontSize: { md: "1.1rem", xs: "1rem" },
+                  fontSize: { md: "1.1rem", xs: "0.85rem" },
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
                   ...(onHome
                     ? {
-                        fontSize: "14px",
+                        
                         maxWidth: { md: "430px", xs: "330px", sm: "330px" },
                       }
                     : {}),
@@ -411,28 +414,22 @@ export default function GarageItem({
               gap={{ md: 2, xs: 0.5 }}
               sx={{ mb: 0.5 }}>
              
-             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <Iconify
-                  icon="eva:droplet-outline"
-                  sx={{ fontSize: 16, color: "grey.500" }}
-                />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+               
                 <Typography
                   variant="body2"
                   sx={{ color: "grey.600", fontSize: "0.8rem" }}>
-                  {carDetails?.fuelType || "N/A"} |
+                  {carDetails?.fuelType || "N/A"} | {carDetails?.transmission || "N/A"}
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <Iconify
-                  icon="eva:settings-outline"
-                  sx={{ fontSize: 16, color: "grey.500" }}
-                />
+              {/* <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+               
                 <Typography
                   variant="body2"
                   sx={{ color: "grey.600", fontSize: "0.8rem" }}>
                   {carDetails?.transmission || "N/A"}
                 </Typography>
-              </Box>
+              </Box> */}
             </Stack>
 
             {/* Rental-specific information */}
@@ -509,15 +506,12 @@ export default function GarageItem({
           variant="text"
           endIcon={<Iconify icon="eva:arrow-forward-fill" />}
           sx={{
-            color: "#fff",
+            color: "#405FF2",
             fontWeight: 500,
             fontSize: "0.875rem",
             textTransform: "none",
-            backgroundColor: "#4caf50",
-            fontSize: { xs: "12px", sm: "13px", md: "14px" },
-            px: { xs: 1.5, sm: 2, md: 2.5 },
-            mt: "6px",
-            width: "100%",
+            p: 0,
+            display: {md: "flex", xs: "none"},
             "&:hover": {
               bgcolor: "rgba(33, 150, 243, 0.1)",
             },
@@ -634,12 +628,13 @@ export default function GarageItem({
       }}>
       <Box
         sx={{
-          minHeight: { md: "380px", xs: "150px" },
+          minHeight: { md: "320px", xs: "150px" },
           backgroundImage: `url(${image?.[0]})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           position: "relative",
+          p: 0,
         }}>
         {/* <RenderImg /> */}
       </Box>
