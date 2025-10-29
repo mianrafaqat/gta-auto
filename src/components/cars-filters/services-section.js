@@ -95,12 +95,13 @@ export default function ServicesSection() {
   return (
     <Box
       sx={{
-        py: 8,
-        backgroundImage: "url(/assets/serviceBg.webp)",
+        py: {xs: 2, md: 8},
+        backgroundImage: {xs: "unset", md: "url(/assets/serviceBg.webp)"},
         backgroundSize: "cover",
         backgroundAttachment: "fixed",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
+        minHeight: {xs: "auto", md: "600px"},
       }}>
       <style>
         {`
@@ -152,15 +153,15 @@ export default function ServicesSection() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 6,
+            mb: {xs: 0, md: 6},
           }}>
-          <Box sx={{ borderBottom: "2px solid #4CAF50", pb: "36px" }}>
+          <Box sx={{ borderBottom: "2px solid #4CAF50", pb: {xs: 0, md: "36px"} }}>
             <Typography
               variant="h3"
               sx={{
                 color: "#4CAF50",
                 fontWeight: "bold",
-                fontSize: { xs: "28px", md: "36px" },
+                fontSize: { xs: "18px", md: "36px" },
                 mb: 1,
               }}>
               Services We Offer
@@ -171,16 +172,16 @@ export default function ServicesSection() {
         <Box sx={{ mb: 4 }}>
           <Slider {...sliderSettings}>
             {services.map((service) => (
-              <Box key={service.id} sx={{ px: 1 }}>
+              <Box sx={{ py: {xs: 3, md: 0} }} key={service.id}>
                 <Box
                   sx={{
                     position: "relative",
-                    height: 400,
+                    height: {xs: 200, md: 400},
                     borderRadius: "16px",
                     overflow: "hidden",
                     cursor: "pointer",
                     "&:hover": {
-                      transform: "scale(1.02)",
+                      transform: {xs: "unset", md: "scale(1.02)"},
                       transition: "transform 0.3s ease",
                     },
                   }}>

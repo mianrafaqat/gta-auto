@@ -136,9 +136,10 @@ export default function BrowseVideosSection() {
       sx={{
         justifyContent: "center",
         alignItems: "center",
-        py: 8,
+        py: {xs: 2, md: 8},
         px: { xs: 2, sm: 3, md: 4 },
-        minHeight: "600px",
+     
+        minHeight: {xs: "auto", md: "600px"},
       }}>
       <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2, p: 0 }}>
         {/* Section Header */}
@@ -147,14 +148,15 @@ export default function BrowseVideosSection() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 4,
+            mt: {xs: 2, md: 0},
+            mb: {xs: 2, md: 4},
           }}>
           <Typography
             variant="h3"
             sx={{
               color: "#4caf50",
               fontWeight: "bold",
-              fontSize: { xs: "24px", md: "32px" },
+              fontSize: { xs: "18px", md: "32px" },
             }}>
             Browse Our Videos
           </Typography>
@@ -166,7 +168,7 @@ export default function BrowseVideosSection() {
               color: "#4caf50",
               textDecoration: "none",
               fontWeight: "bold",
-              fontSize: "16px",
+              fontSize: {xs: "12px", md: "16px"},
               "&:hover": {
                 textDecoration: "underline",
               },

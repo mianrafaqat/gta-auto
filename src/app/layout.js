@@ -29,6 +29,52 @@ import { CheckoutProvider } from 'src/sections/checkout/context';
 import { AuthProvider } from 'src/auth/context/jwt';
 import { useEffect } from 'react';
 import MainLayout from 'src/layouts/main';
+
+// Component to handle mobile scroll-to-top
+function MobileScrollHandler() {
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
+    // Detect mobile devices
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+
+    if (!isMobile) return;
+
+    // Ensure body is scrollable and can be scrolled to top
+    // This enables the native "tap status bar to scroll to top" feature
+    const setupMobileScroll = () => {
+      // Ensure document and body can scroll
+      document.documentElement.style.height = 'auto';
+      document.body.style.height = 'auto';
+      document.body.style.minHeight = '100%';
+      
+      // Remove any fixed height constraints that might prevent scrolling
+      const nextRoot = document.getElementById('__next');
+      if (nextRoot) {
+        nextRoot.style.minHeight = '100%';
+      }
+    };
+
+    // Setup on mount
+    setupMobileScroll();
+
+    // Re-setup after a short delay to ensure DOM is ready
+    const timeoutId = setTimeout(setupMobileScroll, 100);
+
+    // Also setup on window load
+    window.addEventListener('load', setupMobileScroll);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('load', setupMobileScroll);
+    };
+  }, []);
+
+  return null;
+}
 // import { AuthProvider } from 'src/auth/context/auth0';
 // import { AuthProvider } from 'src/auth/context/amplify';
 // import { AuthProvider } from 'src/auth/context/firebase';
@@ -81,7 +127,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
       </head>
       <body>
-        
+        <MobileScrollHandler />
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <LocalizationProvider>

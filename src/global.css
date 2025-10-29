@@ -28,3 +28,24 @@
 .slick-prev:before, .slick-next:before {
     font-size:40px
 }
+
+/* Mobile scroll-to-top support */
+@media (max-width: 768px) {
+  html {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+  }
+  
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    /* Enable native scroll-to-top gesture */
+    overscroll-behavior-y: auto;
+  }
+  
+  /* Ensure the main scroll container is recognized */
+  #__next {
+    min-height: 100%;
+    position: relative;
+  }
+}

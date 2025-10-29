@@ -335,7 +335,7 @@ export default function GarageItem({
                   ...(onHome
                     ? {
                         
-                        maxWidth: { md: "430px", xs: "330px", sm: "330px" },
+                        maxWidth: { md: "430px", xs: "180px", sm: "330px" },
                       }
                     : {}),
                 }}

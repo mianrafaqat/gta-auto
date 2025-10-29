@@ -89,7 +89,7 @@ const LatestProductsList = ({ products, loading, title }) => {
             sx={{
               color: "#4caf50",
               fontWeight: "bold",
-              fontSize: { xs: "24px", md: "32px" },
+              fontSize: { xs: "18px", md: "32px" },
               textTransform: "uppercase",
             }}>
             {title}
@@ -136,7 +136,7 @@ const LatestProductsList = ({ products, loading, title }) => {
             sx={{
               color: "#4caf50",
               fontWeight: "bold",
-              fontSize: { xs: "24px", md: "32px" },
+              fontSize: { xs: "12px", md: "32px" },
               textTransform: "uppercase",
             }}>
             {title}
@@ -174,7 +174,7 @@ const LatestProductsList = ({ products, loading, title }) => {
           sx={{
             color: "#4caf50",
             fontWeight: "bold",
-            fontSize: { xs: "24px", md: "32px" },
+            fontSize: { xs: "18px", md: "32px" },
             textTransform: "uppercase",
           }}>
           {title}
@@ -385,12 +385,11 @@ export default function LatestProductsSection({
     <Container
       maxWidth="xl"
       sx={{
-        pt: 8,
+        pt: {xs: 2, md: 8},
         pb: { md: 8, xs: 0 },
-
         px: { xs: 0, sm: 3, md: 4 },
         // backgroundColor: "black",
-        minHeight: { md: "600px", xs: "unset" },
+        minHeight: { xs: "auto", md: "600px" },
       }}>
       {!isShop && (
         <Box sx={{ position: "relative", zIndex: 2 }}>
@@ -407,7 +406,7 @@ export default function LatestProductsSection({
 
       {/* Shop Section */}
       {isShop && (
-        <Box sx={{ position: "relative", zIndex: 2, mt: 8 }}>
+        <Box sx={{ position: "relative", zIndex: 2, mt: {xs: 2, md: 8} }}>
           <Grid item xs={12}>
             <LatestProductsList
               products={firstTenProducts}

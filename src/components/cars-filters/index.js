@@ -429,12 +429,12 @@ export default function CarsFiltersPage() {
         <CarRentSection />
         <Box
           sx={{
-            backgroundImage: "url(/assets/serviceBg.webp)",
-            backgroundSize: "cover",
+            backgroundImage: {xs: "unset", md: "url(/assets/serviceBg.webp)"},
+            backgroundSize: {xs: "unset", md: "cover"},
             backgroundAttachment: "fixed",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            minHeight: "600px",
+            minHeight: {xs: "auto", md: "600px"},
           }}>
           <FeaturedCarsSection />
         </Box>

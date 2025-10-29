@@ -17,13 +17,29 @@ const MobileBanner = () => {
     arrows: false,
   };
 
+  const formatTitle = (title) => {
+    const words = title.split(' ');
+    if (words.length <= 1) return title;
+    
+    const firstLine = words.slice(0, 1).join(' ');
+    const secondLine = words.slice(1).join(' ');
+    
+    return (
+      <>
+        {firstLine}
+        <br />
+        {secondLine}
+      </>
+    );
+  };
+
   const slides = [
     {
       title: "Import Your Dream Car",
       message:
         "Hi! I'm interested in importing car parts. Can you help me find the parts I need?",
       buttonText: "Book an appointment",
-      image: "/assets/bugati.png",
+      image: "/assets/mobileImportSLider.png",
       contactNumber: "923263333456",
     },
     {
@@ -31,7 +47,7 @@ const MobileBanner = () => {
       message:
         "Hi! I'm interested in importing car parts. Can you help me find the parts I need?",
       buttonText: "Book an appointment",
-      image: "/assets/car-accessories-png-car-parts-clipart.png",
+      image: "/assets/accessriesImport.png",
       contactNumber: "923263331000",
     },
   ];
@@ -58,7 +74,32 @@ const MobileBanner = () => {
       }}>
       <Slider {...sliderSettings}>
         {slides.map((slide, index) => (
-          <Stack direction="row" key={index}>
+          <Stack 
+            className="mobile-banner-slider" 
+            direction="row" 
+            key={index}
+            onClick={() => {
+              const whatsappUrl = `https://wa.me/${slide.contactNumber}?text=${encodeURIComponent(slide.message)}`;
+              window.open(whatsappUrl, "_blank");
+            }}
+            sx={{
+              flex: 1,
+              background: `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url(${slide.image}) no-repeat center center`,
+              backgroundSize: 'cover',
+              borderRadius: '12px',
+              border: '2px solid #25D366',
+              overflow: 'hidden',
+              p: 2,
+              pb:1,
+              minHeight: '150px',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease-in-out',
+              '&:hover': {
+                transform: 'scale(1.02)',
+              },
+            }}>
             <Typography
               variant="h4"
               sx={{
@@ -67,43 +108,26 @@ const MobileBanner = () => {
                 mb: 2,
                 fontSize: { xs: "1rem", md: "34px !important" },
                 lineHeight: 1.2,
-                whiteSpace: "nowrap",
               }}>
-              {slide.title}
+              {formatTitle(slide.title)}
             </Typography>
-            <Stack
-              sx={{
-                justifyContent: "flex-end",
-                alignItems: "flex-end",
-                mt: "12px",
-              }}>
-              <img
-                height="150px"
-                style={{ objectFit: "contain" }}
-                src={slide.image}
-                alt={slide.title}
-              />
-            </Stack>
+            
             <Button
               variant="contained"
               size="large"
-              startIcon={<WhatsApp sx={{ fontSize: 28 }} />}
-              onClick={() => {
-                const whatsappUrl = `https://wa.me/${slide.contactNumber}?text=${encodeURIComponent(slide.message)}`;
-                window.open(whatsappUrl, "_blank");
-              }}
+              startIcon={<WhatsApp sx={{ fontSize: 24 }} />}
               sx={{
                 backgroundColor: "transparent",
-                border: "1px solid #fff",
-                color: "#fff",
-                px: 2,
-                py: 2,
-                fontSize: "14px !important",
-                fontWeight: 500,
+                color: "#25D366",
+                px: 1,
+                py: 1,
+                fontSize: "12px !important",
+                fontWeight: 900,
                 textTransform: "uppercase",
                 borderRadius: "50px",
                 whiteSpace: "nowrap",
                 mt: "12px",
+                pointerEvents: 'none',
                 "&:hover": {
                   backgroundColor: "rgba(255, 255, 255, 0.1)",
                 },

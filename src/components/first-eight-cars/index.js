@@ -65,10 +65,10 @@ export default function LastestEightCars() {
 
   const sliderSettings = {
     dots: true,
-    infinite: filteredCars.length > getSlidesToShow(4),
+    infinite: true, // Always enable infinite scrolling for unlimited scrolling
     speed: 500,
     slidesToShow: getSlidesToShow(4),
-    slidesToScroll: 1,
+    slidesToScroll: 1, // Always scroll one slide at a time for smooth unlimited scrolling
     autoplay: false,
     arrows: false, // We use custom arrows
     responsive: [
@@ -76,7 +76,7 @@ export default function LastestEightCars() {
         breakpoint: 1200,
         settings: {
           slidesToShow: getSlidesToShow(3),
-          slidesToScroll: 1,
+          slidesToScroll: 1, // Always scroll one slide at a time
           arrows: false,
         },
       },
@@ -84,7 +84,7 @@ export default function LastestEightCars() {
         breakpoint: 900,
         settings: {
           slidesToShow: getSlidesToShow(2),
-          slidesToScroll: 1,
+          slidesToScroll: getSlidesToShow(2), // Scroll by visible slides (2 at a time on mobile)
           arrows: false,
         },
       },
@@ -138,10 +138,10 @@ export default function LastestEightCars() {
 
   return (
     <Box  sx={{
-      py: 8,
+      py: {xs: 2, md: 8},
       position: "relative",
-      backgroundImage: "url(/assets/rentcar.webp)",
-      backgroundSize: "cover",
+      backgroundImage: {xs: "unset", md: "url(/assets/rentcar.webp)"},
+      backgroundSize: {xs: "unset", md: "cover"},
       backgroundAttachment: "fixed",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
@@ -152,24 +152,39 @@ export default function LastestEightCars() {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: {xs: "unset", md: "rgba(0, 0, 0, 0.5)"},
         zIndex: 1,
       },
     }}>
       <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2 }}>
-        <Box sx={{ pb: "28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Box sx={{ pb: {xs: 0, md: "28px"}, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%", justifyContent: "space-between"}}>
           <Typography
             variant="h3"
             sx={{
               color: "#4CAF50",
               fontWeight: "bold",
-              fontSize: { xs: "28px", md: "36px" },
+              fontSize: { xs: "18px", md: "36px" },
               mb: 1,
               width: "max-content",
             }}>
             Explore All Vehicles
           </Typography>
-          
+          <Typography
+            component="a"
+            href="/cars"
+            sx={{
+              color: "#4caf50",
+              textDecoration: "none",
+              fontWeight: "bold",
+              fontSize: {xs: "12px", md: "16px"},
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}>
+            View All Cars
+          </Typography>   
+          </Box>       
           {!isSingleCar && filteredCars.length > getSlidesToShow(4) && (
             <Box
               sx={{
@@ -219,26 +234,47 @@ export default function LastestEightCars() {
         </Box>
         {/* Tabs Navigation */}
         <Box
-          sx={{ mb: 4, borderBottom: "1px solid #fff", position: "relative", p: 0 }}>
+          sx={{ 
+            mb: { xs: 2, md: 4 }, 
+            borderBottom: "1px solid #fff", 
+            position: "relative", 
+            p: 0,
+            overflow: "hidden"
+          }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
             sx={{
               "& .MuiTabs-indicator": {
                 bgcolor: "#4CAF50",
-                height: 4,
-                borderRadius: "1px",
+                height: { xs: 2, md: 4 },
+                borderRadius: { xs: 1, md: 1 },
                 zIndex: 10,
                 bottom: "-1px",
               },
+              "& .MuiTabs-scrollButtons": {
+                color: "#4CAF50",
+                "&.Mui-disabled": {
+                  opacity: 0.3,
+                },
+              },
               "& .MuiTab-root": {
                 color: "#ffffff !important",
-                fontSize: "1rem",
+                fontSize: { xs: "11px", sm: "13px", md: "1rem" },
                 fontWeight: 500,
                 textTransform: "none",
-                minWidth: 100,
-                padding: "16px 24px",
+                minWidth: { xs: 80, sm: 100, md: 120 },
+                maxWidth: { xs: 120, sm: 150, md: "none" },
+                padding: { 
+                  xs: "8px 12px", 
+                  sm: "10px 16px", 
+                  md: "16px 24px" 
+                },
                 position: "relative",
+                whiteSpace: "nowrap",
                 "&.Mui-selected": {
                   color: "#4CAF50 !important",
                   fontWeight: 600,
@@ -247,6 +283,9 @@ export default function LastestEightCars() {
                   color: "#4CAF50",
                   backgroundColor: "rgba(76, 175, 80, 0.05)",
                 },
+              },
+              "& .MuiTabs-flexContainer": {
+                gap: { xs: 0, sm: 1 },
               },
             }}>
             <Tab label="All" />
@@ -257,7 +296,7 @@ export default function LastestEightCars() {
 
         {/* Cars Display */}
         {filteredCars.length > 0 ? (
-          <Box sx={{ mb: {md: 6, xs: 0}, position: "relative", width: "100%", pb: {md: 8, xs: 0} }}>
+          <Box sx={{ mb: {md: 6, xs: 0}, position: "relative", width: "100%", pb: {md: 8, xs: 0}, overflow: "visible" }}>
             {isSingleCar ? (
               // Single car display - center it without full width
               <Box
@@ -267,14 +306,14 @@ export default function LastestEightCars() {
                   alignItems: "center",
                   p: 0,
                 }}>
-                <Box sx={{ maxWidth: "350px", width: "100%", p: 0 }}>
+                <Box sx={{ maxWidth: {xs: "180px", md: "350px"}, width: "100%", p: 0 }}>
                   <GarageItem product={filteredCars[0]} />
                 </Box>
               </Box>
             ) : (
               <>
                 {/* Mobile Grid Layout - 2x2 (4 cards) */}
-                <Box
+                {/* <Box
                   sx={{
                     display: { xs: "grid", md: "none" },
                     gridTemplateColumns: "repeat(2, 1fr)",
@@ -284,6 +323,39 @@ export default function LastestEightCars() {
                   }}>
                   {filteredCars.slice(0, 4).map((car) => (
                     <Box key={car._id}>
+                      <GarageItem product={car} />
+                    </Box>
+                  ))}
+                </Box> */}
+
+                {/* Mobile Horizontal Scroll Layout */}
+                <Box
+                  sx={{
+                    display: { xs: "flex", md: "none" },
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    width: "100%",
+                    gap: 2,
+                    py: 1,
+                    px: 1,
+                    scrollSnapType: "x mandatory",
+                    "&::-webkit-scrollbar": {
+                      display: "none",
+                    },
+                    scrollbarWidth: "none",
+                    WebkitOverflowScrolling: "touch",
+                    msOverflowStyle: "none",
+                  }}>
+                  {filteredCars.map((car) => (
+                    <Box
+                      key={car._id}
+                      sx={{
+                        minWidth: "45vw",
+                        maxWidth: "15vw",
+                        width: "45vw",
+                        flexShrink: 0,
+                        scrollSnapAlign: "start",
+                      }}>
                       <GarageItem product={car} />
                     </Box>
                   ))}

@@ -20,10 +20,12 @@ export default function MainLayout({ children, hideFooter = false }) {
     <Box sx={{ 
       display: 'flex', 
       flexDirection: 'column', 
-      height: 1,
-      backgroundColor: '#000000',
       minHeight: '100vh',
+      backgroundColor: '#000000',
       overflowX: 'hidden',
+      // Ensure content can scroll on mobile
+      position: 'relative',
+      width: '100%',
     }}>
       <Header />
 
