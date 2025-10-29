@@ -115,43 +115,46 @@ export default function Header() {
 
             <Stack alignItems="center" direction="row" spacing={2}>
               {/* Shopping Cart */}
-              <Badge
-                badgeContent={cartItems}
-                showZero
-                color="error"
-                sx={{
-                  [`& .${badgeClasses.badge}`]: {
-                    backgroundColor: "#4caf50",
-                    color: "#ffffff",
-                    fontWeight: "bold",
-                    fontSize: "12px",
-                    minWidth: "20px",
-                    height: "20px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  },
-                }}>
-                <IconButton
-                  onClick={handleOpenCartDrawer}
+
+              <Box sx={{display: {xs: "none", md: "block"}}}>
+                <Badge
+                  badgeContent={cartItems}
+                  showZero
+                  color="error"
                   sx={{
-                    color: "#000000",
-                    backgroundColor: "#ffffff",
-                    borderRadius: "8px",
-                    width: "40px",
-                    height: "40px",
-                    border: "1px solid #e0e0e0",
-                    "&:hover": {
-                      backgroundColor: "#f5f5f5",
-                      transform: "scale(1.05)",
+                    [`& .${badgeClasses.badge}`]: {
+                      backgroundColor: "#4caf50",
+                      color: "#ffffff",
+                      fontWeight: "bold",
+                      fontSize: "12px",
+                      minWidth: "20px",
+                      height: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     },
                   }}>
-                  <Iconify
-                    icon="eva:shopping-cart-fill"
-                    sx={{ fontSize: "20px" }}
-                  />
-                </IconButton>
-              </Badge>
+                  <IconButton
+                    onClick={handleOpenCartDrawer}
+                    sx={{
+                      color: "#000000",
+                      backgroundColor: "#ffffff",
+                      borderRadius: "8px",
+                      width: "40px",
+                      height: "40px",
+                      border: "1px solid #e0e0e0",
+                      "&:hover": {
+                        backgroundColor: "#f5f5f5",
+                        transform: "scale(1.05)",
+                      },
+                    }}>
+                    <Iconify
+                      icon="eva:shopping-cart-fill"
+                      sx={{ fontSize: "20px" }}
+                    />
+                  </IconButton>
+                </Badge>
+              </Box>
 
               {mdUp && !Object.keys(user).length > 0 && (
                 <>
@@ -166,27 +169,27 @@ export default function Header() {
                     path={paths.dashboard.cars.my.add}
                   />
                 </>
-                 )}
+              )}
               {mdUp && Object.keys(user).length > 0 && (
                 <>
-                <MoveTo
-                  sx={{
-                    color: "white",
-                    borderColor: "black",
-                    whiteSpace: "nowrap",
-                  }}
-                  title="Move to Dashboard"
-                  path={paths.dashboard.root}
-                />
-                <MoveTo
-                  sx={{
-                    color: "white",
-                    borderColor: "black",
-                    whiteSpace: "nowrap",
-                  }}
-                  title="Post Your Ad"
-                  path={paths.dashboard.cars.my.add}
-                />
+                  <MoveTo
+                    sx={{
+                      color: "white",
+                      borderColor: "black",
+                      whiteSpace: "nowrap",
+                    }}
+                    title="Move to Dashboard"
+                    path={paths.dashboard.root}
+                  />
+                  <MoveTo
+                    sx={{
+                      color: "white",
+                      borderColor: "black",
+                      whiteSpace: "nowrap",
+                    }}
+                    title="Post Your Ad"
+                    path={paths.dashboard.cars.my.add}
+                  />
                 </>
               )}
               {mdUp && Object.keys(user).length > 0 && (
@@ -461,7 +464,7 @@ function CartItem({ item, onDelete, onIncreaseQuantity, onDecreaseQuantity }) {
             {item.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Qty: { item.quantity}
+            Qty: {item.quantity}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             PKR: {item.price * item.quantity}

@@ -2,16 +2,19 @@
 
 import PropTypes from 'prop-types';
 import { useRouter, usePathname } from 'next/navigation';
+import { useState } from 'react';
 
-import { Box, Fab, Button, useTheme } from '@mui/material';
+import { Box, Fab, Button, useTheme, Badge, IconButton, Typography, Stack } from '@mui/material';
 import { 
   HomeRounded, 
   CampaignRounded, 
   AddRounded, 
-  ChatBubbleRounded, 
+  ShoppingCartRounded, 
   MenuRounded 
 } from '@mui/icons-material';
 import { paths } from 'src/routes/paths';
+import { useCheckoutContext } from 'src/sections/checkout/context';
+import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -33,9 +36,10 @@ const NAV_ITEMS = [
     isFab: true,
   },
   {
-    title: 'Chat',
-    icon: ChatBubbleRounded,
-    path: '/dashboard/chat',
+    title: 'Cart',
+    icon: ShoppingCartRounded,
+    path: '/shop/cart',
+    isCart: true,
   },
   {
     title: 'More',
@@ -48,9 +52,21 @@ export default function MobileBottomNav() {
   const router = useRouter();
   const pathname = usePathname();
   const theme = useTheme();
+  const checkout = useCheckoutContext();
+  const [openCartDrawer, setOpenCartDrawer] = useState(false);
 
-  const handleNavigation = (path) => {
-    router.push(path);
+  const cartItems = checkout?.totalItems || 0;
+
+  const handleNavigation = (path, isCart) => {
+    if (isCart) {
+      setOpenCartDrawer(true);
+    } else {
+      router.push(path);
+    }
+  };
+
+  const handleCloseCartDrawer = () => {
+    setOpenCartDrawer(false);
   };
 
   const isActive = (path) => {
@@ -129,7 +145,7 @@ export default function MobileBottomNav() {
         return (
           <Button
             key={item.title}
-            onClick={() => handleNavigation(item.path)}
+            onClick={() => handleNavigation(item.path, item.isCart)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -145,13 +161,36 @@ export default function MobileBottomNav() {
               },
             }}
           >
-            <IconComponent
-              sx={{
-                fontSize: 24,
-                mb: 0.5,
-                color: active ? theme.palette.primary.main : '#fff',
-              }}
-            />
+            {item.isCart ? (
+              <Badge 
+                badgeContent={cartItems} 
+                color="error"
+                max={99}
+                sx={{
+                  mb: 0.5,
+                  '& .MuiBadge-badge': {
+                    fontSize: 10,
+                    height: 18,
+                    minWidth: 18,
+                  }
+                }}
+              >
+                <IconComponent
+                  sx={{
+                    fontSize: 24,
+                    color: active ? theme.palette.primary.main : '#fff',
+                  }}
+                />
+              </Badge>
+            ) : (
+              <IconComponent
+                sx={{
+                  fontSize: 24,
+                  mb: 0.5,
+                  color: active ? theme.palette.primary.main : '#fff',
+                }}
+              />
+            )}
             <Box
               component="span"
               sx={{
@@ -166,9 +205,299 @@ export default function MobileBottomNav() {
           </Button>
         );
       })}
+      <CartDrawer 
+        open={openCartDrawer} 
+        onClose={handleCloseCartDrawer} 
+        checkout={checkout} 
+      />
     </Box>
   );
 }
 
 MobileBottomNav.propTypes = {};
 
+// Cart Drawer Component
+function CartDrawer({ open, onClose, checkout }) {
+  const theme = useTheme();
+  const router = useRouter();
+
+  const handleBuyNow = () => {
+    // If there's only one item, use Buy Now flow
+    if (checkout?.items?.length === 1) {
+      const item = checkout.items[0];
+      checkout.onBuyNow(item);
+    }
+    onClose();
+    // Small delay to ensure smooth transition
+    setTimeout(() => {
+      router.push(paths.product.checkout);
+    }, 100);
+  };
+
+  return (
+    <>
+      {/* Backdrop */}
+      {open && (
+        <Box
+          onClick={onClose}
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1299,
+          }}
+        />
+      )}
+
+      {/* Cart Drawer */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          width: { xs: "100%", sm: 400 },
+          height: "100vh",
+          zIndex: 1300,
+          transform: open ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 0.3s ease-in-out",
+          backgroundColor: "background.paper",
+          boxShadow: "-4px 0 20px rgba(0,0,0,0.1)",
+        }}>
+        {/* Header */}
+        <Box
+          sx={{
+            p: 2,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Iconify icon="eva:shopping-cart-fill" />
+            <Typography variant="h6">
+              Cart ({checkout?.items?.length || 0})
+            </Typography>
+          </Box>
+          <IconButton onClick={onClose}>
+            <Iconify icon="eva:close-fill" />
+          </IconButton>
+        </Box>
+
+        {/* Cart Content */}
+        <Box sx={{ height: "calc(100vh - 140px)", overflow: "auto" }}>
+          {!checkout?.items?.length ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                p: 3,
+              }}>
+              <Iconify
+                icon="eva:shopping-cart-outline"
+                sx={{ width: 80, height: 80, color: "text.disabled", mb: 2 }}
+              />
+              <Typography variant="h6" color="text.secondary">
+                Your cart is empty
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ p: 2 }}>
+              {checkout.items.map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  onDelete={() => checkout.onDeleteCart(item.id)}
+                  onIncreaseQuantity={() => checkout.onIncreaseQuantity(item.id)}
+                  onDecreaseQuantity={() => checkout.onDecreaseQuantity(item.id)}
+                />
+              ))}
+            </Box>
+          )}
+        </Box>
+
+        {/* Footer with total and checkout button */}
+        {checkout?.items?.length > 0 && (
+          <Box
+            sx={{
+              p: 2,
+              borderTop: "1px solid",
+              borderColor: "divider",
+              backgroundColor: "background.paper",
+            }}>
+            <Box sx={{ mb: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: 1,
+                }}>
+                <Typography variant="body2" color="text.secondary">
+                  Subtotal
+                </Typography>
+                <Typography variant="body2">
+                  PKR {checkout?.subtotal?.toLocaleString() || 0}
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: 2,
+                }}>
+                <Typography variant="h6">Total</Typography>
+                <Typography variant="h6" sx={{ color: "#4caf50" }}>
+                  PKR {checkout?.total?.toLocaleString() || 0}
+                </Typography>
+              </Box>
+            </Box>
+            <Stack direction="row" spacing={2}>
+              <Button
+                fullWidth
+                variant="outlined"
+                size="large"
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => {
+                    router.push(paths.product.checkout);
+                  }, 100);
+                }}
+                sx={{
+                  borderColor: "#4caf50",
+                  color: "#4caf50",
+                  height: 48,
+                  "&:hover": {
+                    borderColor: "#45a049",
+                    backgroundColor: "rgba(76, 175, 80, 0.04)",
+                  },
+                }}>
+                View Cart
+              </Button>
+
+              <Button
+                fullWidth
+                variant="contained"
+                size="large"
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => {
+                    router.push(paths.product.checkout);
+                  }, 100);
+                }}
+                sx={{
+                  backgroundColor: "#4caf50",
+                  height: 48,
+                  "&:hover": {
+                    backgroundColor: "#45a049",
+                  },
+                }}>
+                Checkout
+              </Button>
+            </Stack>
+          </Box>
+        )}
+      </Box>
+    </>
+  );
+}
+
+// Cart Item Component
+function CartItem({ item, onDelete, onIncreaseQuantity, onDecreaseQuantity }) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        gap: 2,
+        mb: 2,
+        pb: 2,
+        borderBottom: "1px solid",
+        borderColor: "divider",
+      }}>
+      <Box
+        sx={{
+          width: 80,
+          height: 80,
+          borderRadius: 1,
+          overflow: "hidden",
+          flexShrink: 0,
+        }}>
+        <img
+          src={item.coverUrl}
+          alt={item.name}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      </Box>
+
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="subtitle2" noWrap sx={{ mb: 0.5 }}>
+          {item.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          PKR {item.price?.toLocaleString()}
+        </Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <IconButton
+            size="small"
+            onClick={onDecreaseQuantity}
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              width: 28,
+              height: 28,
+            }}>
+            <Iconify icon="eva:minus-fill" width={16} />
+          </IconButton>
+          <Typography variant="body2" sx={{ minWidth: 20, textAlign: "center" }}>
+            {item.quantity}
+          </Typography>
+          <IconButton
+            size="small"
+            onClick={onIncreaseQuantity}
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              width: 28,
+              height: 28,
+            }}>
+            <Iconify icon="eva:plus-fill" width={16} />
+          </IconButton>
+        </Box>
+      </Box>
+
+      <IconButton
+        size="small"
+        onClick={onDelete}
+        sx={{
+          color: "error.main",
+          alignSelf: "flex-start",
+        }}>
+        <Iconify icon="eva:trash-2-outline" />
+      </IconButton>
+    </Box>
+  );
+}
+
+CartDrawer.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  checkout: PropTypes.object,
+};
+
+CartItem.propTypes = {
+  item: PropTypes.object,
+  onDelete: PropTypes.func,
+  onIncreaseQuantity: PropTypes.func,
+  onDecreaseQuantity: PropTypes.func,
+};
