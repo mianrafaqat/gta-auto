@@ -345,7 +345,8 @@ export default function ProductItem({
             sx={{
               fontWeight: "500",
               color: "#333333",
-              fontSize: "16px",
+              whiteSpace: "nowrap",
+              fontSize: {md: "16px", xs: "14px"},
             }}>
             PKR {Number(productSalePrice)?.toLocaleString()}
           </Typography>
@@ -354,7 +355,8 @@ export default function ProductItem({
             sx={{
               color: "#999999",
               textDecoration: "line-through",
-              fontSize: "14px",
+              fontSize: {md: "14px", xs: "12px"},
+              whiteSpace: "nowrap",
             }}>
             PKR {Number(productRegularPrice)?.toLocaleString()}
           </Typography>
@@ -366,7 +368,7 @@ export default function ProductItem({
         direction="row"
         flexWrap={{md:"nowrap", xs:"nowrap"}}
         justifyContent={{xs:"space-between", md:"space-between"}}
-        gap={{ xs: 0.5, sm: 1, md: 2 }}
+        gap={{ xs: 0.5, sm: 0.5, md: 2 }}
         sx={{ 
           mt: "auto",
           height: { xs: "34px", sm: "34px", md: "48px" }, 
@@ -392,8 +394,8 @@ export default function ProductItem({
             fontWeight: 500,
             whiteSpace: "nowrap",
             minWidth: { xs: "unset", sm: "unset", md: "130px" },
-            maxWidth: { xs: "100%", sm: "160px", md: "180px" },
-            px: { xs: 1.5, sm: 2, md: 2.5 },
+            maxWidth: { xs: "100%", sm: "150px", md: "180px" },
+            px: { xs: 1, sm: 2, md: 2.5 },
             "&:hover": {
               backgroundColor: "#45a049",
             },
@@ -401,7 +403,7 @@ export default function ProductItem({
           Buy Now
         </LoadingButton>
 
-        <Stack direction="row" gap={{ xs: 1, sm: 1.5, md: 1.5 }} sx={{ flexShrink: 0 }}>
+        <Stack direction="row" gap={{ xs: 0.5, sm: 1, md: 1.5 }} sx={{ flexShrink: 0 }}>
           <Button
             variant="outlined"
             size="medium"
@@ -410,8 +412,8 @@ export default function ProductItem({
               handleAddCart();
             }}
             sx={{
-              minWidth: { xs: "42px", sm: "46px", md: "48px" },
-              width: { xs: "42px", sm: "46px", md: "48px" },
+              minWidth: { xs: "36px", sm: "46px", md: "48px" },
+              width: { xs: "36px", sm: "46px", md: "48px" },
               height: { xs: "34px", sm: "48px" },
               borderColor: "#4caf50",
               color: "#4caf50",
@@ -438,8 +440,8 @@ export default function ProductItem({
               handleAddOrRemoveFav();
             }}
             sx={{
-              minWidth: { xs: "42px", sm: "46px", md: "48px" },
-              width: { xs: "42px", sm: "46px", md: "48px" },
+              minWidth: { xs: "36px", sm: "46px", md: "48px" },
+              width: { xs: "36px", sm: "46px", md: "48px" },
               height: { xs: "34px", sm: "48px" },
               borderColor: "#4caf50",
               color: "#4caf50",
