@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-import { Box, Fab, Button, useTheme, Badge, IconButton, Typography, Stack } from '@mui/material';
+import { Box, Fab, Button, useTheme, Badge, IconButton, Typography, Stack, Drawer } from '@mui/material';
 import { 
   HomeRounded, 
   CampaignRounded, 
   AddRounded, 
   ShoppingCartRounded, 
-  MenuRounded 
+  MenuRounded,
+  ScienceRounded
 } from '@mui/icons-material';
 import { paths } from 'src/routes/paths';
 import { useCheckoutContext } from 'src/sections/checkout/context';
@@ -25,9 +26,9 @@ const NAV_ITEMS = [
     path: '/',
   },
   {
-    title: 'My Ads',
-    icon: CampaignRounded,
-    path: paths.dashboard.cars.my.add,
+    title: 'Chemicals',
+    icon: ScienceRounded,
+    path: '/chemicals',
   },
   {
     title: 'Sell',
@@ -45,6 +46,7 @@ const NAV_ITEMS = [
     title: 'More',
     icon: MenuRounded,
     path: '/dashboard',
+    isMore: true,
   },
 ];
 
@@ -54,12 +56,15 @@ export default function MobileBottomNav() {
   const theme = useTheme();
   const checkout = useCheckoutContext();
   const [openCartDrawer, setOpenCartDrawer] = useState(false);
+  const [openMoreDialog, setOpenMoreDialog] = useState(false);
 
   const cartItems = checkout?.totalItems || 0;
 
-  const handleNavigation = (path, isCart) => {
+  const handleNavigation = (path, isCart, isMore) => {
     if (isCart) {
       setOpenCartDrawer(true);
+    } else if (isMore) {
+      setOpenMoreDialog(true);
     } else {
       router.push(path);
     }
@@ -67,6 +72,10 @@ export default function MobileBottomNav() {
 
   const handleCloseCartDrawer = () => {
     setOpenCartDrawer(false);
+  };
+
+  const handleCloseMoreDialog = () => {
+    setOpenMoreDialog(false);
   };
 
   const isActive = (path) => {
@@ -145,7 +154,7 @@ export default function MobileBottomNav() {
         return (
           <Button
             key={item.title}
-            onClick={() => handleNavigation(item.path, item.isCart)}
+            onClick={() => handleNavigation(item.path, item.isCart, item.isMore)}
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -209,6 +218,11 @@ export default function MobileBottomNav() {
         open={openCartDrawer} 
         onClose={handleCloseCartDrawer} 
         checkout={checkout} 
+      />
+      <MoreDialog 
+        open={openMoreDialog} 
+        onClose={handleCloseMoreDialog}
+        router={router}
       />
     </Box>
   );
@@ -500,4 +514,155 @@ CartItem.propTypes = {
   onDelete: PropTypes.func,
   onIncreaseQuantity: PropTypes.func,
   onDecreaseQuantity: PropTypes.func,
+};
+
+// More Drawer Component (Bottom Sheet)
+function MoreDialog({ open, onClose, router }) {
+  const theme = useTheme();
+
+  const handleLogin = () => {
+    onClose();
+    router.push(paths.auth.jwt.login);
+  };
+
+  return (
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          height: '60vh',
+          maxHeight: 600,
+        },
+      }}
+    >
+      {/* Handle Bar */}
+      <Box
+        sx={{
+          width: 40,
+          height: 4,
+          backgroundColor: 'divider',
+          borderRadius: 2,
+          mx: 'auto',
+          mt: 1.5,
+          mb: 2,
+        }}
+      />
+
+      {/* Content */}
+      <Box
+        sx={{
+          px: 3,
+          pb: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          height: 'calc(100% - 24px)',
+        }}
+      >
+        {/* Icon and Title */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mb: 1.5,
+          }}
+        >
+          <Box
+            sx={{
+              width: 70,
+              height: 70,
+              borderRadius: '50%',
+              backgroundColor: theme.palette.primary.main,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 20px rgba(76, 175, 80, 0.3)',
+            }}
+          >
+            <MenuRounded sx={{ fontSize: 36, color: '#fff' }} />
+          </Box>
+        </Box>
+
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 700,
+            mb: 1,
+            textAlign: 'center',
+            fontSize: '1.75rem',
+          }}
+        >
+          Welcome!
+        </Typography>
+
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          align="center"
+          sx={{ mb: 2, px: 2, fontSize: '0.95rem' }}
+        >
+          Sign in to access your account and explore more features
+        </Typography>
+
+        {/* Spacer to push buttons to bottom */}
+        <Box sx={{ flex: 1 }} />
+
+        {/* Buttons */}
+        <Stack spacing={1.5} sx={{ width: '100%', mt: 'auto' }}>
+          <Button
+            fullWidth
+            variant="contained"
+            size="medium"
+            onClick={handleLogin}
+            sx={{
+              backgroundColor: theme.palette.primary.main,
+              color: '#fff',
+              py: 1.25,
+              fontSize: '0.95rem',
+              fontWeight: 600,
+              borderRadius: 2,
+              textTransform: 'none',
+              boxShadow: '0 2px 8px rgba(76, 175, 80, 0.3)',
+              '&:hover': {
+                backgroundColor: theme.palette.primary.dark,
+                boxShadow: '0 4px 12px rgba(76, 175, 80, 0.4)',
+              },
+            }}
+          >
+            Login / Sign Up
+          </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            size="medium"
+            onClick={onClose}
+            sx={{
+              py: 1.25,
+              fontSize: '0.9rem',
+              borderRadius: 2,
+              textTransform: 'none',
+              borderColor: 'divider',
+              color: 'text.secondary',
+              '&:hover': {
+                borderColor: theme.palette.primary.main,
+                backgroundColor: 'rgba(76, 175, 80, 0.04)',
+              },
+            }}
+          >
+            Close
+          </Button>
+        </Stack>
+      </Box>
+    </Drawer>
+  );
+}
+
+MoreDialog.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  router: PropTypes.object,
 };
