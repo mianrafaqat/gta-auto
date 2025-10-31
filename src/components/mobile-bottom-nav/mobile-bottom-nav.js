@@ -259,7 +259,7 @@ function CartDrawer({ open, onClose, checkout }) {
             top: 0,
             left: 0,
             right: 0,
-            bottom: 0,
+            bottom: "10%",
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 1299,
           }}
@@ -302,7 +302,7 @@ function CartDrawer({ open, onClose, checkout }) {
         </Box>
 
         {/* Cart Content */}
-        <Box sx={{ height: "calc(100vh - 140px)", overflow: "auto" }}>
+        <Box sx={{ height: "68vh", overflow: "auto" }}>
           {!checkout?.items?.length ? (
             <Box
               sx={{

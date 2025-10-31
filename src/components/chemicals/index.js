@@ -12,7 +12,7 @@ const Chemicals = () => {
     <Box>
       <HeroBanner />
 
-      <Box sx={{ display: { xs: "none", md: "block" } }}>
+      <Box sx={{ display: { xs: "block", md: "block" } }}>
         <ExpertCar />
       </Box>
 

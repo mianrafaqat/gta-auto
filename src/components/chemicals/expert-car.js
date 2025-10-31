@@ -77,15 +77,15 @@ const ExpertCar = () => {
         breakpoint: 900,
         settings: {
           slidesToShow: getSlidesToShow(2),
-          slidesToScroll: 1,
+          slidesToScroll: 2,
           arrows: false,
         },
       },
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: getSlidesToShow(1),
-          slidesToScroll: 1,
+          slidesToShow: 2,
+          slidesToScroll: 2,
           arrows: false,
         },
       },
@@ -93,7 +93,7 @@ const ExpertCar = () => {
   };
 
   return (
-    <Box sx={{ py: 8, px: 2 }}>
+    <Box sx={{ py: 8, px: 0 }}>
       <Box sx={{ maxWidth: "900px", width: "100%", mb: 6 }}>
         <Typography
           variant="h1"
@@ -161,19 +161,33 @@ const ExpertCar = () => {
                 </Box>
               ) : (
                 // Multiple products - use slider
-                <Slider
-                  key={`slider-${chemicalProducts.length}`}
-                  ref={sliderRef}
-                  {...sliderSettings}
-                  style={{ width: "100%", display: "flex !important" }}>
-                  {chemicalProducts.map((product) => (
-                    <Box
-                      key={product._id}
-                      sx={{ px: 1, display: "flex !important" }}>
-                      <ProductItem product={product} />
-                    </Box>
-                  ))}
-                </Slider>
+                <Box
+                  sx={{
+                    mt: {md: 0, xs: "82px"},
+                    "& .slick-list": {
+                      margin: { xs: "0 -4px", md: "0 -8px" },
+                    },
+                    "& .slick-slide > div": {
+                      padding: { xs: "0 4px", md: "0 8px" },
+                    },
+                  }}>
+                  <Slider
+                    key={`slider-${chemicalProducts.length}`}
+                    ref={sliderRef}
+                    {...sliderSettings}
+                    style={{ width: "100%", display: "flex !important" }}>
+                    {chemicalProducts.map((product) => (
+                      <Box
+                        key={product._id}
+                        sx={{ 
+                          display: "flex !important",
+                          height: "100%",
+                        }}>
+                        <ProductItem product={product} />
+                      </Box>
+                    ))}
+                  </Slider>
+                </Box>
               )}
 
               {/* Custom Navigation Buttons - Bottom Left */}
@@ -181,7 +195,7 @@ const ExpertCar = () => {
                 <Box
                   sx={{
                     position: "absolute",
-                    top: -60,
+                    top: {md: -60, xs: -60},
                     right: 10,
                     display: "flex",
                     gap: 1,
