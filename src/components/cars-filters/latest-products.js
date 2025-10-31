@@ -247,7 +247,7 @@ const LatestProductsList = ({ products, loading, title }) => {
           </Box>
         ) : (
           <>
-            <Box sx={{px: { md: 0, xs: "12px" }}}>
+            <Box sx={{px: { md: 0, xs: "0" }}}>
               <Slider
                 key={`slider-${products.length}`}
                 ref={sliderRef}
@@ -257,7 +257,7 @@ const LatestProductsList = ({ products, loading, title }) => {
                   <Box
                     key={product._id}
                     sx={{
-                      px: { md: 1.5, xs: 0 },
+                      px: { md: 1.5, xs: "4px" },
                       display: "flex !important",
                       height: "100%",
                       minHeight: { md: "400px", xs: "100%" },
