@@ -72,7 +72,46 @@ export default function CarsFiltersPage() {
 
   return (
     <>
-    <MobileBanner />
+      <Box
+        sx={{
+          height: "100%",
+          objectFit: "cover",
+          width: "100%",
+          mt: "16px",
+          display: { md: "none", xs: "block" },
+        }}>
+        <img
+          src="/assets/ChemialsBG.jpg"
+          alt="chemical-bg"
+          style={{ width: "100%" }}
+        />
+      </Box>
+      {/* <MobileBanner /> */}
+
+      <Box sx={{ display: { md: "none", xs: "block" }, mt: "32px" }}>
+        <LatestProductsSection
+          isShop={false}
+          titleText="Latest Products"
+          showViewAll={true}
+          viewAllUrl="/chemicals"
+        />
+      </Box>
+
+      <Box
+        sx={{
+          pb: { md: 0, xs: 4 },
+          display: { md: "none", xs: "block" },
+          mt: "32px",
+        }}>
+        <LatestProductsSection
+          isShop={true}
+          viewAllUrl="/shop"
+          showViewAll={true}
+        />
+      </Box>
+
+      <MobileBanner />
+
       <Hero />
       {/* <Container maxWidth="xl">
       <Box
@@ -423,18 +462,19 @@ export default function CarsFiltersPage() {
         </Box> */}
       </Container>
 
-      
+      <Stack sx={{ flexDirection: { xs: "column-reverse", md: "column" } }}>
+        <Box sx={{display: { md: "block", xs: "none"}}}>
+          <CarRentSection />
+        </Box>
 
-      <Stack sx={{flexDirection: {xs: "column-reverse", md: "column"}}}>
-        <CarRentSection />
         <Box
           sx={{
-            backgroundImage: {xs: "unset", md: "url(/assets/serviceBg.webp)"},
-            backgroundSize: {xs: "unset", md: "cover"},
+            backgroundImage: { xs: "unset", md: "url(/assets/serviceBg.webp)" },
+            backgroundSize: { xs: "unset", md: "cover" },
             backgroundAttachment: "fixed",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            minHeight: {xs: "auto", md: "600px"},
+            minHeight: { xs: "auto", md: "600px" },
           }}>
           <FeaturedCarsSection />
         </Box>
@@ -448,7 +488,7 @@ export default function CarsFiltersPage() {
       {/* Services Section */}
 
       {/* Latest Products Section */}
-      <Box sx={{}}>
+      <Box sx={{ display: { md: "block", xs: "none" } }}>
         <LatestProductsSection isShop={false} titleText="Latest Products" />
       </Box>
 
@@ -569,6 +609,7 @@ export default function CarsFiltersPage() {
       <Box
         sx={{
           pb: { md: 0, xs: 4 },
+          display: { md: "block", xs: "none" },
         }}>
         <LatestProductsSection isShop={true} />
       </Box>

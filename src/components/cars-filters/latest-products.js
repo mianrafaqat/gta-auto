@@ -9,6 +9,7 @@ import {
   Stack,
   Button,
   IconButton,
+  Link,
 } from "@mui/material";
 import ProductItem from "src/sections/product/product-item";
 import { ProductItemSkeleton } from "src/sections/product/product-skeleton";
@@ -19,10 +20,12 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
+import { useRouter } from "next/navigation";
 
 // Custom ProductList for Latest Products with slider view
-const LatestProductsList = ({ products, loading, title }) => {
+const LatestProductsList = ({ products, loading, title, showViewAll = false, viewAllUrl = "" }) => {
   const sliderRef = useRef(null);
+  const router = useRouter();
 
   // Calculate slidesToShow based on available products
   const getSlidesToShow = (defaultValue) => {
@@ -180,55 +183,76 @@ const LatestProductsList = ({ products, loading, title }) => {
           {title}
         </Typography>
 
-        {!isSingleProduct && products.length > 4 && !loading && (
-          <Box
+        {showViewAll ? (
+          <Link
+            onClick={() => router.push(viewAllUrl)}
             sx={{
+              color: "#4caf50",
+              fontWeight: 600,
+              fontSize: { xs: "14px", md: "16px" },
+              textDecoration: "none",
+              cursor: "pointer",
               display: "flex",
-              gap: 1,
+              alignItems: "center",
+              gap: 0.5,
+              "&:hover": {
+                textDecoration: "underline",
+              },
             }}>
-            <IconButton
-              onClick={() => {
-                console.log("Previous clicked, sliderRef:", sliderRef.current);
-                sliderRef.current?.slickPrev();
-              }}
+            View All
+            <Iconify icon="eva:arrow-forward-fill" sx={{ fontSize: 20 }} />
+          </Link>
+        ) : (
+          !isSingleProduct && products.length > 4 && !loading && (
+            <Box
               sx={{
-                width: 40,
-                height: 40,
-                bgcolor: "white",
-                border: "1px solid #ddd",
-                borderRadius: "8px",
-                "&:hover": {
-                  bgcolor: "#f5f5f5",
-                  borderColor: "#999",
-                },
+                display: "flex",
+                gap: 1,
               }}>
-              <Iconify
-                icon="eva:arrow-back-fill"
-                sx={{ fontSize: 18, color: "black" }}
-              />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                console.log("Next clicked, sliderRef:", sliderRef.current);
-                sliderRef.current?.slickNext();
-              }}
-              sx={{
-                width: 40,
-                height: 40,
-                bgcolor: "white",
-                border: "1px solid #ddd",
-                borderRadius: "8px",
-                "&:hover": {
-                  bgcolor: "#f5f5f5",
-                  borderColor: "#999",
-                },
-              }}>
-              <Iconify
-                icon="eva:arrow-forward-fill"
-                sx={{ fontSize: 18, color: "black" }}
-              />
-            </IconButton>
-          </Box>
+              <IconButton
+                onClick={() => {
+                  console.log("Previous clicked, sliderRef:", sliderRef.current);
+                  sliderRef.current?.slickPrev();
+                }}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  bgcolor: "white",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  "&:hover": {
+                    bgcolor: "#f5f5f5",
+                    borderColor: "#999",
+                  },
+                }}>
+                <Iconify
+                  icon="eva:arrow-back-fill"
+                  sx={{ fontSize: 18, color: "black" }}
+                />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  console.log("Next clicked, sliderRef:", sliderRef.current);
+                  sliderRef.current?.slickNext();
+                }}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  bgcolor: "white",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  "&:hover": {
+                    bgcolor: "#f5f5f5",
+                    borderColor: "#999",
+                  },
+                }}>
+                <Iconify
+                  icon="eva:arrow-forward-fill"
+                  sx={{ fontSize: 18, color: "black" }}
+                />
+              </IconButton>
+            </Box>
+          )
         )}
       </Box>
 
@@ -279,6 +303,8 @@ const LatestProductsList = ({ products, loading, title }) => {
 export default function LatestProductsSection({
   titleText,
   isShop = false,
+  showViewAll = false,
+  viewAllUrl = "",
 }) {
   const [latestProducts, setLatestProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -395,10 +421,11 @@ export default function LatestProductsSection({
         <Box sx={{ position: "relative", zIndex: 2 }}>
           <Grid item xs={12}>
             <LatestProductsList 
-
               products={latestProducts} 
               loading={loading} 
               title={titleText}
+              showViewAll={showViewAll}
+              viewAllUrl={viewAllUrl}
             />
           </Grid>
         </Box>
@@ -412,6 +439,8 @@ export default function LatestProductsSection({
               products={firstTenProducts}
               loading={loadingFirstTen}
               title="Shop"
+              showViewAll={showViewAll}
+              viewAllUrl={viewAllUrl}
             />
           </Grid>
         </Box>

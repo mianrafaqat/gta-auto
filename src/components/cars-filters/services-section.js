@@ -53,6 +53,18 @@ const services = [
     title: "Towing Service",
     backgroundImage: "/assets/towing-service.png",
   },
+  {
+    id: 5,
+    question: "Got into an accident!",
+    title: "Guard",
+    backgroundImage: "/assets/Security-Guard-3.jpg",
+  },
+  {
+    id: 6,
+    question: "Got into an accident!",
+    title: "Rent",
+    backgroundImage: "/assets/cars-squad.jpg",
+  }
 ];
 
 export default function ServicesSection() {
