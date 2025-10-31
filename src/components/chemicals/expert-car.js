@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Typography, Grid, IconButton } from "@mui/material";
+import { Box, Typography, Grid, IconButton, Link } from "@mui/material";
 import ProductItem from "src/sections/product/product-item";
 import { ProductItemSkeleton } from "src/sections/product/product-skeleton";
 import ProductService from "src/services/products/products.service";
@@ -9,11 +9,13 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Iconify from "src/components/iconify";
+import { useRouter } from "next/navigation";
 
 const ExpertCar = () => {
   const [chemicalProducts, setChemicalProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const sliderRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchChemicalProducts = async () => {
@@ -190,54 +192,86 @@ const ExpertCar = () => {
                 </Box>
               )}
 
-              {/* Custom Navigation Buttons - Bottom Left */}
+              {/* Custom Navigation - View All on Mobile, Arrows on Desktop */}
               {!isSingleProduct && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: {md: -60, xs: -60},
-                    right: 10,
-                    display: "flex",
-                    gap: 1,
-                    zIndex: 10,
-                  }}>
-                  <IconButton
-                    onClick={() => sliderRef.current?.slickPrev()}
+                <>
+                  {/* View All Link for Mobile */}
+                  <Box
                     sx={{
-                      width: 40,
-                      height: 40,
-                      bgcolor: "white",
-                      border: "1px solid #ddd",
-                      borderRadius: "8px",
-                      "&:hover": {
-                        bgcolor: "#f5f5f5",
-                        borderColor: "#999",
-                      },
+                      display: { xs: "flex", md: "none" },
+                      position: "absolute",
+                      top: -60,
+                      right: 10,
+                      zIndex: 10,
                     }}>
-                    <Iconify
-                      icon="eva:arrow-back-fill"
-                      sx={{ fontSize: 18, color: "black" }}
-                    />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => sliderRef.current?.slickNext()}
+                    <Link
+                      onClick={() => router.push('/shop')}
+                      sx={{
+                        color: "#4caf50",
+                        fontWeight: 600,
+                        fontSize: "14px",
+                        textDecoration: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}>
+                      View All
+                      <Iconify icon="eva:arrow-forward-fill" sx={{ fontSize: 20 }} />
+                    </Link>
+                  </Box>
+
+                  {/* Navigation Arrows for Desktop */}
+                  <Box
                     sx={{
-                      width: 40,
-                      height: 40,
-                      bgcolor: "white",
-                      border: "1px solid #ddd",
-                      borderRadius: "8px",
-                      "&:hover": {
-                        bgcolor: "#f5f5f5",
-                        borderColor: "#999",
-                      },
+                      display: { xs: "none", md: "flex" },
+                      position: "absolute",
+                      top: -60,
+                      right: 10,
+                      gap: 1,
+                      zIndex: 10,
                     }}>
-                    <Iconify
-                      icon="eva:arrow-forward-fill"
-                      sx={{ fontSize: 18, color: "black" }}
-                    />
-                  </IconButton>
-                </Box>
+                    <IconButton
+                      onClick={() => sliderRef.current?.slickPrev()}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        bgcolor: "white",
+                        border: "1px solid #ddd",
+                        borderRadius: "8px",
+                        "&:hover": {
+                          bgcolor: "#f5f5f5",
+                          borderColor: "#999",
+                        },
+                      }}>
+                      <Iconify
+                        icon="eva:arrow-back-fill"
+                        sx={{ fontSize: 18, color: "black" }}
+                      />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => sliderRef.current?.slickNext()}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        bgcolor: "white",
+                        border: "1px solid #ddd",
+                        borderRadius: "8px",
+                        "&:hover": {
+                          bgcolor: "#f5f5f5",
+                          borderColor: "#999",
+                        },
+                      }}>
+                      <Iconify
+                        icon="eva:arrow-forward-fill"
+                        sx={{ fontSize: 18, color: "black" }}
+                      />
+                    </IconButton>
+                  </Box>
+                </>
               )}
             </Box>
           )}
