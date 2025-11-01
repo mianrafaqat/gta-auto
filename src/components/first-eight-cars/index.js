@@ -23,18 +23,26 @@ import Iconify from "src/components/iconify";
 import { paths } from "src/routes/paths";
 import GarageItem from "src/sections/garage/garage-item";
 
-export default function LastestEightCars() {
+export default function LastestEightCars({ isFeatured = false }) {
   const { data: allCarsData, isLoading, error } = useGetAllCars();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const sliderRef = useRef(null);
-
-  // Filter cars based on selected tab
   const getFilteredCars = () => {
-    const baseCars =
-      allCarsData?.data?.filter((c) => c?.status !== "Paused" && c?.carDetails?.isFeatured) || [];
-
-    // First filter by sale category
+    let baseCars;
+    if (isFeatured) {
+      baseCars =
+        allCarsData?.data?.filter(
+          (c) => c?.status !== "Paused" && c?.carDetails?.isFeatured
+        ) || [];
+    } else {
+      baseCars =
+        allCarsData?.data?.filter(
+          (c) =>
+            (c?.status !== "Paused" && c?.carDetails?.isFeatured == false) ||
+            c?.carDetails?.isFeatured == undefined
+        ) || [];
+    }
     const saleCars = baseCars.filter(
       (car) => car.category?.toLowerCase() === "sale"
     );
@@ -137,54 +145,70 @@ export default function LastestEightCars() {
   }
 
   return (
-    <Box  sx={{
-      py: {xs: 2, md: 8},
-      position: "relative",
-      backgroundImage: {xs: "unset", md: "url(/assets/rentcar.webp)"},
-      backgroundSize: {xs: "unset", md: "cover"},
-      backgroundAttachment: "fixed",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      "&::before": {
-        content: '""',
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: {xs: "unset", md: "rgba(0, 0, 0, 0.5)"},
-        zIndex: 1,
-      },
-    }}>
+    <Box
+      sx={{
+        py: { xs: 2, md: 8 },
+        position: "relative",
+        backgroundImage: { xs: "unset", md: "url(/assets/rentcar.webp)" },
+        backgroundSize: { xs: "unset", md: "cover" },
+        backgroundAttachment: "fixed",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: { xs: "unset", md: "rgba(0, 0, 0, 0.5)" },
+          zIndex: 1,
+        },
+      }}>
       <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2 }}>
-        <Box sx={{ pb: {xs: 0, md: "28px"}, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%", justifyContent: "space-between"}}>
-          <Typography
-            variant="h3"
+        <Box
+          sx={{
+            pb: { xs: 0, md: "28px" },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+          <Box
             sx={{
-              color: "#4CAF50",
-              fontWeight: "bold",
-              fontSize: { xs: "18px", md: "36px" },
-              mb: 1,
-              width: "max-content",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              width: "100%",
+              justifyContent: "space-between",
             }}>
-            Explore All Vehicles
-          </Typography>
-          <Typography
-            component="a"
-            href="/cars"
-            sx={{
-              color: "#4caf50",
-              textDecoration: "none",
-              fontWeight: "bold",
-              fontSize: {xs: "12px", md: "16px"},
-              "&:hover": {
-                textDecoration: "underline",
-              },
-            }}>
-            View All Cars
-          </Typography>   
-          </Box>       
+            <Typography
+              variant="h3"
+              sx={{
+                color: "#4CAF50",
+                fontWeight: "bold",
+                fontSize: { xs: "18px", md: "36px" },
+                mb: 1,
+                width: "max-content",
+              }}>
+              {isFeatured ? "Featured Vehicles" : "Explore All Vehicles"}
+            </Typography>
+            <Box sx={{display: {xs: "block", md: "none"}}}>
+              <Typography
+                component="a"
+                href="/cars"
+                sx={{
+                  color: "#4caf50",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: { xs: "12px", md: "16px" },
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}>
+                View All Cars
+              </Typography>
+            </Box>
+          </Box>
           {!isSingleCar && filteredCars.length > getSlidesToShow(4) && (
             <Box
               sx={{
@@ -234,12 +258,12 @@ export default function LastestEightCars() {
         </Box>
         {/* Tabs Navigation */}
         <Box
-          sx={{ 
-            mb: { xs: 2, md: 4 }, 
-            borderBottom: "1px solid #fff", 
-            position: "relative", 
+          sx={{
+            mb: { xs: 2, md: 4 },
+            borderBottom: "1px solid #fff",
+            position: "relative",
             p: 0,
-            overflow: "hidden"
+            overflow: "hidden",
           }}>
           <Tabs
             value={activeTab}
@@ -268,10 +292,10 @@ export default function LastestEightCars() {
                 textTransform: "none",
                 minWidth: { xs: 80, sm: 100, md: 120 },
                 maxWidth: { xs: 120, sm: 150, md: "none" },
-                padding: { 
-                  xs: "8px 12px", 
-                  sm: "10px 16px", 
-                  md: "16px 24px" 
+                padding: {
+                  xs: "8px 12px",
+                  sm: "10px 16px",
+                  md: "16px 24px",
                 },
                 position: "relative",
                 whiteSpace: "nowrap",
@@ -296,7 +320,14 @@ export default function LastestEightCars() {
 
         {/* Cars Display */}
         {filteredCars.length > 0 ? (
-          <Box sx={{ mb: {md: 6, xs: 0}, position: "relative", width: "100%", pb: {md: 8, xs: 0}, overflow: "visible" }}>
+          <Box
+            sx={{
+              mb: { md: 6, xs: 0 },
+              position: "relative",
+              width: "100%",
+              pb: { md: 8, xs: 0 },
+              overflow: "visible",
+            }}>
             {isSingleCar ? (
               // Single car display - center it without full width
               <Box
@@ -306,7 +337,12 @@ export default function LastestEightCars() {
                   alignItems: "center",
                   p: 0,
                 }}>
-                <Box sx={{ maxWidth: {xs: "180px", md: "350px"}, width: "100%", p: 0 }}>
+                <Box
+                  sx={{
+                    maxWidth: { xs: "180px", md: "350px" },
+                    width: "100%",
+                    p: 0,
+                  }}>
                   <GarageItem product={filteredCars[0]} />
                 </Box>
               </Box>
@@ -398,7 +434,7 @@ export default function LastestEightCars() {
                     {...sliderSettings}>
                     {filteredCars.map((car) => (
                       <div key={car._id}>
-                        <Box sx={{  height: "100%", display: "flex" }}>
+                        <Box sx={{ height: "100%", display: "flex" }}>
                           <GarageItem product={car} />
                         </Box>
                       </div>

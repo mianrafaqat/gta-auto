@@ -250,7 +250,7 @@ export default function GarageItem({
 
   const renderContent = (
     <Stack
-      gap={{md:2.5, xs: 0.5}}
+      gap={{ md: 2.5, xs: 0.5 }}
       sx={{
         px: { md: "18px", xs: "12px" },
         py: { md: "16px", xs: "12px" },
@@ -334,7 +334,6 @@ export default function GarageItem({
                   whiteSpace: "nowrap",
                   ...(onHome
                     ? {
-                        
                         maxWidth: { md: "430px", xs: "180px", sm: "330px" },
                       }
                     : {}),
@@ -413,13 +412,12 @@ export default function GarageItem({
               flexWrap="wrap"
               gap={{ md: 2, xs: 0.5 }}
               sx={{ mb: 0.5 }}>
-             
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-               
                 <Typography
                   variant="body2"
                   sx={{ color: "grey.600", fontSize: "0.8rem" }}>
-                  {carDetails?.fuelType || "N/A"} | {carDetails?.transmission || "N/A"}
+                  {carDetails?.fuelType || "N/A"} |{" "}
+                  {carDetails?.transmission || "N/A"}
                 </Typography>
               </Box>
               {/* <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -496,7 +494,7 @@ export default function GarageItem({
           sx={{
             fontWeight: 600,
             color: "black",
-            fontSize: {md: "1rem !important", xs: "0.8rem !important"},
+            fontSize: { md: "1rem !important", xs: "0.8rem !important" },
           }}>
           {getPriceLabel()}{" "}
           {Number(getDisplayPrice())?.toLocaleString() || "N/A"}
@@ -511,7 +509,7 @@ export default function GarageItem({
             fontSize: "0.875rem",
             textTransform: "none",
             p: 0,
-            display: {md: "flex", xs: "none"},
+            display: { md: "flex", xs: "none" },
             "&:hover": {
               bgcolor: "rgba(33, 150, 243, 0.1)",
             },
@@ -618,28 +616,30 @@ export default function GarageItem({
   );
 
   return (
-    <Card
-      sx={{
-        width: "100%",
-        borderRadius: { md: "24px", xs: "12px" },
-        background: "transparent",
-        overflow: "hidden",
-        p: 0,
-      }}>
-      <Box
+    <Link href={paths.dashboard.cars.details(product?._id)}>
+      <Card
         sx={{
-          minHeight: { md: "320px", xs: "150px" },
-          backgroundImage: `url(${image?.[0]})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          position: "relative",
+          width: "100%",
+          borderRadius: { md: "24px", xs: "12px" },
+          background: "transparent",
+          overflow: "hidden",
           p: 0,
         }}>
-        {/* <RenderImg /> */}
-      </Box>
-      {renderContent}
-    </Card>
+        <Box
+          sx={{
+            minHeight: { md: "320px", xs: "150px" },
+            backgroundImage: `url(${image?.[0]})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            position: "relative",
+            p: 0,
+          }}>
+          {/* <RenderImg /> */}
+        </Box>
+        {renderContent}
+      </Card>
+    </Link>
   );
 }
 

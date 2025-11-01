@@ -1,51 +1,61 @@
-'use client';
+"use client";
 
-import PropTypes from 'prop-types';
-import { useRouter, usePathname } from 'next/navigation';
-import { useState } from 'react';
+import PropTypes from "prop-types";
+import { useRouter, usePathname } from "next/navigation";
+import { useState } from "react";
 
-import { Box, Fab, Button, useTheme, Badge, IconButton, Typography, Stack, Drawer } from '@mui/material';
-import { 
-  HomeRounded, 
-  CampaignRounded, 
-  AddRounded, 
-  ShoppingCartRounded, 
+import {
+  Box,
+  Fab,
+  Button,
+  useTheme,
+  Badge,
+  IconButton,
+  Typography,
+  Stack,
+  Drawer,
+} from "@mui/material";
+import {
+  HomeRounded,
+  CampaignRounded,
+  AddRounded,
+  ShoppingCartRounded,
   MenuRounded,
-  ScienceRounded
-} from '@mui/icons-material';
-import { paths } from 'src/routes/paths';
-import { useCheckoutContext } from 'src/sections/checkout/context';
-import Iconify from 'src/components/iconify';
+  ScienceRounded,
+} from "@mui/icons-material";
+import { paths } from "src/routes/paths";
+import { useCheckoutContext } from "src/sections/checkout/context";
+import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
 const NAV_ITEMS = [
   {
-    title: 'Home',
+    title: "Home",
     icon: HomeRounded,
-    path: '/',
+    path: "/",
   },
   {
-    title: 'Chemicals',
+    title: "Chemicals",
     icon: ScienceRounded,
-    path: '/chemicals',
+    path: "/chemicals",
   },
   {
-    title: 'Sell',
+    title: "Sell",
     icon: AddRounded,
-    path: '/cars',
+    path: "/cars",
     isFab: true,
   },
   {
-    title: 'Cart',
+    title: "Cart",
     icon: ShoppingCartRounded,
-    path: '/shop/cart',
+    path: "/shop/cart",
     isCart: true,
   },
   {
-    title: 'More',
+    title: "More",
     icon: MenuRounded,
-    path: '/dashboard',
+    path: "/dashboard",
     isMore: true,
   },
 ];
@@ -79,8 +89,8 @@ export default function MobileBottomNav() {
   };
 
   const isActive = (path) => {
-    if (path === '/') {
-      return pathname === '/';
+    if (path === "/") {
+      return pathname === "/";
     }
     return pathname.startsWith(path);
   };
@@ -88,21 +98,20 @@ export default function MobileBottomNav() {
   return (
     <Box
       sx={{
-        display: { xs: 'flex', md: 'none' },
-        position: 'fixed',
+        display: { xs: "flex", md: "none" },
+        position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         height: 70,
-        backgroundColor: '#000',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+        backgroundColor: "#000",
+        borderTop: "1px solid rgba(255, 255, 255, 0.1)",
         zIndex: 1100,
-        alignItems: 'center',
-        justifyContent: 'space-around',
+        alignItems: "center",
+        justifyContent: "space-around",
         px: 2,
-        boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.3)',
-      }}
-    >
+        boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.3)",
+      }}>
       {NAV_ITEMS.map((item) => {
         const active = isActive(item.path);
         const IconComponent = item.icon;
@@ -112,28 +121,26 @@ export default function MobileBottomNav() {
             <Box
               key={item.title}
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                position: 'relative',
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                position: "relative",
                 top: -10,
-              }}
-            >
+              }}>
               <Fab
                 color="primary"
                 size="medium"
                 onClick={() => handleNavigation(item.path)}
                 sx={{
                   backgroundColor: theme.palette.primary.main,
-                  color: '#fff',
+                  color: "#fff",
                   width: 56,
                   height: 56,
-                  boxShadow: '0px 4px 12px rgba(76, 175, 80, 0.4)',
-                  '&:hover': {
+                  boxShadow: "0px 4px 12px rgba(76, 175, 80, 0.4)",
+                  "&:hover": {
                     backgroundColor: theme.palette.primary.dark,
                   },
-                }}
-              >
+                }}>
                 <IconComponent sx={{ fontSize: 28 }} />
               </Fab>
               <Box
@@ -141,10 +148,9 @@ export default function MobileBottomNav() {
                 sx={{
                   fontSize: 12,
                   fontWeight: 500,
-                  color: '#fff',
+                  color: "#fff",
                   mt: 0.5,
-                }}
-              >
+                }}>
                 {item.title}
               </Box>
             </Box>
@@ -154,40 +160,40 @@ export default function MobileBottomNav() {
         return (
           <Button
             key={item.title}
-            onClick={() => handleNavigation(item.path, item.isCart, item.isMore)}
+            onClick={() =>
+              handleNavigation(item.path, item.isCart, item.isMore)
+            }
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              minWidth: 'auto',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              minWidth: "auto",
               flex: 1,
               py: 1,
               px: 0,
-              color: active ? theme.palette.primary.main : '#fff',
-              '&:hover': {
-                backgroundColor: 'transparent',
+              color: active ? theme.palette.primary.main : "#fff",
+              "&:hover": {
+                backgroundColor: "transparent",
                 color: theme.palette.primary.light,
               },
-            }}
-          >
+            }}>
             {item.isCart ? (
-              <Badge 
-                badgeContent={cartItems} 
+              <Badge
+                badgeContent={cartItems}
                 color="error"
                 max={99}
                 sx={{
                   mb: 0.5,
-                  '& .MuiBadge-badge': {
+                  "& .MuiBadge-badge": {
                     fontSize: 10,
                     height: 18,
                     minWidth: 18,
-                  }
-                }}
-              >
+                  },
+                }}>
                 <IconComponent
                   sx={{
                     fontSize: 24,
-                    color: active ? theme.palette.primary.main : '#fff',
+                    color: active ? theme.palette.primary.main : "#fff",
                   }}
                 />
               </Badge>
@@ -196,7 +202,7 @@ export default function MobileBottomNav() {
                 sx={{
                   fontSize: 24,
                   mb: 0.5,
-                  color: active ? theme.palette.primary.main : '#fff',
+                  color: active ? theme.palette.primary.main : "#fff",
                 }}
               />
             )}
@@ -205,22 +211,21 @@ export default function MobileBottomNav() {
               sx={{
                 fontSize: 11,
                 fontWeight: active ? 600 : 500,
-                textTransform: 'capitalize',
-                color: active ? theme.palette.primary.main : '#fff',
-              }}
-            >
+                textTransform: "capitalize",
+                color: active ? theme.palette.primary.main : "#fff",
+              }}>
               {item.title}
             </Box>
           </Button>
         );
       })}
-      <CartDrawer 
-        open={openCartDrawer} 
-        onClose={handleCloseCartDrawer} 
-        checkout={checkout} 
+      <CartDrawer
+        open={openCartDrawer}
+        onClose={handleCloseCartDrawer}
+        checkout={checkout}
       />
-      <MoreDialog 
-        open={openMoreDialog} 
+      <MoreDialog
+        open={openMoreDialog}
         onClose={handleCloseMoreDialog}
         router={router}
       />
@@ -328,8 +333,12 @@ function CartDrawer({ open, onClose, checkout }) {
                   key={item.id}
                   item={item}
                   onDelete={() => checkout.onDeleteCart(item.id)}
-                  onIncreaseQuantity={() => checkout.onIncreaseQuantity(item.id)}
-                  onDecreaseQuantity={() => checkout.onDecreaseQuantity(item.id)}
+                  onIncreaseQuantity={() =>
+                    checkout.onIncreaseQuantity(item.id)
+                  }
+                  onDecreaseQuantity={() =>
+                    checkout.onDecreaseQuantity(item.id)
+                  }
                 />
               ))}
             </Box>
@@ -346,20 +355,6 @@ function CartDrawer({ open, onClose, checkout }) {
               backgroundColor: "background.paper",
             }}>
             <Box sx={{ mb: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 1,
-                }}>
-                <Typography variant="body2" color="text.secondary">
-                  Subtotal
-                </Typography>
-                <Typography variant="body2">
-                  PKR {checkout?.subtotal?.toLocaleString() || 0}
-                </Typography>
-              </Box>
-
               <Box
                 sx={{
                   display: "flex",
@@ -473,7 +468,9 @@ function CartItem({ item, onDelete, onIncreaseQuantity, onDecreaseQuantity }) {
             }}>
             <Iconify icon="eva:minus-fill" width={16} />
           </IconButton>
-          <Typography variant="body2" sx={{ minWidth: 20, textAlign: "center" }}>
+          <Typography
+            variant="body2"
+            sx={{ minWidth: 20, textAlign: "center" }}>
             {item.quantity}
           </Typography>
           <IconButton
@@ -534,19 +531,18 @@ function MoreDialog({ open, onClose, router }) {
         sx: {
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
-          height: '60vh',
+          height: "60vh",
           maxHeight: 600,
         },
-      }}
-    >
+      }}>
       {/* Handle Bar */}
       <Box
         sx={{
           width: 40,
           height: 4,
-          backgroundColor: 'divider',
+          backgroundColor: "divider",
           borderRadius: 2,
-          mx: 'auto',
+          mx: "auto",
           mt: 1.5,
           mb: 2,
         }}
@@ -557,45 +553,41 @@ function MoreDialog({ open, onClose, router }) {
         sx={{
           px: 3,
           pb: 3,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          height: 'calc(100% - 24px)',
-        }}
-      >
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          height: "calc(100% - 24px)",
+        }}>
         {/* Icon and Title */}
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
+            display: "flex",
+            justifyContent: "center",
             mb: 1.5,
-          }}
-        >
+          }}>
           <Box
             sx={{
               width: 70,
               height: 70,
-              borderRadius: '50%',
+              borderRadius: "50%",
               backgroundColor: theme.palette.primary.main,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(76, 175, 80, 0.3)',
-            }}
-          >
-            <MenuRounded sx={{ fontSize: 36, color: '#fff' }} />
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 20px rgba(76, 175, 80, 0.3)",
+            }}>
+            <MenuRounded sx={{ fontSize: 36, color: "#fff" }} />
           </Box>
         </Box>
 
-        <Typography 
-          variant="h4" 
-          sx={{ 
+        <Typography
+          variant="h4"
+          sx={{
             fontWeight: 700,
             mb: 1,
-            textAlign: 'center',
-            fontSize: '1.75rem',
-          }}
-        >
+            textAlign: "center",
+            fontSize: "1.75rem",
+          }}>
           Welcome!
         </Typography>
 
@@ -603,8 +595,7 @@ function MoreDialog({ open, onClose, router }) {
           variant="body1"
           color="text.secondary"
           align="center"
-          sx={{ mb: 2, px: 2, fontSize: '0.95rem' }}
-        >
+          sx={{ mb: 2, px: 2, fontSize: "0.95rem" }}>
           Sign in to access your account and explore more features
         </Typography>
 
@@ -612,7 +603,7 @@ function MoreDialog({ open, onClose, router }) {
         <Box sx={{ flex: 1 }} />
 
         {/* Buttons */}
-        <Stack spacing={1.5} sx={{ width: '100%', mt: 'auto' }}>
+        <Stack spacing={1.5} sx={{ width: "100%", mt: "auto" }}>
           <Button
             fullWidth
             variant="contained"
@@ -620,19 +611,18 @@ function MoreDialog({ open, onClose, router }) {
             onClick={handleLogin}
             sx={{
               backgroundColor: theme.palette.primary.main,
-              color: '#fff',
+              color: "#fff",
               py: 1.25,
-              fontSize: '0.95rem',
+              fontSize: "0.95rem",
               fontWeight: 600,
               borderRadius: 2,
-              textTransform: 'none',
-              boxShadow: '0 2px 8px rgba(76, 175, 80, 0.3)',
-              '&:hover': {
+              textTransform: "none",
+              boxShadow: "0 2px 8px rgba(76, 175, 80, 0.3)",
+              "&:hover": {
                 backgroundColor: theme.palette.primary.dark,
-                boxShadow: '0 4px 12px rgba(76, 175, 80, 0.4)',
+                boxShadow: "0 4px 12px rgba(76, 175, 80, 0.4)",
               },
-            }}
-          >
+            }}>
             Login / Sign Up
           </Button>
           <Button
@@ -642,17 +632,16 @@ function MoreDialog({ open, onClose, router }) {
             onClick={onClose}
             sx={{
               py: 1.25,
-              fontSize: '0.9rem',
+              fontSize: "0.9rem",
               borderRadius: 2,
-              textTransform: 'none',
-              borderColor: 'divider',
-              color: 'text.secondary',
-              '&:hover': {
+              textTransform: "none",
+              borderColor: "divider",
+              color: "text.secondary",
+              "&:hover": {
                 borderColor: theme.palette.primary.main,
-                backgroundColor: 'rgba(76, 175, 80, 0.04)',
+                backgroundColor: "rgba(76, 175, 80, 0.04)",
               },
-            }}
-          >
+            }}>
             Close
           </Button>
         </Stack>

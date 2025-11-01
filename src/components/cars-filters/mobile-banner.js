@@ -5,7 +5,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const MobileBanner = () => {
+const MobileBanner = ({ slideIndex = "both" }) => {
   const sliderSettings = {
     dots: false,
     infinite: true,
@@ -21,14 +21,14 @@ const MobileBanner = () => {
     const words = title.split(" ");
     if (words.length <= 1) return title;
 
-    const firstLine = words.slice(0, 1).join(" ");
-    const secondLine = words.slice(1).join(" ");
+    const accessoriesCard = words.slice(0, 1).join(" ");
+    const carCard = words.slice(1).join(" ");
 
     return (
       <>
-        {firstLine}
+        {accessoriesCard}
         <br />
-        {secondLine}
+        {carCard}
       </>
     );
   };
@@ -51,6 +51,16 @@ const MobileBanner = () => {
       contactNumber: "923263333456",
     },
   ];
+
+  // Filter slides based on slideIndex prop
+  const getFilteredSlides = () => {
+    if (slideIndex === "both") return slides;
+    if (slideIndex === 0 || slideIndex === "accessories") return [slides[0]];
+    if (slideIndex === 1 || slideIndex === "car") return [slides[1]];
+    return slides;
+  };
+
+  const filteredSlides = getFilteredSlides();
 
   return (
     <Box
@@ -76,7 +86,7 @@ const MobileBanner = () => {
           },
         },
       }}>
-      {slides.map((slide, index) => (
+      {filteredSlides.map((slide, index) => (
         <Stack
           className="mobile-banner-slider"
           direction="column"

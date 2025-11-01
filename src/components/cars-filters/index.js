@@ -91,9 +91,9 @@ export default function CarsFiltersPage() {
       <Box sx={{ display: { md: "none", xs: "block" }, mt: "32px" }}>
         <LatestProductsSection
           isShop={false}
-          titleText="Latest Products"
+          titleText=""
           showViewAll={true}
-          viewAllUrl="/chemicals"
+          viewAllUrl="/shop"
         />
       </Box>
 
@@ -476,6 +476,7 @@ export default function CarsFiltersPage() {
             backgroundRepeat: "no-repeat",
             minHeight: { xs: "auto", md: "600px" },
           }}>
+            <FeaturedCarsSection isFeatured={true} />
           <FeaturedCarsSection />
         </Box>
       </Stack>

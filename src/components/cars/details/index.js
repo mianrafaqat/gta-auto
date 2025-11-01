@@ -73,10 +73,15 @@ export default function CarsDetailPage() {
             md={5}
             order={{ xs: 1, md: 2 }}
             sx={{ mb: { xs: 2, md: 0 } }}>
+            <Box sx={{ display: { md: "none", xs: "block" }, mb: "32px" }}>
+              <ProductDetailsCarousel product={carDetails} />
+            </Box>
             <ProductDetailsSummary disabledActions product={carDetails} />
           </Grid>
           <Grid item xs={12} md={7} order={{ xs: 2, md: 1 }}>
-            <ProductDetailsCarousel product={carDetails} />
+            <Box sx={{ display: { md: "block", xs: "none" } }}>
+              <ProductDetailsCarousel product={carDetails} />
+            </Box>
             <Features data={features} />
             <Overview data={carDetails} />
             <OtherDetails data={carDetails?.carDetails} />

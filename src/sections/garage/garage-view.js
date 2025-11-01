@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import GarageList from "./garage-list";
 import { Button, Card, CardContent } from "@mui/material";
 import { WhatsApp } from "@mui/icons-material";
+import MobileBanner from "src/components/cars-filters/mobile-banner";
 
 // Pagination settings
 const ITEMS_PER_PAGE = 12;
@@ -91,22 +92,24 @@ export default function GarageView() {
   const hasMore = displayedCars.length < allCars.length;
 
   return (
-    <Box sx={{ mt: "85px" }}>
+    <Box sx={{ mt: {md: "85px", xs: 0} }}>
       <Container
         maxWidth={settings.themeStretch ? false : "xl"}
         sx={{
           mb: 15,
+          px: {md: 2, xs: 0},
         }}>
-        <Grid container spacing={2}>
+        <Grid container gap={{md: 2, xs: 1}}>
           {/* Title and Header */}
           <Grid item xs={12}>
             <Stack
               sx={{
-                display: "flex",
+               
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
                 mt: "32px",
+                display: {xs: "none", md: "flex"},
               }}>
               <Typography
                 variant="h4"
@@ -215,6 +218,10 @@ export default function GarageView() {
                 </Card>
               </Box>
             </Stack>
+          </Grid>
+          
+          <Grid item xs={12}>
+            <MobileBanner slideIndex="car" />
           </Grid>
 
           {/* Empty state */}

@@ -20,6 +20,10 @@ import {
   FormControl,
   Chip,
   alpha,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
 } from "@mui/material";
 import {
   Security,
@@ -36,51 +40,51 @@ import Iconify from "src/components/iconify";
 // ----------------------------------------------------------------------
 
 const GUARD_SERVICES = [
-  {
-    id: "security_guard",
-    title: "Security Guard",
-    description:
-      "Professional unarmed security guard for general surveillance and access control.",
-    icon: Security,
-    color: "#4caf50",
-    features: [
-      "Access Control",
-      "Property Surveillance",
-      "Visitor Management",
-      "Incident Reporting",
-    ],
-    image: "/assets/Security-Guard.jpg",
-  },
-  {
-    id: "security_guard_gun",
-    title: "Security Guard with Gun",
-    description:
-      "Armed security guard providing enhanced protection for high-risk environments.",
-    icon: Shield,
-    color: "#f44336",
-    features: [
-      "Armed Protection",
-      "High-Risk Security",
-      "Licensed & Trained",
-      "Emergency Response",
-    ],
-    image: "/assets/Security-Guard-1.jpg",
-  },
-  {
-    id: "two_guard",
-    title: "Two Guards",
-    description:
-      "Dual security guard team for comprehensive coverage and enhanced security presence.",
-    icon: Business,
-    color: "#2196f3",
-    features: [
-      "Team Coverage",
-      "24/7 Rotation",
-      "Enhanced Surveillance",
-      "Coordinated Response",
-    ],
-    image: "/assets/Security-Guard-2.jpg",
-  },
+  // {
+  //   id: "security_guard",
+  //   title: "Security Guard",
+  //   description:
+  //     "Professional unarmed security guard for general surveillance and access control.",
+  //   icon: Security,
+  //   color: "#4caf50",
+  //   features: [
+  //     "Access Control",
+  //     "Property Surveillance",
+  //     "Visitor Management",
+  //     "Incident Reporting",
+  //   ],
+  //   image: "/assets/Security-Guard.jpg",
+  // },
+  // {
+  //   id: "security_guard_gun",
+  //   title: "Security Guard with Gun",
+  //   description:
+  //     "Armed security guard providing enhanced protection for high-risk environments.",
+  //   icon: Shield,
+  //   color: "#f44336",
+  //   features: [
+  //     "Armed Protection",
+  //     "High-Risk Security",
+  //     "Licensed & Trained",
+  //     "Emergency Response",
+  //   ],
+  //   image: "/assets/Security-Guard-1.jpg",
+  // },
+  // {
+  //   id: "two_guard",
+  //   title: "Two Guards",
+  //   description:
+  //     "Dual security guard team for comprehensive coverage and enhanced security presence.",
+  //   icon: Business,
+  //   color: "#2196f3",
+  //   features: [
+  //     "Team Coverage",
+  //     "24/7 Rotation",
+  //     "Enhanced Surveillance",
+  //     "Coordinated Response",
+  //   ],
+  //   image: "/assets/Security-Guard-2.jpg",
+  // },
   {
     id: "guard_squad",
     title: "Guard Squad",
@@ -102,6 +106,7 @@ const GUARD_SERVICES = [
 
 export default function GuardView() {
   const [selectedService, setSelectedService] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   // Dynamic validation schema based on selected service
@@ -175,7 +180,14 @@ export default function GuardView() {
 
   const handleServiceSelect = (serviceId) => {
     setSelectedService(serviceId);
+    setOpenModal(true);
     // Reset form when switching services
+    reset();
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedService(null);
     reset();
   };
 
@@ -210,6 +222,7 @@ export default function GuardView() {
 
       reset();
       setSelectedService(null);
+      setOpenModal(false);
     } catch (error) {
       console.error("Quote submission error:", error);
       enqueueSnackbar(
@@ -340,37 +353,56 @@ export default function GuardView() {
     </Grid>
   );
 
-  const renderQuoteForm = selectedService && (
-    <Paper
-      sx={{
-        p: 4,
-        backgroundColor: "transparent",
-        border: "1px solid rgba(76, 175, 80, 0.3)",
-        borderRadius: 3,
+  const renderQuoteForm = (
+    <Dialog
+      open={openModal}
+      onClose={handleCloseModal}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{
+        sx: {
+          backgroundColor: "#1a1a1a",
+          border: "1px solid rgba(76, 175, 80, 0.3)",
+          borderRadius: 3,
+        },
       }}>
-      <Stack spacing={3}>
-        <Box textAlign="center" mb={2}>
+      <DialogTitle
+        sx={{
+          borderBottom: "1px solid rgba(76, 175, 80, 0.3)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+        <Box>
           <Typography
-            variant="h3"
+            variant="h4"
             sx={{
               color: "#4caf50",
-              mb: 2,
               fontWeight: 700,
             }}>
             Request a Quote
           </Typography>
           <Typography
-            variant="body1"
+            variant="body2"
             sx={{
               color: "#fff",
               opacity: 0.85,
+              mt: 1,
             }}>
             Fill out the form below and we'll get back to you within 24 hours
           </Typography>
         </Box>
-
+        <IconButton
+          onClick={handleCloseModal}
+          sx={{
+            color: "#fff",
+          }}>
+          <Iconify icon="eva:close-fill" />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent sx={{ pt: 3 }}>
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Grid container spacing={3}>
+          <Grid container spacing={2} mt="16px">
             {/* Common Fields */}
             <Grid item xs={12} md={6}>
               <RHFTextField
@@ -396,7 +428,7 @@ export default function GuardView() {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} md={6}>
               <RHFTextField
                 name="address"
                 label="Service Location / Address"
@@ -498,15 +530,12 @@ export default function GuardView() {
             </Grid>
 
             {/* Submit Button */}
-            <Grid item xs={12}>
+            <Grid item xs={12} my="32px" >
               <Stack direction="row" spacing={2} justifyContent="center">
                 <Button
                   variant="outlined"
                   size="large"
-                  onClick={() => {
-                    setSelectedService(null);
-                    reset();
-                  }}
+                  onClick={handleCloseModal}
                   sx={{
                     px: 4,
                     py: 1.5,
@@ -540,8 +569,8 @@ export default function GuardView() {
             </Grid>
           </Grid>
         </FormProvider>
-      </Stack>
-    </Paper>
+      </DialogContent>
+    </Dialog>
   );
 
   return (
@@ -626,22 +655,8 @@ export default function GuardView() {
         {/* Service Cards */}
         {renderServiceCards}
 
-        {/* Quote Form */}
+        {/* Quote Form Modal */}
         {renderQuoteForm}
-
-        {/* No Service Selected Message */}
-        {!selectedService && (
-          <Box textAlign="center" py={6}>
-            <Typography
-              variant="h5"
-              sx={{
-                color: "#fff",
-                opacity: 0.6,
-              }}>
-              👆 Select a service above to request a quote
-            </Typography>
-          </Box>
-        )}
       </Container>
     </Box>
   );

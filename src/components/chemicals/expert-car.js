@@ -96,7 +96,13 @@ const ExpertCar = () => {
 
   return (
     <Box sx={{ py: 8, px: 0 }}>
-      <Box sx={{ maxWidth: "900px", width: "100%", mb: 6 }}>
+      <Box
+        sx={{
+          maxWidth: "900px",
+          width: "100%",
+          mb: 6,
+          display: { xs: "none", md: "block" },
+        }}>
         <Typography
           variant="h1"
           fontSize={{ md: "42px !important", xs: "24px !important" }}>
@@ -148,7 +154,6 @@ const ExpertCar = () => {
             </Box>
           ) : (
             <Box sx={{ position: "relative", width: "100%", pb: 8 }}>
-               
               {isSingleProduct ? (
                 // Single product display - center it
                 <Box
@@ -165,7 +170,7 @@ const ExpertCar = () => {
                 // Multiple products - use slider
                 <Box
                   sx={{
-                    mt: {md: 0, xs: "82px"},
+                    mt: { md: 0, xs: "82px" },
                     "& .slick-list": {
                       margin: { xs: "0 -4px", md: "0 -8px" },
                     },
@@ -181,7 +186,7 @@ const ExpertCar = () => {
                     {chemicalProducts.map((product) => (
                       <Box
                         key={product._id}
-                        sx={{ 
+                        sx={{
                           display: "flex !important",
                           height: "100%",
                         }}>
@@ -205,7 +210,7 @@ const ExpertCar = () => {
                       zIndex: 10,
                     }}>
                     <Link
-                      onClick={() => router.push('/shop')}
+                      onClick={() => router.push("/shop")}
                       sx={{
                         color: "#4caf50",
                         fontWeight: 600,
@@ -220,7 +225,10 @@ const ExpertCar = () => {
                         },
                       }}>
                       View All
-                      <Iconify icon="eva:arrow-forward-fill" sx={{ fontSize: 20 }} />
+                      <Iconify
+                        icon="eva:arrow-forward-fill"
+                        sx={{ fontSize: 20 }}
+                      />
                     </Link>
                   </Box>
 

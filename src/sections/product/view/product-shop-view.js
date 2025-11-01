@@ -30,6 +30,7 @@ import CTA from "src/components/cta";
 import ShopProductList from "../Shop-product-list";
 import ShopHero from "../shop-hero";
 import LatestProductsSection from "src/components/cars-filters/latest-products";
+import MobileBanner from "src/components/cars-filters/mobile-banner";
 
 // ----------------------------------------------------------------------
 
@@ -197,10 +198,20 @@ export default function ProductShopView() {
 
   return (
     <Box sx={{ display: "" }}>
-      <ShopHero />
+      <Box sx={{ display: { md: "block", xs: "none" } }}>
+        <ShopHero />
+      </Box>
+      <Box sx={{ display: { md: "none", xs: "block" } }}>
+        <MobileBanner slideIndex="accessories" />
+      </Box>
+
       {/* <HeroBottom /> */}
-      <Box>
-        <LatestProductsSection isShop={true} />
+      <Box sx={{ display: { md: "none", xs: "block" }, mt: "32px" }}>
+        <LatestProductsSection
+          isShop={false}
+          titleText=""
+          showViewAll={false}
+        />
       </Box>
       <Box
         sx={{
@@ -395,7 +406,7 @@ export default function ProductShopView() {
             {/* Render ProductList */}
 
             <Grid container>
-              <Grid item md={12} >
+              <Grid item md={12}>
                 <ShopProductList
                   products={dataFiltered}
                   loading={loading}

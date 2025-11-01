@@ -116,7 +116,7 @@ export default function Header() {
             <Stack alignItems="center" direction="row" spacing={2}>
               {/* Shopping Cart */}
 
-              <Box sx={{display: {xs: "none", md: "block"}}}>
+              <Box sx={{ display: { xs: "none", md: "block" } }}>
                 <Badge
                   badgeContent={cartItems}
                   showZero
@@ -364,17 +364,6 @@ function CartDrawer({ open, onClose, checkout }) {
               width: { xs: "100%", sm: 400 },
             }}>
             <Box sx={{ mb: 3 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 1,
-                }}>
-                <Typography variant="body2">Subtotal:</Typography>
-                <Typography variant="body2" fontWeight="bold">
-                  PKR {checkout?.subTotal?.toLocaleString() || 0}
-                </Typography>
-              </Box>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="body2">Total:</Typography>
                 <Typography

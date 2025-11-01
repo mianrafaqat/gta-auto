@@ -52,6 +52,7 @@ import GarageList from "../garage/garage-list";
 import GarageFilters from "../garage/garage-filter";
 import { Button, Card, CardContent } from "@mui/material";
 import { WhatsApp } from "@mui/icons-material";
+import GuardView from "../guard/guard-view";
 
 const FUEL_TYPES_LIST = ["Diesel", "Petrol", "Hybrid Electric", "Electric"];
 
@@ -195,6 +196,8 @@ export default function RentView() {
           sx={{
             mb: 15,
           }}>
+
+            <GuardView />
           <Grid container spacing={2}>
             {/* Title */}
             <Grid item xs={12}>
